@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">Infusion Template</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+    <string name="enter_valid_email">Please enter valid email</string>
+    <string name="error_enter_password">Please enter password</string>
+    <string name="title_home">Home</string>
+    <string name="title_profile">Profile</string>
+    <string name="profile_first_name">First Name</string>
+    <string name="profile_last_name">Last Name</string>
+    <string name="profile_gender">Gender</string>
+    <string name="profile_address">Address</string>
+    <string name="profile_email">Email</string>
+    <string name="don_t_you_have_an_account_create">Don\'t you have an account? Create</string>
+    <string name="forgot_your_password">Forgot your password?</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_username">Username</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="signup">SignUp</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="select_gender">Select gender</string>
+    <string name="hint_phone">Phone</string>
+    <string name="register">Register</string>
+    <string name="error_first_name">Please enter first name</string>
+    <string name="error_last_name">Please enter last name</string>
+    <string name="error_enter_email">Please enter email</string>
+    <string name="error_select_gender">Please select gender</string>
+    <string name="error_valid_phone_number">Please enter valid phone number</string>
+    <string name="error_enter_address">Please enter address</string>
+    <string name="iconOpenNavigationDrawer">iconOpenNavigationDrawer</string>
+    <string name="menuItem">menuItem</string>
+    <string name="iconBack">iconBack</string>
+    <string name="oops_text">Oops!</string>
+    <string name="no_network">No Network</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="ok">OK</string>
+    <string name="error">Error</string>
+    <string name="something_went_wrong">Something went wrong Please try again.</string>
+    <string name="welcome_to_settings">Welcome to settings</string>
+</resources>
