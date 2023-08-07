@@ -2,6 +2,13 @@
 
 name: CI
 
+env:
+  # The name of the main module repository
+  main_project_module: app
+
+  # The name of the Play Store
+  playstore_name: IA-Template
+
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
@@ -15,9 +22,9 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
- # This workflow contains a single job called "build"
+  # This workflow contains a single job called "build"
   build:
-#    needs: [ unit_tests, android_tests ]
+    #    needs: [ unit_tests, android_tests ]
     runs-on: ubuntu-latest
 
     steps:
@@ -84,20 +91,20 @@ jobs:
           name: ${{ env.date_today }} - ${{ env.playstore_name }} - ${{ env.repository_name }} - App bundle(s) AAB release generated
           path: ${{ env.main_project_module }}/build/outputs/bundle/release/
 
-  deploy-firebase:
-    # 1
-    needs: [ build ]
-    runs-on: ubuntu-latest
-    steps:
-      # 2
-      - uses: actions/download-artifact@master
-        with:
-          name: release.apk
-      #3
-      - name: upload artifact to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{secrets.FIREBASE_APP_ID}}
-          token: ${{secrets.FIREBASE_TOKEN}}
-          groups: QA
-          file: app-release-unsigned-signed.apk
+#  deploy-firebase:
+#    # 1
+#    needs: [ build ]
+#    runs-on: ubuntu-latest
+#    steps:
+#      # 2
+#      - uses: actions/download-artifact@master
+#        with:
+#          name: ${{ env.date_today }} - ${{ env.playstore_name }} - ${{ env.repository_name }} - App bundle(s) AAB release generated
+#      #3
+#      - name: upload artifact to Firebase App Distribution
+#        uses: wzieba/Firebase-Distribution-Github-Action@v1
+#        with:
+#          appId: ${{secrets.FIREBASE_APP_ID}}
+#          token: ${{secrets.FIREBASE_TOKEN}}
+#          groups: QA
+#          file: app-release-unsigned-signed.apk
