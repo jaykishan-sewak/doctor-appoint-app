@@ -1,20 +1,15 @@
 package com.android.doctorapp.repository
 
-import android.content.Context
 import android.util.Log
-import com.android.doctorapp.repository.local.*
+import com.android.doctorapp.repository.local.Session
+import com.android.doctorapp.repository.local.USER_IS_LOGGED_IN
 import com.android.doctorapp.repository.models.ApiResponse
-import com.android.doctorapp.repository.models.FirebaseRegisterResponse
 import com.android.doctorapp.repository.models.LoginRequestModel
 import com.android.doctorapp.repository.models.LoginResponseModel
 import com.android.doctorapp.repository.models.RegisterRequestModel
 import com.android.doctorapp.repository.network.AppApi
-import com.google.android.gms.tasks.Task
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import kotlinx.coroutines.tasks.await
 import retrofit2.Response
