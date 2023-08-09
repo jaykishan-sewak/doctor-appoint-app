@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.android.infusiontemplate.ui.authentication.register.RegisterViewModel" />
+            type="com.android.doctorapp.ui.authentication.register.RegisterViewModel" />
     </data>
     <ScrollView
         android:layout_width="match_parent"
@@ -29,49 +29,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tlFirstName"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin_20"
-            android:layout_marginTop="@dimen/margin_20"
-            android:hint="@string/profile_first_name"
-            app:error="@{viewModel.firstNameError}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtFirstName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionNext"
-                android:text="@={viewModel.firstName}"
-                android:inputType="text"
-                android:maxLines="1" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tlLastName"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_10"
-            android:hint="@string/profile_last_name"
-            app:error="@{viewModel.lastNameError}"
-            app:layout_constraintEnd_toEndOf="@id/tlFirstName"
-            app:layout_constraintStart_toStartOf="@id/tlFirstName"
-            app:layout_constraintTop_toBottomOf="@id/tlFirstName">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionNext"
-                android:text="@={viewModel.lastName}"
-                android:inputType="text"
-                android:maxLines="1" />
-        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tlEmail"
@@ -81,9 +38,10 @@
             android:layout_marginTop="@dimen/margin_10"
             android:hint="@string/profile_email"
             app:error="@{viewModel.emailError}"
-            app:layout_constraintEnd_toEndOf="@id/tlFirstName"
-            app:layout_constraintStart_toStartOf="@id/tlFirstName"
-            app:layout_constraintTop_toBottomOf="@id/tlLastName">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -102,8 +60,8 @@
             android:layout_marginTop="@dimen/margin_10"
             android:hint="@string/hint_password"
             app:error="@{viewModel.passwordError}"
-            app:layout_constraintEnd_toEndOf="@id/tlFirstName"
-            app:layout_constraintStart_toStartOf="@id/tlFirstName"
+            app:layout_constraintEnd_toEndOf="@id/tlEmail"
+            app:layout_constraintStart_toStartOf="@id/tlEmail"
             app:layout_constraintTop_toBottomOf="@id/tlEmail"
             app:passwordToggleEnabled="true">
 
@@ -116,84 +74,6 @@
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/tvSelectGender"
-            style="@style/TextAppearance.MaterialComponents.Body2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_10"
-            android:text="@string/select_gender"
-            app:layout_constraintStart_toStartOf="@id/tlFirstName"
-            app:layout_constraintTop_toBottomOf="@id/tlPassword" />
-
-        <RadioGroup
-            android:id="@+id/rgGender"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_5"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            android:onCheckedChanged="@{viewModel.onCheckChanged}"
-            app:layout_constraintEnd_toEndOf="@id/tlFirstName"
-            app:layout_constraintStart_toStartOf="@id/tlFirstName"
-            app:layout_constraintTop_toBottomOf="@id/tvSelectGender">
-
-            <RadioButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/male" />
-
-            <RadioButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/female" />
-        </RadioGroup>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tlPhone"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_10"
-            android:hint="@string/hint_phone"
-            app:error="@{viewModel.phoneError}"
-            app:layout_constraintEnd_toEndOf="@id/tlFirstName"
-            app:layout_constraintStart_toStartOf="@id/tlFirstName"
-            app:layout_constraintTop_toBottomOf="@id/rgGender">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionNext"
-                android:inputType="phone"
-                android:text="@={viewModel.phone}"
-                android:maxLength="10"
-                android:maxLines="1" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tlAddress"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_10"
-            android:hint="@string/profile_address"
-            app:error="@{viewModel.addressError}"
-            app:layout_constraintEnd_toEndOf="@id/tlFirstName"
-            app:layout_constraintStart_toStartOf="@id/tlFirstName"
-            app:layout_constraintTop_toBottomOf="@id/tlPhone">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionDone"
-                android:text="@={viewModel.address}"
-                android:inputType="text"
-                android:maxLines="1" />
-        </com.google.android.material.textfield.TextInputLayout>
-
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -203,7 +83,7 @@
             android:onClick="@{view->viewModel.onRegisterClick()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tlAddress" />
+            app:layout_constraintTop_toBottomOf="@id/tlPassword" />
     </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>

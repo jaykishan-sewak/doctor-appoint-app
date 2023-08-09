@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="com.android.infusiontemplate.ui.authentication.login.LoginViewModel" />
+            type="com.android.doctorapp.ui.authentication.login.LoginViewModel" />
     </data>
 
     <ScrollView
