@@ -47,4 +47,13 @@
     <string name="error">Error</string>
     <string name="something_went_wrong">Something went wrong Please try again.</string>
     <string name="welcome_to_settings">Welcome to settings</string>
+    <string name="third_fragment">Third Fragment</string>
+    <string name="add_doctor">Add Doctor Data</string>
+    <string name="hint_doctor_name">Enter Doctor Name</string>
+    <string name="hint_doctor_email">Enter Doctor Email id</string>
+    <string name="hint_doctor_contact">Enter Contact Number</string>
+    <string name="doctor_notification_enable">Doctor Notification Enable</string>
+    <string name="submit">Submit</string>
+    <string name="enter_valid_name">Enter Valid Name</string>
+    <string name="valid_name_desc">Name should contain at least 3 characters</string>
 </resources>
