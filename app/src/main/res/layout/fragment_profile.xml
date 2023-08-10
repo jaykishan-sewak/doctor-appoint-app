@@ -5,7 +5,7 @@
 
         <variable
             name="viewModel"
-            type="com.android.infusiontemplate.ui.profile.ProfileViewModel" />
+            type="com.android.doctorapp.ui.profile.ProfileViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"

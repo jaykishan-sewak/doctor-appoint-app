@@ -6,12 +6,12 @@
     app:startDestination="@id/navigation_home">
 
     <fragment
-        android:name="com.android.infusiontemplate.ui.home.HomeFragment"
+        android:name="com.android.doctorapp.ui.home.HomeFragment"
         android:id="@+id/navigation_home"
         tools:layout="@layout/fragment_home"/>
 
     <fragment
-        android:name="com.android.infusiontemplate.ui.profile.ProfileFragment"
+        android:name="com.android.doctorapp.ui.profile.ProfileFragment"
         android:id="@+id/navigation_profile"
         tools:layout="@layout/fragment_profile"/>
 
