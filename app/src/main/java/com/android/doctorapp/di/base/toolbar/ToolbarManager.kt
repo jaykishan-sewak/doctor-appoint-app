@@ -130,11 +130,11 @@ class ToolbarManager constructor(
             val fragmentToolbar = container.findViewById(builder.resId) as Toolbar
 
             ViewCompat.setTransitionName(fragmentToolbar, "toolbar_element")
-            if (!TextUtils.isEmpty(container.context.getString(  builder.title))) {
+            if (!TextUtils.isEmpty(container.context.getString(builder.title))) {
                 // fragmentToolbar.setTitle(builder.title)
                 // fragmentToolbar.setTitleTextAppearance(container.context,R.style.toolbarTitle)
                 val tv = fragmentToolbar.findViewById<TextView>(R.id.tvTitle)
-                tv.text = container.context.getString(  builder.title)
+                tv.text = container.context.getString(builder.title)
             }
             if (builder.titleTextColor != -1) {
                 // fragmentToolbar.setTitleTextColor(builder.titleTextColor)
@@ -153,6 +153,7 @@ class ToolbarManager constructor(
                 when (builder.navigationIconId) {
                     container.context.getDrawable(R.drawable.ic_back_white) -> fragmentToolbar.navigationContentDescription =
                         container.context.getString(R.string.iconBack)
+
                     else -> fragmentToolbar.navigationContentDescription =
                         container.context.getString(R.string.iconOpenNavigationDrawer)
                 }
