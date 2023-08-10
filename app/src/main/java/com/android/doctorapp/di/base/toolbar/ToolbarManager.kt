@@ -130,11 +130,11 @@ class ToolbarManager constructor(
             val fragmentToolbar = container.findViewById(builder.resId) as Toolbar
 
             ViewCompat.setTransitionName(fragmentToolbar, "toolbar_element")
-            if (!TextUtils.isEmpty(builder.title)) {
+            if (!TextUtils.isEmpty(container.context.getString(builder.title))) {
                 // fragmentToolbar.setTitle(builder.title)
                 // fragmentToolbar.setTitleTextAppearance(container.context,R.style.toolbarTitle)
                 val tv = fragmentToolbar.findViewById<TextView>(R.id.tvTitle)
-                tv.text = builder.title
+                tv.text = container.context.getString(builder.title)
             }
             if (builder.titleTextColor != -1) {
                 // fragmentToolbar.setTitleTextColor(builder.titleTextColor)
@@ -153,6 +153,7 @@ class ToolbarManager constructor(
                 when (builder.navigationIconId) {
                     container.context.getDrawable(R.drawable.ic_back_white) -> fragmentToolbar.navigationContentDescription =
                         container.context.getString(R.string.iconBack)
+
                     else -> fragmentToolbar.navigationContentDescription =
                         container.context.getString(R.string.iconOpenNavigationDrawer)
                 }
@@ -209,8 +210,8 @@ class ToolbarManager constructor(
 
 class FragmentToolbar(
     @IdRes val resId: Int,
-    @StringRes val title: String,
-    @StringRes val subTitle: String,
+    @StringRes val title: Int,
+    @StringRes val subTitle: Int,
     @IdRes val toolbarColor: Int,
     @IdRes val toolbarBackGround: Int,
     @IdRes val titleTextColor: Int,
@@ -237,8 +238,8 @@ class FragmentToolbar(
 
         private var subTitleTextColor: Int = -1
         private var menuId: Int = -1
-        private var title: String = ""
-        private var subTitle: String = ""
+        private var title: Int = -1
+        private var subTitle: Int = -1
         private var menuItems: MutableList<Int> = mutableListOf()
         private var menuClicks: MenuItem.OnMenuItemClickListener? = null
         private var navigationClickListener: View.OnClickListener? = null
@@ -256,7 +257,7 @@ class FragmentToolbar(
         fun withToolbarBackGroundId(toolbarBackGround: Int) =
             apply { this.toolbarColor = toolbarBackGround }
 
-        fun withTitle(title: String) = apply { this.title = title }
+        fun withTitle(title: Int) = apply { this.title = title }
 
         fun withMenu(@MenuRes menuId: Int) = apply { this.menuId = menuId }
 
