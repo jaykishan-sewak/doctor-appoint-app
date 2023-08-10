@@ -10,11 +10,11 @@ import com.android.doctorapp.repository.AuthRepository
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
-import com.android.doctorapp.repository.models.LoginRequestModel
 import com.android.doctorapp.repository.models.LoginResponseModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
+import com.android.doctorapp.util.extension.isPassWordValid
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
@@ -34,11 +34,14 @@ class LoginViewModel @Inject constructor(
 
     private val _navigationListener = SingleLiveEvent<Int>()
     val navigationListener = _navigationListener.asLiveData()
-    private var auth: FirebaseAuth? = null
+    var auth: FirebaseAuth? = null
+
+    val isGoogleClick: MutableLiveData<Boolean> = MutableLiveData(false)
 
     init {
         auth = FirebaseAuth.getInstance()
     }
+
     fun onClick() {
         if (isValidateInput()) {
             callLoginAPI()
@@ -57,6 +60,8 @@ class LoginViewModel @Inject constructor(
             emailError.postValue(resourceProvider.getString(R.string.enter_valid_email))
         } else if (password.value.isNullOrEmpty()) {
             passwordError.postValue(resourceProvider.getString(R.string.error_enter_password))
+        } else if (password.value.toString().isPassWordValid().not()) {
+            passwordError.postValue("Password should contain at least 8 characters")
         } else return true
         return false
     }
@@ -74,7 +79,7 @@ class LoginViewModel @Inject constructor(
                     email.value = ""
                     password.value = ""
                     setShowProgress(false)
-                    _loginResponse.postValue(LoginResponseModel("test","10","test1","test123"))
+                    _loginResponse.postValue(LoginResponseModel("test", "10", "test1", "test123"))
                 }
 
                 is ApiErrorResponse -> {
@@ -95,5 +100,13 @@ class LoginViewModel @Inject constructor(
     fun onRegisterClick() {
         _navigationListener.postValue(R.id.action_loginFragment_to_registerFragment)
     }
+
+    fun onGoogleSignClick() {
+        isGoogleClick.postValue(true)
+    }
+
+
+
+
 
 }
