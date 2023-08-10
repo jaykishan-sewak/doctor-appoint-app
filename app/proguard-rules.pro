@@ -19,3 +19,5 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keepclassmembers class co.nimblehq.sample.compose.data.request.** { *; }
+-keepclassmembers class co.nimblehq.sample.compose.data.response.** { *; }

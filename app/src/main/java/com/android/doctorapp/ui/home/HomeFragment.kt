@@ -63,7 +63,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         return FragmentToolbar.Builder()
             .withId(R.id.toolbar)
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.purple_500))
-            .withTitle(getString(R.string.title_home))
+            .withTitle(R.string.title_home)
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
             .withMenu(R.menu.menu_main)
             .withMenuItems(generateMenuItems(), generateMenuClicks())
