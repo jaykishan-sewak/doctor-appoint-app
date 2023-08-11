@@ -8,6 +8,7 @@ import com.android.doctorapp.repository.models.LoginRequestModel
 import com.android.doctorapp.repository.models.LoginResponseModel
 import com.android.doctorapp.repository.models.RegisterRequestModel
 import com.android.doctorapp.repository.network.AppApi
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
@@ -58,10 +59,10 @@ class AuthRepository @Inject constructor(
         password: String
     ): ApiResponse<AuthResult> {
         return try {
-            val result = auth?.createUserWithEmailAndPassword(
+            val result = auth.createUserWithEmailAndPassword(
                 email,
                 password
-            )?.await()
+            ).await()
             Log.d("response---", result?.user?.email!!)
             ApiResponse.create(response = Response.success(result))
         } catch (e: Exception) {
@@ -86,5 +87,23 @@ class AuthRepository @Inject constructor(
             ApiResponse.create(e.fillInStackTrace())
         }
     }
+
+    suspend fun googleLogin(
+        auth: FirebaseAuth,
+        authCredential: AuthCredential
+    ): ApiResponse<AuthResult> {
+        return try {
+            val result = auth?.signInWithCredential(
+                authCredential
+            )?.await()
+            Log.d("response---", result?.user?.email!!)
+            ApiResponse.create(response = Response.success(result))
+
+        } catch (e: Exception) {
+            Log.d("Error--", e.message!!)
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
 
 }

@@ -37,7 +37,7 @@
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvLoginNow"
+                android:id="@+id/tvLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_50"
@@ -58,7 +58,7 @@
                 android:textColor="@color/grey"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvLoginNow"/>
+                app:layout_constraintTop_toBottomOf="@+id/tvLogin"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/field_email"
@@ -131,7 +131,7 @@
                 android:textAllCaps="false"
                 android:textSize="15sp"
                 android:textColor="@color/white"
-                android:backgroundTint="@color/blue"
+                android:background="@drawable/round_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/field_password"/>
@@ -140,7 +140,7 @@
                 android:id="@+id/tvBottomMsg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_10"
+                android:layout_marginTop="@dimen/margin_20"
                 android:text="@string/don_t_have_an_account_create"
                 android:textColor="@color/black"
                 android:textStyle="bold"
@@ -153,7 +153,7 @@
                 android:id="@+id/tvSignUp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_10"
+                android:layout_marginTop="@dimen/margin_20"
                 android:layout_marginStart="@dimen/margin_5"
                 android:onClick="@{view -> viewModel.onRegisterClick()}"
                 android:text="@string/signup"
@@ -178,7 +178,7 @@
                 android:layout_width="@dimen/margin_20"
                 android:layout_height="@dimen/margin_20"
                 android:src="@drawable/chrome_icon"
-                android:layout_marginTop="@dimen/margin_10"
+                android:layout_marginTop="@dimen/margin_20"
                 android:onClick="@{view -> viewModel.onGoogleSignClick()}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

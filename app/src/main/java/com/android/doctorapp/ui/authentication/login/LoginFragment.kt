@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
@@ -18,6 +17,7 @@ import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.ui.dashboard.DashboardActivity
 import com.android.doctorapp.util.extension.startActivityFinish
+import com.android.doctorapp.util.extension.toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -81,35 +81,43 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     }
 
     private fun registerObserver() {
-        viewModel.loginResponse.observe(viewLifecycleOwner, {
+        viewModel.loginResponse.observe(viewLifecycleOwner) {
             it?.let {
-                startActivityFinish<DashboardActivity> { }
+               startActivityFinish<DashboardActivity> { }
+//                findNavController().navigate(it)
             }
-        })
+        }
 
         viewModel.navigationListener.observe(viewLifecycleOwner, {
             findNavController().navigate(it)
         })
+
         viewModel.isGoogleClick.observe(viewLifecycleOwner) {
             if (it) {
                 val intent: Intent = googleSignInClient.signInIntent
                 launcher.launch(intent)
             }
         }
+
+        viewModel.navigationListener.observe(viewLifecycleOwner) {
+            context?.toast("Login with google sucessfull")
+            findNavController().navigate(it)
+        }
+
     }
 
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             //Check condition
             if (result.resultCode == AppCompatActivity.RESULT_OK) {
-                // When request code is equal to 100 initialize task
+                // When request code is equal to RESULT_OK initialize task
                 val signInAccountTask: Task<GoogleSignInAccount> =
                     GoogleSignIn.getSignedInAccountFromIntent(result.data)
 
                 if (signInAccountTask.isSuccessful) {
                     // When google sign in successful initialize string
                     val msg = "Google sign in successful"
-                    displayToast(msg)
+                    context?.toast(msg)
 
                     // Initialize sign in account
                     try {
@@ -122,17 +130,20 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                             val authCredential: AuthCredential = GoogleAuthProvider.getCredential(
                                 googleSignInAccount.idToken, null
                             )
-                            // Check credentials
-                            viewModel.auth?.signInWithCredential(authCredential)
-                                ?.addOnCompleteListener { task ->
 
-                                    //Check condition
-                                    if (task.isSuccessful) {
-//                                    startActivity(Intent(this@MainActivity, ProfileActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-                                        displayToast("Firebase authentication successful")
-                                    } else
-                                        displayToast("Authentication failed" + task.exception!!.message)
-                                }
+                            viewModel.callGoogleAPI(authCredential)
+
+                            // Check credentials
+//                            viewModel.auth?.signInWithCredential(authCredential)
+//                                ?.addOnCompleteListener { task ->
+//
+//                                    //Check condition
+//                                    if (task.isSuccessful) {
+////                                    startActivity(Intent(this@MainActivity, ProfileActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+//                                        displayToast("Firebase authentication successful")
+//                                    } else
+//                                        displayToast("Authentication failed" + task.exception!!.message)
+//                                }
                         }
                     } catch (e: ApiException) {
                         e.printStackTrace()
@@ -141,8 +152,5 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
             }
         }
 
-    private fun displayToast(msg: String) {
-        Toast.makeText(requireActivity(), msg, Toast.LENGTH_SHORT).show()
-    }
 
 }
