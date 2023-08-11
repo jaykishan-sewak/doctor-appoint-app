@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/AddDoctorFragment">
+    app:startDestination="@id/LoginFragment">
 
     <fragment
         android:id="@+id/LoginFragment"
@@ -25,11 +25,22 @@
             android:id="@+id/action_registerFragment_to_loginFragment"
             app:destination="@id/LoginFragment" />
     </fragment>
+
+
     <fragment
         android:id="@+id/AddDoctorFragment"
         android:name="com.android.doctorapp.ui.doctor.AddDoctorFragment"
-        android:label="@string/third_fragment"
         tools:layout="@layout/fragment_add_doctor">
 
+<!--        <action-->
+<!--            android:id="@id/navigation_home"-->
+<!--            app:destination="@id/navigation_home"-->
+<!--            />-->
+
+         <action
+            android:id="@+id/action_loginFragment_to_registerFragment"
+            app:destination="@id/LoginFragment" />
+
     </fragment>
+
 </navigation>

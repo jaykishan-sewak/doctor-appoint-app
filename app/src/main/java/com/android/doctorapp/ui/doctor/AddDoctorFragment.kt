@@ -7,9 +7,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.FragmentAddDoctorBinding
 import com.android.doctorapp.di.AppComponentProvider
@@ -23,7 +25,7 @@ class AddDoctorFragment: BaseFragment<FragmentAddDoctorBinding>(R.layout.fragmen
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel by viewModels<AddDoctorViewModel> { viewModelFactory }
-
+//    private var notificationEnable = false
     private val TAG = "AddDoctorTag"
 
      override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +37,7 @@ class AddDoctorFragment: BaseFragment<FragmentAddDoctorBinding>(R.layout.fragmen
         return FragmentToolbar.Builder()
             .withId(R.id.toolbar)
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.purple_500))
-            .withTitle(getString(R.string.title_profile))
+            .withTitle(R.string.title_profile)
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
             .build()
     }
@@ -56,30 +58,42 @@ class AddDoctorFragment: BaseFragment<FragmentAddDoctorBinding>(R.layout.fragmen
         super.onViewCreated(view, savedInstanceState)
         setUpWithViewModel(viewModel)
         registerObserver()
-        /*binding.editText.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                TODO("Not yet implemented")
-            }
+//        binding.setOnGenderChange { buttonView, isChecked ->
+//            Log.d(TAG, "onViewCreated: -->         $isChecked")
+//            notificationEnable = isChecked
+//        }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                TODO("Not yet implemented")
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                TODO("Not yet implemented")
-            }
-
-        })*/
-
+//        binding.toggleDoctorNotification.setOnClickListener {
+//            viewModel.setToggleState(binding.toggleDoctorNotification.isChecked)
+//        }
 
     }
 
     private fun registerObserver() {
-        viewModel.apply { 
-            viewModel.doctorNameError.observe(viewLifecycleOwner) {
+        viewModel.apply {
+            viewModel.doctorNameErrorTrue.observe(viewLifecycleOwner) { nameIt ->
+                if (nameIt) {
+                    viewModel.doctorEmailErrorTrue.observe(viewLifecycleOwner) {emailIt ->
+                        if (emailIt) {
+                            viewModel.doctorContactNumberErrorTrue.observe(viewLifecycleOwner) { contactIt ->
+                                binding.btn.isEnabled = contactIt
+                            }
+                        } else {
+                            binding.btn.isEnabled = false
+                        }
+                    }
+                } else {
+                    binding.btn.isEnabled = false
+                }
+            }
+            viewModel.toggleLiveData.observe(viewLifecycleOwner) {
                 Log.d(TAG, "registerObserver: $it")
+//                Log.d(TAG, "registerObserver: ${viewModel.toggleChecked.get()}")
             }
         }
+         viewModel.navigationListener.observe(viewLifecycleOwner) {
+             findNavController().navigate(it)
+         }
     }
 
 }
