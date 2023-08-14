@@ -1,15 +1,12 @@
 package com.android.doctorapp.ui.doctor
 
-import android.util.Log
 import android.util.Patterns
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
 import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AddDoctorRepository
-import com.android.doctorapp.repository.AuthRepository
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
@@ -18,11 +15,8 @@ import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AddDoctorViewModel @Inject constructor(
@@ -30,77 +24,73 @@ class AddDoctorViewModel @Inject constructor(
     private val addRepository: AddDoctorRepository
 ) : BaseViewModel() {
 
-    private val TAG: String = AddDoctorViewModel::class.java.simpleName
-
-    private val doctorName: MutableLiveData<String?> = MutableLiveData()
+    val doctorName: MutableLiveData<String?> = MutableLiveData()
     val doctorNameError: MutableLiveData<String?> = MutableLiveData()
-    val doctorNameErrorTrue: MutableLiveData<Boolean> = MutableLiveData()
 
-    private val doctorEmail: MutableLiveData<String> = MutableLiveData()
+    val doctorEmail: MutableLiveData<String> = MutableLiveData()
     val doctorEmailError: MutableLiveData<String?> = MutableLiveData()
-    val doctorEmailErrorTrue: MutableLiveData<Boolean> = MutableLiveData()
 
-    private val doctorContactNumber: MutableLiveData<String> = MutableLiveData()
+    val doctorContactNumber: MutableLiveData<String> = MutableLiveData()
     val doctorContactNumberError: MutableLiveData<String?> = MutableLiveData()
-    val doctorContactNumberErrorTrue: MutableLiveData<Boolean> = MutableLiveData()
 
-    val toggleLiveData: MutableLiveData<Boolean> = MutableLiveData()
+    val toggleLiveData: MutableLiveData<Boolean> = MutableLiveData(false)
     private lateinit var firebaseAuth: FirebaseAuth
+    val isDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
 
     private val _navigationListener = SingleLiveEvent<Int>()
     val navigationListener = _navigationListener.asLiveData()
 
+    private val _addDoctorResponse = SingleLiveEvent<String>()
+    val addDoctorResponse = _addDoctorResponse.asLiveData()
+
+    private fun isAllValidate() {
+        isDataValid.value = (!doctorName.value.isNullOrEmpty() && !doctorEmail.value.isNullOrEmpty()
+                && !doctorContactNumber.value.isNullOrEmpty() && doctorNameError.value.isNullOrEmpty()
+                && doctorEmailError.value.isNullOrEmpty() && doctorContactNumberError.value.isNullOrEmpty())
+    }
+
     fun isValidateName(text: CharSequence?) {
-        doctorNameError.postValue(null)
-        doctorNameErrorTrue.postValue(false)
-        if (text?.toString().isNullOrEmpty()) {
-            doctorNameErrorTrue.postValue(false)
-            doctorNameError.postValue(resourceProvider.getString(R.string.valid_name_desc))
-        } else if ((text?.toString()?.length!! >= 1) && ((text?.toString()?.length ?: 0) < 3)) {
-            doctorNameErrorTrue.postValue(false)
-            doctorNameError.postValue(resourceProvider.getString(R.string.valid_name_desc))
+        if (text?.toString()
+                .isNullOrEmpty() || ((text?.toString()?.length
+                ?: 0) < 3)
+        ) {
+            doctorNameError.value = resourceProvider.getString(R.string.valid_name_desc)
         } else {
-            doctorNameError.postValue(null)
-            doctorNameErrorTrue.postValue(true)
-            doctorName.postValue(text.toString())
+            doctorNameError.value = null
+
         }
+        isAllValidate()
     }
 
     fun isValidEmail(text: CharSequence?) {
-        doctorEmailError.postValue(null)
-        if (text?.toString().isNullOrEmpty()) {
-            doctorEmailErrorTrue.postValue(false)
-            doctorEmailError.postValue(resourceProvider.getString(R.string.enter_valid_email))
-        } else if (text?.toString()?.isEmailAddressValid()?.not()!!) {
-            doctorEmailError.postValue(resourceProvider.getString(R.string.enter_valid_email))
-            doctorEmailErrorTrue.postValue(false)
+        if (text?.toString().isNullOrEmpty() || text?.toString()?.isEmailAddressValid()
+                ?.not() == true
+        ) {
+            doctorEmailError.value = resourceProvider.getString(R.string.enter_valid_email)
         } else {
-            doctorEmailError.postValue(null)
-            doctorEmailErrorTrue.postValue(true)
-            doctorEmail.postValue(text.toString())
+            doctorEmailError.value = null
         }
+        isAllValidate()
     }
 
     fun isValidContact(text: CharSequence?) {
-        doctorContactNumberError.postValue(null)
         if (text?.toString().isNullOrEmpty()) {
-            doctorContactNumberErrorTrue.postValue(false)
-            doctorContactNumberError.postValue(resourceProvider.getString(R.string.error_valid_phone_number))
+            doctorContactNumberError.value =
+                resourceProvider.getString(R.string.error_valid_phone_number)
         } else {
-            if (Patterns.PHONE.matcher(text?.toString()).matches()) {
+            if (Patterns.PHONE.matcher(text ?: "").matches()) {
                 if (text?.toString()?.length == 10) {
-                    doctorContactNumberErrorTrue.postValue(true)
-                    doctorContactNumberError.postValue(null)
-                    doctorContactNumber.postValue(text.toString())
+                    doctorContactNumberError.value = null
                 } else {
-                    doctorContactNumberErrorTrue.postValue(false)
-                    doctorContactNumberError.postValue(resourceProvider.getString(R.string.error_valid_phone_number))
+                    doctorContactNumberError.value =
+                        resourceProvider.getString(R.string.error_valid_phone_number)
                 }
             } else {
-                doctorContactNumberErrorTrue.postValue(false)
-                doctorContactNumberError.postValue(resourceProvider.getString(R.string.error_valid_phone_number))
+                doctorContactNumberError.value =
+                    resourceProvider.getString(R.string.error_valid_phone_number)
             }
         }
+        isAllValidate()
     }
 
 
@@ -137,31 +127,31 @@ class AddDoctorViewModel @Inject constructor(
 
             viewModelScope.launch {
                 setShowProgress(true)
-
                 when (val response = addRepository.addDoctorData(userData, firestore)) {
 
-                    is DocumentReference -> {
+                    is ApiSuccessResponse -> {
                         doctorName.value = ""
                         doctorEmail.value = ""
                         doctorContactNumber.value = ""
-                        Log.d(TAG, "addDoctorData: DocumentReference")
                         setShowProgress(false)
-                         _navigationListener.postValue(R.id.action_loginFragment_to_registerFragment)
-
+                        _navigationListener.value = R.id.action_addDoctorFragment_to_LoginFragment
+                        _addDoctorResponse.value = resourceProvider.getString(R.string.success)
                     }
 
-                    is FirebaseFirestoreException -> {
-                        Log.d(TAG, "addDoctorData: ${response.fillInStackTrace()}")
+                    is ApiErrorResponse -> {
+                        _addDoctorResponse.value = response.errorMessage
+                        setShowProgress(false)
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        _addDoctorResponse.value = response.errorMessage
                         setShowProgress(false)
                     }
 
                     else -> {
-                        Log.d(TAG, "addDoctorData: else")
                         setShowProgress(false)
                     }
                 }
-
-
             }
         }
     }

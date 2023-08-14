@@ -38,7 +38,7 @@
 <!--            />-->
 
          <action
-            android:id="@+id/action_loginFragment_to_registerFragment"
+            android:id="@+id/action_addDoctorFragment_to_LoginFragment"
             app:destination="@id/LoginFragment" />
 
     </fragment>

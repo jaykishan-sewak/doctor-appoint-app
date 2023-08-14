@@ -1,13 +1,9 @@
 package com.android.doctorapp.ui.doctor
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -17,7 +13,9 @@ import com.android.doctorapp.databinding.FragmentAddDoctorBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
-import com.android.doctorapp.ui.profile.ProfileViewModel
+import com.android.doctorapp.util.extension.alert
+import com.android.doctorapp.util.extension.neutralButton
+import com.android.doctorapp.util.extension.toast
 import javax.inject.Inject
 
 class AddDoctorFragment: BaseFragment<FragmentAddDoctorBinding>(R.layout.fragment_add_doctor) {
@@ -25,8 +23,6 @@ class AddDoctorFragment: BaseFragment<FragmentAddDoctorBinding>(R.layout.fragmen
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel by viewModels<AddDoctorViewModel> { viewModelFactory }
-//    private var notificationEnable = false
-    private val TAG = "AddDoctorTag"
 
      override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,42 +54,29 @@ class AddDoctorFragment: BaseFragment<FragmentAddDoctorBinding>(R.layout.fragmen
         super.onViewCreated(view, savedInstanceState)
         setUpWithViewModel(viewModel)
         registerObserver()
-//        binding.setOnGenderChange { buttonView, isChecked ->
-//            Log.d(TAG, "onViewCreated: -->         $isChecked")
-//            notificationEnable = isChecked
-//        }
-
-//        binding.toggleDoctorNotification.setOnClickListener {
-//            viewModel.setToggleState(binding.toggleDoctorNotification.isChecked)
-//        }
-
     }
 
     private fun registerObserver() {
-        viewModel.apply {
-            viewModel.doctorNameErrorTrue.observe(viewLifecycleOwner) { nameIt ->
-                if (nameIt) {
-                    viewModel.doctorEmailErrorTrue.observe(viewLifecycleOwner) {emailIt ->
-                        if (emailIt) {
-                            viewModel.doctorContactNumberErrorTrue.observe(viewLifecycleOwner) { contactIt ->
-                                binding.btn.isEnabled = contactIt
-                            }
-                        } else {
-                            binding.btn.isEnabled = false
-                        }
-                    }
-                } else {
-                    binding.btn.isEnabled = false
+
+        viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
+            if (it.equals("Success")) {
+                context?.toast(resources.getString(R.string.doctor_save_successfully))
+                viewModel.navigationListener.observe(viewLifecycleOwner) {
+                    findNavController().navigate(it)
+                }
+            } else {
+                context?.alert {
+                    setTitle(getString(R.string.doctor_not_save))
+                    setMessage(it)
+                    neutralButton { }
                 }
             }
-            viewModel.toggleLiveData.observe(viewLifecycleOwner) {
-                Log.d(TAG, "registerObserver: $it")
-//                Log.d(TAG, "registerObserver: ${viewModel.toggleChecked.get()}")
-            }
         }
-         viewModel.navigationListener.observe(viewLifecycleOwner) {
-             findNavController().navigate(it)
-         }
+
+
+
+        
+
     }
 
 }

@@ -56,4 +56,7 @@
     <string name="submit">Submit</string>
     <string name="enter_valid_name">Enter Valid Name</string>
     <string name="valid_name_desc">Name should contain at least 3 characters</string>
+    <string name="doctor_save_successfully">Doctor information successfully saved.</string>
+    <string name="doctor_not_save">Doctor information Not saved.</string>
+    <string name="success">Success</string>
 </resources>

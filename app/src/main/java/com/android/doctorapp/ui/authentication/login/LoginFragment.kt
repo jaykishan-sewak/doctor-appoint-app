@@ -60,14 +60,15 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     }
 
     private fun registerObserver() {
-        viewModel.loginResponse.observe(viewLifecycleOwner, {
-            it?.let {
-                startActivityFinish<DashboardActivity> { }
-            }
-        })
+        viewModel.loginResponse.observe(viewLifecycleOwner) {
+//            it?.let {
+//                startActivityFinish<DashboardActivity> { }
+//            }
+            findNavController().navigate(R.id.AddDoctorFragment)
+        }
 
-        viewModel.navigationListener.observe(viewLifecycleOwner, {
+        viewModel.navigationListener.observe(viewLifecycleOwner) {
             findNavController().navigate(it)
-        })
+        }
     }
 }
