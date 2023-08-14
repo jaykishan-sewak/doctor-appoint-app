@@ -1,5 +1,6 @@
 package com.android.doctorapp.di.base
 
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
@@ -59,7 +60,11 @@ abstract class BaseActivity<T : ViewDataBinding> constructor(
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        })
         return true
     }
 
@@ -72,8 +77,8 @@ abstract class BaseActivity<T : ViewDataBinding> constructor(
         viewModel.apply {
             apiError.observe(this@BaseActivity, {
                 alert {
-                    setTitle(getString(R.string.oops_text))
-                    setMessage(it)
+                    setTitle(getString(R.string.wrong_crendentials))
+                    setMessage(getString(R.string.you_have_entered_wrong_email_or_password))
                     neutralButton { }
                 }
             })

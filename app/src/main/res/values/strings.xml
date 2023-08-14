@@ -54,4 +54,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="welcome_to_user_profile">Welcome to User profile</string>
+    <string name="wrong_crendentials">Wrong crendentials</string>
+    <string name="you_have_entered_wrong_email_or_password">You have entered wrong email or password</string>
+    <string name="client_id">602980832199-da60b9fdshqg3gdnsqdkv2ltbu1qeg2p.apps.googleusercontent.com</string>
+    <string name="password_should_contain_at_least_8_characters">Password should contain at least 8 characters</string>
+    <string name="sign_with_google_successful">Sign with google successful</string>
 </resources>

@@ -1,6 +1,6 @@
 package com.android.doctorapp.ui.authentication.login
 
-import android.util.Log
+
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -14,9 +14,9 @@ import com.android.doctorapp.repository.models.LoginResponseModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
+import com.android.doctorapp.util.extension.isPassWordValid
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
-import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,12 +37,15 @@ class LoginViewModel @Inject constructor(
     var auth: FirebaseAuth? = null
 
     val isGoogleClick: MutableLiveData<Boolean> = MutableLiveData(false)
-    val isGoogleResponse: MutableLiveData<Boolean> = MutableLiveData(false)
+    private val googleResponse: MutableLiveData<Boolean> = MutableLiveData(false)
+
+
 
 
     init {
         auth = FirebaseAuth.getInstance()
     }
+
 
     fun onClick() {
         if (isValidateInput()) {
@@ -62,12 +65,16 @@ class LoginViewModel @Inject constructor(
             emailError.postValue(resourceProvider.getString(R.string.enter_valid_email))
         } else if (password.value.isNullOrEmpty()) {
             passwordError.postValue(resourceProvider.getString(R.string.error_enter_password))
-        } else return true//else if (password.value.toString().isPassWordValid().not()) {
-            //passwordError.postValue("Password should contain at least 8 characters")
-        //}
+        } else if (password.value.toString().isPassWordValid().not()) {
+            passwordError.postValue(resourceProvider.getString(R.string.password_should_contain_at_least_8_characters))
+        } else return true
         return false
     }
 
+    /**
+     * This method is used for email and password
+     * firebase authentication. It returns response of ApiResponse type.
+     */
     private fun callLoginAPI() {
         viewModelScope.launch {
             setShowProgress(true)
@@ -77,22 +84,20 @@ class LoginViewModel @Inject constructor(
                 password = password.value.toString(),
             )) {
                 is ApiSuccessResponse -> {
-                    Log.d("response.body---", Gson().toJson(response.body.user?.email))
                     email.value = ""
                     password.value = ""
                     setShowProgress(false)
-                    //_navigationListener.postValue(R.id.action_loginFragment_to_addUserProfileFragment)
-                    _loginResponse.postValue(LoginResponseModel("test", "10", "test1", "test123"))
+                    _navigationListener.postValue(R.id.action_loginFragment_to_addUserProfileFragment)
+                    //_loginResponse.postValue(LoginResponseModel("test", "10", "test1", "test123"))
                 }
 
                 is ApiErrorResponse -> {
-
-                    Log.d("ApiErrorResponse.body---", response.errorMessage)
+                    setApiError(response.errorMessage)
                     setShowProgress(false)
                 }
-
+                
                 is ApiNoNetworkResponse -> {
-                    Log.d("ApiNoNetworkResponse.body---", response.errorMessage)
+                    setNoNetworkError(response.errorMessage)
                     setShowProgress(false)
                 }
                 else -> {}
@@ -100,6 +105,10 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    /**
+     * This method is used for google sign in
+     * firebase authentication. It returns response of ApiResponse type.
+     */
     fun callGoogleAPI(authCredential : AuthCredential){
         viewModelScope.launch {
             setShowProgress(true)
@@ -108,35 +117,39 @@ class LoginViewModel @Inject constructor(
                 authCredential,
             )) {
                 is ApiSuccessResponse -> {
-                    response.body.user?.email?.let { Log.d("response.body---", it) }
                     setShowProgress(false)
-                    isGoogleResponse.postValue(true)
+                    googleResponse.postValue(true)
                     _navigationListener.postValue(R.id.action_loginFragment_to_addUserProfileFragment)
                 }
 
                 is ApiErrorResponse -> {
-                    Log.d("ApiErrorResponse.body---", response.errorMessage)
+                    setApiError(response.errorMessage)
                     setShowProgress(false)
                 }
 
                 is ApiNoNetworkResponse -> {
-                    Log.d("ApiNoNetworkResponse.body---", response.errorMessage)
+                    setNoNetworkError(response.errorMessage)
                     setShowProgress(false)
                 }
                 else -> {}
             }
         }
     }
-
+    /**
+     * This method is used for navigation to Register Screen
+     *  onclick of SignUp text. Directly called in xml
+     */
     fun onRegisterClick() {
         _navigationListener.postValue(R.id.action_loginFragment_to_registerFragment)
     }
 
+    /**
+     * This method is used for googleSign image click or not.
+     * Directly called in xml
+     */
     fun onGoogleSignClick() {
         isGoogleClick.postValue(true)
     }
-
-
 
 
 

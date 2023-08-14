@@ -1,6 +1,5 @@
 package com.android.doctorapp.repository
 
-import android.util.Log
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.local.USER_IS_LOGGED_IN
 import com.android.doctorapp.repository.models.ApiResponse
@@ -11,7 +10,6 @@ import com.android.doctorapp.repository.network.AppApi
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.gson.Gson
 import kotlinx.coroutines.tasks.await
 import retrofit2.Response
 import javax.inject.Inject
@@ -46,13 +44,16 @@ class AuthRepository @Inject constructor(
             if (response.isSuccessful) {
                 session.putBoolean(USER_IS_LOGGED_IN, true)
             }
-            Log.d("response---", Gson().toJson(response))
             ApiResponse.create(response = response)
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
         }
     }
 
+    /**
+     * This method is used to create user email and password for
+     * firebase authentication. It returns the result of <AuthResult> type.
+     */
     suspend fun register(
         auth: FirebaseAuth,
         email: String,
@@ -63,44 +64,47 @@ class AuthRepository @Inject constructor(
                 email,
                 password
             ).await()
-            Log.d("response---", result?.user?.email!!)
             ApiResponse.create(response = Response.success(result))
         } catch (e: Exception) {
-            Log.d("Error ---", e.message!!)
             ApiResponse.create(e.fillInStackTrace())
         }
     }
+
+    /**
+     * This method is used for email and password
+     * firebase authentication. It returns the result of <AuthResult> type.
+     */
     suspend fun login(
         auth: FirebaseAuth,
         email: String,
         password: String
     ): ApiResponse<AuthResult> {
         return try {
-            val result = auth?.signInWithEmailAndPassword(
+            val result = auth.signInWithEmailAndPassword(
                 email,
                 password
-            )?.await()
-            Log.d("response---", result?.user?.email!!)
+            ).await()
             ApiResponse.create(response = Response.success(result))
         } catch (e: Exception) {
-            Log.d("Error ---", e.message!!)
             ApiResponse.create(e.fillInStackTrace())
         }
     }
 
+    /**
+     * This method is used for google sign in
+     * firebase authentication. It returns the result of <AuthResult> type.
+     */
     suspend fun googleLogin(
         auth: FirebaseAuth,
         authCredential: AuthCredential
     ): ApiResponse<AuthResult> {
         return try {
-            val result = auth?.signInWithCredential(
+            val result = auth.signInWithCredential(
                 authCredential
-            )?.await()
-            Log.d("response---", result?.user?.email!!)
+            ).await()
             ApiResponse.create(response = Response.success(result))
 
         } catch (e: Exception) {
-            Log.d("Error--", e.message!!)
             ApiResponse.create(e.fillInStackTrace())
         }
     }

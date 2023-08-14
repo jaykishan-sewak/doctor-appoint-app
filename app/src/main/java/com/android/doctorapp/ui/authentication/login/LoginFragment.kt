@@ -52,7 +52,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
         super.onCreateView(inflater, container, savedInstanceState)
 
         val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("602980832199-da60b9fdshqg3gdnsqdkv2ltbu1qeg2p.apps.googleusercontent.com")
+            .requestIdToken(getString(R.string.client_id))
             .requestEmail()
             .build()
 
@@ -81,26 +81,20 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     }
 
     private fun registerObserver() {
-        viewModel.loginResponse.observe(viewLifecycleOwner) {
+       viewModel.loginResponse.observe(viewLifecycleOwner) {
             it?.let {
                startActivityFinish<DashboardActivity> { }
-//                findNavController().navigate(it)
             }
-        }
-
-        viewModel.navigationListener.observe(viewLifecycleOwner, {
-            findNavController().navigate(it)
-        })
+       }
 
         viewModel.isGoogleClick.observe(viewLifecycleOwner) {
-            if (it) {
-                val intent: Intent = googleSignInClient.signInIntent
-                launcher.launch(intent)
-            }
-        }
+           if (it) {
+               val intent: Intent = googleSignInClient.signInIntent
+               launcher.launch(intent)
+           }
+       }
 
         viewModel.navigationListener.observe(viewLifecycleOwner) {
-            context?.toast("Login with google sucessfull")
             findNavController().navigate(it)
         }
 
@@ -116,7 +110,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
 
                 if (signInAccountTask.isSuccessful) {
                     // When google sign in successful initialize string
-                    val msg = "Google sign in successful"
+                    val msg = getString(R.string.sign_with_google_successful)
                     context?.toast(msg)
 
                     // Initialize sign in account
@@ -130,20 +124,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                             val authCredential: AuthCredential = GoogleAuthProvider.getCredential(
                                 googleSignInAccount.idToken, null
                             )
-
                             viewModel.callGoogleAPI(authCredential)
-
-                            // Check credentials
-//                            viewModel.auth?.signInWithCredential(authCredential)
-//                                ?.addOnCompleteListener { task ->
-//
-//                                    //Check condition
-//                                    if (task.isSuccessful) {
-////                                    startActivity(Intent(this@MainActivity, ProfileActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-//                                        displayToast("Firebase authentication successful")
-//                                    } else
-//                                        displayToast("Authentication failed" + task.exception!!.message)
-//                                }
                         }
                     } catch (e: ApiException) {
                         e.printStackTrace()
