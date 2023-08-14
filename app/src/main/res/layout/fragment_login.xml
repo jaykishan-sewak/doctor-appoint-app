@@ -15,13 +15,17 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_marginHorizontal="@dimen/parentHorizontalMargin_50"
+        android:layout_marginVertical="@dimen/parentVerticalMargin_50"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/parentHorizontalMargin_50"
-            android:layout_marginVertical="@dimen/parentVerticalMargin_50"
             tools:context=".ui.authentication.AuthenticationActivity">
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -34,7 +38,7 @@
                 android:background="@drawable/ic_illustration_login"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvLogin"
@@ -47,7 +51,7 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView"/>
+                app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvMsg"
@@ -56,20 +60,20 @@
                 android:layout_marginTop="@dimen/margin_5"
                 android:text="@string/please_login_to_continue_using_our_app"
                 android:textColor="@color/grey"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvLogin"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvLogin" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/field_email"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:boxCornerRadiusBottomStart="@dimen/margin_10"
+                android:layout_marginTop="@dimen/margin_32"
                 app:boxCornerRadiusBottomEnd="@dimen/margin_10"
+                app:boxCornerRadiusBottomStart="@dimen/margin_10"
                 app:boxCornerRadiusTopEnd="@dimen/margin_10"
                 app:boxCornerRadiusTopStart="@dimen/margin_10"
-                android:layout_marginTop="@dimen/margin_32"
                 app:error="@{viewModel.emailError}"
                 app:errorTextColor="@color/purple_500"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -94,11 +98,11 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:boxCornerRadiusBottomStart="@dimen/margin_10"
+                android:layout_marginTop="@dimen/margin_10"
                 app:boxCornerRadiusBottomEnd="@dimen/margin_10"
+                app:boxCornerRadiusBottomStart="@dimen/margin_10"
                 app:boxCornerRadiusTopEnd="@dimen/margin_10"
                 app:boxCornerRadiusTopStart="@dimen/margin_10"
-                android:layout_marginTop="@dimen/margin_10"
                 app:error="@{viewModel.passwordError}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -121,19 +125,30 @@
                     app:onEditorActionClicked="@{()->viewModel.onClick()}" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvForgetPass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_10"
+                android:text="@string/forgot_password"
+                android:textColor="@color/grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/field_password" />
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnLogin"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/margin_50"
-                android:layout_marginTop="@dimen/margin_50"
+                android:layout_marginTop="@dimen/margin_60"
+                android:background="@drawable/round_button"
                 android:onClick="@{view -> viewModel.onClick()}"
                 android:text="@string/log_in"
                 android:textAllCaps="false"
-                android:textSize="15sp"
                 android:textColor="@color/white"
-                android:background="@drawable/round_button"
-                app:layout_constraintStart_toStartOf="parent"
+                android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/field_password"/>
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -144,23 +159,23 @@
                 android:text="@string/don_t_have_an_account_create"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintEnd_toStartOf="@+id/tvSignUp"
+                app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnLogin"/>
+                app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvSignUp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_20"
                 android:layout_marginStart="@dimen/margin_5"
+                android:layout_marginTop="@dimen/margin_20"
                 android:onClick="@{view -> viewModel.onRegisterClick()}"
                 android:text="@string/signup"
                 android:textColor="@color/blue"
-                app:layout_constraintStart_toEndOf="@+id/tvBottomMsg"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnLogin"/>
+                app:layout_constraintStart_toEndOf="@+id/tvBottomMsg"
+                app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvConnectWith"
@@ -169,20 +184,20 @@
                 android:layout_marginTop="@dimen/margin_20"
                 android:text="@string/or_connect_with"
                 android:textColor="@color/black"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvBottomMsg"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvBottomMsg" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/btnGoogle"
                 android:layout_width="@dimen/margin_20"
                 android:layout_height="@dimen/margin_20"
-                android:src="@drawable/chrome_icon"
                 android:layout_marginTop="@dimen/margin_20"
                 android:onClick="@{view -> viewModel.onGoogleSignClick()}"
-                app:layout_constraintStart_toStartOf="parent"
+                android:src="@drawable/chrome_icon"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvConnectWith"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvConnectWith" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

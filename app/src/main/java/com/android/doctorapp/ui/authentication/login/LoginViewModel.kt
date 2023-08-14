@@ -29,6 +29,7 @@ class LoginViewModel @Inject constructor(
 
     val email: MutableLiveData<String> = MutableLiveData()
     val emailError: MutableLiveData<String?> = MutableLiveData()
+
     val password: MutableLiveData<String> = MutableLiveData()
     val passwordError: MutableLiveData<String?> = MutableLiveData()
 
@@ -57,7 +58,7 @@ class LoginViewModel @Inject constructor(
      *  Validate the user input fields.
      */
     private fun isValidateInput(): Boolean {
-        passwordError.postValue(null)
+       passwordError.postValue(null)
         emailError.postValue(null)
         if (email.value.isNullOrEmpty()) {
             emailError.postValue(resourceProvider.getString(R.string.error_enter_email))
@@ -70,6 +71,8 @@ class LoginViewModel @Inject constructor(
         } else return true
         return false
     }
+
+
 
     /**
      * This method is used for email and password

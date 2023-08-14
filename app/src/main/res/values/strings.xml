@@ -59,4 +59,7 @@
     <string name="client_id">602980832199-da60b9fdshqg3gdnsqdkv2ltbu1qeg2p.apps.googleusercontent.com</string>
     <string name="password_should_contain_at_least_8_characters">Password should contain at least 8 characters</string>
     <string name="sign_with_google_successful">Sign with google successful</string>
+    <string name="sign_up_now">Sign Up Now</string>
+    <string name="please_fill_the_details_and_create_account">Please fill the details and create account</string>
+    <string name="forgot_password">Forgot Password</string>
 </resources>

@@ -38,6 +38,6 @@ class AddUserProfileFragment : BaseFragment<FragmentAddUserProfileBinding>(R.lay
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance() = AddUserProfileFragment()
-            }
+    }
 
 }
