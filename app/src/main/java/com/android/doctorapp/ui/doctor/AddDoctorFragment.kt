@@ -72,11 +72,6 @@ class AddDoctorFragment: BaseFragment<FragmentAddDoctorBinding>(R.layout.fragmen
                 }
             }
         }
-
-
-
-        
-
     }
 
 }

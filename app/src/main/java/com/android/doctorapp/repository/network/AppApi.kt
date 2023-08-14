@@ -30,8 +30,4 @@ interface AppApi {
         @Body registerRequestModel: RegisterRequestModel
     ): Response<LoginResponseModel>
 
-    @POST(END_URL_ADD_DOCTOR_DATA)
-    suspend fun addDoctorApi(
-        @Body addDoctorRequestModel: UserDataRequestModel
-    ): Response<UserDataResponseModel>
 }

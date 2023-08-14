@@ -1,5 +1,6 @@
 package com.android.doctorapp.ui.doctor
 
+import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -34,7 +35,9 @@ class AddDoctorViewModel @Inject constructor(
     val doctorContactNumberError: MutableLiveData<String?> = MutableLiveData()
 
     val toggleLiveData: MutableLiveData<Boolean> = MutableLiveData(false)
-    private lateinit var firebaseAuth: FirebaseAuth
+
+    private var auth: FirebaseAuth? = null
+
     val isDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
 
     private val _navigationListener = SingleLiveEvent<Int>()
@@ -42,6 +45,12 @@ class AddDoctorViewModel @Inject constructor(
 
     private val _addDoctorResponse = SingleLiveEvent<String>()
     val addDoctorResponse = _addDoctorResponse.asLiveData()
+    val abc: MutableLiveData<Boolean> = MutableLiveData(false)
+    val abc1: MutableLiveData<Boolean> = MutableLiveData(false)
+
+    init {
+        auth = FirebaseAuth.getInstance()
+    }
 
     private fun isAllValidate() {
         isDataValid.value = (!doctorName.value.isNullOrEmpty() && !doctorEmail.value.isNullOrEmpty()
@@ -50,15 +59,15 @@ class AddDoctorViewModel @Inject constructor(
     }
 
     fun isValidateName(text: CharSequence?) {
-        if (text?.toString()
-                .isNullOrEmpty() || ((text?.toString()?.length
-                ?: 0) < 3)
-        ) {
+        if (text?.toString().isNullOrEmpty() || ((text?.toString()?.length ?: 0) < 3)) {
             doctorNameError.value = resourceProvider.getString(R.string.valid_name_desc)
+        } else if (text?.get(0)?.isLetter() != true) {
+            doctorNameError.value = resourceProvider.getString(R.string.valid_name_start_with_char)
         } else {
             doctorNameError.value = null
-
         }
+        abc.value = true
+        abc1.value = false
         isAllValidate()
     }
 
@@ -95,12 +104,10 @@ class AddDoctorViewModel @Inject constructor(
 
 
     fun addDoctorData() {
-        // Initialize firebase auth
-        firebaseAuth = FirebaseAuth.getInstance()
-        val firestore = FirebaseFirestore.getInstance()
 
-        // Initialize firebase user
-        val firebaseUser = firebaseAuth.currentUser
+        val fireStore = FirebaseFirestore.getInstance()
+
+        val firebaseUser = auth?.currentUser
         if (firebaseUser != null) {
             // when firebaseUser is not null then
             val userData = UserDataRequestModel(
@@ -108,33 +115,24 @@ class AddDoctorViewModel @Inject constructor(
                 isDoctor = true,
                 email = doctorEmail.value,
                 name = doctorName.value,
-                address = "",
                 contactNumber = doctorContactNumber.value,
-                degree = "",
-                specialities = "",
-                availableDays = "",
                 isEmailVerified = false,
                 isPhoneNumberVerified = false,
-                availableTime = "",
-                imagesval = "",
                 isAdmin = false,
                 isNotificationEnable = toggleLiveData.value,
-                dob = "",
                 isUserVerified = false,
-                onlineAvailabilityDateTime = "",
-                offlineAvailabilityDateTime = ""
             )
 
             viewModelScope.launch {
                 setShowProgress(true)
-                when (val response = addRepository.addDoctorData(userData, firestore)) {
+                when (val response = addRepository.addDoctorData(userData, fireStore)) {
 
                     is ApiSuccessResponse -> {
                         doctorName.value = ""
                         doctorEmail.value = ""
                         doctorContactNumber.value = ""
                         setShowProgress(false)
-                        _navigationListener.value = R.id.action_addDoctorFragment_to_LoginFragment
+                        _navigationListener.value = R.id.action_addDoctorFragment_to_UpdateProfileFragment
                         _addDoctorResponse.value = resourceProvider.getString(R.string.success)
                     }
 
