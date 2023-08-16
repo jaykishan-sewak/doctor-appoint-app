@@ -29,7 +29,7 @@
         <activity
             android:name="com.android.doctorapp.ui.authentication.AuthenticationActivity"
             android:theme="@style/Theme.InfusionTemplate.NoActionBar"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="stateHidden|adjustResize">
 
         </activity>
         <activity android:name="com.android.doctorapp.ui.dashboard.DashboardActivity"

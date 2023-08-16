@@ -22,12 +22,4 @@ data class UserDataRequestModel (
     var isUserVerified: Boolean? = null,
     var onlineAvailabilityDateTime: String? = null,
     var offlineAvailabilityDateTime: String? = null
-) {
-    @Exclude
-    fun toMap(): Map<String, Any?> {
-        return mapOf(
-            "userId" to userId,
-            "name" to name
-        )
-    }
-}
+)

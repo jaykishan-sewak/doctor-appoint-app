@@ -52,6 +52,7 @@ class AddDoctorViewModel @Inject constructor(
 
     init {
         auth = FirebaseAuth.getInstance()
+        fireStore = FirebaseFirestore.getInstance()
     }
 
     private fun isAllValidate() {
@@ -104,8 +105,6 @@ class AddDoctorViewModel @Inject constructor(
 
 
     fun addDoctorData() {
-
-        fireStore = FirebaseFirestore.getInstance()
 
         firebaseUser = auth?.currentUser!!
         if (firebaseUser != null) {
