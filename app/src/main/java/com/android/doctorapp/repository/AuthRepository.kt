@@ -7,9 +7,14 @@ import com.android.doctorapp.repository.models.LoginRequestModel
 import com.android.doctorapp.repository.models.LoginResponseModel
 import com.android.doctorapp.repository.models.RegisterRequestModel
 import com.android.doctorapp.repository.network.AppApi
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.tasks.await
 import retrofit2.Response
 import javax.inject.Inject
@@ -104,6 +109,45 @@ class AuthRepository @Inject constructor(
             ).await()
             ApiResponse.create(response = Response.success(result))
 
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+    fun signInAccountTask(
+        result: androidx.activity.result.ActivityResult
+    ): ApiResponse<Task<GoogleSignInAccount>> {
+        return try {
+            val signInAccountTask: Task<GoogleSignInAccount> =
+                GoogleSignIn.getSignedInAccountFromIntent(
+                    result.data
+                )
+
+            ApiResponse.create(response = Response.success(signInAccountTask))
+
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+    fun googleSignInAccount(
+        signInAccountTask: Task<GoogleSignInAccount>
+    ): ApiResponse<GoogleSignInAccount> {
+        return try {
+            val googleSignInAccount: GoogleSignInAccount =
+                signInAccountTask.getResult(ApiException::class.java)
+            ApiResponse.create(response = Response.success(googleSignInAccount))
+        } catch (e: java.lang.Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+    fun authCredentials(
+        idToken: String
+    ): ApiResponse<AuthCredential> {
+        return try {
+            val authCredential: AuthCredential = GoogleAuthProvider.getCredential(idToken, null)
+            ApiResponse.create(response = Response.success(authCredential))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
         }

@@ -18,14 +18,6 @@ import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.ui.dashboard.DashboardActivity
 import com.android.doctorapp.util.extension.startActivityFinish
 import com.android.doctorapp.util.extension.toast
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.GoogleAuthProvider
 import javax.inject.Inject
 
 class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login) {
@@ -33,7 +25,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel: LoginViewModel by viewModels { viewModelFactory }
-    private lateinit var googleSignInClient: GoogleSignInClient
+
 
     override fun builder() = FragmentToolbar.Builder()
         .withId(FragmentToolbar.NO_TOOLBAR)
@@ -51,13 +43,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
 
-        val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.client_id))
-            .requestEmail()
-            .build()
-
-        // Initialize sign in client
-        googleSignInClient = GoogleSignIn.getClient(requireActivity(), googleSignInOptions)
 
         return binding {
             lifecycleOwner = viewLifecycleOwner
@@ -81,23 +66,39 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     }
 
     private fun registerObserver() {
-       viewModel.loginResponse.observe(viewLifecycleOwner) {
+        viewModel.loginResponse.observe(viewLifecycleOwner) {
             it?.let {
-               startActivityFinish<DashboardActivity> { }
+                startActivityFinish<DashboardActivity> { }
             }
-       }
+        }
 
         viewModel.isGoogleClick.observe(viewLifecycleOwner) {
-           if (it) {
-               val intent: Intent = googleSignInClient.signInIntent
-               launcher.launch(intent)
-           }
-       }
+            if (it) {
+                val intent: Intent = viewModel.googleSignInClient.signInIntent
+                launcher.launch(intent)
+            }
+        }
 
         viewModel.navigationListener.observe(viewLifecycleOwner) {
             findNavController().navigate(it)
         }
 
+        viewModel.signInAccountTask.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                val msg = getString(R.string.sign_with_google_successful)
+                context?.toast(msg)
+                viewModel.callGoogleSignInAccountAPI(it)
+            }
+        }
+
+        viewModel.googleSignInAccount.observe(viewLifecycleOwner) {
+            if (it != null) {
+                viewModel.callAuthCredentialsAPI(it.idToken!!)
+            }
+        }
+        viewModel.authCredential.observe(viewLifecycleOwner) {
+            viewModel.callGoogleAPI(it)
+        }
     }
 
     private val launcher =
@@ -105,31 +106,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
             //Check condition
             if (result.resultCode == AppCompatActivity.RESULT_OK) {
                 // When request code is equal to RESULT_OK initialize task
-                val signInAccountTask: Task<GoogleSignInAccount> =
-                    GoogleSignIn.getSignedInAccountFromIntent(result.data)
-
-                if (signInAccountTask.isSuccessful) {
-                    // When google sign in successful initialize string
-                    val msg = getString(R.string.sign_with_google_successful)
-                    context?.toast(msg)
-
-                    // Initialize sign in account
-                    try {
-                        val googleSignInAccount =
-                            signInAccountTask.getResult(ApiException::class.java)
-
-                        //Check condition
-                        if (googleSignInAccount != null) {
-                            // When sign in account is not equal to null initialize auth credential
-                            val authCredential: AuthCredential = GoogleAuthProvider.getCredential(
-                                googleSignInAccount.idToken, null
-                            )
-                            viewModel.callGoogleAPI(authCredential)
-                        }
-                    } catch (e: ApiException) {
-                        e.printStackTrace()
-                    }
-                }
+                viewModel.callSignInAccountTaskAPI(result)
             }
         }
 

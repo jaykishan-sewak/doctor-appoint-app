@@ -1,6 +1,8 @@
 package com.android.doctorapp.ui.authentication.login
 
 
+import android.content.Context
+import androidx.activity.result.ActivityResult
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -15,6 +17,11 @@ import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
 import com.android.doctorapp.util.extension.isPassWordValid
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
@@ -22,10 +29,13 @@ import javax.inject.Inject
 
 class LoginViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val resourceProvider: ResourceProvider
+    private val resourceProvider: ResourceProvider,
+    context: Context
 ) : BaseViewModel() {
     private val _loginResponse = SingleLiveEvent<LoginResponseModel?>()
     val loginResponse = _loginResponse.asLiveData()
+
+    var googleSignInClient: GoogleSignInClient
 
     val email: MutableLiveData<String> = MutableLiveData()
     val emailError: MutableLiveData<String?> = MutableLiveData()
@@ -33,43 +43,66 @@ class LoginViewModel @Inject constructor(
     val password: MutableLiveData<String> = MutableLiveData()
     val passwordError: MutableLiveData<String?> = MutableLiveData()
 
+    val isDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
+
     private val _navigationListener = SingleLiveEvent<Int>()
     val navigationListener = _navigationListener.asLiveData()
-    var auth: FirebaseAuth? = null
+    private var auth: FirebaseAuth? = null
 
     val isGoogleClick: MutableLiveData<Boolean> = MutableLiveData(false)
     private val googleResponse: MutableLiveData<Boolean> = MutableLiveData(false)
+
+    val signInAccountTask: MutableLiveData<Task<GoogleSignInAccount>> = MutableLiveData()
+    val googleSignInAccount: MutableLiveData<GoogleSignInAccount> = MutableLiveData()
+    val authCredential: MutableLiveData<AuthCredential> = MutableLiveData()
+
 
 
 
 
     init {
         auth = FirebaseAuth.getInstance()
+
+        val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(resourceProvider.getString(R.string.client_id))
+            .requestEmail()
+            .build()
+
+        // Initialize sign in client
+        googleSignInClient = GoogleSignIn.getClient(context, googleSignInOptions)
     }
 
 
     fun onClick() {
-        if (isValidateInput()) {
             callLoginAPI()
-        }
     }
 
     /**
      *  Validate the user input fields.
      */
-    private fun isValidateInput(): Boolean {
-       passwordError.postValue(null)
-        emailError.postValue(null)
-        if (email.value.isNullOrEmpty()) {
-            emailError.postValue(resourceProvider.getString(R.string.error_enter_email))
-        } else if (email.value.toString().isEmailAddressValid().not()) {
+    private fun isAllValidate(){
+        isDataValid.value = (!email.value.isNullOrEmpty() && !password.value.isNullOrEmpty()
+                && emailError.value.isNullOrEmpty() && passwordError.value.isNullOrEmpty())
+    }
+
+    fun isValidateEmail(text: CharSequence) {
+        if (text.toString().isEmpty() || text.toString().isEmailAddressValid().not()) {
             emailError.postValue(resourceProvider.getString(R.string.enter_valid_email))
-        } else if (password.value.isNullOrEmpty()) {
+        }
+        else {
+            emailError.postValue(null)
+        }
+        isAllValidate()
+    }
+
+    fun isValidPassword(text: CharSequence){
+        if (text.toString().isEmpty() || text.toString().isPassWordValid().not()) {
             passwordError.postValue(resourceProvider.getString(R.string.error_enter_password))
-        } else if (password.value.toString().isPassWordValid().not()) {
-            passwordError.postValue(resourceProvider.getString(R.string.password_should_contain_at_least_8_characters))
-        } else return true
-        return false
+        }
+        else {
+            passwordError.postValue(null)
+        }
+        isAllValidate()
     }
 
 
@@ -130,6 +163,75 @@ class LoginViewModel @Inject constructor(
                     setShowProgress(false)
                 }
 
+                is ApiNoNetworkResponse -> {
+                    setNoNetworkError(response.errorMessage)
+                    setShowProgress(false)
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun callSignInAccountTaskAPI(result: ActivityResult){
+        viewModelScope.launch {
+            setShowProgress(true)
+            when(val response = authRepository.signInAccountTask(
+                result,
+            )) {
+                is  ApiSuccessResponse -> {
+                    setShowProgress(false)
+                    signInAccountTask.postValue(response.body!!)
+                }
+                is ApiErrorResponse -> {
+                    setApiError(response.errorMessage)
+                    setShowProgress(false)
+                }
+                is ApiNoNetworkResponse -> {
+                    setNoNetworkError(response.errorMessage)
+                    setShowProgress(false)
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun callGoogleSignInAccountAPI(signInAccountTask: Task<GoogleSignInAccount>){
+        viewModelScope.launch {
+            setShowProgress(true)
+            when(val response = authRepository.googleSignInAccount(
+                signInAccountTask,
+            )) {
+                is ApiSuccessResponse -> {
+                    setShowProgress(false)
+                    googleSignInAccount.postValue(response.body!!)
+                }
+                is ApiErrorResponse -> {
+                    setApiError(response.errorMessage)
+                    setShowProgress(false)
+                }
+                is ApiNoNetworkResponse -> {
+                    setNoNetworkError(response.errorMessage)
+                    setShowProgress(false)
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun callAuthCredentialsAPI( idToken: String){
+        viewModelScope.launch {
+            setShowProgress(true)
+            when(val response = authRepository.authCredentials(
+                idToken
+            )){
+                is ApiSuccessResponse -> {
+                    setShowProgress(false)
+                    authCredential.postValue(response.body!!)
+                }
+                is ApiErrorResponse -> {
+                    setApiError(response.errorMessage)
+                    setShowProgress(false)
+                }
                 is ApiNoNetworkResponse -> {
                     setNoNetworkError(response.errorMessage)
                     setShowProgress(false)
