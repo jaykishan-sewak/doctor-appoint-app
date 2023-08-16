@@ -7,6 +7,7 @@ import com.android.doctorapp.ui.authentication.login.LoginFragment
 import com.android.doctorapp.ui.profile.ProfileFragment
 import com.android.doctorapp.ui.authentication.register.RegisterFragment
 import com.android.doctorapp.ui.doctor.AddDoctorFragment
+import com.android.doctorapp.ui.doctor.UpdateDoctorProfileFragment
 import dagger.Component
 
 @AuthScopes
@@ -22,4 +23,5 @@ interface AppComponent {
     fun inject(fragment: HomeFragment)
     fun inject(fragment: ProfileFragment)
     fun inject(fragment: AddDoctorFragment)
+    fun inject(fragment: UpdateDoctorProfileFragment)
 }
