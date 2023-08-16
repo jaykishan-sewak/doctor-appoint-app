@@ -1,6 +1,5 @@
 package com.android.doctorapp.ui.doctor
 
-import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -15,9 +14,6 @@ import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,8 +33,6 @@ class AddDoctorViewModel @Inject constructor(
 
     val toggleLiveData: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    private var auth: FirebaseAuth? = null
-
     val isDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
 
     private val _navigationListener = SingleLiveEvent<Int>()
@@ -47,13 +41,6 @@ class AddDoctorViewModel @Inject constructor(
     private val _addDoctorResponse = SingleLiveEvent<String>()
     val addDoctorResponse = _addDoctorResponse.asLiveData()
 
-    private lateinit var fireStore: FirebaseFirestore
-    private lateinit var firebaseUser: FirebaseUser
-
-    init {
-        auth = FirebaseAuth.getInstance()
-        fireStore = FirebaseFirestore.getInstance()
-    }
 
     private fun isAllValidate() {
         isDataValid.value = (!doctorName.value.isNullOrEmpty() && !doctorEmail.value.isNullOrEmpty()
@@ -106,7 +93,7 @@ class AddDoctorViewModel @Inject constructor(
 
     fun addDoctorData() {
 
-        firebaseUser = auth?.currentUser!!
+        firebaseUser = firebaseAuth?.currentUser!!
         if (firebaseUser != null) {
             // when firebaseUser is not null then
             val userData = UserDataRequestModel(
@@ -115,11 +102,7 @@ class AddDoctorViewModel @Inject constructor(
                 email = doctorEmail.value,
                 name = doctorName.value,
                 contactNumber = doctorContactNumber.value,
-                isEmailVerified = false,
-                isPhoneNumberVerified = false,
-                isAdmin = false,
-                isNotificationEnable = toggleLiveData.value,
-                isUserVerified = false,
+                isNotificationEnable = toggleLiveData.value == true
             )
 
             viewModelScope.launch {

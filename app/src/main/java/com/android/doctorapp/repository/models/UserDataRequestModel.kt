@@ -1,25 +1,23 @@
 package com.android.doctorapp.repository.models
 
-import com.google.firebase.firestore.Exclude
-
-data class UserDataRequestModel (
-    var userId: String? = null,
-    var isDoctor: Boolean? = null,
-    var email: String? = null,
-    var name: String? = null,
-    var address: String? = null,
-    var contactNumber :String? = null,
-    var degree: String? = null,
-    var specialities: String? = null,
-    var availableDays: String? = null,
-    var isEmailVerified: Boolean? = null,
-    var isPhoneNumberVerified: Boolean? = null,
-    var availableTime: String? = null,
-    var imagesval: String? = null,
-    var isAdmin: Boolean? = null,
-    var isNotificationEnable: Boolean? = null,
-    var dob: String? = null,
-    var isUserVerified: Boolean? = null,
-    var onlineAvailabilityDateTime: String? = null,
-    var offlineAvailabilityDateTime: String? = null
+data class UserDataRequestModel(
+    var userId: String? = "",
+    var isDoctor: Boolean? = false,
+    var email: String? = "",
+    var name: String? = "",
+    var address: String? = "",
+    var contactNumber:String? = "",
+    var degree: String? = "",
+    var specialities: String? = "",
+    var availableDays: String? = "",
+    var isEmailVerified: Boolean = false,
+    var isPhoneNumberVerified: Boolean = false,
+    var availableTime: String? = "",
+    var images: String? = "",
+    var isAdmin: Boolean = false,
+    var isNotificationEnable: Boolean = false,
+    var dob: String? = "",
+    var isUserVerified: Boolean = false,
+    var onlineAvailabilityDateTime: String? = "",
+    var offlineAvailabilityDateTime: String? = ""
 )
