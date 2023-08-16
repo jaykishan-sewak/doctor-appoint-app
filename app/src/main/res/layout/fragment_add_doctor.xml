@@ -65,7 +65,7 @@
                         android:id="@+id/et_doctor_name"
                         style="@style/add_doctor_editText"
                         android:inputType="text"
-                        android:afterTextChanged="@{(text) -> viewModel.isValidateName(text)}"
+                        android:afterTextChanged="@{(text) -> viewModel.isValidName(text)}"
                         android:hint="@string/hint_doctor_name"
                         android:imeOptions="actionNext"
                         android:text="@={viewModel.doctorName}"

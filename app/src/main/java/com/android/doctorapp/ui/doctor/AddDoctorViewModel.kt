@@ -1,5 +1,6 @@
 package com.android.doctorapp.ui.doctor
 
+import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -9,6 +10,7 @@ import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AddDoctorRepository
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
+import com.android.doctorapp.repository.models.ApiResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.util.SingleLiveEvent
@@ -41,14 +43,13 @@ class AddDoctorViewModel @Inject constructor(
     private val _addDoctorResponse = SingleLiveEvent<String>()
     val addDoctorResponse = _addDoctorResponse.asLiveData()
 
-
-    private fun isAllValidate() {
+    private fun validateAllField() {
         isDataValid.value = (!doctorName.value.isNullOrEmpty() && !doctorEmail.value.isNullOrEmpty()
                 && !doctorContactNumber.value.isNullOrEmpty() && doctorNameError.value.isNullOrEmpty()
                 && doctorEmailError.value.isNullOrEmpty() && doctorContactNumberError.value.isNullOrEmpty())
     }
 
-    fun isValidateName(text: CharSequence?) {
+    fun isValidName(text: CharSequence?) {
         if (text?.toString().isNullOrEmpty() || ((text?.toString()?.length ?: 0) < 3)) {
             doctorNameError.value = resourceProvider.getString(R.string.valid_name_desc)
         } else if (text?.get(0)?.isLetter() != true) {
@@ -56,7 +57,7 @@ class AddDoctorViewModel @Inject constructor(
         } else {
             doctorNameError.value = null
         }
-        isAllValidate()
+        validateAllField()
     }
 
     fun isValidEmail(text: CharSequence?) {
@@ -67,7 +68,7 @@ class AddDoctorViewModel @Inject constructor(
         } else {
             doctorEmailError.value = null
         }
-        isAllValidate()
+        validateAllField()
     }
 
     fun isValidContact(text: CharSequence?) {
@@ -87,13 +88,13 @@ class AddDoctorViewModel @Inject constructor(
                     resourceProvider.getString(R.string.error_valid_phone_number)
             }
         }
-        isAllValidate()
+        validateAllField()
     }
 
 
     fun addDoctorData() {
 
-        firebaseUser = firebaseAuth?.currentUser!!
+        firebaseUser = firebaseAuth.currentUser!!
         if (firebaseUser != null) {
             // when firebaseUser is not null then
             val userData = UserDataRequestModel(
@@ -107,15 +108,18 @@ class AddDoctorViewModel @Inject constructor(
 
             viewModelScope.launch {
                 setShowProgress(true)
+
                 when (val response = addRepository.addDoctorData(userData, fireStore)) {
 
                     is ApiSuccessResponse -> {
-                        doctorName.value = ""
-                        doctorEmail.value = ""
-                        doctorContactNumber.value = ""
-                        setShowProgress(false)
-                        _navigationListener.value = R.id.action_addDoctorFragment_to_LoginFragment
-                        _addDoctorResponse.value = resourceProvider.getString(R.string.success)
+                        if (response.body.userId.isNotEmpty()) {
+                            doctorName.value = ""
+                            doctorEmail.value = ""
+                            doctorContactNumber.value = ""
+                            setShowProgress(false)
+                            _navigationListener.value = R.id.action_addDoctorFragment_to_LoginFragment
+                            _addDoctorResponse.value = resourceProvider.getString(R.string.success)
+                        }
                     }
 
                     is ApiErrorResponse -> {
