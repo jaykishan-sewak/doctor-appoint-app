@@ -99,9 +99,9 @@ class AddDoctorViewModel @Inject constructor(
             val userData = UserDataRequestModel(
                 userId = firebaseUser.uid,
                 isDoctor = true,
-                email = doctorEmail.value,
-                name = doctorName.value,
-                contactNumber = doctorContactNumber.value,
+                email = doctorEmail.value!!,
+                name = doctorName.value!!,
+                contactNumber = doctorContactNumber.value!!,
                 isNotificationEnable = toggleLiveData.value == true
             )
 
