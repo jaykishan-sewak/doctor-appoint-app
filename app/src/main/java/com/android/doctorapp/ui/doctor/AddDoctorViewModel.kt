@@ -131,7 +131,7 @@ class AddDoctorViewModel @Inject constructor(
                         doctorEmail.value = ""
                         doctorContactNumber.value = ""
                         setShowProgress(false)
-                        _navigationListener.value = R.id.action_addDoctorFragment_to_UpdateProfileFragment
+                        _navigationListener.value = R.id.action_addDoctorFragment_to_LoginFragment
                         _addDoctorResponse.value = resourceProvider.getString(R.string.success)
                     }
 
