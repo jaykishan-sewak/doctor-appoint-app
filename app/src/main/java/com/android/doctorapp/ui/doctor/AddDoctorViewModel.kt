@@ -16,6 +16,7 @@ import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -45,8 +46,9 @@ class AddDoctorViewModel @Inject constructor(
 
     private val _addDoctorResponse = SingleLiveEvent<String>()
     val addDoctorResponse = _addDoctorResponse.asLiveData()
-    val abc: MutableLiveData<Boolean> = MutableLiveData(false)
-    val abc1: MutableLiveData<Boolean> = MutableLiveData(false)
+
+    private lateinit var fireStore: FirebaseFirestore
+    private lateinit var firebaseUser: FirebaseUser
 
     init {
         auth = FirebaseAuth.getInstance()
@@ -66,8 +68,6 @@ class AddDoctorViewModel @Inject constructor(
         } else {
             doctorNameError.value = null
         }
-        abc.value = true
-        abc1.value = false
         isAllValidate()
     }
 
@@ -105,9 +105,9 @@ class AddDoctorViewModel @Inject constructor(
 
     fun addDoctorData() {
 
-        val fireStore = FirebaseFirestore.getInstance()
+        fireStore = FirebaseFirestore.getInstance()
 
-        val firebaseUser = auth?.currentUser
+        firebaseUser = auth?.currentUser!!
         if (firebaseUser != null) {
             // when firebaseUser is not null then
             val userData = UserDataRequestModel(
