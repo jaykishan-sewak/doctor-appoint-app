@@ -58,7 +58,7 @@ class AuthRepository @Inject constructor(
         password: String
     ): ApiResponse<AuthResult> {
         return try {
-            val result = auth?.createUserWithEmailAndPassword(
+            val result = auth.createUserWithEmailAndPassword(
                 email,
                 password
             )?.await()

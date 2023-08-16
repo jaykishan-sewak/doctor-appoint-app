@@ -6,6 +6,7 @@ import com.android.doctorapp.ui.home.HomeViewModel
 import com.android.doctorapp.ui.authentication.login.LoginViewModel
 import com.android.doctorapp.ui.profile.ProfileViewModel
 import com.android.doctorapp.ui.authentication.register.RegisterViewModel
+import com.android.doctorapp.ui.doctor.AddDoctorViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -34,4 +35,10 @@ abstract class AppViewModelModule {
     @IntoMap
     @ViewModelMapKey(RegisterViewModel::class)
     abstract fun bindRegisterViewModel(viewModel: RegisterViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelMapKey(AddDoctorViewModel::class)
+    abstract fun bindAddDoctorViewModel(viewModel: AddDoctorViewModel): ViewModel
+
 }

@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
     <color name="transparent_black">#30000000</color>
+    <color name="top_bar_bg_color">#1b5094</color>
+    <color name="yellow">#D1BC35</color>
 </resources>
