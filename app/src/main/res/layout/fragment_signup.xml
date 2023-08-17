@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.android.doctorapp.ui.authentication.register.RegisterViewModel" />
@@ -12,22 +13,20 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginHorizontal="@dimen/margin_50"
-        android:layout_marginVertical="@dimen/margin_50"
         android:fillViewport="true"
         android:scrollbars="none">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_50"
+            android:paddingVertical="@dimen/margin_50"
             tools:context=".ui.authentication.register.RegisterFragment">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imageView"
                 android:layout_width="@dimen/profile_image_dimension"
                 android:layout_height="@dimen/profile_image_dimension"
-                android:layout_marginStart="@dimen/margin_8"
-                android:layout_marginEnd="@dimen/margin_8"
                 android:background="@drawable/ic_illustration_login"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -64,11 +63,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_32"
+                android:hint="@string/profile_email"
                 app:boxCornerRadiusBottomEnd="@dimen/margin_10"
                 app:boxCornerRadiusBottomStart="@dimen/margin_10"
                 app:boxCornerRadiusTopEnd="@dimen/margin_10"
                 app:boxCornerRadiusTopStart="@dimen/margin_10"
-                android:hint="@string/profile_email"
                 app:error="@{viewModel.emailError}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -90,11 +89,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_10"
+                android:hint="@string/hint_password"
                 app:boxCornerRadiusBottomEnd="@dimen/margin_10"
                 app:boxCornerRadiusBottomStart="@dimen/margin_10"
                 app:boxCornerRadiusTopEnd="@dimen/margin_10"
                 app:boxCornerRadiusTopStart="@dimen/margin_10"
-                android:hint="@string/hint_password"
                 app:error="@{viewModel.passwordError}"
                 app:layout_constraintEnd_toEndOf="@id/tlEmail"
                 app:layout_constraintStart_toStartOf="@id/tlEmail"
@@ -117,24 +116,24 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_10"
+                android:hint="@string/confirm_password"
                 app:boxCornerRadiusBottomEnd="@dimen/margin_10"
                 app:boxCornerRadiusBottomStart="@dimen/margin_10"
                 app:boxCornerRadiusTopEnd="@dimen/margin_10"
                 app:boxCornerRadiusTopStart="@dimen/margin_10"
-                android:hint="@string/confirm_password"
                 app:error="@{viewModel.passwordError}"
                 app:layout_constraintEnd_toEndOf="@id/tlEmail"
                 app:layout_constraintStart_toStartOf="@id/tlEmail"
                 app:layout_constraintTop_toBottomOf="@id/tlPassword">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etConfirmPass"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionNext"
-                android:inputType="textPassword"
-                android:maxLines="1"
-                android:text="@={viewModel.password}" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etConfirmPass"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:text="@={viewModel.password}" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -146,18 +145,18 @@
                 android:text="@string/forgot_password"
                 android:textColor="@color/grey"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tlConfirmPassword"/>
+                app:layout_constraintTop_toBottomOf="@+id/tlConfirmPassword" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnSignUp"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/margin_50"
                 android:layout_marginTop="@dimen/margin_20"
-                android:background="@drawable/round_button"
+                android:background="@drawable/button_state_colors"
                 android:onClick="@{view->viewModel.onRegisterClick()}"
                 android:text="@string/register"
-                android:textColor="@color/white"
                 android:textAllCaps="false"
+                android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvForgetPass" />
@@ -170,22 +169,22 @@
                 android:text="@string/do_have_an_account"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintEnd_toStartOf="@+id/tvLogIn"
+                app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnSignUp"/>
+                app:layout_constraintTop_toBottomOf="@+id/btnSignUp" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvLogIn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_20"
                 android:layout_marginStart="@dimen/margin_5"
+                android:layout_marginTop="@dimen/margin_20"
                 android:text="@string/log_in"
                 android:textColor="@color/blue"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvBottomMsg"
-                app:layout_constraintTop_toBottomOf="@+id/btnSignUp"/>
+                app:layout_constraintTop_toBottomOf="@+id/btnSignUp" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvConnectWith"
@@ -196,7 +195,7 @@
                 android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvLogIn"/>
+                app:layout_constraintTop_toBottomOf="@+id/tvLogIn" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/btnGoogle"
