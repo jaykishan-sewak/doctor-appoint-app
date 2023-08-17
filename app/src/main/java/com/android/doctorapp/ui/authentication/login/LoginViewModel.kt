@@ -54,9 +54,6 @@ class LoginViewModel @Inject constructor(
     val authCredential: MutableLiveData<AuthCredential> = MutableLiveData()
 
 
-
-
-
     init {
         // googleSignInOptions initialization
         googleInitialization(context)
@@ -67,37 +64,34 @@ class LoginViewModel @Inject constructor(
 
 
     fun onClick() {
-            callLoginAPI()
+        callLoginAPI()
     }
 
     /**
      *  Validate the user input fields.
      */
-    private fun isAllValidate(){
+    private fun isAllValidate() {
         isDataValid.value = (!email.value.isNullOrEmpty() && !password.value.isNullOrEmpty()
                 && emailError.value.isNullOrEmpty() && passwordError.value.isNullOrEmpty())
     }
 
     fun isValidateEmail(text: CharSequence) {
-        if (text.toString().isEmpty() || text.toString().isEmailAddressValid().not()) {
+        if (text.toString().isNotEmpty() && text.toString().isEmailAddressValid().not()) {
             emailError.postValue(resourceProvider.getString(R.string.enter_valid_email))
-        }
-        else {
+        } else {
             emailError.postValue(null)
         }
         isAllValidate()
     }
 
-    fun isValidPassword(text: CharSequence){
-        if (text.toString().isEmpty() || text.toString().isPassWordValid().not()) {
+    fun isValidPassword(text: CharSequence) {
+        if (text.toString().isNotEmpty() && text.toString().isPassWordValid().not()) {
             passwordError.postValue(resourceProvider.getString(R.string.error_enter_password))
-        }
-        else {
+        } else {
             passwordError.postValue(null)
         }
         isAllValidate()
     }
-
 
 
     /**
@@ -124,11 +118,12 @@ class LoginViewModel @Inject constructor(
                     setApiError(response.errorMessage)
                     setShowProgress(false)
                 }
-                
+
                 is ApiNoNetworkResponse -> {
                     setNoNetworkError(response.errorMessage)
                     setShowProgress(false)
                 }
+
                 else -> {}
             }
         }
@@ -138,10 +133,10 @@ class LoginViewModel @Inject constructor(
      * This method is used for google sign in
      * firebase authentication. It returns response of ApiResponse type.
      */
-    fun callGoogleAPI(authCredential : AuthCredential){
+    fun callGoogleAPI(authCredential: AuthCredential) {
         viewModelScope.launch {
             setShowProgress(true)
-            when(val response = authRepository.googleLogin(
+            when (val response = authRepository.googleLogin(
                 firebaseAuth,
                 authCredential,
             )) {
@@ -160,85 +155,101 @@ class LoginViewModel @Inject constructor(
                     setNoNetworkError(response.errorMessage)
                     setShowProgress(false)
                 }
+
                 else -> {}
             }
         }
     }
 
-    fun callSignInAccountTaskAPI(result: ActivityResult){
+    fun callSignInAccountTaskAPI(result: ActivityResult) {
         viewModelScope.launch {
             setShowProgress(true)
-            when(val response = authRepository.signInAccountTask(
+            when (val response = authRepository.signInAccountTask(
                 result,
             )) {
-                is  ApiSuccessResponse -> {
+                is ApiSuccessResponse -> {
                     setShowProgress(false)
                     signInAccountTask.postValue(response.body!!)
                 }
+
                 is ApiErrorResponse -> {
                     setApiError(response.errorMessage)
                     setShowProgress(false)
                 }
+
                 is ApiNoNetworkResponse -> {
                     setNoNetworkError(response.errorMessage)
                     setShowProgress(false)
                 }
+
                 else -> {}
             }
         }
     }
 
-    fun callGoogleSignInAccountAPI(signInAccountTask: Task<GoogleSignInAccount>){
+    fun callGoogleSignInAccountAPI(signInAccountTask: Task<GoogleSignInAccount>) {
         viewModelScope.launch {
             setShowProgress(true)
-            when(val response = authRepository.googleSignInAccount(
+            when (val response = authRepository.googleSignInAccount(
                 signInAccountTask,
             )) {
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
                     googleSignInAccount.postValue(response.body!!)
                 }
+
                 is ApiErrorResponse -> {
                     setApiError(response.errorMessage)
                     setShowProgress(false)
                 }
+
                 is ApiNoNetworkResponse -> {
                     setNoNetworkError(response.errorMessage)
                     setShowProgress(false)
                 }
+
                 else -> {}
             }
         }
     }
 
-    fun callAuthCredentialsAPI( idToken: String){
+    fun callAuthCredentialsAPI(idToken: String) {
         viewModelScope.launch {
             setShowProgress(true)
-            when(val response = authRepository.authCredentials(
+            when (val response = authRepository.authCredentials(
                 idToken
-            )){
+            )) {
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
                     authCredential.postValue(response.body!!)
                 }
+
                 is ApiErrorResponse -> {
                     setApiError(response.errorMessage)
                     setShowProgress(false)
                 }
+
                 is ApiNoNetworkResponse -> {
                     setNoNetworkError(response.errorMessage)
                     setShowProgress(false)
                 }
+
                 else -> {}
             }
         }
     }
+
     /**
      * This method is used for navigation to Register Screen
      *  onclick of SignUp text. Directly called in xml
      */
     fun onRegisterClick() {
+        email.postValue("")
+        emailError.postValue(null)
+        password.postValue("")
+        passwordError.postValue(null)
         _navigationListener.postValue(R.id.action_loginFragment_to_registerFragment)
+
     }
 
     /**
@@ -248,7 +259,6 @@ class LoginViewModel @Inject constructor(
     fun onGoogleSignClick() {
         isGoogleClick.postValue(true)
     }
-
 
 
 }
