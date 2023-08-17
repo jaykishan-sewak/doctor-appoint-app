@@ -10,8 +10,8 @@
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
-    <string name="enter_valid_email">Please enter valid email</string>
-    <string name="error_enter_password">Please enter password</string>
+    <string name="enter_valid_email">Please enter valid email.</string>
+    <string name="error_enter_password">Password must be 8+ charcters with 1 uppercaese, 1 lowercase and 1 special symbol.</string>
     <string name="title_home">Home</string>
     <string name="title_profile">Profile</string>
     <string name="profile_first_name">First Name</string>
@@ -19,7 +19,7 @@
     <string name="profile_gender">Gender</string>
     <string name="profile_address">Address</string>
     <string name="profile_email">Email</string>
-    <string name="don_t_you_have_an_account_create">Don\'t you have an account? Create</string>
+    <string name="don_t_have_an_account_create">Don\'t have an account?</string>
     <string name="forgot_your_password">Forgot your password?</string>
     <string name="hint_password">Password</string>
     <string name="hint_username">Username</string>
@@ -47,6 +47,21 @@
     <string name="error">Error</string>
     <string name="something_went_wrong">Something went wrong Please try again.</string>
     <string name="welcome_to_settings">Welcome to settings</string>
+    <string name="log_in_now">Log In Now</string>
+    <string name="please_login_to_continue_using_our_app">Please login to continue using our app</string>
+    <string name="or_connect_with">Or connect with</string>
+    <string name="log_in">Log In</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="welcome_to_user_profile">Welcome to User profile</string>
+    <string name="wrong_crendentials">Wrong crendentials</string>
+    <string name="you_have_entered_wrong_email_or_password">You have entered wrong email or password</string>
+    <string name="client_id">602980832199-da60b9fdshqg3gdnsqdkv2ltbu1qeg2p.apps.googleusercontent.com</string>
+    <string name="password_should_contain_at_least_8_characters">Password should contain at least 8 characters</string>
+    <string name="sign_with_google_successful">Sign with google successful</string>
+    <string name="sign_up_now">Sign Up Now</string>
+    <string name="please_fill_the_details_and_create_account">Please fill the details and create account</string>
+    <string name="forgot_password">Forgot Password</string>
     <string name="third_fragment">Third Fragment</string>
     <string name="add_doctor">Add Doctor Data</string>
     <string name="hint_doctor_name">Name</string>

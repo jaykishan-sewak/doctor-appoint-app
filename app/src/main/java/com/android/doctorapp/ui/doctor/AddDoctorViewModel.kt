@@ -1,6 +1,5 @@
 package com.android.doctorapp.ui.doctor
 
-import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -10,7 +9,6 @@ import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AddDoctorRepository
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
-import com.android.doctorapp.repository.models.ApiResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.util.SingleLiveEvent

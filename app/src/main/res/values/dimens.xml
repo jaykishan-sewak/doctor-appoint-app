@@ -1,6 +1,7 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="profile_image_dimension">100dp</dimen>
+    <dimen name="profile_image_dimension">80dp</dimen>
+    <dimen name="margin_60">60dp</dimen>
     <dimen name="margin_50">50dp</dimen>
     <dimen name="margin_20">20dp</dimen>
     <dimen name="margin_10">10dp</dimen>
@@ -8,4 +9,6 @@
     <dimen name="margin_32">32dp</dimen>
     <dimen name="margin_40">40dp</dimen>
     <dimen name="margin_5">5dp</dimen>
+    <dimen name="parentHorizontalMargin_50">50dp</dimen>
+    <dimen name="parentVerticalMargin_50">50dp</dimen>
 </resources>
