@@ -38,4 +38,15 @@
         android:label="Third Fragment"
         tools:layout="@layout/fragment_add_user_profile"/>
 
+    <fragment
+        android:id="@+id/AddDoctorFragment"
+        android:name="com.android.doctorapp.ui.doctor.AddDoctorFragment"
+        tools:layout="@layout/fragment_add_doctor">
+
+        <action
+            android:id="@+id/action_addDoctorFragment_to_LoginFragment"
+            app:destination="@id/LoginFragment" />
+
+    </fragment>
+
 </navigation>

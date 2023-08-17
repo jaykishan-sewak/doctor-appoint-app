@@ -10,6 +10,7 @@ private const val END_URL_LOGIN_WITH_EMAIL = "login_success"
 private const val END_URL_GET_ITEMS = "items"
 private const val END_URL_GET_PROFILE = "getProfile"
 private const val END_URL_REGISTER = "register"
+private const val END_URL_ADD_DOCTOR_DATA = "add_doctor_data_success"
 
 interface AppApi {
 
@@ -28,4 +29,5 @@ interface AppApi {
     suspend fun register(
         @Body registerRequestModel: RegisterRequestModel
     ): Response<LoginResponseModel>
+
 }

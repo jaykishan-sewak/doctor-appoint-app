@@ -15,17 +15,14 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginHorizontal="@dimen/parentHorizontalMargin_50"
-        android:layout_marginVertical="@dimen/parentVerticalMargin_50"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:fillViewport="true"
         android:scrollbars="none">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/parentHorizontalMargin_50"
+            android:paddingVertical="@dimen/parentVerticalMargin_50"
             tools:context=".ui.authentication.AuthenticationActivity">
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -42,8 +39,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvLogin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/login_textView"
                 android:layout_marginTop="@dimen/margin_50"
                 android:text="@string/log_in_now"
                 android:textColor="@color/blue"
@@ -55,55 +51,41 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvMsg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/login_textView"
                 android:layout_marginTop="@dimen/margin_5"
                 android:text="@string/please_login_to_continue_using_our_app"
-                android:textColor="@color/grey"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvLogin" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/field_email"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/user_login_tlEditText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_32"
-                app:boxCornerRadiusBottomEnd="@dimen/margin_10"
-                app:boxCornerRadiusBottomStart="@dimen/margin_10"
-                app:boxCornerRadiusTopEnd="@dimen/margin_10"
-                app:boxCornerRadiusTopStart="@dimen/margin_10"
                 app:error="@{viewModel.emailError}"
-                app:errorTextColor="@color/purple_500"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvMsg">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/user_login_editText"
                     android:afterTextChanged="@{(text) -> viewModel.isValidateEmail(text)}"
                     android:hint="@string/profile_email"
                     android:imeOptions="actionNext"
                     android:inputType="textEmailAddress"
-                    android:maxLines="1"
-                    android:text="@={viewModel.email}"
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
+                    android:text="@={viewModel.email}" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/field_password"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/user_login_tlEditText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_10"
-                app:boxCornerRadiusBottomEnd="@dimen/margin_10"
-                app:boxCornerRadiusBottomStart="@dimen/margin_10"
-                app:boxCornerRadiusTopEnd="@dimen/margin_10"
-                app:boxCornerRadiusTopStart="@dimen/margin_10"
                 app:error="@{viewModel.passwordError}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -111,35 +93,26 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPass"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/user_login_editText"
                     android:afterTextChanged="@{(text) -> viewModel.isValidPassword(text)}"
                     android:hint="@string/hint_password"
                     android:imeOptions="actionDone"
                     android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:text="@={viewModel.password}"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/field_email"
-                    app:onEditorActionClicked="@{()->viewModel.onClick()}" />
+                    android:text="@={viewModel.password}"/>
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvForgetPass"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/login_textView"
                 android:layout_marginTop="@dimen/margin_10"
                 android:text="@string/forgot_password"
-                android:textColor="@color/grey"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/field_password" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnLogin"
-                android:layout_width="match_parent"
+                style="@style/user_login_editText"
                 android:layout_height="@dimen/margin_50"
                 android:layout_marginTop="@dimen/margin_60"
                 android:background="@drawable/button_state_colors"
@@ -148,15 +121,13 @@
                 android:text="@string/log_in"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/field_password" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvBottomMsg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/login_textView"
                 android:layout_marginTop="@dimen/margin_20"
                 android:text="@string/don_t_have_an_account_create"
                 android:textColor="@color/black"
@@ -168,8 +139,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvSignUp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/login_textView"
                 android:layout_marginStart="@dimen/margin_5"
                 android:layout_marginTop="@dimen/margin_20"
                 android:onClick="@{view -> viewModel.onRegisterClick()}"
@@ -181,8 +151,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvConnectWith"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/login_textView"
                 android:layout_marginTop="@dimen/margin_20"
                 android:text="@string/or_connect_with"
                 android:textColor="@color/black"

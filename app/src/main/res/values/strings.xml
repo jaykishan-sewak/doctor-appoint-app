@@ -62,6 +62,24 @@
     <string name="sign_up_now">Sign Up Now</string>
     <string name="please_fill_the_details_and_create_account">Please fill the details and create account</string>
     <string name="forgot_password">Forgot Password</string>
+    <string name="third_fragment">Third Fragment</string>
+    <string name="add_doctor">Add Doctor Data</string>
+    <string name="hint_doctor_name">Name</string>
+    <string name="hint_doctor_email">Email</string>
+    <string name="hint_doctor_contact">Contact Number</string>
+    <string name="doctor_notification_enable">Doctor Notification Enable</string>
+    <string name="submit">Submit</string>
+    <string name="enter_valid_name">Enter Valid Name</string>
+    <string name="valid_name_desc">Name should contain at least 3 characters</string>
+    <string name="valid_name_start_with_char">Name should starts with character</string>
+    <string name="doctor_save_successfully">Doctor information successfully saved.</string>
+    <string name="doctor_not_save">Doctor information Not saved.</string>
+    <string name="success">Success</string>
+    <string name="update_profile_title">Update Profile</string>
+    <string name="verify">Verify</string>
+    <string name="hint_address">Enter Address</string>
+    <string name="hint_degree">Enter Degree</string>
+    <string name="hint_speciality">Enter Speciality</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="do_have_an_account">Do have an account?</string>
 

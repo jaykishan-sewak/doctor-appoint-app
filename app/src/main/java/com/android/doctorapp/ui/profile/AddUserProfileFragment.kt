@@ -11,9 +11,10 @@ import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 
 
-class AddUserProfileFragment : BaseFragment<FragmentAddUserProfileBinding>(R.layout.fragment_add_user_profile) {
+class AddUserProfileFragment :
+    BaseFragment<FragmentAddUserProfileBinding>(R.layout.fragment_add_user_profile) {
 
-    override fun builder() =FragmentToolbar.Builder()
+    override fun builder() = FragmentToolbar.Builder()
         .withId(FragmentToolbar.NO_TOOLBAR)
         .build()
 

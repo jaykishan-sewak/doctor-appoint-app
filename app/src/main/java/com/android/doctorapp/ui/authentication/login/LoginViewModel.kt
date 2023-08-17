@@ -20,10 +20,8 @@ import com.android.doctorapp.util.extension.isPassWordValid
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -47,7 +45,6 @@ class LoginViewModel @Inject constructor(
 
     private val _navigationListener = SingleLiveEvent<Int>()
     val navigationListener = _navigationListener.asLiveData()
-    private var auth: FirebaseAuth? = null
 
     val isGoogleClick: MutableLiveData<Boolean> = MutableLiveData(false)
     private val googleResponse: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -57,54 +54,44 @@ class LoginViewModel @Inject constructor(
     val authCredential: MutableLiveData<AuthCredential> = MutableLiveData()
 
 
-
-
-
     init {
-        auth = FirebaseAuth.getInstance()
-
-        val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(resourceProvider.getString(R.string.client_id))
-            .requestEmail()
-            .build()
-
+        // googleSignInOptions initialization
+        googleInitialization(context)
         // Initialize sign in client
         googleSignInClient = GoogleSignIn.getClient(context, googleSignInOptions)
+
     }
 
 
     fun onClick() {
-            callLoginAPI()
+        callLoginAPI()
     }
 
     /**
      *  Validate the user input fields.
      */
-    private fun isAllValidate(){
+    private fun isAllValidate() {
         isDataValid.value = (!email.value.isNullOrEmpty() && !password.value.isNullOrEmpty()
                 && emailError.value.isNullOrEmpty() && passwordError.value.isNullOrEmpty())
     }
 
     fun isValidateEmail(text: CharSequence) {
-        if (text.toString().isEmpty() || text.toString().isEmailAddressValid().not()) {
+        if (text.toString().isNotEmpty() && text.toString().isEmailAddressValid().not()) {
             emailError.postValue(resourceProvider.getString(R.string.enter_valid_email))
-        }
-        else {
+        } else {
             emailError.postValue(null)
         }
         isAllValidate()
     }
 
-    fun isValidPassword(text: CharSequence){
-        if (text.toString().isEmpty() || text.toString().isPassWordValid().not()) {
+    fun isValidPassword(text: CharSequence) {
+        if (text.toString().isNotEmpty() && text.toString().isPassWordValid().not()) {
             passwordError.postValue(resourceProvider.getString(R.string.error_enter_password))
-        }
-        else {
+        } else {
             passwordError.postValue(null)
         }
         isAllValidate()
     }
-
 
 
     /**
@@ -115,7 +102,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             setShowProgress(true)
             when (val response = authRepository.login(
-                auth!!,
+                firebaseAuth,
                 email = email.value.toString(),
                 password = password.value.toString(),
             )) {
@@ -131,11 +118,12 @@ class LoginViewModel @Inject constructor(
                     setApiError(response.errorMessage)
                     setShowProgress(false)
                 }
-                
+
                 is ApiNoNetworkResponse -> {
                     setNoNetworkError(response.errorMessage)
                     setShowProgress(false)
                 }
+
                 else -> {}
             }
         }
@@ -145,11 +133,11 @@ class LoginViewModel @Inject constructor(
      * This method is used for google sign in
      * firebase authentication. It returns response of ApiResponse type.
      */
-    fun callGoogleAPI(authCredential : AuthCredential){
+    fun callGoogleAPI(authCredential: AuthCredential) {
         viewModelScope.launch {
             setShowProgress(true)
-            when(val response = authRepository.googleLogin(
-                auth!!,
+            when (val response = authRepository.googleLogin(
+                firebaseAuth,
                 authCredential,
             )) {
                 is ApiSuccessResponse -> {
@@ -167,85 +155,101 @@ class LoginViewModel @Inject constructor(
                     setNoNetworkError(response.errorMessage)
                     setShowProgress(false)
                 }
+
                 else -> {}
             }
         }
     }
 
-    fun callSignInAccountTaskAPI(result: ActivityResult){
+    fun callSignInAccountTaskAPI(result: ActivityResult) {
         viewModelScope.launch {
             setShowProgress(true)
-            when(val response = authRepository.signInAccountTask(
+            when (val response = authRepository.signInAccountTask(
                 result,
             )) {
-                is  ApiSuccessResponse -> {
+                is ApiSuccessResponse -> {
                     setShowProgress(false)
                     signInAccountTask.postValue(response.body!!)
                 }
+
                 is ApiErrorResponse -> {
                     setApiError(response.errorMessage)
                     setShowProgress(false)
                 }
+
                 is ApiNoNetworkResponse -> {
                     setNoNetworkError(response.errorMessage)
                     setShowProgress(false)
                 }
+
                 else -> {}
             }
         }
     }
 
-    fun callGoogleSignInAccountAPI(signInAccountTask: Task<GoogleSignInAccount>){
+    fun callGoogleSignInAccountAPI(signInAccountTask: Task<GoogleSignInAccount>) {
         viewModelScope.launch {
             setShowProgress(true)
-            when(val response = authRepository.googleSignInAccount(
+            when (val response = authRepository.googleSignInAccount(
                 signInAccountTask,
             )) {
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
                     googleSignInAccount.postValue(response.body!!)
                 }
+
                 is ApiErrorResponse -> {
                     setApiError(response.errorMessage)
                     setShowProgress(false)
                 }
+
                 is ApiNoNetworkResponse -> {
                     setNoNetworkError(response.errorMessage)
                     setShowProgress(false)
                 }
+
                 else -> {}
             }
         }
     }
 
-    fun callAuthCredentialsAPI( idToken: String){
+    fun callAuthCredentialsAPI(idToken: String) {
         viewModelScope.launch {
             setShowProgress(true)
-            when(val response = authRepository.authCredentials(
+            when (val response = authRepository.authCredentials(
                 idToken
-            )){
+            )) {
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
                     authCredential.postValue(response.body!!)
                 }
+
                 is ApiErrorResponse -> {
                     setApiError(response.errorMessage)
                     setShowProgress(false)
                 }
+
                 is ApiNoNetworkResponse -> {
                     setNoNetworkError(response.errorMessage)
                     setShowProgress(false)
                 }
+
                 else -> {}
             }
         }
     }
+
     /**
      * This method is used for navigation to Register Screen
      *  onclick of SignUp text. Directly called in xml
      */
     fun onRegisterClick() {
+        email.postValue("")
+        emailError.postValue(null)
+        password.postValue("")
+        passwordError.postValue(null)
         _navigationListener.postValue(R.id.action_loginFragment_to_registerFragment)
+
     }
 
     /**
@@ -255,7 +259,6 @@ class LoginViewModel @Inject constructor(
     fun onGoogleSignClick() {
         isGoogleClick.postValue(true)
     }
-
 
 
 }

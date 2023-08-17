@@ -1,9 +1,6 @@
 package com.android.doctorapp.ui.authentication.register
 
-import android.content.Context
 import android.util.Log
-import android.widget.RadioButton
-import android.widget.RadioGroup
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -14,10 +11,7 @@ import com.android.doctorapp.repository.models.*
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import javax.inject.Inject
