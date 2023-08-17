@@ -63,16 +63,11 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/field_email"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/user_login_tlEditText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_32"
-                app:boxCornerRadiusBottomEnd="@dimen/margin_10"
-                app:boxCornerRadiusBottomStart="@dimen/margin_10"
-                app:boxCornerRadiusTopEnd="@dimen/margin_10"
-                app:boxCornerRadiusTopStart="@dimen/margin_10"
                 app:error="@{viewModel.emailError}"
-                app:errorTextColor="@color/purple_500"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvMsg">
@@ -90,14 +85,10 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/field_password"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/user_login_tlEditText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_10"
-                app:boxCornerRadiusBottomEnd="@dimen/margin_10"
-                app:boxCornerRadiusBottomStart="@dimen/margin_10"
-                app:boxCornerRadiusTopEnd="@dimen/margin_10"
-                app:boxCornerRadiusTopStart="@dimen/margin_10"
                 app:error="@{viewModel.passwordError}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -181,7 +172,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvConnectWith" />
-            
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>

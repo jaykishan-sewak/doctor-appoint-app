@@ -41,14 +41,14 @@
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="user_login_tlEditText">
-        <item name="android:layout_width">match_parent</item>
+    <style name="user_login_tlEditText" parent= "Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="boxCornerRadiusTopStart">@dimen/margin_10</item>
         <item name="boxCornerRadiusTopEnd">@dimen/margin_10</item>
         <item name="boxCornerRadiusBottomStart">@dimen/margin_10</item>
         <item name="boxCornerRadiusBottomEnd">@dimen/margin_10</item>
-        <item name="errorTextColor">@color/purple_500</item>
+        <item name="errorTextColor">@color/red</item>
     </style>
 
     <style name="login_textView">
