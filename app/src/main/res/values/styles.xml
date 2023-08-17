@@ -48,7 +48,6 @@
         <item name="boxCornerRadiusTopEnd">@dimen/margin_10</item>
         <item name="boxCornerRadiusBottomStart">@dimen/margin_10</item>
         <item name="boxCornerRadiusBottomEnd">@dimen/margin_10</item>
-        <item name="errorTextColor">@color/red</item>
     </style>
 
     <style name="login_textView">
