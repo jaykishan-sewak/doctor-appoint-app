@@ -13,7 +13,6 @@ import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.ui.dashboard.DashboardActivity
-import com.android.doctorapp.util.extension.showKeyboard
 import com.android.doctorapp.util.extension.startActivityFinish
 import javax.inject.Inject
 
@@ -56,7 +55,7 @@ class RegisterFragment : BaseFragment<FragmentSignupBinding>(R.layout.fragment_s
                     startActivityFinish<DashboardActivity> { }
                 }
             }
-            viewModel.navigation.observe(viewLifecycleOwner) {
+            viewModel.navigationListener.observe(viewLifecycleOwner) {
                 findNavController().navigate(it)
             }
         }

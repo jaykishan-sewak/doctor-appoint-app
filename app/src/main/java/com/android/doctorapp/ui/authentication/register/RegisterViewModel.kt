@@ -7,11 +7,14 @@ import com.android.doctorapp.R
 import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AuthRepository
-import com.android.doctorapp.repository.models.*
+import com.android.doctorapp.repository.models.ApiErrorResponse
+import com.android.doctorapp.repository.models.ApiNoNetworkResponse
+import com.android.doctorapp.repository.models.ApiSuccessResponse
+import com.android.doctorapp.repository.models.LoginResponseModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
-import com.google.firebase.auth.FirebaseAuth
+import com.android.doctorapp.util.extension.isPassWordValid
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,33 +26,71 @@ class RegisterViewModel @Inject constructor(
 
     val email: MutableLiveData<String> = MutableLiveData()
     val emailError: MutableLiveData<String?> = MutableLiveData()
+
     val password: MutableLiveData<String> = MutableLiveData()
     val passwordError: MutableLiveData<String?> = MutableLiveData()
+
+    val confirmPassword: MutableLiveData<String> = MutableLiveData()
+    val confirmPasswordError: MutableLiveData<String?> = MutableLiveData()
+
+    val isSignUpDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
+
     private val _registerResponse = MutableLiveData<LoginResponseModel?>()
     val registerResponse = _registerResponse.asLiveData()
 
-    private val _navigation = SingleLiveEvent<Int>()
-    val navigation = _navigation.asLiveData()
+    private val _navigationListener = SingleLiveEvent<Int>()
+    val navigationListener = _navigationListener.asLiveData()
 
-    private var auth: FirebaseAuth? = null
 
     init {
-        auth = FirebaseAuth.getInstance()
-    }
 
+    }
 
     fun onRegisterClick() {
-
-        if (isValidInput()) {
-            callRegisterApi()
-        }
+        callRegisterApi()
     }
 
+    private fun isAllValidate() {
+        isSignUpDataValid.value = (!email.value.isNullOrEmpty() && !password.value.isNullOrEmpty() && !confirmPassword.value.isNullOrEmpty()
+                && emailError.value.isNullOrEmpty() && passwordError.value.isNullOrEmpty() && confirmPasswordError.value.isNullOrEmpty())
+    }
+
+    fun isValidEmail(text: CharSequence) {
+        if (text.toString().isNotEmpty() && text.toString().isEmailAddressValid().not()) {
+            emailError.postValue(resourceProvider.getString(R.string.enter_valid_email))
+        } else {
+            emailError.postValue(null)
+        }
+        isAllValidate()
+    }
+
+    fun isValidPassword(text: CharSequence) {
+        if (text.toString().isNotEmpty() && text.toString().isPassWordValid().not()) {
+            passwordError.postValue(resourceProvider.getString(R.string.error_enter_password))
+        } else {
+            passwordError.postValue(null)
+        }
+        isAllValidate()
+    }
+
+    fun isConfirmPassword(text: CharSequence) {
+        if (text.toString().isNotEmpty() && text.toString() != password.value) {
+            confirmPasswordError.postValue(resourceProvider.getString(R.string.confirm_password_doesn_t_match_try_again))
+        } else {
+            confirmPasswordError.postValue(null)
+        }
+        isAllValidate()
+    }
+
+    /**
+     * This method is used for create user with Email and Password
+     * firebase authentication. It returns response of ApiResponse type.
+     */
     private fun callRegisterApi() {
         viewModelScope.launch {
             setShowProgress(true)
             when (val response = authRepository.register(
-                auth!!,
+                firebaseAuth,
                 email = email.value.toString(),
                 password = password.value.toString(),
             )) {
@@ -58,7 +99,7 @@ class RegisterViewModel @Inject constructor(
                     email.value = ""
                     password.value = ""
                     setShowProgress(false)
-                    _navigation.postValue(R.id.action_registerFragment_to_loginFragment)
+                    _navigationListener.postValue(R.id.action_registerFragment_to_loginFragment)
                 }
 
                 is ApiErrorResponse -> {
@@ -76,16 +117,15 @@ class RegisterViewModel @Inject constructor(
         }
     }
 
-    private fun isValidInput(): Boolean {
+    fun onLogInClick() {
+        email.postValue("")
         emailError.postValue(null)
+        password.postValue("")
         passwordError.postValue(null)
-        if (email.value.isNullOrEmpty()) {
-            emailError.postValue(resourceProvider.getString(R.string.error_enter_email))
-        } else if (email.value.toString().isEmailAddressValid().not()) {
-            emailError.postValue(resourceProvider.getString(R.string.enter_valid_email))
-        } else if (password.value.isNullOrEmpty()) {
-            passwordError.postValue(resourceProvider.getString(R.string.error_enter_password))
-        } else return true
-        return false
+        confirmPassword.postValue("")
+        confirmPasswordError.postValue(null)
+        _navigationListener.postValue(R.id.action_registerFragment_to_loginFragment)
+
     }
+
 }

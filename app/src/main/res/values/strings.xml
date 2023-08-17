@@ -82,5 +82,7 @@
     <string name="hint_speciality">Enter Speciality</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="do_have_an_account">Do have an account?</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="confirm_password_doesn_t_match_try_again">"Confirm Password doesn't match, Try again! "</string>
 
 </resources>
