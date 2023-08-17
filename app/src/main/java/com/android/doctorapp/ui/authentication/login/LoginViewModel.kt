@@ -20,10 +20,8 @@ import com.android.doctorapp.util.extension.isPassWordValid
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -47,7 +45,6 @@ class LoginViewModel @Inject constructor(
 
     private val _navigationListener = SingleLiveEvent<Int>()
     val navigationListener = _navigationListener.asLiveData()
-    private var auth: FirebaseAuth? = null
 
     val isGoogleClick: MutableLiveData<Boolean> = MutableLiveData(false)
     private val googleResponse: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -61,15 +58,11 @@ class LoginViewModel @Inject constructor(
 
 
     init {
-        auth = FirebaseAuth.getInstance()
-
-        val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(resourceProvider.getString(R.string.client_id))
-            .requestEmail()
-            .build()
-
+        // googleSignInOptions initialization
+        googleInitialization(context)
         // Initialize sign in client
         googleSignInClient = GoogleSignIn.getClient(context, googleSignInOptions)
+
     }
 
 
@@ -115,7 +108,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             setShowProgress(true)
             when (val response = authRepository.login(
-                auth!!,
+                firebaseAuth,
                 email = email.value.toString(),
                 password = password.value.toString(),
             )) {
@@ -149,7 +142,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             setShowProgress(true)
             when(val response = authRepository.googleLogin(
-                auth!!,
+                firebaseAuth,
                 authCredential,
             )) {
                 is ApiSuccessResponse -> {
