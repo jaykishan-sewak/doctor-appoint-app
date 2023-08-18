@@ -1,9 +1,12 @@
 package com.android.doctorapp.ui.authentication.register
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -12,8 +15,9 @@ import com.android.doctorapp.databinding.FragmentSignupBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
-import com.android.doctorapp.ui.dashboard.DashboardActivity
-import com.android.doctorapp.util.extension.startActivityFinish
+import com.android.doctorapp.util.extension.alert
+import com.android.doctorapp.util.extension.neutralButton
+import com.android.doctorapp.util.extension.toast
 import javax.inject.Inject
 
 class RegisterFragment : BaseFragment<FragmentSignupBinding>(R.layout.fragment_signup) {
@@ -51,13 +55,65 @@ class RegisterFragment : BaseFragment<FragmentSignupBinding>(R.layout.fragment_s
     private fun registerObserver() {
         viewModel.apply {
             registerResponse.observe(viewLifecycleOwner) {
-                it?.let {
-                    startActivityFinish<DashboardActivity> { }
+//                it?.let {
+//                    startActivityFinish<DashboardActivity> { }
+//                }
+            }
+
+            viewModel.isGoogleClick.observe(viewLifecycleOwner) {
+                if (it) {
+                    val intent: Intent = viewModel.googleSignInClient.signInIntent
+                    launcher.launch(intent)
                 }
             }
-            viewModel.navigationListener.observe(viewLifecycleOwner) {
+
+            viewModel.signInAccountTask.observe(viewLifecycleOwner) {
+                if (it.isSuccessful) {
+                    val msg = getString(R.string.sign_with_google_successful)
+                    context?.toast(msg)
+                    viewModel.callGoogleSignInAccountAPI(it)
+                }
+            }
+
+            viewModel.googleSignInAccount.observe(viewLifecycleOwner) {
+                if (it != null) {
+                    viewModel.callAuthCredentialsAPI(it.idToken!!)
+                }
+            }
+
+            viewModel.authCredential.observe(viewLifecycleOwner) {
+                viewModel.callGoogleAPI(it)
+            }
+
+            viewModel.addUserResponse.observe(viewLifecycleOwner) {
+                if (it.equals("Success")) {
+                    context?.toast("User information successfully saved")
+                    viewModel.navigationListener.observe(viewLifecycleOwner) {
+                        findNavController().navigate(it)
+                    }
+                }
+                else {
+                    context?.alert {
+                        setTitle("User information not saved")
+                        setMessage(it)
+                        neutralButton {  }
+                    }
+                }
+            }
+
+            viewModel.logInListener.observe(viewLifecycleOwner) {
                 findNavController().navigate(it)
             }
         }
     }
+
+    private val launcher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            //Check condition
+            if (result.resultCode == AppCompatActivity.RESULT_OK) {
+                // When request code is equal to RESULT_OK initialize task
+                viewModel.callSignInAccountTaskAPI(result)
+            }
+        }
+
 }

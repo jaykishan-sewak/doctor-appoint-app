@@ -79,7 +79,8 @@
                 app:error="@{viewModel.passwordError}"
                 app:layout_constraintEnd_toEndOf="@id/tlEmail"
                 app:layout_constraintStart_toStartOf="@id/tlEmail"
-                app:layout_constraintTop_toBottomOf="@id/tlEmail">
+                app:layout_constraintTop_toBottomOf="@id/tlEmail"
+                app:passwordToggleEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPass"
@@ -98,7 +99,8 @@
                 app:error="@{viewModel.confirmPasswordError}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tlPassword">
+                app:layout_constraintTop_toBottomOf="@+id/tlPassword"
+                app:passwordToggleEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etConfirmPass"
@@ -162,6 +164,7 @@
                 android:layout_width="@dimen/margin_20"
                 android:layout_height="@dimen/margin_20"
                 android:layout_marginTop="@dimen/margin_20"
+                android:onClick="@{view -> viewModel.onGoogleSignClick()}"
                 android:src="@drawable/chrome_icon"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

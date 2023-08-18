@@ -6,6 +6,7 @@ import com.android.doctorapp.repository.models.ApiResponse
 import com.android.doctorapp.repository.models.LoginRequestModel
 import com.android.doctorapp.repository.models.LoginResponseModel
 import com.android.doctorapp.repository.models.RegisterRequestModel
+import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.repository.network.AppApi
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -15,6 +16,7 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import retrofit2.Response
 import javax.inject.Inject
@@ -148,6 +150,16 @@ class AuthRepository @Inject constructor(
         return try {
             val authCredential: AuthCredential = GoogleAuthProvider.getCredential(idToken, null)
             ApiResponse.create(response = Response.success(authCredential))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+    suspend fun addUserData(userRequestModel: UserDataRequestModel, firestore: FirebaseFirestore
+    ): ApiResponse<UserDataRequestModel>{
+        return try {
+            val addUserResponse = firestore.collection("user_data").add(userRequestModel).await()
+            ApiResponse.create(response = Response.success(userRequestModel))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
         }

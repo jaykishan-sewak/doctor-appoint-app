@@ -4,15 +4,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.FragmentAddUserProfileBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import javax.inject.Inject
 
 
 class AddUserProfileFragment :
     BaseFragment<FragmentAddUserProfileBinding>(R.layout.fragment_add_user_profile) {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModel by viewModels<AddUserViewModel> { viewModelFactory }
 
     override fun builder() = FragmentToolbar.Builder()
         .withId(FragmentToolbar.NO_TOOLBAR)

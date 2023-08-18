@@ -77,18 +77,18 @@ class LoginViewModel @Inject constructor(
 
     fun isValidateEmail(text: CharSequence) {
         if (text.toString().isNotEmpty() && text.toString().isEmailAddressValid().not()) {
-            emailError.postValue(resourceProvider.getString(R.string.enter_valid_email))
+            emailError.value = resourceProvider.getString(R.string.enter_valid_email)
         } else {
-            emailError.postValue(null)
+            emailError.value = null
         }
         isAllValidate()
     }
 
     fun isValidPassword(text: CharSequence) {
         if (text.toString().isNotEmpty() && text.toString().isPassWordValid().not()) {
-            passwordError.postValue(resourceProvider.getString(R.string.error_enter_password))
+            passwordError.value = resourceProvider.getString(R.string.error_enter_password)
         } else {
-            passwordError.postValue(null)
+            passwordError.value = null
         }
         isAllValidate()
     }
@@ -124,7 +124,9 @@ class LoginViewModel @Inject constructor(
                     setShowProgress(false)
                 }
 
-                else -> {}
+                else -> {
+                    setShowProgress(false)
+                }
             }
         }
     }
@@ -155,8 +157,9 @@ class LoginViewModel @Inject constructor(
                     setNoNetworkError(response.errorMessage)
                     setShowProgress(false)
                 }
-
-                else -> {}
+                else -> {
+                    setShowProgress(false)
+                }
             }
         }
     }

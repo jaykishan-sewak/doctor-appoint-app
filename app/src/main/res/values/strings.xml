@@ -84,5 +84,11 @@
     <string name="do_have_an_account">Do have an account?</string>
     <string name="sign_up">Sign Up</string>
     <string name="confirm_password_doesn_t_match_try_again">"Confirm Password doesn't match, Try again! "</string>
+    <string name="hint_user_name">Name</string>
+    <string name="hint_user_address">Address</string>
+    <string name="hint_user_email">Email</string>
+    <string name="hint_user_contact">Contact Number</string>
+    <string name="hint_user_dob">DOB</string>
+    <string name="update">Update</string>
 
 </resources>
