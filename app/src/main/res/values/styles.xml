@@ -25,13 +25,6 @@
         <!-- Customize color of navigation drawer icon and back arrow -->
         <item name="colorControlNormal">@color/transparent</item>
     </style>
-    <style name="add_doctor_editText">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="singleLine">true</item>
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">14sp</item>
-    </style>
 
     <style name="user_login_editText">
         <item name="android:layout_width">match_parent</item>
@@ -54,5 +47,12 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/grey</item>
+    </style>
+
+    <style name="custom_edit_text_bg">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/margin_55</item>
+        <item name="android:background">@drawable/custom_edittext_bg</item>
+        <item name="android:layout_marginTop">@dimen/margin_15</item>
     </style>
 </resources>

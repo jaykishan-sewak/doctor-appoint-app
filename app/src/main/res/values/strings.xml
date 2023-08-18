@@ -80,4 +80,6 @@
     <string name="hint_address">Enter Address</string>
     <string name="hint_degree">Enter Degree</string>
     <string name="hint_speciality">Enter Speciality</string>
+    <string name="available_date">Available Date</string>
+    <string name="available_time">Available Time</string>
 </resources>

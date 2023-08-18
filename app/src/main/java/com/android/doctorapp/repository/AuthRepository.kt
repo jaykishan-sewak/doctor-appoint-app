@@ -1,11 +1,13 @@
 package com.android.doctorapp.repository
 
+import android.util.Log
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.local.USER_IS_LOGGED_IN
 import com.android.doctorapp.repository.models.ApiResponse
 import com.android.doctorapp.repository.models.LoginRequestModel
 import com.android.doctorapp.repository.models.LoginResponseModel
 import com.android.doctorapp.repository.models.RegisterRequestModel
+import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.repository.network.AppApi
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -15,9 +17,12 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.tasks.await
 import retrofit2.Response
 import javax.inject.Inject
+
 
 class AuthRepository @Inject constructor(
     private val authApi: AppApi,
@@ -154,4 +159,21 @@ class AuthRepository @Inject constructor(
     }
 
 
+    suspend fun getRecordById(recordId: String, fireStore: FirebaseFirestore): ApiResponse<UserDataRequestModel> {
+        return try {
+            val response = fireStore.collection("user_data")
+                                                .whereEqualTo("userId", recordId)
+                                                .get()
+                                                .await()
+
+            var dataModel = UserDataRequestModel()
+            for (snapshot in response) {
+                dataModel = snapshot.toObject()
+
+            }
+            ApiResponse.create(response = Response.success(dataModel))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
 }

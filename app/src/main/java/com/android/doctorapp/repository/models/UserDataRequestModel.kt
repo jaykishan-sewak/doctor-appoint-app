@@ -5,6 +5,7 @@ data class UserDataRequestModel(
     var isDoctor: Boolean = false,
     var email: String = "",
     var name: String = "",
+    var gender: String = "MALE",
     var address: String = "",
     var contactNumber:String = "",
     var degree: String = "",

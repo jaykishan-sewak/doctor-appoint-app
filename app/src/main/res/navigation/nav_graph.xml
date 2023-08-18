@@ -15,9 +15,20 @@
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/RegisterFragment" />
 
+
         <action
             android:id="@+id/action_loginFragment_to_addUserProfileFragment"
-            app:destination="@+id/AddUserProfileFragment"/>
+            app:destination="@+id/AddUserProfileFragment" />
+
+        <action
+            android:id="@+id/action_loginFragment_to_addDoctorFragment"
+            app:destination="@+id/AddDoctorFragment"
+            />
+
+        <action
+            android:id="@+id/action_loginFragment_to_adminDashboardFragment"
+            app:destination="@+id/AdminDashboardFragment"
+            />
 
     </fragment>
 
@@ -36,16 +47,38 @@
         android:id="@+id/AddUserProfileFragment"
         android:name="com.android.doctorapp.ui.profile.AddUserProfileFragment"
         android:label="Third Fragment"
-        tools:layout="@layout/fragment_add_user_profile"/>
+        tools:layout="@layout/fragment_add_user_profile" />
 
     <fragment
         android:id="@+id/AddDoctorFragment"
         android:name="com.android.doctorapp.ui.doctor.AddDoctorFragment"
         tools:layout="@layout/fragment_add_doctor">
 
+        <action android:id="@+id/action_addDoctorFragment_to_LoginFragment" />
+
         <action
-            android:id="@+id/action_addDoctorFragment_to_LoginFragment"
+            android:id="@+id/action_addDoctorFragment_to_UpdateDoctorFragment"
+            app:destination="@id/UpdateDoctorFragment">
+
+        </action>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/UpdateDoctorFragment"
+        android:name="com.android.doctorapp.ui.doctor.UpdateDoctorProfileFragment"
+        tools:layout="@layout/fragment_update_doctor_profile">
+
+        <action
+            android:id="@+id/action_updateDoctorFragment_to_LoginFragment"
             app:destination="@id/LoginFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/AdminDashboardFragment"
+        android:name="com.android.doctorapp.ui.admin.AdminDashboardFragment"
+        tools:layout="@layout/fragment_admin_dashboard">
 
     </fragment>
 

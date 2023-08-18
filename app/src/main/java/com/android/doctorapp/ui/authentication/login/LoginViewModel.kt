@@ -2,6 +2,7 @@ package com.android.doctorapp.ui.authentication.login
 
 
 import android.content.Context
+import android.util.Log
 import androidx.activity.result.ActivityResult
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -107,11 +108,14 @@ class LoginViewModel @Inject constructor(
                 password = password.value.toString(),
             )) {
                 is ApiSuccessResponse -> {
-                    email.value = ""
-                    password.value = ""
-                    setShowProgress(false)
-                    _navigationListener.postValue(R.id.action_loginFragment_to_addUserProfileFragment)
-                    //_loginResponse.postValue(LoginResponseModel("test", "10", "test1", "test123"))
+                    if (!firebaseAuth.currentUser?.uid.isNullOrEmpty()) {
+                        getUserData()
+
+                    }
+//                    email.value = ""
+//                    password.value = ""
+//                    setShowProgress(false)
+//                    _navigationListener.postValue(R.id.action_loginFragment_to_addDoctorFragment)
                 }
 
                 is ApiErrorResponse -> {
@@ -129,6 +133,40 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    private suspend fun getUserData() {
+
+        when (val newRes = authRepository.getRecordById(firebaseAuth.currentUser?.uid.toString(), fireStore)) {
+
+            is ApiSuccessResponse -> {
+                email.value = ""
+                password.value = ""
+                setShowProgress(false)
+                if (newRes.body.isAdmin) {
+                    _navigationListener.postValue(R.id.action_loginFragment_to_adminDashboardFragment)
+                } else if (newRes.body.isDoctor) {
+                    _navigationListener.postValue(R.id.action_loginFragment_to_addDoctorFragment)
+                } else {
+                    _navigationListener.postValue(R.id.action_loginFragment_to_registerFragment)
+                }
+            }
+
+            is ApiErrorResponse -> {
+                setApiError(newRes.errorMessage)
+                setShowProgress(false)
+            }
+
+            is ApiNoNetworkResponse -> {
+                setApiError(newRes.errorMessage)
+                setShowProgress(false)
+            }
+
+            else -> {
+                setShowProgress(false)
+            }
+
+        }
+    }
+
     /**
      * This method is used for google sign in
      * firebase authentication. It returns response of ApiResponse type.
@@ -143,7 +181,7 @@ class LoginViewModel @Inject constructor(
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
                     googleResponse.postValue(true)
-                    _navigationListener.postValue(R.id.action_loginFragment_to_addUserProfileFragment)
+                    _navigationListener.postValue(R.id.action_loginFragment_to_addDoctorFragment)
                 }
 
                 is ApiErrorResponse -> {

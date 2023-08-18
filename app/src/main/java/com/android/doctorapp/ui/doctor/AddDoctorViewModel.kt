@@ -14,13 +14,18 @@ import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
+import com.google.firebase.auth.PhoneAuthOptions
+import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class AddDoctorViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val addRepository: AddDoctorRepository
 ) : BaseViewModel() {
+
+    val TAG = AddDoctorViewModel::class.java.simpleName
 
     val doctorName: MutableLiveData<String?> = MutableLiveData()
     val doctorNameError: MutableLiveData<String?> = MutableLiveData()
@@ -40,6 +45,10 @@ class AddDoctorViewModel @Inject constructor(
 
     private val _addDoctorResponse = SingleLiveEvent<String>()
     val addDoctorResponse = _addDoctorResponse.asLiveData()
+
+    private val _clickResponse: MutableLiveData<String> = MutableLiveData()
+    val clickResponse = _clickResponse.asLiveData()
+
 
     private fun validateAllField() {
         isDataValid.value = (!doctorName.value.isNullOrEmpty() && !doctorEmail.value.isNullOrEmpty()
@@ -111,11 +120,11 @@ class AddDoctorViewModel @Inject constructor(
 
                     is ApiSuccessResponse -> {
                         if (response.body.userId.isNotEmpty()) {
-                            doctorName.value = ""
-                            doctorEmail.value = ""
-                            doctorContactNumber.value = ""
+//                            doctorName.value = ""
+//                            doctorEmail.value = ""
+//                            doctorContactNumber.value = ""
                             setShowProgress(false)
-                            _navigationListener.value = R.id.action_addDoctorFragment_to_LoginFragment
+                            _navigationListener.value = R.id.action_addDoctorFragment_to_UpdateDoctorFragment
                             _addDoctorResponse.value = resourceProvider.getString(R.string.success)
                         }
                     }
@@ -137,4 +146,13 @@ class AddDoctorViewModel @Inject constructor(
             }
         }
     }
+
+    fun contactVerify() {
+        if (!doctorContactNumber.value.isNullOrEmpty()) {
+//            sendVerificationCode(doctorContactNumber.value.toString())
+            _clickResponse.value = doctorContactNumber.value.toString()
+        } else {
+        }
+    }
+
 }
