@@ -1,7 +1,6 @@
 package com.android.doctorapp.ui.doctor
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +13,6 @@ import com.android.doctorapp.databinding.FragmentAddDoctorBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
-import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DOCTOR_CONTACT_NUMBER_KEY
-import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DOCTOR_EMAIL_ID_KEY
-import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DOCTOR_NAME_KEY
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.toast
@@ -66,11 +62,13 @@ class AddDoctorFragment: BaseFragment<FragmentAddDoctorBinding>(R.layout.fragmen
             if (it.equals("Success")) {
                 context?.toast(resources.getString(R.string.doctor_save_successfully))
                 viewModel.navigationListener.observe(viewLifecycleOwner) {
-                    val bundle = Bundle()
-                    bundle.putString(DOCTOR_NAME_KEY, viewModel.doctorName.value)
-                    bundle.putString(DOCTOR_EMAIL_ID_KEY, viewModel.doctorEmail.value)
-                    bundle.putString(DOCTOR_CONTACT_NUMBER_KEY, viewModel.doctorContactNumber.value)
-                    findNavController().navigate(it, bundle)
+//                    val bundle = Bundle()
+//                    bundle.putString(DOCTOR_NAME_KEY, viewModel.doctorName.value)
+//                    bundle.putString(DOCTOR_EMAIL_ID_KEY, viewModel.doctorEmail.value)
+//                    bundle.putString(DOCTOR_CONTACT_NUMBER_KEY, viewModel.doctorContactNumber.value)
+                    findNavController().navigate(it)
+                    findNavController().popBackStack(R.id.LoginFragment, false)
+
                 }
             } else {
                 context?.alert {

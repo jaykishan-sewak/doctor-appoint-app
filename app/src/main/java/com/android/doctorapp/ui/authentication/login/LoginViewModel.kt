@@ -78,18 +78,18 @@ class LoginViewModel @Inject constructor(
 
     fun isValidateEmail(text: CharSequence) {
         if (text.toString().isNotEmpty() && text.toString().isEmailAddressValid().not()) {
-            emailError.postValue(resourceProvider.getString(R.string.enter_valid_email))
+            emailError.value = resourceProvider.getString(R.string.enter_valid_email)
         } else {
-            emailError.postValue(null)
+            emailError.value = null
         }
         isAllValidate()
     }
 
     fun isValidPassword(text: CharSequence) {
         if (text.toString().isNotEmpty() && text.toString().isPassWordValid().not()) {
-            passwordError.postValue(resourceProvider.getString(R.string.error_enter_password))
+            passwordError.value = resourceProvider.getString(R.string.error_enter_password)
         } else {
-            passwordError.postValue(null)
+            passwordError.value = null
         }
         isAllValidate()
     }
@@ -135,33 +135,35 @@ class LoginViewModel @Inject constructor(
 
     private suspend fun getUserData() {
 
-        when (val newRes = authRepository.getRecordById(firebaseAuth.currentUser?.uid.toString(), fireStore)) {
+        when (val response = authRepository.getRecordById(firebaseAuth.currentUser?.uid.toString(), fireStore)) {
 
             is ApiSuccessResponse -> {
                 email.value = ""
                 password.value = ""
                 setShowProgress(false)
-                if (newRes.body.isAdmin) {
+                Log.d("TAG1212", "getUserData: ${response.body.isDoctor}")
+                if (response.body.isAdmin) {
                     _navigationListener.postValue(R.id.action_loginFragment_to_adminDashboardFragment)
-                } else if (newRes.body.isDoctor) {
-                    _navigationListener.postValue(R.id.action_loginFragment_to_addDoctorFragment)
+                } else if (response.body.isDoctor) {
+                    _navigationListener.postValue(R.id.action_loginFragment_to_doctorDashboardFragment)
                 } else {
-                    _navigationListener.postValue(R.id.action_loginFragment_to_registerFragment)
+                    _navigationListener.postValue(R.id.action_loginFragment_to_addUserProfileFragment)
                 }
             }
 
             is ApiErrorResponse -> {
-                setApiError(newRes.errorMessage)
+                setApiError(response.errorMessage)
                 setShowProgress(false)
             }
 
             is ApiNoNetworkResponse -> {
-                setApiError(newRes.errorMessage)
+                setNoNetworkError(response.errorMessage)
                 setShowProgress(false)
+
             }
 
             else -> {
-                setShowProgress(false)
+
             }
 
         }
@@ -181,7 +183,7 @@ class LoginViewModel @Inject constructor(
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
                     googleResponse.postValue(true)
-                    _navigationListener.postValue(R.id.action_loginFragment_to_addDoctorFragment)
+                    _navigationListener.postValue(R.id.action_loginFragment_to_addUserProfileFragment)
                 }
 
                 is ApiErrorResponse -> {
