@@ -8,4 +8,9 @@ object ConstantKey {
         const val DOCTOR_CONTACT_NUMBER_KEY = "doctorContactNumber"
     }
 
+    object DBKeys {
+        const val TABLE_NAME = "user_data"
+        const val FIELD_ADMIN = "admin"
+        const val FIELD_DOCTOR = "doctor"
+    }
 }

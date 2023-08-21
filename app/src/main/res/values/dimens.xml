@@ -13,4 +13,5 @@
     <dimen name="margin_5">5dp</dimen>
     <dimen name="parentHorizontalMargin_50">50dp</dimen>
     <dimen name="parentVerticalMargin_50">50dp</dimen>
+    <dimen name="dp_100">100dp</dimen>
 </resources>

@@ -2,6 +2,7 @@ package com.android.doctorapp.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.android.doctorapp.ui.admin.AdminDashboardViewModel
 import com.android.doctorapp.ui.home.HomeViewModel
 import com.android.doctorapp.ui.authentication.login.LoginViewModel
 import com.android.doctorapp.ui.profile.ProfileViewModel
@@ -40,5 +41,10 @@ abstract class AppViewModelModule {
     @IntoMap
     @ViewModelMapKey(AddDoctorViewModel::class)
     abstract fun bindAddDoctorViewModel(viewModel: AddDoctorViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelMapKey(AdminDashboardViewModel::class)
+    abstract fun bindAdminDashboardViewModel(viewModel: AdminDashboardViewModel): ViewModel
 
 }

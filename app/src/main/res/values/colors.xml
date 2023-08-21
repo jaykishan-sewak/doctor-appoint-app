@@ -15,4 +15,5 @@
     <color name="btn_grey">#e5e5e5</color>
     <color name="blue"> #1a4d91</color>
     <color name="edittext_bg_grey">#afadae</color>
+    <color name="app_bg">#f5f5f5</color>
 </resources>
