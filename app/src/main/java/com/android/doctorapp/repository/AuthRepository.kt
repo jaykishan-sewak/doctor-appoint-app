@@ -1,6 +1,5 @@
 package com.android.doctorapp.repository
 
-import android.util.Log
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.local.USER_IS_LOGGED_IN
 import com.android.doctorapp.repository.models.ApiResponse
@@ -158,6 +157,14 @@ class AuthRepository @Inject constructor(
         }
     }
 
+    suspend fun addDoctorData(doctorRequestModel: UserDataRequestModel, firestore: FirebaseFirestore): ApiResponse<UserDataRequestModel> {
+        return try {
+            val addDoctorResponse = firestore.collection("user_data").add(doctorRequestModel).await()
+            ApiResponse.create(response = Response.success(doctorRequestModel))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
 
     suspend fun getRecordById(recordId: String, fireStore: FirebaseFirestore): ApiResponse<UserDataRequestModel> {
         return try {

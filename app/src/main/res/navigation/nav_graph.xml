@@ -21,8 +21,8 @@
             app:destination="@+id/AddUserProfileFragment" />
 
         <action
-            android:id="@+id/action_loginFragment_to_addDoctorFragment"
-            app:destination="@+id/AddDoctorFragment"
+            android:id="@+id/action_loginFragment_to_doctorDashboardFragment"
+            app:destination="@+id/DoctorDashboardFragment"
             />
 
         <action
@@ -54,13 +54,12 @@
         android:name="com.android.doctorapp.ui.doctor.AddDoctorFragment"
         tools:layout="@layout/fragment_add_doctor">
 
-        <action android:id="@+id/action_addDoctorFragment_to_LoginFragment" />
+        <action android:id="@+id/action_addDoctorFragment_to_LoginFragment"
+            app:destination="@id/LoginFragment"
+            app:popUpTo="@id/LoginFragment"
+            app:popUpToInclusive="true"
+            />
 
-        <action
-            android:id="@+id/action_addDoctorFragment_to_UpdateDoctorFragment"
-            app:destination="@id/UpdateDoctorFragment">
-
-        </action>
 
     </fragment>
 
@@ -79,6 +78,19 @@
         android:id="@+id/AdminDashboardFragment"
         android:name="com.android.doctorapp.ui.admin.AdminDashboardFragment"
         tools:layout="@layout/fragment_admin_dashboard">
+
+        <action
+            android:id="@+id/admin_to_add_doctor"
+            app:destination="@+id/AddDoctorFragment"
+            />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/DoctorDashboardFragment"
+        android:name="com.android.doctorapp.ui.doctor.DoctorDashboardFragment"
+        tools:layout="@layout/fragment_doctor_dashboard">
+
 
     </fragment>
 

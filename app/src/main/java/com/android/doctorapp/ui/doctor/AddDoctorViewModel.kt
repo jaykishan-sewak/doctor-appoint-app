@@ -1,12 +1,13 @@
 package com.android.doctorapp.ui.doctor
 
+import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
 import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
-import com.android.doctorapp.repository.AddDoctorRepository
+import com.android.doctorapp.repository.AuthRepository
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
@@ -14,15 +15,12 @@ import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
-import com.google.firebase.auth.PhoneAuthOptions
-import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class AddDoctorViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
-    private val addRepository: AddDoctorRepository
+    private val authRepository: AuthRepository
 ) : BaseViewModel() {
 
     val TAG = AddDoctorViewModel::class.java.simpleName
@@ -100,12 +98,49 @@ class AddDoctorViewModel @Inject constructor(
 
 
     fun addDoctorData() {
-
         firebaseUser = firebaseAuth.currentUser!!
         if (firebaseUser != null) {
             // when firebaseUser is not null then
-            val userData = UserDataRequestModel(
-                userId = firebaseUser.uid,
+
+            viewModelScope.launch {
+                setShowProgress(true)
+
+                when (val response = authRepository.register(
+                    firebaseAuth,
+                    email = doctorEmail.value!!,
+                    password = "Admin@123",
+                )) {
+
+                    is ApiSuccessResponse -> {
+                        if (!firebaseAuth.currentUser?.uid.isNullOrEmpty()) {
+                            addUserData()
+                        }
+                    }
+
+                    is ApiErrorResponse -> {
+                        Log.d(TAG, "addDoctorData: ${response.errorMessage}")
+                        _addDoctorResponse.value = response.errorMessage
+                        setShowProgress(false)
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        Log.d(TAG, "addDoctorData: ${response.errorMessage}")
+                        _addDoctorResponse.value = response.errorMessage
+                        setShowProgress(false)
+                    }
+
+                    else -> {
+                        setShowProgress(false)
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun addUserData() {
+
+        val userData = UserDataRequestModel(
+                userId = firebaseAuth.currentUser?.uid.toString(),
                 isDoctor = true,
                 email = doctorEmail.value!!,
                 name = doctorName.value!!,
@@ -113,18 +148,16 @@ class AddDoctorViewModel @Inject constructor(
                 isNotificationEnable = toggleLiveData.value == true
             )
 
-            viewModelScope.launch {
-                setShowProgress(true)
 
-                when (val response = addRepository.addDoctorData(userData, fireStore)) {
+        when (val response = authRepository.addDoctorData(userData, fireStore)) {
 
                     is ApiSuccessResponse -> {
                         if (response.body.userId.isNotEmpty()) {
-//                            doctorName.value = ""
-//                            doctorEmail.value = ""
-//                            doctorContactNumber.value = ""
+                            doctorName.value = ""
+                            doctorEmail.value = ""
+                            doctorContactNumber.value = ""
                             setShowProgress(false)
-                            _navigationListener.value = R.id.action_addDoctorFragment_to_UpdateDoctorFragment
+                            _navigationListener.value = R.id.action_addDoctorFragment_to_LoginFragment
                             _addDoctorResponse.value = resourceProvider.getString(R.string.success)
                         }
                     }
@@ -143,13 +176,10 @@ class AddDoctorViewModel @Inject constructor(
                         setShowProgress(false)
                     }
                 }
-            }
-        }
     }
 
     fun contactVerify() {
         if (!doctorContactNumber.value.isNullOrEmpty()) {
-//            sendVerificationCode(doctorContactNumber.value.toString())
             _clickResponse.value = doctorContactNumber.value.toString()
         } else {
         }
