@@ -62,10 +62,6 @@ class AddDoctorFragment: BaseFragment<FragmentAddDoctorBinding>(R.layout.fragmen
             if (it.equals("Success")) {
                 context?.toast(resources.getString(R.string.doctor_save_successfully))
                 viewModel.navigationListener.observe(viewLifecycleOwner) {
-//                    val bundle = Bundle()
-//                    bundle.putString(DOCTOR_NAME_KEY, viewModel.doctorName.value)
-//                    bundle.putString(DOCTOR_EMAIL_ID_KEY, viewModel.doctorEmail.value)
-//                    bundle.putString(DOCTOR_CONTACT_NUMBER_KEY, viewModel.doctorContactNumber.value)
                     findNavController().navigate(it)
                     findNavController().popBackStack(R.id.LoginFragment, false)
 

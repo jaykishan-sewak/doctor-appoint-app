@@ -110,6 +110,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
+                    app:error="@{viewModel.doctorAddressError}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/constraint_email">
@@ -120,6 +121,8 @@
                         android:hint="@string/hint_address"
                         android:imeOptions="actionNext"
                         android:singleLine="true"
+                        android:text="@={viewModel.doctorAddress}"
+                        android:afterTextChanged="@{(text) -> viewModel.isValidAddress(text)}"
                         android:textColor="@color/black"
                         android:textSize="14sp" />
 
@@ -152,6 +155,36 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"/>
 
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraint_date_of_birth"
+                    style="@style/custom_edit_text_bg"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/constraint_contact"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/text_date_of_birth"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="13-aug-2023"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ic_dob_calender"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ic_calendar"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -163,7 +196,7 @@
                     android:layout_marginTop="@dimen/margin_10"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraint_contact">
+                    app:layout_constraintTop_toBottomOf="@+id/constraint_date_of_birth">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_degree"

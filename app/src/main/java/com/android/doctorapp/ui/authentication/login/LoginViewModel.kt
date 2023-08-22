@@ -1,8 +1,6 @@
 package com.android.doctorapp.ui.authentication.login
 
-
 import android.content.Context
-import android.util.Log
 import androidx.activity.result.ActivityResult
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -10,6 +8,8 @@ import com.android.doctorapp.R
 import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AuthRepository
+import com.android.doctorapp.repository.local.Session
+import com.android.doctorapp.repository.local.USER_ID
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
@@ -17,7 +17,9 @@ import com.android.doctorapp.repository.models.LoginResponseModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
+import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.isPassWordValid
+import com.android.doctorapp.util.extension.toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -29,7 +31,8 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val resourceProvider: ResourceProvider,
-    context: Context
+    private val context: Context,
+    private val session: Session
 ) : BaseViewModel() {
     private val _loginResponse = SingleLiveEvent<LoginResponseModel?>()
     val loginResponse = _loginResponse.asLiveData()
@@ -65,7 +68,12 @@ class LoginViewModel @Inject constructor(
 
 
     fun onClick() {
-        callLoginAPI()
+        if (context.isNetworkAvailable()) {
+            callLoginAPI()
+        } else {
+            context.toast(resourceProvider.getString(R.string.check_internet_connection))
+        }
+
     }
 
     /**
@@ -141,7 +149,7 @@ class LoginViewModel @Inject constructor(
                 email.value = ""
                 password.value = ""
                 setShowProgress(false)
-                Log.d("TAG1212", "getUserData: ${response.body.isDoctor}")
+                session.putString(USER_ID, response.body.userId)
                 if (response.body.isAdmin) {
                     _navigationListener.postValue(R.id.action_loginFragment_to_adminDashboardFragment)
                 } else if (response.body.isDoctor) {
@@ -162,10 +170,7 @@ class LoginViewModel @Inject constructor(
 
             }
 
-            else -> {
-
-            }
-
+            else -> {}
         }
     }
 

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        
+        <variable
+            name="viewModel"
+            type="com.android.doctorapp.ui.otp.OtpVerificationViewModel" />
+        
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="@dimen/parentHorizontalMargin_50"
+            android:paddingVertical="@dimen/parentVerticalMargin_50">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/text_otp_verification"
+                style="@style/login_textView"
+                android:layout_marginTop="@dimen/margin_50"
+                android:text="@string/otp_verification"
+                android:textColor="@color/blue"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/text_otp_verification_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_15"
+                android:gravity="center"
+                android:text="@string/otp_desc"
+                android:textColor="@color/black"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_otp_verification" />
+
+            <com.goodiebag.pinview.Pinview
+                android:id="@+id/otp_pin_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:pinBackground="@drawable/example_drawable"
+                android:layout_marginTop="@dimen/margin_32"
+                app:pinWidth="@dimen/margin_35"
+                app:pinHeight="@dimen/margin_35"
+                app:pinLength="6"
+                app:inputType="number"
+                app:cursorVisible="false"
+    	        app:forceKeyboard="false"
+                app:password="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_otp_verification_desc"
+                />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnLogin"
+                style="@style/user_login_editText"
+                android:layout_height="@dimen/margin_50"
+                android:layout_marginTop="@dimen/margin_60"
+                android:background="@drawable/button_state_colors"
+                android:text="@string/verify"
+                android:textAllCaps="false"
+                android:enabled="@{viewModel.isDataValid}"
+                android:onClick="@{() -> viewModel.otpVerification()}"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/otp_pin_view" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</layout>

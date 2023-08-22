@@ -72,6 +72,11 @@
             android:id="@+id/action_updateDoctorFragment_to_LoginFragment"
             app:destination="@id/LoginFragment" />
 
+        <action
+            android:id="@+id/action_updateDoctorFragment_to_OtpVerificationFragment"
+            app:destination="@+id/OtpVerificationFragment"
+            />
+
     </fragment>
 
     <fragment
@@ -91,6 +96,19 @@
         android:name="com.android.doctorapp.ui.doctor.DoctorDashboardFragment"
         tools:layout="@layout/fragment_doctor_dashboard">
 
+    </fragment>
+
+    <fragment
+        android:id="@+id/OtpVerificationFragment"
+        android:name="com.android.doctorapp.ui.otp.OtpVerificationFragment"
+        tools:layout="@layout/fragment_otp_verification">
+
+        <action
+            android:id="@+id/action_otpFragment_to_updateDoctorFragment"
+            app:destination="@id/UpdateDoctorFragment"
+            app:popUpTo="@id/UpdateDoctorFragment"
+            app:popUpToInclusive="true"
+            />
 
     </fragment>
 

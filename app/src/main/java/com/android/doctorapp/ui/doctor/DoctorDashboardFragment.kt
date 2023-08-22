@@ -29,7 +29,7 @@ class DoctorDashboardFragment: BaseFragment<FragmentDoctorDashboardBinding>(R.la
         super.onCreateView(inflater, container, savedInstanceState)
 
         binding.txtClick.setOnClickListener {
-            findNavController().navigate(R.id.AddDoctorFragment)
+            findNavController().navigate(R.id.UpdateDoctorFragment)
         }
 
         return binding {

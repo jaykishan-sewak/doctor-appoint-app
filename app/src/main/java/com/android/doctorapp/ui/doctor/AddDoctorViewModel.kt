@@ -1,13 +1,17 @@
 package com.android.doctorapp.ui.doctor
 
+import android.content.Context
 import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
 import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AuthRepository
+import com.android.doctorapp.repository.local.Session
+import com.android.doctorapp.repository.local.USER_ID
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
@@ -15,12 +19,21 @@ import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
+import com.android.doctorapp.util.extension.isNetworkAvailable
+import com.android.doctorapp.util.extension.toast
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AddDoctorViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val context: Context,
+    private val session: Session
+
 ) : BaseViewModel() {
 
     val TAG = AddDoctorViewModel::class.java.simpleName
@@ -47,6 +60,62 @@ class AddDoctorViewModel @Inject constructor(
     private val _clickResponse: MutableLiveData<String> = MutableLiveData()
     val clickResponse = _clickResponse.asLiveData()
 
+    val data = MutableLiveData<List<UserDataRequestModel>>()
+
+    val doctorAddress: MutableLiveData<String> = MutableLiveData()
+    val doctorAddressError: MutableLiveData<String?> = MutableLiveData()
+
+    fun getModelUserData(): MutableLiveData<List<UserDataRequestModel>> {
+        viewModelScope.launch {
+            var recordId: String = ""
+//            viewModelScope.launch {
+                session.getString(USER_ID).collectLatest {
+                    Log.d("TAGTest", "Inside collect            : ${it}")
+                    recordId = it.orEmpty()
+                    Log.d("TAGTest", "objGetUserData current Id : ${firebaseAuth.currentUser?.uid.toString()}")
+                    Log.d("TAGTest", "shared id                 : $recordId")
+                    var userObj: UserDataRequestModel
+                    if (context.isNetworkAvailable()) {
+                        setShowProgress(true)
+                        when (val response = authRepository.getRecordById(recordId, fireStore)) {
+                            is ApiSuccessResponse -> {
+                                Log.d("TAGMy", "objGetUserData: success ${response.body.name}")
+                                userObj = UserDataRequestModel(
+                                    name = response.body.name,
+                                    email = response.body.email,
+                                    contactNumber = response.body.contactNumber
+                                )
+                                data.value = listOf(userObj)
+                                setShowProgress(false)
+                            }
+
+                            is ApiErrorResponse -> {
+                                Log.d("TAGMy", "objGetUserData: apiError")
+                                context.toast(response.errorMessage)
+                                setShowProgress(false)
+                            }
+
+                            is ApiNoNetworkResponse -> {
+                                Log.d("TAGMy", "objGetUserData: api no network")
+                                context.toast(response.errorMessage)
+                                setShowProgress(false)
+                            }
+
+                            else -> {
+                                context.toast(resourceProvider.getString(R.string.something_went_wrong))
+                                setShowProgress(false)
+                            }
+                        }
+                    } else {
+                        context.toast(resourceProvider.getString(R.string.check_internet_connection))
+                    }
+                }
+//            }
+
+        }
+        return data
+    }
+
 
     private fun validateAllField() {
         isDataValid.value = (!doctorName.value.isNullOrEmpty() && !doctorEmail.value.isNullOrEmpty()
@@ -63,6 +132,14 @@ class AddDoctorViewModel @Inject constructor(
             doctorNameError.value = null
         }
         validateAllField()
+    }
+
+    fun isValidAddress(text: CharSequence?) {
+        if (text?.toString().isNullOrEmpty() || ((text?.toString()?.length ?: 0) < 3)) {
+            doctorAddressError.value = resourceProvider.getString(R.string.valid_address_desc)
+        } else {
+            doctorAddressError.value = null
+        }
     }
 
     fun isValidEmail(text: CharSequence?) {
@@ -96,15 +173,76 @@ class AddDoctorViewModel @Inject constructor(
         validateAllField()
     }
 
+    suspend fun objGetUserData(): MutableLiveData<List<UserDataRequestModel>> {
+        var recordId: String = ""
+        viewModelScope.launch {
+            session.getString(USER_ID).collectLatest {
+                Log.d("TAGTest", "Inside collect            : ${it}")
+                recordId = it.orEmpty()
+
+                Log.d(
+                    "TAGTest",
+                    "objGetUserData current Id : ${firebaseAuth.currentUser?.uid.toString()}"
+                )
+                Log.d("TAGTest", "shared id                 : $recordId")
+
+
+                var userObj: UserDataRequestModel
+                if (context.isNetworkAvailable()) {
+                    setShowProgress(true)
+                    when (val response = authRepository.getRecordById(recordId, fireStore)) {
+                        is ApiSuccessResponse -> {
+                            Log.d("TAGMy", "objGetUserData: success ${response.body.name}")
+                            userObj = UserDataRequestModel(
+                                name = response.body.name,
+                                email = response.body.email,
+                                contactNumber = response.body.contactNumber
+                            )
+                            data.value = listOf(userObj)
+                            setShowProgress(false)
+                        }
+
+                        is ApiErrorResponse -> {
+                            Log.d("TAGMy", "objGetUserData: apiError")
+                            context.toast(response.errorMessage)
+                            setShowProgress(false)
+                        }
+
+                        is ApiNoNetworkResponse -> {
+                            Log.d("TAGMy", "objGetUserData: api no network")
+                            context.toast(response.errorMessage)
+                            setShowProgress(false)
+                        }
+
+                        else -> {
+                            context.toast(resourceProvider.getString(R.string.something_went_wrong))
+                            setShowProgress(false)
+                        }
+                    }
+                } else {
+                    context.toast(resourceProvider.getString(R.string.check_internet_connection))
+                }
+            }
+        }
+
+        return data
+    }
 
     fun addDoctorData() {
+        if (context.isNetworkAvailable()) {
+            addUserToAuthentication()
+        } else {
+            context.toast(resourceProvider.getString(R.string.check_internet_connection))
+        }
+    }
+
+    private fun addUserToAuthentication() {
         firebaseUser = firebaseAuth.currentUser!!
         if (firebaseUser != null) {
             // when firebaseUser is not null then
 
             viewModelScope.launch {
                 setShowProgress(true)
-
                 when (val response = authRepository.register(
                     firebaseAuth,
                     email = doctorEmail.value!!,
@@ -118,13 +256,11 @@ class AddDoctorViewModel @Inject constructor(
                     }
 
                     is ApiErrorResponse -> {
-                        Log.d(TAG, "addDoctorData: ${response.errorMessage}")
                         _addDoctorResponse.value = response.errorMessage
                         setShowProgress(false)
                     }
 
                     is ApiNoNetworkResponse -> {
-                        Log.d(TAG, "addDoctorData: ${response.errorMessage}")
                         _addDoctorResponse.value = response.errorMessage
                         setShowProgress(false)
                     }
@@ -138,51 +274,57 @@ class AddDoctorViewModel @Inject constructor(
     }
 
     private suspend fun addUserData() {
-
         val userData = UserDataRequestModel(
-                userId = firebaseAuth.currentUser?.uid.toString(),
-                isDoctor = true,
-                email = doctorEmail.value!!,
-                name = doctorName.value!!,
-                contactNumber = doctorContactNumber.value!!,
-                isNotificationEnable = toggleLiveData.value == true
-            )
-
+            userId = firebaseAuth.currentUser?.uid.toString(),
+            isDoctor = true,
+            email = doctorEmail.value!!,
+            name = doctorName.value!!,
+            contactNumber = doctorContactNumber.value!!,
+            isNotificationEnable = toggleLiveData.value == true
+        )
 
         when (val response = authRepository.addDoctorData(userData, fireStore)) {
-
-                    is ApiSuccessResponse -> {
-                        if (response.body.userId.isNotEmpty()) {
-                            doctorName.value = ""
-                            doctorEmail.value = ""
-                            doctorContactNumber.value = ""
-                            setShowProgress(false)
-                            _navigationListener.value = R.id.action_addDoctorFragment_to_LoginFragment
-                            _addDoctorResponse.value = resourceProvider.getString(R.string.success)
-                        }
-                    }
-
-                    is ApiErrorResponse -> {
-                        _addDoctorResponse.value = response.errorMessage
-                        setShowProgress(false)
-                    }
-
-                    is ApiNoNetworkResponse -> {
-                        _addDoctorResponse.value = response.errorMessage
-                        setShowProgress(false)
-                    }
-
-                    else -> {
-                        setShowProgress(false)
-                    }
+            is ApiSuccessResponse -> {
+                if (response.body.userId.isNotEmpty()) {
+                    doctorName.value = ""
+                    doctorEmail.value = ""
+                    doctorContactNumber.value = ""
+                    setShowProgress(false)
+                    _navigationListener.value = R.id.action_addDoctorFragment_to_LoginFragment
+                    _addDoctorResponse.value = resourceProvider.getString(R.string.success)
                 }
+            }
+
+            is ApiErrorResponse -> {
+                _addDoctorResponse.value = response.errorMessage
+                setShowProgress(false)
+            }
+
+            is ApiNoNetworkResponse -> {
+                _addDoctorResponse.value = response.errorMessage
+                setShowProgress(false)
+            }
+
+            else -> {
+                setShowProgress(false)
+            }
+        }
+    }
+
+    fun hideProgress() {
+        setShowProgress(false)
     }
 
     fun contactVerify() {
         if (!doctorContactNumber.value.isNullOrEmpty()) {
+            setShowProgress(true)
             _clickResponse.value = doctorContactNumber.value.toString()
         } else {
         }
+    }
+
+    fun ttt() {
+        Log.d(TAG, "ttt: ${doctorAddress.value}")
     }
 
 }

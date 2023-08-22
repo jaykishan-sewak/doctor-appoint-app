@@ -55,4 +55,12 @@
         <item name="android:background">@drawable/custom_edittext_bg</item>
         <item name="android:layout_marginTop">@dimen/margin_15</item>
     </style>
+
+    <style name="custom_otp_edit_text">
+        <item name="android:layout_width">@dimen/margin_40</item>
+        <item name="android:layout_height">@dimen/margin_50</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/opt_unpress_bg</item>
+    </style>
+
 </resources>
