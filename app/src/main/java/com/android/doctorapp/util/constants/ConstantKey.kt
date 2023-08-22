@@ -12,5 +12,8 @@ object ConstantKey {
         const val TABLE_NAME = "user_data"
         const val FIELD_ADMIN = "admin"
         const val FIELD_DOCTOR = "doctor"
+        const val TABLE_DEGREE= "degree"
+        const val TABLE_SPECIALIZATION= "specialization"
+
     }
 }

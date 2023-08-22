@@ -4,9 +4,11 @@
 
     <data>
 
+
         <variable
             name="userData"
             type="com.android.doctorapp.repository.models.UserDataResponseModel" />
+
 
         <variable
             name="onItemClickListener"
@@ -20,17 +22,16 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:layout_marginHorizontal="@dimen/margin_15"
         android:layout_marginVertical="@dimen/margin_10"
-        android:onClick="@{()->onItemClickListener.onItemClick(userData,index)}"
-        >
+        android:background="@color/white"
+        android:onClick="@{()->onItemClickListener.onItemClick(userData,index)}">
 
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="180dp"
-            android:elevation="@dimen/margin_5"
             android:background="@color/white"
+            android:elevation="@dimen/margin_5"
             android:padding="@dimen/margin_10"
             app:cardCornerRadius="@dimen/margin_10"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -41,18 +42,19 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
                 <androidx.cardview.widget.CardView
                     android:id="@+id/ivDoctorImageView"
                     android:layout_width="@dimen/dp_100"
                     android:layout_height="@dimen/dp_100"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:elevation="@dimen/margin_5"
+                    app:cardCornerRadius="250dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:cardCornerRadius="250dp"
-                    android:layout_gravity="center"
-                    android:elevation="@dimen/margin_5"
-                    android:layout_marginTop="@dimen/margin_10"
-                    >
+                    app:layout_constraintTop_toTopOf="parent">
+
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ivDoctorImage"
                         android:layout_width="@dimen/dp_100"
@@ -61,6 +63,17 @@
                         app:genderImage="@{userData.gender}" />
 
                 </androidx.cardview.widget.CardView>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivDoctorDelete"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_margin="@dimen/margin_10"
+                    android:onClick="@{()->onItemClickListener.onItemDelete(userData,index)}"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/baseline_close_24" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvDoctorName"

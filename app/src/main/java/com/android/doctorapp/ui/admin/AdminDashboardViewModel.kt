@@ -31,7 +31,6 @@ class AdminDashboardViewModel @Inject constructor(
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
                     if (response.body.isNotEmpty()) {
-                        setShowProgress(false)
                         items.value = response.body!!
                         Log.d("Data----", Gson().toJson(response.body))
                     }
@@ -50,5 +49,37 @@ class AdminDashboardViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun deleteDoctor(id: String, index: Int) {
+        viewModelScope.launch {
+            setShowProgress(true)
+            when (val response = adminRepository.deleteDoctor(fireStore, id)) {
+                is ApiSuccessResponse -> {
+                    setShowProgress(false)
+                    if (response.body) {
+                        val currentList = items.value?.toMutableList() ?: mutableListOf()
+                        if (index in 0 until currentList.size) {
+                            currentList.removeAt(index)
+                            items.postValue(currentList)
+                        }
+                        Log.d("Data----", "${response.body}")
+                    }
+                }
+
+                is ApiErrorResponse -> {
+                    setShowProgress(false)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    setShowProgress(false)
+                }
+
+                else -> {
+                    setShowProgress(false)
+                }
+            }
+        }
+
     }
 }

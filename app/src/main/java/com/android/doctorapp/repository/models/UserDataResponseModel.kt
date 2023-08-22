@@ -1,6 +1,7 @@
 package com.android.doctorapp.repository.models
 
 data class UserDataResponseModel(
+    var id:String = "",
     var userId: String = "",
     var isDoctor: Boolean = false,
     var email: String = "",

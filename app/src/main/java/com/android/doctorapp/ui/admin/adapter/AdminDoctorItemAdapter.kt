@@ -46,5 +46,7 @@ class AdminDoctorItemAdapter(
 
     interface OnItemClickListener {
         fun onItemClick(item: UserDataResponseModel, position: Int)
+        fun onItemDelete(item: UserDataResponseModel, position: Int)
+
     }
 }

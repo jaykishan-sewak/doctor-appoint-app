@@ -13,13 +13,14 @@ class AdminRepository @Inject constructor() {
 
     suspend fun getDoctorList(firestore: FirebaseFirestore): ApiResponse<List<UserDataResponseModel>> {
         return try {
-            val response = firestore.collection(ConstantKey.DBKeys.TABLE_NAME).whereEqualTo(ConstantKey.DBKeys.FIELD_ADMIN, true)
+            val response = firestore.collection(ConstantKey.DBKeys.TABLE_NAME)
                 .whereEqualTo(ConstantKey.DBKeys.FIELD_DOCTOR, true).get().await()
 
             val userList = arrayListOf<UserDataResponseModel>()
             for (document: DocumentSnapshot in response.documents) {
                 val user = document.toObject(UserDataResponseModel::class.java)
                 user?.let {
+                    it.id = document.id
                     userList.add(it)
                 }
             }
@@ -29,4 +30,16 @@ class AdminRepository @Inject constructor() {
         }
     }
 
+    suspend fun deleteDoctor(
+        firestore: FirebaseFirestore,
+        documentId: String
+    ): ApiResponse<Boolean> {
+        return try {
+            val response =
+                firestore.collection(ConstantKey.DBKeys.TABLE_NAME).document(documentId).delete().await()
+            ApiResponse.create(response = Response.success(true))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
 }
