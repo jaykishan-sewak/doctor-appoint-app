@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <import type="android.view.View" />
 
         <variable
             name="viewModel"
             type="com.android.doctorapp.ui.profile.AddUserViewModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.profile.AddUserProfileFragment">
+        android:layout_height="match_parent">
 
         <include
             android:id="@+id/toolbarContainer"
@@ -29,6 +28,7 @@
         <ScrollView
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:scrollbars="none"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,115 +37,186 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/margin_50"
-                android:paddingVertical="@dimen/margin_50">
+                android:layout_marginHorizontal="@dimen/parentHorizontalMargin_50"
+                android:paddingVertical="@dimen/parentVerticalMargin_50">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivAddUser"
-                    android:layout_width="@dimen/margin_60"
-                    android:layout_height="@dimen/margin_60"
-                    android:layout_marginTop="@dimen/margin_20"
+                    android:id="@+id/ic_update_doctor"
+                    android:layout_width="@dimen/profile_image_dimension"
+                    android:layout_height="@dimen/profile_image_dimension"
+                    android:layout_marginStart="@dimen/margin_8"
+                    android:layout_marginTop="@dimen/margin_32"
+                    android:layout_marginEnd="@dimen/margin_8"
                     android:background="@drawable/ic_illustration_login"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlName"
+                    android:id="@+id/fieldUpdateName"
                     style="@style/user_login_tlEditText"
-                    android:layout_marginTop="@dimen/margin_32"
-                    android:hint="@string/hint_user_name"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:hint="@string/hint_doctor_name"
+                    app:error="@{viewModel.nameError}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivAddUser">
+                    app:layout_constraintTop_toBottomOf="@+id/ic_update_doctor">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etName"
                         style="@style/user_login_editText"
+                        android:afterTextChanged="@{(text) -> viewModel.isValidName(text)}"
                         android:imeOptions="actionNext"
-                        android:inputType="text"/>
+                        android:inputType="text"
+                        android:singleLine="true"
+                        android:text="@={viewModel.name}"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraint_email"
+                    style="@style/custom_edit_text_bg"
+                    app:layout_constraintEnd_toEndOf="@+id/fieldUpdateName"
+                    app:layout_constraintStart_toStartOf="@id/fieldUpdateName"
+                    app:layout_constraintTop_toBottomOf="@+id/fieldUpdateName">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/textEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:text="@={viewModel.email}"
+                        android:textColor="@color/black"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/textEmailVerify"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="@{view -> viewModel.onEmailVerifyClick()}"
+                        android:text="@={viewModel.emailVerifyLabel}"
+                        android:textColor="@color/yellow"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlEmail"
+                    android:id="@+id/fieldUpdateAddress"
                     style="@style/user_login_tlEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
-                    android:hint="@string/hint_user_email"
+                    android:hint="@string/hint_address"
+                    app:error="@{viewModel.addressError}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tlName">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etEmail"
-                        style="@style/user_login_editText"
-                        android:imeOptions="actionNext"
-                        android:inputType="textEmailAddress"/>
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlAddress"
-                    style="@style/user_login_tlEditText"
-                    android:layout_marginTop="@dimen/margin_10"
-                    android:hint="@string/hint_user_address"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tlEmail">
+                    app:layout_constraintTop_toBottomOf="@+id/constraint_email">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etAddress"
                         style="@style/user_login_editText"
+                        android:afterTextChanged="@{(text) -> viewModel.isValidAddress(text)}"
                         android:imeOptions="actionNext"
                         android:inputType="textPostalAddress"
-                        android:singleLine="false" />
+                        android:singleLine="true"
+                        android:text="@={viewModel.address}"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlContactNumber"
+                    android:id="@+id/fieldUpdateContact"
                     style="@style/user_login_tlEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
                     android:hint="@string/hint_user_contact"
+                    app:error="@{viewModel.contactNumError}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tlAddress">
+                    app:layout_constraintTop_toBottomOf="@+id/fieldUpdateAddress">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etContactNumber"
+                        android:id="@+id/etContact"
                         style="@style/user_login_editText"
+                        android:afterTextChanged="@{(text) -> viewModel.isValidContact(text)}"
                         android:imeOptions="actionNext"
-                        android:inputType="phone" />
+                        android:inputType="phone"
+                        android:singleLine="true"
+                        android:text="@={viewModel.contactNum}"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlDOB"
-                    style="@style/user_login_tlEditText"
-                    android:layout_marginTop="@dimen/margin_10"
-                    android:hint="@string/hint_user_dob"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textContactVerify"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{view -> viewModel.onContactVerifyClick()}"
+                    android:text="@={viewModel.contactVerifyLabel}"
+                    android:textColor="@color/yellow"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/fieldUpdateContact" />
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintUserDob"
+                    style="@style/custom_edit_text_bg"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tlContactNumber">
+                    app:layout_constraintTop_toBottomOf="@+id/textContactVerify">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etDOB"
-                        style="@style/user_login_editText"
-                        android:imeOptions="actionNext"
-                        android:inputType="textEmailAddress" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/textDob"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:afterTextChanged="@{(text) -> viewModel.isValidDob(text)}"
+                        android:text="@={viewModel.dob}"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        app:error="@{viewModel.dobError}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ic_calender"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ic_calendar"
+                        android:onClick="@{view -> viewModel.onCalenderClick()}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btnUpdate"
-                    style="@style/user_login_editText"
+                    android:id="@+id/btnUpdateProfile"
+                    android:layout_width="match_parent"
                     android:layout_height="@dimen/margin_50"
-                    android:layout_marginTop="@dimen/margin_60"
+                    android:layout_marginTop="@dimen/margin_32"
                     android:background="@drawable/button_state_colors"
+                    android:enabled="@{viewModel.isUserDataValid()}"
+                    android:onClick="@{view -> viewModel.onUpdateClick()}"
                     android:text="@string/update"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tlDOB" />
-
-
+                    app:layout_constraintTop_toBottomOf="@+id/constraintUserDob" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
         </ScrollView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

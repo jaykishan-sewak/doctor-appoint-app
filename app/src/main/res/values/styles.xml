@@ -55,4 +55,14 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/grey</item>
     </style>
+
+    <style name="custom_edit_text_bg">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/margin_55</item>
+        <item name="android:background">@drawable/custom_edittext_bg</item>
+        <item name="android:layout_marginTop">@dimen/margin_15</item>
+    </style>
+
+
+
 </resources>

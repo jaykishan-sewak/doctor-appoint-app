@@ -1,5 +1,6 @@
 package com.android.doctorapp.repository
 
+import android.util.Log
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.local.USER_IS_LOGGED_IN
 import com.android.doctorapp.repository.models.ApiResponse
@@ -15,6 +16,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -155,11 +157,49 @@ class AuthRepository @Inject constructor(
         }
     }
 
-    suspend fun addUserData(userRequestModel: UserDataRequestModel, firestore: FirebaseFirestore
-    ): ApiResponse<UserDataRequestModel>{
+    suspend fun addUserData(
+        userRequestModel: UserDataRequestModel, firestore: FirebaseFirestore
+    ): ApiResponse<UserDataRequestModel> {
         return try {
-            val addUserResponse = firestore.collection("user_data").add(userRequestModel).await()
+            firestore.collection("user_data").add(userRequestModel).await()
             ApiResponse.create(response = Response.success(userRequestModel))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+    suspend fun emailVerification(
+        firebaseUser: FirebaseUser
+    ): ApiResponse<Boolean> {
+        return try {
+            firebaseUser.sendEmailVerification(
+            ).await()
+            ApiResponse.create(response = Response.success(true))
+
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+    fun emailVerified(
+        firebaseUser: FirebaseUser
+    ): ApiResponse<Boolean> {
+        return try {
+            val result = firebaseUser.isEmailVerified
+            Log.d("EmailVerified", "emailVerified: $result")
+            ApiResponse.create(response = Response.success(result))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+    fun userReload(
+        firebaseUser: FirebaseUser
+    ): ApiResponse<Boolean> {
+        return try {
+            val result = firebaseUser.reload()
+            Log.d("Reload", "userReload: $result")
+            ApiResponse.create(response = Response.success(true))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
         }

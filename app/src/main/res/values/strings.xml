@@ -72,12 +72,14 @@
     <string name="enter_valid_name">Enter Valid Name</string>
     <string name="valid_name_desc">Name should contain at least 3 characters</string>
     <string name="valid_name_start_with_char">Name should starts with character</string>
+    <string name="valid_address_desc">"Address must have at least there characters"</string>
+    <string name="valid_dob_desc">"Date of birth can not be empty"</string>
     <string name="doctor_save_successfully">Doctor information successfully saved.</string>
     <string name="doctor_not_save">Doctor information Not saved.</string>
     <string name="success">Success</string>
     <string name="update_profile_title">Update Profile</string>
     <string name="verify">Verify</string>
-    <string name="hint_address">Enter Address</string>
+    <string name="hint_address">Address</string>
     <string name="hint_degree">Enter Degree</string>
     <string name="hint_speciality">Enter Speciality</string>
     <string name="confirm_password">Confirm Password</string>
