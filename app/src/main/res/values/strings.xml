@@ -70,7 +70,7 @@
     <string name="doctor_notification_enable">Doctor Notification Enable</string>
     <string name="submit">Submit</string>
     <string name="enter_valid_name">Enter Valid Name</string>
-    <string name="valid_name_desc">Name should contain at least 3 characters</string>
+    <string name="valid_name_desc">Name must have at least 3three characters</string>
     <string name="valid_name_start_with_char">Name should starts with character</string>
     <string name="valid_address_desc">"Address must have at least there characters"</string>
     <string name="valid_dob_desc">"Date of birth can not be empty"</string>
@@ -92,5 +92,11 @@
     <string name="hint_user_contact">Contact Number</string>
     <string name="hint_user_dob">DOB</string>
     <string name="update">Update</string>
+
+    <string name="available_date">Available Date</string>
+    <string name="available_time">Available Time</string>
+    <string name="check_internet_connection">Please Check your Internet Connection</string>
+    <string name="otp_verification">Otp Verification</string>
+    <string name="otp_desc">Thank you for registering with you, please\ntype otp as shared on your mobile\nXXXXXXX</string>
 
 </resources>

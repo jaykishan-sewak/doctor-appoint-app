@@ -32,8 +32,8 @@ class AddDoctorFragment: BaseFragment<FragmentAddDoctorBinding>(R.layout.fragmen
     override fun builder(): FragmentToolbar {
         return FragmentToolbar.Builder()
             .withId(R.id.toolbar)
-            .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.purple_500))
-            .withTitle(R.string.title_profile)
+            .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.blue))
+            .withTitle(R.string.add_doctor)
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
             .build()
     }
@@ -63,6 +63,8 @@ class AddDoctorFragment: BaseFragment<FragmentAddDoctorBinding>(R.layout.fragmen
                 context?.toast(resources.getString(R.string.doctor_save_successfully))
                 viewModel.navigationListener.observe(viewLifecycleOwner) {
                     findNavController().navigate(it)
+                    findNavController().popBackStack(R.id.LoginFragment, false)
+
                 }
             } else {
                 context?.alert {

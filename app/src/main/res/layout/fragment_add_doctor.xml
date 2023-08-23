@@ -28,6 +28,7 @@
         <ScrollView
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:scrollbars="none"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -36,34 +37,35 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/margin_20"
-                android:layout_marginVertical="@dimen/margin_10">
+                android:layout_marginHorizontal="@dimen/parentHorizontalMargin_50"
+                android:paddingVertical="@dimen/parentVerticalMargin_50">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ic_add_doctor"
-                    android:layout_width="@dimen/margin_50"
-                    android:layout_height="@dimen/margin_50"
-                    android:layout_marginTop="@dimen/margin_20"
-                    android:src="@mipmap/ic_launcher"
+                    android:layout_width="@dimen/profile_image_dimension"
+                    android:layout_height="@dimen/profile_image_dimension"
+                    android:layout_marginStart="@dimen/margin_8"
+                    android:layout_marginTop="@dimen/margin_32"
+                    android:layout_marginEnd="@dimen/margin_8"
+                    android:background="@drawable/ic_illustration_login"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/field_doctor_name"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/user_login_tlEditText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_20"
+                    android:layout_marginTop="@dimen/margin_32"
                     app:error="@{viewModel.doctorNameError}"
-                    app:errorTextColor="@color/purple_500"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/ic_add_doctor">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_doctor_name"
-                        style="@style/add_doctor_editText"
+                        style="@style/user_login_editText"
                         android:inputType="text"
                         android:afterTextChanged="@{(text) -> viewModel.isValidName(text)}"
                         android:hint="@string/hint_doctor_name"
@@ -75,19 +77,18 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/field_doctor_email"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/user_login_tlEditText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_20"
                     app:error="@{viewModel.doctorEmailError}"
-                    app:errorTextColor="@color/purple_500"
+                    android:layout_marginTop="@dimen/margin_10"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/field_doctor_name">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_doctor_email"
-                        style="@style/add_doctor_editText"
+                        style="@style/user_login_editText"
                         android:afterTextChanged="@{(text) -> viewModel.isValidEmail(text)}"
                         android:hint="@string/hint_doctor_email"
                         android:imeOptions="actionNext"
@@ -99,10 +100,10 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/field_doctor_contact"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/user_login_tlEditText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_20"
+                    android:layout_marginTop="@dimen/margin_10"
                     app:error="@{viewModel.doctorContactNumberError}"
                     app:errorTextColor="@color/purple_500"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -111,7 +112,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_doctor_contact"
-                        style="@style/add_doctor_editText"
+                        style="@style/user_login_editText"
                         android:afterTextChanged="@{(text) -> viewModel.isValidContact(text)}"
                         android:hint="@string/hint_doctor_contact"
                         android:imeOptions="actionDone"
@@ -126,12 +127,11 @@
                     android:id="@+id/txt_doctor_notification"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_20"
-                    android:layout_marginTop="@dimen/margin_10"
                     android:text="@string/doctor_notification_enable"
                     android:textColor="@color/black"
+                    app:layout_constraintBottom_toBottomOf="@+id/switch_doctor_notification"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/field_doctor_contact" />
+                    app:layout_constraintTop_toTopOf="@+id/switch_doctor_notification" />
 
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/switch_doctor_notification"
@@ -145,12 +145,15 @@
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/button_submit"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_10"
+                    style="@style/user_login_editText"
+                    android:layout_height="@dimen/margin_50"
+                    android:layout_marginTop="@dimen/margin_60"
+                    android:background="@drawable/button_state_colors"
                     android:enabled="@{viewModel.isDataValid}"
                     android:onClick="@{()->viewModel.addDoctorData()}"
                     android:text="@string/submit"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/switch_doctor_notification"

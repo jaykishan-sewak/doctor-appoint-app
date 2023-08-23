@@ -15,9 +15,20 @@
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/RegisterFragment" />
 
+
         <action
             android:id="@+id/action_loginFragment_to_addUserProfileFragment"
-            app:destination="@+id/AddUserProfileFragment"/>
+            app:destination="@+id/AddUserProfileFragment" />
+
+        <action
+            android:id="@+id/action_loginFragment_to_doctorDashboardFragment"
+            app:destination="@+id/DoctorDashboardFragment"
+            />
+
+        <action
+            android:id="@+id/action_loginFragment_to_adminDashboardFragment"
+            app:destination="@+id/AdminDashboardFragment"
+            />
 
     </fragment>
 
@@ -36,16 +47,68 @@
         android:id="@+id/AddUserProfileFragment"
         android:name="com.android.doctorapp.ui.profile.AddUserProfileFragment"
         android:label="Third Fragment"
-        tools:layout="@layout/fragment_add_user_profile"/>
+        tools:layout="@layout/fragment_add_user_profile" />
 
     <fragment
         android:id="@+id/AddDoctorFragment"
         android:name="com.android.doctorapp.ui.doctor.AddDoctorFragment"
         tools:layout="@layout/fragment_add_doctor">
 
+        <action android:id="@+id/action_addDoctorFragment_to_LoginFragment"
+            app:destination="@id/LoginFragment"
+            app:popUpTo="@id/LoginFragment"
+            app:popUpToInclusive="true"
+            />
+
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/UpdateDoctorFragment"
+        android:name="com.android.doctorapp.ui.doctor.UpdateDoctorProfileFragment"
+        tools:layout="@layout/fragment_update_doctor_profile">
+
         <action
-            android:id="@+id/action_addDoctorFragment_to_LoginFragment"
+            android:id="@+id/action_updateDoctorFragment_to_LoginFragment"
             app:destination="@id/LoginFragment" />
+
+        <action
+            android:id="@+id/action_updateDoctorFragment_to_OtpVerificationFragment"
+            app:destination="@+id/OtpVerificationFragment"
+            />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/AdminDashboardFragment"
+        android:name="com.android.doctorapp.ui.admin.AdminDashboardFragment"
+        tools:layout="@layout/fragment_admin_dashboard">
+
+        <action
+            android:id="@+id/admin_to_add_doctor"
+            app:destination="@+id/AddDoctorFragment"
+            />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/DoctorDashboardFragment"
+        android:name="com.android.doctorapp.ui.doctor.DoctorDashboardFragment"
+        tools:layout="@layout/fragment_doctor_dashboard">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/OtpVerificationFragment"
+        android:name="com.android.doctorapp.ui.otp.OtpVerificationFragment"
+        tools:layout="@layout/fragment_otp_verification">
+
+        <action
+            android:id="@+id/action_otpFragment_to_updateDoctorFragment"
+            app:destination="@id/UpdateDoctorFragment"
+            app:popUpTo="@id/UpdateDoctorFragment"
+            app:popUpToInclusive="true"
+            />
 
     </fragment>
 

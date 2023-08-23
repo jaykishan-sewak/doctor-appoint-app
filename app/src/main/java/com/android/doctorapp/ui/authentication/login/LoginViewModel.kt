@@ -1,6 +1,5 @@
 package com.android.doctorapp.ui.authentication.login
 
-
 import android.content.Context
 import androidx.activity.result.ActivityResult
 import androidx.lifecycle.MutableLiveData
@@ -9,6 +8,8 @@ import com.android.doctorapp.R
 import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AuthRepository
+import com.android.doctorapp.repository.local.Session
+import com.android.doctorapp.repository.local.USER_ID
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
@@ -16,7 +17,9 @@ import com.android.doctorapp.repository.models.LoginResponseModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
+import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.isPassWordValid
+import com.android.doctorapp.util.extension.toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -28,7 +31,8 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val resourceProvider: ResourceProvider,
-    context: Context
+    private val context: Context,
+    private val session: Session
 ) : BaseViewModel() {
     private val _loginResponse = SingleLiveEvent<LoginResponseModel?>()
     val loginResponse = _loginResponse.asLiveData()
@@ -64,7 +68,12 @@ class LoginViewModel @Inject constructor(
 
 
     fun onClick() {
-        callLoginAPI()
+        if (context.isNetworkAvailable()) {
+            callLoginAPI()
+        } else {
+            context.toast(resourceProvider.getString(R.string.check_internet_connection))
+        }
+
     }
 
     /**
@@ -107,11 +116,14 @@ class LoginViewModel @Inject constructor(
                 password = password.value.toString(),
             )) {
                 is ApiSuccessResponse -> {
-                    email.value = ""
-                    password.value = ""
-                    setShowProgress(false)
-                    _navigationListener.postValue(R.id.action_loginFragment_to_addUserProfileFragment)
-                    //_loginResponse.postValue(LoginResponseModel("test", "10", "test1", "test123"))
+                    if (!firebaseAuth.currentUser?.uid.isNullOrEmpty()) {
+                        getUserData()
+
+                    }
+//                    email.value = ""
+//                    password.value = ""
+//                    setShowProgress(false)
+//                    _navigationListener.postValue(R.id.action_loginFragment_to_addDoctorFragment)
                 }
 
                 is ApiErrorResponse -> {
@@ -128,6 +140,39 @@ class LoginViewModel @Inject constructor(
                     setShowProgress(false)
                 }
             }
+        }
+    }
+
+    private suspend fun getUserData() {
+
+        when (val response = authRepository.getRecordById(firebaseAuth.currentUser?.uid.toString(), fireStore)) {
+
+            is ApiSuccessResponse -> {
+                email.value = ""
+                password.value = ""
+                setShowProgress(false)
+                session.putString(USER_ID, response.body.userId)
+                if (response.body.isAdmin) {
+                    _navigationListener.postValue(R.id.action_loginFragment_to_adminDashboardFragment)
+                } else if (response.body.isDoctor) {
+                    _navigationListener.postValue(R.id.action_loginFragment_to_doctorDashboardFragment)
+                } else {
+                    _navigationListener.postValue(R.id.action_loginFragment_to_addUserProfileFragment)
+                }
+            }
+
+            is ApiErrorResponse -> {
+                setApiError(response.errorMessage)
+                setShowProgress(false)
+            }
+
+            is ApiNoNetworkResponse -> {
+                setNoNetworkError(response.errorMessage)
+                setShowProgress(false)
+
+            }
+
+            else -> {}
         }
     }
 

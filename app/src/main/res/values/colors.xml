@@ -10,9 +10,13 @@
     <color name="transparent">#00000000</color>
     <color name="transparent_black">#30000000</color>
     <color name="top_bar_bg_color">#1b5094</color>
-    <color name="yellow">#D1BC35</color>
+    <color name="yellow">#FFBF00</color>
     <color name="grey">#7b7b7b</color>
     <color name="btn_grey">#e5e5e5</color>
     <color name="blue"> #1a4d91</color>
+    <color name="edittext_bg_grey">#afadae</color>
+    <color name="color_background_box">#F5F5F5</color>
+    <color name="color_background_box_stroke">#DEDEDE</color>
+    <color name="color_background_box_stroke_active">#A5A5A5</color>
     <color name="edittext_bg_grey">#afadae</color>
 </resources>

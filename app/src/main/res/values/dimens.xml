@@ -4,12 +4,13 @@
     <dimen name="margin_60">60dp</dimen>
     <dimen name="margin_55">55dp</dimen>
     <dimen name="margin_50">50dp</dimen>
-    <dimen name="margin_40">40dp</dimen>
-    <dimen name="margin_32">32dp</dimen>
     <dimen name="margin_20">20dp</dimen>
     <dimen name="margin_15">15dp</dimen>
     <dimen name="margin_10">10dp</dimen>
     <dimen name="margin_8">8dp</dimen>
+    <dimen name="margin_32">32dp</dimen>
+    <dimen name="margin_35">35dp</dimen>
+    <dimen name="margin_40">40dp</dimen>
     <dimen name="margin_5">5dp</dimen>
     <dimen name="padding_10">10dp</dimen>
     <dimen name="radius_10">10dp</dimen>
