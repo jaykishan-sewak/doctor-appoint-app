@@ -76,8 +76,6 @@ class AdminDashboardFragment :
             object : AdminDoctorItemAdapter.OnItemClickListener {
                 override fun onItemClick(item: UserDataResponseModel, position: Int) {
                     Log.d("item Cllick ---", Gson().toJson(item))
-//                    viewModel.deleteDoctor(item.id)
-                    adapter.notifyDataSetChanged()
                 }
 
                 override fun onItemDelete(item: UserDataResponseModel, position: Int) {

@@ -154,54 +154,53 @@
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/field_update_degree"
-                    style="@style/user_login_tlEditText"
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroup"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_10"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraint_contact">
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/constraint_contact"/>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_degree"
-                        style="@style/user_login_editText"
-                        android:hint="@string/hint_degree"
-                        android:imeOptions="actionNext"
-                        android:singleLine="true"
-                        android:textColor="@color/black"
-                        android:textSize="14sp" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/field_update_speciality"
-                    style="@style/user_login_tlEditText"
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/autoCompleteTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/chipGroup"
+                    android:hint="@string/hint_degree"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:background="@drawable/rounded_bg"
+                    style="@style/user_login_editText"
+                    android:completionThreshold="2" />
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupSpec"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_10"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/field_update_degree">
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/autoCompleteTextView"/>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_speciality"
-                        style="@style/user_login_editText"
-                        android:hint="@string/hint_speciality"
-                        android:imeOptions="actionNext"
-                        android:singleLine="true"
-                        android:textColor="@color/black"
-                        android:textSize="14sp" />
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/autoCompleteTextViewSpec"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/chipGroupSpec"
+                    android:hint="@string/hint_speciality"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:background="@drawable/rounded_bg"
+                    style="@style/user_login_editText"
+                    android:completionThreshold="2" />
 
-                </com.google.android.material.textfield.TextInputLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraint_available_date"
                     style="@style/custom_edit_text_bg"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/field_update_speciality"
+                    app:layout_constraintTop_toBottomOf="@+id/autoCompleteTextViewSpec"
                     app:layout_constraintEnd_toEndOf="parent">
 
                     <androidx.appcompat.widget.AppCompatTextView

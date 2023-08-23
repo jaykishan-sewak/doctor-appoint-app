@@ -11,10 +11,13 @@ import com.android.doctorapp.repository.AuthRepository
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
+import com.android.doctorapp.repository.models.DegreeResponseModel
+import com.android.doctorapp.repository.models.SpecializationResponseModel
 import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -46,6 +49,10 @@ class AddDoctorViewModel @Inject constructor(
 
     private val _clickResponse: MutableLiveData<String> = MutableLiveData()
     val clickResponse = _clickResponse.asLiveData()
+    private val degreeItems = SingleLiveEvent<DegreeResponseModel?>()
+    val degreeList = degreeItems.asLiveData()
+    private val specializationItems = SingleLiveEvent<SpecializationResponseModel?>()
+    val specializationList = specializationItems.asLiveData()
 
 
     private fun validateAllField() {
@@ -140,48 +147,146 @@ class AddDoctorViewModel @Inject constructor(
     private suspend fun addUserData() {
 
         val userData = UserDataRequestModel(
-                userId = firebaseAuth.currentUser?.uid.toString(),
-                isDoctor = true,
-                email = doctorEmail.value!!,
-                name = doctorName.value!!,
-                contactNumber = doctorContactNumber.value!!,
-                isNotificationEnable = toggleLiveData.value == true
-            )
+            userId = firebaseAuth.currentUser?.uid.toString(),
+            isDoctor = true,
+            email = doctorEmail.value!!,
+            name = doctorName.value!!,
+            contactNumber = doctorContactNumber.value!!,
+            isNotificationEnable = toggleLiveData.value == true
+        )
 
 
         when (val response = authRepository.addDoctorData(userData, fireStore)) {
 
-                    is ApiSuccessResponse -> {
-                        if (response.body.userId.isNotEmpty()) {
-                            doctorName.value = ""
-                            doctorEmail.value = ""
-                            doctorContactNumber.value = ""
-                            setShowProgress(false)
-                            _navigationListener.value = R.id.action_addDoctorFragment_to_LoginFragment
-                            _addDoctorResponse.value = resourceProvider.getString(R.string.success)
-                        }
-                    }
-
-                    is ApiErrorResponse -> {
-                        _addDoctorResponse.value = response.errorMessage
-                        setShowProgress(false)
-                    }
-
-                    is ApiNoNetworkResponse -> {
-                        _addDoctorResponse.value = response.errorMessage
-                        setShowProgress(false)
-                    }
-
-                    else -> {
-                        setShowProgress(false)
-                    }
+            is ApiSuccessResponse -> {
+                if (response.body.userId.isNotEmpty()) {
+                    doctorName.value = ""
+                    doctorEmail.value = ""
+                    doctorContactNumber.value = ""
+                    setShowProgress(false)
+                    _navigationListener.value = R.id.action_addDoctorFragment_to_LoginFragment
+                    _addDoctorResponse.value = resourceProvider.getString(R.string.success)
                 }
+            }
+
+            is ApiErrorResponse -> {
+                _addDoctorResponse.value = response.errorMessage
+                setShowProgress(false)
+            }
+
+            is ApiNoNetworkResponse -> {
+                _addDoctorResponse.value = response.errorMessage
+                setShowProgress(false)
+            }
+
+            else -> {
+                setShowProgress(false)
+            }
+        }
     }
 
     fun contactVerify() {
         if (!doctorContactNumber.value.isNullOrEmpty()) {
             _clickResponse.value = doctorContactNumber.value.toString()
         } else {
+        }
+    }
+
+    fun getDegreeItems() {
+        viewModelScope.launch {
+            setShowProgress(true)
+            when (val response = authRepository.getDegreeList(fireStore)) {
+                is ApiSuccessResponse -> {
+                    setShowProgress(false)
+                    degreeItems.value = response.body
+                    Log.d("Data----", Gson().toJson(response.body))
+                }
+
+                is ApiErrorResponse -> {
+                    setShowProgress(false)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    setShowProgress(false)
+                }
+
+                else -> {
+                    setShowProgress(false)
+                }
+            }
+        }
+    }
+
+    fun getSpecializationItems() {
+        viewModelScope.launch {
+            setShowProgress(true)
+            when (val response = authRepository.getSpecializationList(fireStore)) {
+                is ApiSuccessResponse -> {
+                    setShowProgress(false)
+                    specializationItems.value = response.body
+                    Log.d("Data----", Gson().toJson(response.body))
+                }
+
+                is ApiErrorResponse -> {
+                    setShowProgress(false)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    setShowProgress(false)
+                }
+
+                else -> {
+                    setShowProgress(false)
+                }
+            }
+        }
+    }
+
+    fun addDegreeItems(data:String) {
+        viewModelScope.launch {
+            setShowProgress(true)
+            when (val response = authRepository.addDegree(fireStore,data)) {
+                is ApiSuccessResponse -> {
+                    setShowProgress(false)
+                    Log.d("Add Data----", Gson().toJson(response.body))
+                }
+
+                is ApiErrorResponse -> {
+                    setShowProgress(false)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    setShowProgress(false)
+                }
+
+                else -> {
+                    setShowProgress(false)
+                }
+            }
+        }
+    }
+
+    fun addSpecializationItems(data:String) {
+        viewModelScope.launch {
+            setShowProgress(true)
+            when (val response = authRepository.addSpecialization(fireStore,data)) {
+                is ApiSuccessResponse -> {
+                    setShowProgress(false)
+                    Log.d("Add Data----", Gson().toJson(response.body))
+                }
+
+                is ApiErrorResponse -> {
+                    setShowProgress(false)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    setShowProgress(false)
+                }
+
+                else -> {
+                    setShowProgress(false)
+                }
+            }
         }
     }
 
