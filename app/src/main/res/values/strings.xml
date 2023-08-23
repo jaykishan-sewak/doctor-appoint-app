@@ -86,5 +86,8 @@
     <string name="otp_verification">Otp Verification</string>
     <string name="otp_desc">Thank you for registering with you, please\ntype otp as shared on your mobile\nXXXXXXX</string>
     <string name="valid_address_desc">Address must have at least three characters</string>
-
+    <string name="select_dob">Select Date of Birth</string>
+    <string name="valid_dob_desc">"Date of birth can not be empty"</string>
+    <string name="valid_date_desc">Available Date can not be empty</string>
+    <string name="valid_time_desc">Available Time can not be empty</string>
 </resources>

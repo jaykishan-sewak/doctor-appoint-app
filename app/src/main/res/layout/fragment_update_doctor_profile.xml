@@ -56,7 +56,7 @@
                     android:id="@+id/field_update_name"
                     style="@style/user_login_tlEditText"
                     android:layout_marginTop="@dimen/margin_10"
-                    app:error="@{viewModel.doctorNameError}"
+                    app:error="@{viewModel.nameError}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/ic_update_doctor">
@@ -64,45 +64,32 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_name"
                         style="@style/user_login_editText"
+                        android:afterTextChanged="@{(text) -> viewModel.isValidName(text)}"
                         android:hint="@string/hint_doctor_name"
                         android:imeOptions="actionNext"
                         android:singleLine="true"
-                        android:afterTextChanged="@{(text) -> viewModel.isValidName(text)}"
-                        android:text="@={viewModel.doctorName}"
+                        android:text="@={viewModel.name}"
                         android:textColor="@color/black"
                         android:textSize="14sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraint_email"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_email"
                     style="@style/custom_edit_text_bg"
+                    android:text="@={viewModel.email}"
                     app:layout_constraintEnd_toEndOf="@+id/field_update_name"
                     app:layout_constraintStart_toStartOf="@id/field_update_name"
-                    app:layout_constraintTop_toBottomOf="@+id/field_update_name">
+                    app:layout_constraintTop_toBottomOf="@+id/field_update_name" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/text_email"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:enabled="false"
-                        android:text="@={viewModel.doctorEmail}"
-                        android:textColor="@color/black"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/text_email_verify"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/verify"
-                        android:textColor="@color/yellow"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_email_verify"
+                    style="@style/verify_margin"
+                    android:text="@string/verify"
+                    android:textColor="@color/yellow"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_email"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/text_email" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/field_update_address"
@@ -110,83 +97,63 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
-                    app:error="@{viewModel.doctorAddressError}"
+                    app:error="@{viewModel.addressError}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraint_email">
+                    app:layout_constraintTop_toBottomOf="@+id/text_email">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_address"
                         style="@style/user_login_editText"
+                        android:afterTextChanged="@{(text) -> viewModel.isValidAddress(text)}"
                         android:hint="@string/hint_address"
                         android:imeOptions="actionNext"
                         android:singleLine="true"
-                        android:text="@={viewModel.doctorAddress}"
-                        android:afterTextChanged="@{(text) -> viewModel.isValidAddress(text)}"
+                        android:text="@={viewModel.address}"
                         android:textColor="@color/black"
                         android:textSize="14sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraint_contact"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_contact_number"
                     style="@style/custom_edit_text_bg"
+                    android:text="@={viewModel.contactNumber}"
+                    android:textColor="@color/black"
                     app:layout_constraintStart_toStartOf="@id/field_update_address"
-                    app:layout_constraintTop_toBottomOf="@id/field_update_address">
+                    app:layout_constraintTop_toBottomOf="@id/field_update_address" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/text_contact_number"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@={viewModel.doctorContactNumber}"
-                        android:textColor="@color/black"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_contact_verify"
+                    style="@style/verify_margin"
+                    android:onClick="@{() -> viewModel.contactVerify()}"
+                    android:text="@={viewModel.isPhoneVerifyValue}"
+                    android:textColor="@color/yellow"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_contact_number"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/text_contact_number" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/text_contact_verify"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:onClick="@{() -> viewModel.contactVerify()}"
-                        android:text="@string/verify"
-                        android:textColor="@color/yellow"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraint_date_of_birth"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_date_of_birth"
                     style="@style/custom_edit_text_bg"
+                    android:afterTextChanged="@{(text) -> viewModel.isValidDob(text)}"
+                    android:hint="@string/select_dob"
+                    android:onClick="@{(text_dob) -> viewModel.calenderClick(text_dob)}"
+                    android:text="@{viewModel.dob}"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraint_contact"
-                    app:layout_constraintEnd_toEndOf="parent">
+                    app:layout_constraintTop_toBottomOf="@+id/text_contact_number" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/text_date_of_birth"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="13-aug-2023"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ic_dob_calender"
+                    style="@style/verify_margin"
+                    android:background="@drawable/ic_calendar"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_date_of_birth"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/text_date_of_birth" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ic_dob_calender"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/ic_calendar"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/field_update_degree"
@@ -196,7 +163,7 @@
                     android:layout_marginTop="@dimen/margin_10"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraint_date_of_birth">
+                    app:layout_constraintTop_toBottomOf="@+id/text_date_of_birth">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_degree"
@@ -230,68 +197,48 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraint_available_date"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_available_date"
                     style="@style/custom_edit_text_bg"
+                    android:hint="@string/available_date"
+                    android:onClick="@{(text_available) -> viewModel.calenderClick(text_available)}"
+                    android:text="@={viewModel.isAvailableDate}"
+                    android:afterTextChanged="@{(text) -> viewModel.isValidDate(text)}"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/field_update_speciality"
-                    app:layout_constraintEnd_toEndOf="parent">
+                    app:layout_constraintTop_toBottomOf="@+id/field_update_speciality" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/text_available_date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="13-aug-2023"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ic_calender"
+                    style="@style/verify_margin"
+                    android:background="@drawable/ic_calendar"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_available_date"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/text_available_date" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ic_calender"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/ic_calendar"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraint_available_time"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_available_time"
                     style="@style/custom_edit_text_bg"
-                    app:layout_constraintTop_toBottomOf="@+id/constraint_available_date"
+                    android:afterTextChanged="@{(text) -> viewModel.isValidTime(text)}"
+                    android:hint="@string/available_time"
+                    android:onClick="@{() -> viewModel.timeClick()}"
+                    android:text="@={viewModel.availableTime}"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent">
+                    app:layout_constraintTop_toBottomOf="@+id/text_available_date" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/text_available_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_10"
-                        android:text="10:00"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ic_clock"
+                    style="@style/verify_margin"
+                    android:background="@drawable/ic_clock"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_available_time"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/text_available_time" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ic_clock"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/ic_clock"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txt_doctor_notification"
@@ -299,10 +246,9 @@
                     android:layout_height="wrap_content"
                     android:text="@string/doctor_notification_enable"
                     android:textColor="@color/black"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toBottomOf="@+id/switch_doctor_notification"
-                    app:layout_constraintTop_toTopOf="@+id/switch_doctor_notification"
-                    />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/switch_doctor_notification" />
 
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/switch_doctor_notification"
@@ -310,9 +256,22 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraint_available_time"
-                    />
+                    app:layout_constraintTop_toBottomOf="@+id/text_available_time" />
 
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnLogin"
+                    style="@style/user_login_editText"
+                    android:layout_height="@dimen/margin_50"
+                    android:layout_marginTop="@dimen/margin_60"
+                    android:background="@drawable/button_state_colors"
+                    android:enabled="@{viewModel.isDataValid1}"
+                    android:text="@string/update_profile_title"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/switch_doctor_notification" />
+                <!--                                    android:onClick="@{view -> viewModel.onClick()}"-->
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>
