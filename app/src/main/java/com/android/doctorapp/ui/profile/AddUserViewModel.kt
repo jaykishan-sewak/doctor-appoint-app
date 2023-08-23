@@ -217,19 +217,9 @@ class AddUserViewModel @Inject constructor(
     }
 
     private fun isEmailVerified() {
-//        firebaseAuth.currentUser!!.reload()
-//            .addOnCompleteListener { task ->
         userReload()
-//                if (task.isSuccessful){
-//                    if (firebaseAuth.currentUser?.isEmailVerified == true) {
-//                        isEmailVerified.postValue(true)
-//                        viewModelScope.launch {
-//                            session.putBoolean(USER_IS_EMAIL_VERIFIED, true)
-//                        }
-//                    }
-//                }
-        // }
-    }
+     }
+
 
     suspend fun checkIsEmailEveryMin() {
         if (!session.getBoolean(USER_IS_EMAIL_VERIFIED).equals(true)) {
