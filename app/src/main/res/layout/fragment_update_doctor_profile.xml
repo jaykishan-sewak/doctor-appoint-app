@@ -128,6 +128,7 @@
                     style="@style/verify_margin"
                     android:onClick="@{() -> viewModel.contactVerify()}"
                     android:text="@={viewModel.isPhoneVerifyValue}"
+                    android:enabled="@{viewModel.isPhoneVerify}"
                     android:textColor="@color/yellow"
                     app:layout_constraintBottom_toBottomOf="@+id/text_contact_number"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -265,13 +266,13 @@
                     android:layout_marginTop="@dimen/margin_60"
                     android:background="@drawable/button_state_colors"
                     android:enabled="@{viewModel.isDataValid1}"
+                    android:onClick="@{view -> viewModel.onUpdateClick()}"
                     android:text="@string/update_profile_title"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/switch_doctor_notification" />
-                <!--                                    android:onClick="@{view -> viewModel.onClick()}"-->
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>

@@ -1,6 +1,7 @@
 package com.android.doctorapp.ui.doctor
 
 import android.content.Context
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import androidx.lifecycle.MutableLiveData
@@ -22,6 +23,7 @@ import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import javax.inject.Inject
 
 class AddDoctorViewModel @Inject constructor(
@@ -54,7 +56,7 @@ class AddDoctorViewModel @Inject constructor(
     private val _addDoctorResponse = SingleLiveEvent<String>()
     val addDoctorResponse = _addDoctorResponse.asLiveData()
 
-    private val _clickResponse: MutableLiveData<String> = MutableLiveData()
+    private val _clickResponse: MutableLiveData<String> = SingleLiveEvent()
     val clickResponse = _clickResponse.asLiveData()
 
     val data = MutableLiveData<List<UserDataRequestModel>>()
@@ -65,7 +67,7 @@ class AddDoctorViewModel @Inject constructor(
     val dob: MutableLiveData<String> = MutableLiveData()
     private val dobError: MutableLiveData<String?> = MutableLiveData()
 
-    val isCalender: MutableLiveData<View> = MutableLiveData()
+    val isCalender: MutableLiveData<View> = SingleLiveEvent()
     val isAvailableDate: MutableLiveData<String?> = MutableLiveData()
     private val isAvailableDateError: MutableLiveData<String?> = MutableLiveData()
 
@@ -73,8 +75,11 @@ class AddDoctorViewModel @Inject constructor(
     val availableTime: MutableLiveData<String> = MutableLiveData()
     private val availableTimeError: MutableLiveData<String?> = MutableLiveData()
 
-    val isPhoneVerify: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isPhoneVerify: MutableLiveData<Boolean> = MutableLiveData(true)
     val isPhoneVerifyValue: MutableLiveData<String> = MutableLiveData("Verify")
+
+    val isDoctor: MutableLiveData<Boolean> = MutableLiveData(false)
+
 
     fun getModelUserData(): MutableLiveData<List<UserDataRequestModel>> {
         viewModelScope.launch {
@@ -91,13 +96,13 @@ class AddDoctorViewModel @Inject constructor(
                                 email = response.body.email,
                                 contactNumber = response.body.contactNumber
                             )
+                            isDoctor.value = response.body.isDoctor
                             if (firebaseAuth.currentUser?.phoneNumber.isNullOrEmpty()) {
-                                isPhoneVerify.value = false
+                                isPhoneVerify.value = true
                                 isPhoneVerifyValue.value = "Verify"
                             } else {
-                                isPhoneVerify.value = true
+                                isPhoneVerify.value = false
                                 isPhoneVerifyValue.value = "Verified"
-
                             }
                             data.value = listOf(userObj)
                             setShowProgress(false)
@@ -132,7 +137,7 @@ class AddDoctorViewModel @Inject constructor(
                 && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty())
     }
 
-    private fun validateAllUpdateField() {
+    fun validateAllUpdateField() {
         isDataValid1.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
                 && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
                 && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
@@ -140,6 +145,7 @@ class AddDoctorViewModel @Inject constructor(
                 && !dob.value.isNullOrEmpty() && dobError.value.isNullOrEmpty()
                 && !isAvailableDate.value.isNullOrEmpty() && isAvailableDateError.value.isNullOrEmpty()
                 && !availableTime.value.isNullOrEmpty() && availableTimeError.value.isNullOrEmpty()
+                && isPhoneVerify.value == false
                 )
     }
 
@@ -239,6 +245,15 @@ class AddDoctorViewModel @Inject constructor(
         }
     }
 
+    fun onUpdateClick() {
+        if (context.isNetworkAvailable()) {
+            updateUser()
+        } else {
+            context.toast(resourceProvider.getString(R.string.check_internet_connection))
+        }
+    }
+
+
     private fun addUserToAuthentication() {
         firebaseUser = firebaseAuth.currentUser!!
         if (firebaseUser != null) {
@@ -274,6 +289,76 @@ class AddDoctorViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun updateUser() {
+        val userData: UserDataRequestModel
+        if (isDoctor.value == true) {
+
+            var degreeArray: ArrayList<String> = arrayListOf("MS", "B.VSc")
+            var specialitiesArray: ArrayList<String> =
+                arrayListOf("Physicians", "Gastroenterologists")
+
+            userData = UserDataRequestModel(
+                userId = firebaseAuth.currentUser?.uid.toString(),
+                isDoctor = true,
+                email = email.value.toString(),
+                name = name.value.toString(),
+                gender = "MALE",
+                address = address.value.toString(),
+                contactNumber = contactNumber.value.toString(),
+                degree = degreeArray,
+                specialities = specialitiesArray,
+                availableDays = "",
+                isEmailVerified = true,
+                isPhoneNumberVerified = true,
+                availableTime = "",
+                isAdmin = false,
+                dob = SimpleDateFormat("dd-MM-yyyy").parse(dob.value.toString()),
+                isUserVerified = true
+            )
+        } else {
+            //Here Code for User Update
+            userData = UserDataRequestModel()
+        }
+
+        viewModelScope.launch {
+            setShowProgress(true)
+            when (val response = authRepository.updateUserData(userData, fireStore)) {
+                is ApiSuccessResponse -> {
+                    if (response.body.userId.isNotEmpty()) {
+                        name.value = ""
+                        email.value = ""
+                        address.value = ""
+                        contactNumber.value = ""
+                        dob.value = ""
+                        isAvailableDate.value = ""
+                        availableTime.value = ""
+                        setShowProgress(false)
+                        _navigationListener.value =
+                            R.id.action_updateDoctorFragment_to_LoginFragment
+                        _addDoctorResponse.value = resourceProvider.getString(R.string.success)
+                    }
+                }
+
+                is ApiErrorResponse -> {
+                    Log.d(TAG, "updateUser: ${response.errorMessage}")
+                    _addDoctorResponse.value = response.errorMessage
+                    setShowProgress(false)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    Log.d(TAG, "updateUser: ${response.errorMessage}")
+                    _addDoctorResponse.value = response.errorMessage
+                    setShowProgress(false)
+                }
+
+                else -> {
+                    setShowProgress(false)
+                }
+            }
+        }
+
     }
 
     private suspend fun addUserData() {

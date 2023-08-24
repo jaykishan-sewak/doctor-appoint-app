@@ -90,4 +90,6 @@
     <string name="valid_dob_desc">"Date of birth can not be empty"</string>
     <string name="valid_date_desc">Available Date can not be empty</string>
     <string name="valid_time_desc">Available Time can not be empty</string>
+    <string name="doctor_update_successfully">Doctor information successfully Updated.</string>
+
 </resources>

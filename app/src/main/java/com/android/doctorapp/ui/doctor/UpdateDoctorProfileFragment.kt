@@ -1,9 +1,7 @@
 package com.android.doctorapp.ui.doctor
 
-import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,8 +14,12 @@ import com.android.doctorapp.databinding.FragmentUpdateDoctorProfileBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.IS_DOCTOR_OR_USER_KEY
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.STORED_VERIFICATION_Id_KEY
+import com.android.doctorapp.util.extension.alert
+import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.selectDate
+import com.android.doctorapp.util.extension.toast
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
@@ -38,15 +40,6 @@ class UpdateDoctorProfileFragment :
     private val TAG = UpdateDoctorProfileFragment::class.java.simpleName
     lateinit var storedVerificationId: String
     lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
-
-
-    private var date =
-        DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-            val date = (dayOfMonth.toString() + "-" + (monthOfYear + 1) + "-" + year)
-            viewModel.dob.value = date
-
-        }
-
     lateinit var mTimePicker: TimePickerDialog
     val mcurrentTime = Calendar.getInstance()
     val hour = mcurrentTime.get(Calendar.HOUR_OF_DAY)
@@ -75,9 +68,11 @@ class UpdateDoctorProfileFragment :
         super.onCreateView(inflater, container, savedInstanceState)
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                viewModel.hideProgress()
             }
 
             override fun onVerificationFailed(e: FirebaseException) {
+                viewModel.hideProgress()
             }
 
             override fun onCodeSent(
@@ -89,13 +84,13 @@ class UpdateDoctorProfileFragment :
                 resendToken = token
                 val bundle = Bundle()
                 bundle.putString(STORED_VERIFICATION_Id_KEY, storedVerificationId)
+                bundle.putBoolean(IS_DOCTOR_OR_USER_KEY, true)
                 findNavController().navigate(
                     R.id.action_updateDoctorFragment_to_OtpVerificationFragment,
                     bundle
                 )
             }
         }
-        Log.d(TAG, "onCreateView: $hour --> $minute")
         mTimePicker = TimePickerDialog(
             requireContext(), { view, hourOfDay, minute ->
                 viewModel.availableTime.value = "$hourOfDay : $minute"
@@ -125,7 +120,9 @@ class UpdateDoctorProfileFragment :
         }
 
         viewModel.isPhoneVerify.observe(viewLifecycleOwner) {
-            if (it) {
+            if (!it) {
+                binding.textContactVerify.isClickable = false
+                viewModel.validateAllUpdateField()
                 binding.textContactVerify.setTextColor(
                     ContextCompat.getColor(
                         requireContext(),
@@ -138,30 +135,50 @@ class UpdateDoctorProfileFragment :
         viewModel.isCalender.observe(viewLifecycleOwner) {
 
             if (binding.textDateOfBirth.id == it?.id) {
-                requireContext().selectDate(maxDate = Date().time, minDate = null) {dobDate ->
+                requireContext().selectDate(maxDate = Date().time, minDate = null) { dobDate ->
                     viewModel.dob.value = dobDate
                 }
             } else {
-                requireContext().selectDate(maxDate = null, minDate = Date().time) {availableDate ->
+                requireContext().selectDate(
+                    maxDate = null,
+                    minDate = Date().time
+                ) { availableDate ->
                     viewModel.isAvailableDate.value = availableDate
                 }
             }
-            viewModel.isTimeShow.observe(viewLifecycleOwner) {
-                if (it) {
-                    mTimePicker.show()
-                }
+        }
+        viewModel.isTimeShow.observe(viewLifecycleOwner) {
+            if (it) {
+                mTimePicker.show()
             }
         }
 
-    }
-        private fun sendVerificationCode(number: String) {
-            val options = PhoneAuthOptions.newBuilder(viewModel.firebaseAuth)
-                .setPhoneNumber(number) // Phone number to verify
-                .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
-                .setActivity(requireActivity()) // Activity (for callback binding)
-                .setCallbacks(callbacks) // OnVerificationStateChangedCallbacks
-                .build()
-            PhoneAuthProvider.verifyPhoneNumber(options)
-        }
+        viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
+            if (it.equals("Success")) {
+                context?.toast(resources.getString(R.string.doctor_update_successfully))
+                viewModel.navigationListener.observe(viewLifecycleOwner) {
+                    findNavController().navigate(it)
+                    findNavController().popBackStack(R.id.LoginFragment, false)
 
+                }
+            } else {
+                context?.alert {
+                    setTitle(getString(R.string.doctor_not_save))
+                    setMessage(it)
+                    neutralButton { }
+                }
+            }
+        }
     }
+
+    private fun sendVerificationCode(number: String) {
+        val options = PhoneAuthOptions.newBuilder(viewModel.firebaseAuth)
+            .setPhoneNumber(number) // Phone number to verify
+            .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
+            .setActivity(requireActivity()) // Activity (for callback binding)
+            .setCallbacks(callbacks) // OnVerificationStateChangedCallbacks
+            .build()
+        PhoneAuthProvider.verifyPhoneNumber(options)
+    }
+
+}

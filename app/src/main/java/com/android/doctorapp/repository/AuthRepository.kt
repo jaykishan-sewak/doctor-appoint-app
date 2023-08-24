@@ -157,26 +157,54 @@ class AuthRepository @Inject constructor(
         }
     }
 
-    suspend fun addDoctorData(doctorRequestModel: UserDataRequestModel, firestore: FirebaseFirestore): ApiResponse<UserDataRequestModel> {
+    suspend fun addDoctorData(
+        doctorRequestModel: UserDataRequestModel,
+        firestore: FirebaseFirestore
+    ): ApiResponse<UserDataRequestModel> {
         return try {
-            val addDoctorResponse = firestore.collection("user_data").add(doctorRequestModel).await()
+            val addDoctorResponse =
+                firestore.collection("user_data").add(doctorRequestModel).await()
             ApiResponse.create(response = Response.success(doctorRequestModel))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
         }
     }
 
-    suspend fun getRecordById(recordId: String, fireStore: FirebaseFirestore): ApiResponse<UserDataRequestModel> {
+    suspend fun updateUserData(
+        doctorRequestModel: UserDataRequestModel,
+        fireStore: FirebaseFirestore
+    ): ApiResponse<UserDataRequestModel> {
+        return try {
+
+            val response = fireStore.collection("user_data")
+                .whereEqualTo("userId", doctorRequestModel.userId)
+                .get()
+                .await()
+
+            val updateUserResponse = fireStore.collection("user_data")
+                .document(response.documents[0].id)
+                .set(doctorRequestModel)
+                .await()
+
+            ApiResponse.create(response = Response.success(doctorRequestModel))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+    suspend fun getRecordById(
+        recordId: String,
+        fireStore: FirebaseFirestore
+    ): ApiResponse<UserDataRequestModel> {
         return try {
             val response = fireStore.collection("user_data")
-                                                .whereEqualTo("userId", recordId)
-                                                .get()
-                                                .await()
+                .whereEqualTo("userId", recordId)
+                .get()
+                .await()
 
             var dataModel = UserDataRequestModel()
             for (snapshot in response) {
                 dataModel = snapshot.toObject()
-
             }
             ApiResponse.create(response = Response.success(dataModel))
         } catch (e: Exception) {
