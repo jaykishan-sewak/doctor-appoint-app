@@ -151,6 +151,7 @@ class UpdateDoctorProfileFragment :
                     addChip(enteredDegreeText.uppercase())
                     bindingView.autoCompleteTextView.setText(enteredDegreeText.uppercase())
                     addItem(enteredDegreeText.uppercase())
+                    bindingView.autoCompleteTextView.setText("")
                 } else {
                     addChip(selectedItem!!)
                     bindingView.autoCompleteTextView.setText("")
@@ -188,6 +189,7 @@ class UpdateDoctorProfileFragment :
                     addSpecChip(enteredSpecializationText.uppercase())
                     bindingView.autoCompleteTextViewSpec.setText(enteredSpecializationText.uppercase())
                     addSpecializationItem(enteredSpecializationText.uppercase())
+                    bindingView.autoCompleteTextViewSpec.setText("")
                 } else {
                     addSpecChip(selectedItem!!)
                     bindingView.autoCompleteTextViewSpec.setText("")
@@ -236,7 +238,7 @@ class UpdateDoctorProfileFragment :
         chip.text = text
         chip.isCloseIconVisible = true
         chip.setOnCloseIconClickListener {
-            bindingView.chipGroup.removeView(chip)
+            bindingView.chipGroupSpec.removeView(chip)
         }
         bindingView.chipGroupSpec.addView(chip)
     }
