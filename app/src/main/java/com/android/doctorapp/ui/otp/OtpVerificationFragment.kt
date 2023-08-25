@@ -12,6 +12,7 @@ import com.android.doctorapp.databinding.FragmentOtpVerificationBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.IS_DOCTOR_OR_USER
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.STORED_VERIFICATION_Id_KEY
 import javax.inject.Inject
 
@@ -22,6 +23,7 @@ class OtpVerificationFragment :
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel: OtpVerificationViewModel by viewModels { viewModelFactory }
     private lateinit var verificationId: String
+
 
     override fun builder() = FragmentToolbar.Builder()
         .withId(FragmentToolbar.NO_TOOLBAR)
@@ -43,6 +45,7 @@ class OtpVerificationFragment :
         val arguments: Bundle? = arguments
         if (arguments != null) {
             verificationId = arguments.getString(STORED_VERIFICATION_Id_KEY).toString()
+            viewModel.isDoctorOrUser.value = arguments.getBoolean(IS_DOCTOR_OR_USER)
         } else {
             verificationId = ""
         }
@@ -75,7 +78,8 @@ class OtpVerificationFragment :
         }
         viewModel.navigationListener.observe(viewLifecycleOwner) {
             findNavController().navigate(it)
-//            findNavController().popBackStack(R.id.OtpVerificationFragment, true)
+            //findNavController().popBackStack()
+            //findNavController().popBackStack(R.id.OtpVerificationFragment, true)
 
         }
     }

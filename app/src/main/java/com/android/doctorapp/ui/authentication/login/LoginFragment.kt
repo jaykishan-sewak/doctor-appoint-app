@@ -16,6 +16,9 @@ import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.ui.dashboard.DashboardActivity
+import com.android.doctorapp.util.extension.alert
+import com.android.doctorapp.util.extension.negativeButton
+import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.startActivityFinish
 import com.android.doctorapp.util.extension.toast
 import javax.inject.Inject
@@ -72,6 +75,20 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
             }
         }
 
+        viewModel.isUserVerified.observe(viewLifecycleOwner) { it ->
+            if (it == false) {
+                context?.alert {
+                    setTitle("Complete Profile")
+                    setMessage("Please complete your profile to continue")
+                    neutralButton{
+                        viewModel._navigationListener.postValue(R.id.action_loginFragment_to_updateUserFragment)
+                    }
+                    negativeButton("Cancel") {
+                        requireActivity().finish()
+                    }
+                }
+            }
+        }
         viewModel.isGoogleClick.observe(viewLifecycleOwner) {
             if (it) {
                 val intent: Intent = viewModel.googleSignInClient.signInIntent

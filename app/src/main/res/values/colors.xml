@@ -14,9 +14,9 @@
     <color name="grey">#7b7b7b</color>
     <color name="btn_grey">#e5e5e5</color>
     <color name="blue"> #1a4d91</color>
-    <color name="edittext_bg_grey">#afadae</color>
     <color name="color_background_box">#F5F5F5</color>
     <color name="color_background_box_stroke">#DEDEDE</color>
     <color name="color_background_box_stroke_active">#A5A5A5</color>
     <color name="edittext_bg_grey">#afadae</color>
+    <color name="green">#247A28</color>
 </resources>

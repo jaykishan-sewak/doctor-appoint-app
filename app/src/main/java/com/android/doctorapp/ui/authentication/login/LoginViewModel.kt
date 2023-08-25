@@ -39,15 +39,15 @@ class LoginViewModel @Inject constructor(
 
     var googleSignInClient: GoogleSignInClient
 
-    val email: MutableLiveData<String> = MutableLiveData()
+    val email: MutableLiveData<String> = MutableLiveData("201260107537setice@gmail.com")
     val emailError: MutableLiveData<String?> = MutableLiveData()
 
-    val password: MutableLiveData<String> = MutableLiveData()
+    val password: MutableLiveData<String> = MutableLiveData("Namu@123")
     val passwordError: MutableLiveData<String?> = MutableLiveData()
 
     val isDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    private val _navigationListener = SingleLiveEvent<Int>()
+    val _navigationListener = SingleLiveEvent<Int>()
     val navigationListener = _navigationListener.asLiveData()
 
     val isGoogleClick: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -56,6 +56,8 @@ class LoginViewModel @Inject constructor(
     val signInAccountTask: MutableLiveData<Task<GoogleSignInAccount>> = MutableLiveData()
     val googleSignInAccount: MutableLiveData<GoogleSignInAccount> = MutableLiveData()
     val authCredential: MutableLiveData<AuthCredential> = MutableLiveData()
+
+    val isUserVerified: MutableLiveData<Boolean> = MutableLiveData(true)
 
 
     init {
@@ -145,7 +147,8 @@ class LoginViewModel @Inject constructor(
 
     private suspend fun getUserData() {
 
-        when (val response = authRepository.getRecordById(firebaseAuth.currentUser?.uid.toString(), fireStore)) {
+        when (val response =
+            authRepository.getRecordById(firebaseAuth.currentUser?.uid.toString(), fireStore)) {
 
             is ApiSuccessResponse -> {
                 email.value = ""
@@ -157,7 +160,11 @@ class LoginViewModel @Inject constructor(
                 } else if (response.body.isDoctor) {
                     _navigationListener.postValue(R.id.action_loginFragment_to_doctorDashboardFragment)
                 } else {
-                    _navigationListener.postValue(R.id.action_loginFragment_to_addUserProfileFragment)
+                    if (response.body.isUserVerified) {
+                        _navigationListener.postValue(R.id.action_loginFragment_to_homeFragment)
+                    } else {
+                        isUserVerified.postValue(false)
+                    }
                 }
             }
 
@@ -202,6 +209,7 @@ class LoginViewModel @Inject constructor(
                     setNoNetworkError(response.errorMessage)
                     setShowProgress(false)
                 }
+
                 else -> {
                     setShowProgress(false)
                 }

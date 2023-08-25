@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 class OtpVerificationViewModel @Inject constructor(
     private val context: Context
-): BaseViewModel() {
+) : BaseViewModel() {
 
     val _otpDigit = MutableLiveData<String>()
     val otpDigit1: LiveData<String> get() = _otpDigit
@@ -26,8 +26,13 @@ class OtpVerificationViewModel @Inject constructor(
     private val _navigationListener = SingleLiveEvent<Int>()
     val navigationListener = _navigationListener.asLiveData()
 
+    val isDoctorOrUser: MutableLiveData<Boolean> = MutableLiveData(true)
 
-     fun isOtpFilled(): Boolean {
+    init {
+        firebaseUser = firebaseAuth.currentUser!!
+    }
+
+    fun isOtpFilled(): Boolean {
         return _otpDigit.value?.isNotEmpty() == true
     }
 
@@ -38,8 +43,9 @@ class OtpVerificationViewModel @Inject constructor(
     fun otpVerification() {
         setShowProgress(true)
         if (otpDigit1.value?.isNotEmpty() == true) {
-            val credential : PhoneAuthCredential = PhoneAuthProvider.getCredential(
-                otpVerificationId.value.toString(), otpDigit1.value.toString())
+            val credential: PhoneAuthCredential = PhoneAuthProvider.getCredential(
+                otpVerificationId.value.toString(), otpDigit1.value.toString()
+            )
             signInWithPhoneAuthCredential(credential)
         } else {
         }
@@ -48,10 +54,14 @@ class OtpVerificationViewModel @Inject constructor(
 
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         firebaseAuth.signInWithCredential(credential)
-            .addOnCompleteListener {task ->
+            .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     setShowProgress(false)
-                    _navigationListener.value = R.id.action_otpFragment_to_updateDoctorFragment
+                    if (isDoctorOrUser.value == true) {
+                        _navigationListener.value = R.id.action_otpFragment_to_updateDoctorFragment
+                    } else {
+                        _navigationListener.value = R.id.action_otpFragment_to_updateUserFragment
+                    }
                 } else {
                     setShowProgress(false)
                     if (task.exception is FirebaseAuthInvalidCredentialsException) {
