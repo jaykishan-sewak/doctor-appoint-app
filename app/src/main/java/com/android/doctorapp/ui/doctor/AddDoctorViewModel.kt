@@ -16,6 +16,8 @@ import com.android.doctorapp.repository.local.USER_IS_EMAIL_VERIFIED
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
+import com.android.doctorapp.repository.models.DegreeResponseModel
+import com.android.doctorapp.repository.models.SpecializationResponseModel
 import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
@@ -23,6 +25,7 @@ import com.android.doctorapp.util.extension.isEmailAddressValid
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import kotlinx.coroutines.flow.collectLatest
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import javax.inject.Inject
@@ -59,6 +62,10 @@ class AddDoctorViewModel @Inject constructor(
 
     private val _clickResponse: MutableLiveData<String> = SingleLiveEvent()
     val clickResponse = _clickResponse.asLiveData()
+    private val degreeItems = SingleLiveEvent<DegreeResponseModel?>()
+    val degreeList = degreeItems.asLiveData()
+    private val specializationItems = SingleLiveEvent<SpecializationResponseModel?>()
+    val specializationList = specializationItems.asLiveData()
 
     val data = MutableLiveData<List<UserDataRequestModel>>()
 
@@ -518,6 +525,104 @@ class AddDoctorViewModel @Inject constructor(
             } else {
                 Log.d(TAG, "checkIsEmailEveryMin: true")
                 isEmailVerified.postValue(true)
+            }
+        }
+    }
+
+    fun getDegreeItems() {
+        viewModelScope.launch {
+            setShowProgress(true)
+            when (val response = authRepository.getDegreeList(fireStore)) {
+                is ApiSuccessResponse -> {
+                    setShowProgress(false)
+                    degreeItems.value = response.body
+                    Log.d("Data----", Gson().toJson(response.body))
+                }
+
+                is ApiErrorResponse -> {
+                    setShowProgress(false)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    setShowProgress(false)
+                }
+
+                else -> {
+                    setShowProgress(false)
+                }
+            }
+        }
+    }
+
+    fun getSpecializationItems() {
+        viewModelScope.launch {
+            setShowProgress(true)
+            when (val response = authRepository.getSpecializationList(fireStore)) {
+                is ApiSuccessResponse -> {
+                    setShowProgress(false)
+                    specializationItems.value = response.body
+                    Log.d("Data----", Gson().toJson(response.body))
+                }
+
+                is ApiErrorResponse -> {
+                    setShowProgress(false)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    setShowProgress(false)
+                }
+
+                else -> {
+                    setShowProgress(false)
+                }
+            }
+        }
+    }
+
+    fun addDegreeItems(data:String) {
+        viewModelScope.launch {
+            setShowProgress(true)
+            when (val response = authRepository.addDegree(fireStore,data)) {
+                is ApiSuccessResponse -> {
+                    setShowProgress(false)
+                    Log.d("Add Data----", Gson().toJson(response.body))
+                }
+
+                is ApiErrorResponse -> {
+                    setShowProgress(false)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    setShowProgress(false)
+                }
+
+                else -> {
+                    setShowProgress(false)
+                }
+            }
+        }
+    }
+
+    fun addSpecializationItems(data:String) {
+        viewModelScope.launch {
+            setShowProgress(true)
+            when (val response = authRepository.addSpecialization(fireStore,data)) {
+                is ApiSuccessResponse -> {
+                    setShowProgress(false)
+                    Log.d("Add Data----", Gson().toJson(response.body))
+                }
+
+                is ApiErrorResponse -> {
+                    setShowProgress(false)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    setShowProgress(false)
+                }
+
+                else -> {
+                    setShowProgress(false)
+                }
             }
         }
     }
