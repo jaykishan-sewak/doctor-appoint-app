@@ -34,10 +34,6 @@
             app:destination="@+id/UpdateDoctorFragment"
             />
 
-        <action
-            android:id="@+id/action_loginFragment_to_updateDoctorFragment"
-            app:destination="@id/UpdateDoctorFragment"
-            />
 
     </fragment>
 

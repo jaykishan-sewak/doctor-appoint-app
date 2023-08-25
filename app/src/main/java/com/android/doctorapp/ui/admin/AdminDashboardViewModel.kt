@@ -2,6 +2,7 @@ package com.android.doctorapp.ui.admin
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.android.doctorapp.R
 import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AdminRepository
@@ -23,6 +24,9 @@ class AdminDashboardViewModel @Inject constructor(
 ) : BaseViewModel() {
     private val items = SingleLiveEvent<List<UserDataResponseModel>>()
     val doctorList = items.asLiveData()
+
+    private val _navigationListener = SingleLiveEvent<Int>()
+    val navigationListener = _navigationListener.asLiveData()
 
     fun getItems() {
         viewModelScope.launch {
@@ -80,6 +84,10 @@ class AdminDashboardViewModel @Inject constructor(
                 }
             }
         }
-
     }
+
+    fun addDoctor() {
+        _navigationListener.value = R.id.admin_to_add_doctor
+    }
+
 }

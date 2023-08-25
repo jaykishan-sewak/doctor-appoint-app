@@ -157,14 +157,13 @@
                     app:layout_constraintTop_toTopOf="@+id/text_date_of_birth" />
 
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/chipGroup"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/constraint_contact"/>
+                    app:layout_constraintTop_toBottomOf="@id/text_date_of_birth"/>
 
                 <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                     android:id="@+id/autoCompleteTextView"
@@ -178,6 +177,7 @@
                     android:background="@drawable/rounded_bg"
                     style="@style/user_login_editText"
                     android:completionThreshold="2" />
+
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/chipGroupSpec"
                     android:layout_width="0dp"
@@ -211,25 +211,8 @@
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/field_update_speciality" />
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraint_available_date"
-                    style="@style/custom_edit_text_bg"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/autoCompleteTextViewSpec"
-                    app:layout_constraintEnd_toEndOf="parent">
+                    app:layout_constraintTop_toBottomOf="@+id/autoCompleteTextViewSpec" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/text_available_date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="13-aug-2023"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ic_calender"

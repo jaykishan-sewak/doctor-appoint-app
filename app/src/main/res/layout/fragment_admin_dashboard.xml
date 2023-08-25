@@ -38,6 +38,7 @@
             android:id="@+id/fab"
             android:layout_marginBottom="@dimen/margin_32"
             android:layout_marginEnd="@dimen/margin_32"
+            android:onClick="@{() -> viewModel.addDoctor()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/baseline_add_24"

@@ -30,23 +30,17 @@ import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.selectDate
 import com.android.doctorapp.util.extension.toast
-import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DOCTOR_CONTACT_NUMBER_KEY
-import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DOCTOR_EMAIL_ID_KEY
-import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DOCTOR_NAME_KEY
 import com.google.android.material.chip.Chip
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
-import com.google.gson.Gson
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-
-class UpdateDoctorProfileFragment :
-    BaseFragment<FragmentUpdateDoctorProfileBinding>(R.layout.fragment_update_doctor_profile) {
 
 class UpdateDoctorProfileFragment :
     BaseFragment<FragmentUpdateDoctorProfileBinding>(R.layout.fragment_update_doctor_profile) {
@@ -131,18 +125,16 @@ class UpdateDoctorProfileFragment :
                 viewModel.availableTime.value = "$hourOfDay:$minute"
             }, hour, minute, true
         )
-        return binding {
         bindingView = binding {
             viewModel = this@UpdateDoctorProfileFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
         }
+        viewModel.setBindingData(binding)
         viewModel.getDegreeItems()
         viewModel.getSpecializationItems()
         return bindingView.root
     }
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpWithViewModel(viewModel)
@@ -237,7 +229,6 @@ class UpdateDoctorProfileFragment :
         }
 
         viewModel.degreeList.observe(viewLifecycleOwner) {
-            Log.d("degreeList---", Gson().toJson(it))
             val adapter =
                 CustomAutoCompleteAdapter(
                     requireContext(),

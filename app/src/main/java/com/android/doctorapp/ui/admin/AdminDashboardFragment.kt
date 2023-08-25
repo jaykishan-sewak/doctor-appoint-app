@@ -67,6 +67,11 @@ class AdminDashboardFragment :
             layoutBinding.recyclerView.adapter = adapter
 
         }
+
+        viewModel.navigationListener.observe(viewLifecycleOwner) {
+            findNavController().navigate(it)
+        }
+
     }
 
     private fun updateRecyclerView(items: List<UserDataResponseModel>) {

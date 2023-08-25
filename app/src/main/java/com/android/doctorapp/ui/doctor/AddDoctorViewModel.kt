@@ -4,9 +4,11 @@ import android.content.Context
 import android.util.Log
 import android.util.Patterns
 import android.view.View
+import androidx.core.view.children
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
+import com.android.doctorapp.databinding.FragmentUpdateDoctorProfileBinding
 import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AuthRepository
@@ -24,8 +26,9 @@ import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
-import kotlinx.coroutines.flow.collectLatest
+import com.google.android.material.chip.Chip
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import javax.inject.Inject
@@ -93,6 +96,11 @@ class AddDoctorViewModel @Inject constructor(
         MutableLiveData(resourceProvider.getString(R.string.verify))
     val isEmailVerified: MutableLiveData<Boolean> = MutableLiveData(false)
     val isUserReload: MutableLiveData<Boolean> = MutableLiveData(false)
+    var binding: FragmentUpdateDoctorProfileBinding? = null
+
+    fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
+        this.binding = binding
+    }
 
     init {
         firebaseUser = firebaseAuth.currentUser!!
@@ -311,13 +319,74 @@ class AddDoctorViewModel @Inject constructor(
     }
 
     private fun updateUser() {
-        val userData: UserDataRequestModel
+
+        viewModelScope.launch {
+            var recordId: String = ""
+            session.getString(USER_ID).collectLatest {
+                val userData: UserDataRequestModel
+                if (isDoctor.value == true) {
+                    userData = UserDataRequestModel(
+                        userId = it.toString(),
+                        isDoctor = true,
+                        email = email.value.toString(),
+                        name = name.value.toString(),
+                        gender = "MALE",
+                        address = address.value.toString(),
+                        contactNumber = contactNumber.value.toString(),
+                        degree = binding?.chipGroup?.children?.toList()
+                            ?.map { (it as Chip).text.toString() } as ArrayList<String>?,
+                        specialities = binding?.chipGroupSpec?.children?.toList()
+                            ?.map { (it as Chip).text.toString() } as ArrayList<String>?,
+                        availableDays = "",
+                        isEmailVerified = true,
+                        isPhoneNumberVerified = true,
+                        availableTime = "",
+                        isAdmin = false,
+                        dob = SimpleDateFormat("dd-MM-yyyy").parse(dob.value.toString()),
+                        isUserVerified = true
+                    )
+                } else {
+                    //Here Code for User Update
+                    userData = UserDataRequestModel()
+                }
+                setShowProgress(true)
+                when (val response = authRepository.updateUserData(userData, fireStore)) {
+                    is ApiSuccessResponse -> {
+                        if (response.body.userId.isNotEmpty()) {
+                            name.value = ""
+                            email.value = ""
+                            address.value = ""
+                            contactNumber.value = ""
+                            dob.value = ""
+                            isAvailableDate.value = ""
+                            availableTime.value = ""
+                            setShowProgress(false)
+                            _navigationListener.value =
+                                R.id.action_updateDoctorFragment_to_LoginFragment
+                            _addDoctorResponse.value = resourceProvider.getString(R.string.success)
+                        }
+                    }
+
+                    is ApiErrorResponse -> {
+                        _addDoctorResponse.value = response.errorMessage
+                        setShowProgress(false)
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        _addDoctorResponse.value = response.errorMessage
+                        setShowProgress(false)
+                    }
+
+                    else -> {
+                        setShowProgress(false)
+                    }
+                }
+            }
+        }
+
+        /* val userData: UserDataRequestModel
         if (isDoctor.value == true) {
-
-            var degreeArray: ArrayList<String> = arrayListOf("MS", "B.VSc")
-            var specialitiesArray: ArrayList<String> =
-                arrayListOf("Physicians", "Gastroenterologists")
-
+            Log.d("TAG1212", "updateUser: ${firebaseAuth.currentUser?.uid.toString()}")
             userData = UserDataRequestModel(
                 userId = firebaseAuth.currentUser?.uid.toString(),
                 isDoctor = true,
@@ -326,8 +395,8 @@ class AddDoctorViewModel @Inject constructor(
                 gender = "MALE",
                 address = address.value.toString(),
                 contactNumber = contactNumber.value.toString(),
-                degree = degreeArray,
-                specialities = specialitiesArray,
+                degree = binding?.chipGroup?.children?.toList()?.map { (it as Chip).text.toString() } as ArrayList<String>?,
+                specialities = binding?.chipGroupSpec?.children?.toList()?.map { (it as Chip).text.toString() } as ArrayList<String>?,
                 availableDays = "",
                 isEmailVerified = true,
                 isPhoneNumberVerified = true,
@@ -341,6 +410,7 @@ class AddDoctorViewModel @Inject constructor(
             userData = UserDataRequestModel()
         }
 
+//        Log.d("userData----", Gson().toJson(userData))
         viewModelScope.launch {
             setShowProgress(true)
             when (val response = authRepository.updateUserData(userData, fireStore)) {
@@ -375,7 +445,7 @@ class AddDoctorViewModel @Inject constructor(
                 }
             }
         }
-
+*/
     }
 
     private suspend fun addUserData() {
@@ -579,10 +649,10 @@ class AddDoctorViewModel @Inject constructor(
         }
     }
 
-    fun addDegreeItems(data:String) {
+    fun addDegreeItems(data: String) {
         viewModelScope.launch {
             setShowProgress(true)
-            when (val response = authRepository.addDegree(fireStore,data)) {
+            when (val response = authRepository.addDegree(fireStore, data)) {
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
                     Log.d("Add Data----", Gson().toJson(response.body))
@@ -603,10 +673,10 @@ class AddDoctorViewModel @Inject constructor(
         }
     }
 
-    fun addSpecializationItems(data:String) {
+    fun addSpecializationItems(data: String) {
         viewModelScope.launch {
             setShowProgress(true)
-            when (val response = authRepository.addSpecialization(fireStore,data)) {
+            when (val response = authRepository.addSpecialization(fireStore, data)) {
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
                     Log.d("Add Data----", Gson().toJson(response.body))
