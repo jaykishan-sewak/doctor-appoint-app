@@ -23,6 +23,7 @@ import com.android.doctorapp.util.extension.startActivityFinish
 import com.android.doctorapp.util.extension.toast
 import javax.inject.Inject
 
+
 class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login) {
 
     @Inject
@@ -116,6 +117,25 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
         viewModel.authCredential.observe(viewLifecycleOwner) {
             viewModel.callGoogleAPI(it)
         }
+
+        viewModel.isUserVerified.observe(viewLifecycleOwner) {
+            if (!it) {
+                context?.alert {
+                    setTitle(context.resources.getString(R.string.complete_profile))
+                    setMessage(context.resources.getString(R.string.complete_profile_desc))
+                    neutralButton { dialog ->
+                        dialog.dismiss()
+                        findNavController().navigate(R.id.action_loginFragment_to_updateDoctorFragment)
+                    }
+                    negativeButton(context.resources.getString(R.string.cancel)) {
+//                        exitProcess(0)
+                        requireActivity().finishAffinity()
+
+                    }
+                }
+            }
+        }
+
     }
 
     private val launcher =

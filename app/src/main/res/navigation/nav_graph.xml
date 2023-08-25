@@ -40,6 +40,12 @@
             android:id="@+id/action_loginFragment_to_updateUserFragment"
             app:destination="@id/UpdateUserFragment" />
 
+        <action
+            android:id="@+id/action_loginFragment_to_updateDoctorFragment"
+            app:destination="@+id/UpdateDoctorFragment"
+            />
+
+
     </fragment>
 
     <fragment

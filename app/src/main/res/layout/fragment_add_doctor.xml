@@ -103,7 +103,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
-                    app:error="@{viewModel.contactNumError}"
+                    app:error="@{viewModel.contactNumberError}"
                     app:errorTextColor="@color/purple_500"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -117,7 +117,7 @@
                         android:imeOptions="actionDone"
                         android:inputType="number"
                         android:maxLength="10"
-                        android:text="@={viewModel.contactNum}"
+                        android:text="@={viewModel.contactNumber}"
                         />
 
                 </com.google.android.material.textfield.TextInputLayout>

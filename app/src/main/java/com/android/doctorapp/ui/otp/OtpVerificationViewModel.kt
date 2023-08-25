@@ -22,11 +22,11 @@ class OtpVerificationViewModel @Inject constructor(
     val otpDigit1: LiveData<String> get() = _otpDigit
     val isDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
     val otpVerificationId: MutableLiveData<String?> = MutableLiveData()
+    val isDoctorOrUser: MutableLiveData<Boolean?> = MutableLiveData(true)
 
     private val _navigationListener = SingleLiveEvent<Int>()
     val navigationListener = _navigationListener.asLiveData()
 
-    val isDoctorOrUser: MutableLiveData<Boolean> = MutableLiveData(true)
 
     init {
         firebaseUser = firebaseAuth.currentUser!!

@@ -39,10 +39,10 @@ class LoginViewModel @Inject constructor(
 
     var googleSignInClient: GoogleSignInClient
 
-    val email: MutableLiveData<String> = MutableLiveData("201260107537setice@gmail.com")
+    val email: MutableLiveData<String> = MutableLiveData("docharsh@gmail.com")
     val emailError: MutableLiveData<String?> = MutableLiveData()
 
-    val password: MutableLiveData<String> = MutableLiveData("Namu@123")
+    val password: MutableLiveData<String> = MutableLiveData("Admin@123")
     val passwordError: MutableLiveData<String?> = MutableLiveData()
 
     val isDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -57,7 +57,7 @@ class LoginViewModel @Inject constructor(
     val googleSignInAccount: MutableLiveData<GoogleSignInAccount> = MutableLiveData()
     val authCredential: MutableLiveData<AuthCredential> = MutableLiveData()
 
-    val isUserVerified: MutableLiveData<Boolean> = MutableLiveData(true)
+    val isUserVerified: MutableLiveData<Boolean> = SingleLiveEvent()
 
 
     init {
@@ -158,7 +158,8 @@ class LoginViewModel @Inject constructor(
                 if (response.body.isAdmin) {
                     _navigationListener.postValue(R.id.action_loginFragment_to_adminDashboardFragment)
                 } else if (response.body.isDoctor) {
-                    _navigationListener.postValue(R.id.action_loginFragment_to_doctorDashboardFragment)
+                    isUserVerified.value = response.body.isUserVerified
+//                    _navigationListener.postValue(R.id.action_loginFragment_to_doctorDashboardFragment)
                 } else {
                     if (response.body.isUserVerified) {
                         _navigationListener.postValue(R.id.action_loginFragment_to_homeFragment)

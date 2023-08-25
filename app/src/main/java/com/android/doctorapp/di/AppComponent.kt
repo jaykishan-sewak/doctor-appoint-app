@@ -2,6 +2,7 @@ package com.android.doctorapp.di
 
 import com.android.doctorapp.di.core.AuthScopes
 import com.android.doctorapp.di.core.CoreComponent
+import com.android.doctorapp.ui.admin.AdminDashboardFragment
 import com.android.doctorapp.ui.home.HomeFragment
 import com.android.doctorapp.ui.authentication.login.LoginFragment
 import com.android.doctorapp.ui.profile.ProfileFragment
@@ -27,5 +28,6 @@ interface AppComponent {
     fun inject(fragment: AddUserProfileFragment)
     fun inject(fragment: AddDoctorFragment)
     fun inject(fragment: UpdateDoctorProfileFragment)
+    fun inject(fragment: AdminDashboardFragment)
     fun inject(fragment: OtpVerificationFragment)
 }

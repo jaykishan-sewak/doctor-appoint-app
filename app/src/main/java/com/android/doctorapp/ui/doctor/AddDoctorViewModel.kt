@@ -3,9 +3,12 @@ package com.android.doctorapp.ui.doctor
 import android.content.Context
 import android.util.Log
 import android.util.Patterns
+import android.view.View
+import androidx.core.view.children
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
+import com.android.doctorapp.databinding.FragmentUpdateDoctorProfileBinding
 import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AuthRepository
@@ -15,14 +18,19 @@ import com.android.doctorapp.repository.local.USER_IS_EMAIL_VERIFIED
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
+import com.android.doctorapp.repository.models.DegreeResponseModel
+import com.android.doctorapp.repository.models.SpecializationResponseModel
 import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
+import com.google.android.material.chip.Chip
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import javax.inject.Inject
 
 class AddDoctorViewModel @Inject constructor(
@@ -41,18 +49,16 @@ class AddDoctorViewModel @Inject constructor(
     val email: MutableLiveData<String> = MutableLiveData()
     val emailError: MutableLiveData<String?> = MutableLiveData()
 
-    val contactNum: MutableLiveData<String> = MutableLiveData()
-    val contactNumError: MutableLiveData<String?> = MutableLiveData()
-
-    val dob: MutableLiveData<String> = MutableLiveData()
-    val dobError: MutableLiveData<String?> = MutableLiveData()
+    val contactNumber: MutableLiveData<String> = MutableLiveData()
+    val contactNumberError: MutableLiveData<String?> = MutableLiveData()
 
     val isUserDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    val address: MutableLiveData<String> = MutableLiveData()
-    val addressError: MutableLiveData<String?> = MutableLiveData()
 
     val toggleLiveData: MutableLiveData<Boolean> = MutableLiveData(false)
+
+    val isDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isDataValid1: MutableLiveData<Boolean> = MutableLiveData(false)
 
     private val _navigationListener = SingleLiveEvent<Int>()
     val navigationListener = _navigationListener.asLiveData()
@@ -60,167 +66,74 @@ class AddDoctorViewModel @Inject constructor(
     private val _addDoctorResponse = SingleLiveEvent<String>()
     val addDoctorResponse = _addDoctorResponse.asLiveData()
 
-    private val _clickResponse: MutableLiveData<String> = MutableLiveData()
+    private val _clickResponse: MutableLiveData<String> = SingleLiveEvent()
     val clickResponse = _clickResponse.asLiveData()
+    private val degreeItems = SingleLiveEvent<DegreeResponseModel?>()
+    val degreeList = degreeItems.asLiveData()
+    private val specializationItems = SingleLiveEvent<SpecializationResponseModel?>()
+    val specializationList = specializationItems.asLiveData()
 
     val data = MutableLiveData<List<UserDataRequestModel>>()
 
-    val isEmailSent: MutableLiveData<Boolean> = MutableLiveData(false)
-    val emailVerifyLabel: MutableLiveData<String> = MutableLiveData("Verify")
+    val address: MutableLiveData<String> = MutableLiveData()
+    val addressError: MutableLiveData<String?> = MutableLiveData()
 
+    val dob: MutableLiveData<String> = MutableLiveData()
+    private val dobError: MutableLiveData<String?> = MutableLiveData()
+
+    val isCalender: MutableLiveData<View> = SingleLiveEvent()
+    val isAvailableDate: MutableLiveData<String?> = MutableLiveData()
+    private val isAvailableDateError: MutableLiveData<String?> = MutableLiveData()
+
+    val isTimeShow: MutableLiveData<Boolean> = SingleLiveEvent()
+    val availableTime: MutableLiveData<String> = MutableLiveData()
+    private val availableTimeError: MutableLiveData<String?> = MutableLiveData()
+
+    val isPhoneVerify: MutableLiveData<Boolean> = MutableLiveData(true)
+    val isPhoneVerifyValue: MutableLiveData<String> =
+        MutableLiveData(resourceProvider.getString(R.string.verify))
+
+    val isDoctor: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isEmailSent: MutableLiveData<Boolean> = MutableLiveData(false)
+    val emailVerifyLabel: MutableLiveData<String> =
+        MutableLiveData(resourceProvider.getString(R.string.verify))
     val isEmailVerified: MutableLiveData<Boolean> = MutableLiveData(false)
     val isUserReload: MutableLiveData<Boolean> = MutableLiveData(false)
+    var binding: FragmentUpdateDoctorProfileBinding? = null
 
-    val isPhoneVerify: MutableLiveData<Boolean> = MutableLiveData(false)
-    val isPhoneVerifyValue: MutableLiveData<String> = MutableLiveData("Verify")
-
-    val isCalendarShow: MutableLiveData<Boolean> = MutableLiveData(false)
-
-    val isDoctor: MutableLiveData<Boolean> = MutableLiveData(true)
-
+    fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
+        this.binding = binding
+    }
 
     init {
         firebaseUser = firebaseAuth.currentUser!!
     }
 
-    fun onUpdateClick() {
-
-    }
-
-    fun onEmailVerifyClick() {
-        if (!firebaseUser.isEmailVerified) {
-            emailVerification()
-        }
-    }
-
-    fun onCalenderClick() {
-        isCalendarShow.postValue(true)
-    }
-
-
-    private fun emailVerification() {
-        viewModelScope.launch {
-            setShowProgress(true)
-            when (val response = authRepository.emailVerification(
-                firebaseUser,
-            )) {
-                is ApiSuccessResponse -> {
-                    setShowProgress(false)
-                    isEmailSent.postValue(true)
-                }
-
-                is ApiErrorResponse -> {
-                    setApiError(response.errorMessage)
-                    setShowProgress(false)
-                }
-
-                is ApiNoNetworkResponse -> {
-                    setNoNetworkError(response.errorMessage)
-                    setShowProgress(false)
-                }
-
-                else -> {
-                    setShowProgress(false)
-                }
-            }
-        }
-    }
-
-    fun emailVerified() {
-        viewModelScope.launch {
-            setShowProgress(true)
-            when (val response = authRepository.emailVerified(
-                firebaseUser,
-            )) {
-                is ApiSuccessResponse -> {
-                    setShowProgress(false)
-                    Log.d(TAG, "emailVerified: ${response.body}")
-                    isEmailVerified.postValue(response.body!!)
-                    session.putBoolean(USER_IS_EMAIL_VERIFIED, response.body!!)
-                }
-
-                is ApiErrorResponse -> {
-                    setApiError(response.errorMessage)
-                    setShowProgress(false)
-                }
-
-                is ApiNoNetworkResponse -> {
-                    setNoNetworkError(response.errorMessage)
-                    setShowProgress(false)
-                }
-
-                else -> {
-                    setShowProgress(false)
-                }
-            }
-        }
-    }
-
-    private fun userReload() {
-        viewModelScope.launch {
-            setShowProgress(true)
-            when (val response = authRepository.userReload(
-                firebaseUser,
-            )) {
-                is ApiSuccessResponse -> {
-                    setShowProgress(false)
-                    isUserReload.postValue(response.body!!)
-                    Log.d(TAG, "userReload: ${response.body}")
-                }
-
-                is ApiErrorResponse -> {
-                    setApiError(response.errorMessage)
-                    setShowProgress(false)
-                }
-
-                is ApiNoNetworkResponse -> {
-                    setNoNetworkError(response.errorMessage)
-                    setShowProgress(false)
-                }
-
-                else -> {
-                    setShowProgress(false)
-                }
-            }
-        }
-    }
-
-    private fun isEmailVerified() {
-        userReload()
-    }
-
-    suspend fun checkIsEmailEveryMin() {
-        session.getBoolean(USER_IS_EMAIL_VERIFIED).collectLatest {
-            if (it == null || !it) {
-                isEmailVerified()
-            } else {
-                isEmailVerified.postValue(true)
-            }
-
-        }
-    }
-
     fun getModelUserData(): MutableLiveData<List<UserDataRequestModel>> {
         viewModelScope.launch {
-            var recordId = ""
-//            viewModelScope.launch {
+            var recordId: String = ""
             session.getString(USER_ID).collectLatest {
-                Log.d("TAGTest", "Inside collect: ${it}")
                 recordId = it.orEmpty()
-                val userObj: UserDataRequestModel
+                var userObj: UserDataRequestModel
                 if (context.isNetworkAvailable()) {
                     setShowProgress(true)
                     when (val response = authRepository.getRecordById(recordId, fireStore)) {
                         is ApiSuccessResponse -> {
-                            isDoctor.value = response.body.isDoctor
                             userObj = UserDataRequestModel(
                                 name = response.body.name,
                                 email = response.body.email,
                                 contactNumber = response.body.contactNumber
                             )
-                            isPhoneVerify.value =
-                                !firebaseAuth.currentUser?.phoneNumber.isNullOrEmpty()
-
+                            isDoctor.value = response.body.isDoctor
+                            if (firebaseAuth.currentUser?.phoneNumber.isNullOrEmpty()) {
+                                isPhoneVerify.value = true
+                                isPhoneVerifyValue.value =
+                                    resourceProvider.getString(R.string.verify)
+                            } else {
+                                isPhoneVerify.value = false
+                                isPhoneVerifyValue.value =
+                                    resourceProvider.getString(R.string.Verified)
+                            }
                             data.value = listOf(userObj)
                             setShowProgress(false)
                         }
@@ -250,12 +163,22 @@ class AddDoctorViewModel @Inject constructor(
         return data
     }
 
-
     private fun validateAllField() {
-        isUserDataValid.value = (!name.value.isNullOrEmpty() && !address.value.isNullOrEmpty()
-                && !dob.value.isNullOrEmpty() && !contactNum.value.isNullOrEmpty()
-                && nameError.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
-                && dobError.value.isNullOrEmpty() && contactNumError.value.isNullOrEmpty())
+        isDataValid.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
+                && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
+                && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty())
+    }
+
+    fun validateAllUpdateField() {
+        isDataValid1.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
+                && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
+                && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
+                && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
+                && !dob.value.isNullOrEmpty() && dobError.value.isNullOrEmpty()
+                && !isAvailableDate.value.isNullOrEmpty() && isAvailableDateError.value.isNullOrEmpty()
+                && !availableTime.value.isNullOrEmpty() && availableTimeError.value.isNullOrEmpty()
+                && isPhoneVerify.value == false
+                )
     }
 
 
@@ -268,14 +191,7 @@ class AddDoctorViewModel @Inject constructor(
             nameError.value = null
         }
         validateAllField()
-    }
-
-    fun isValidAddress(text: CharSequence?) {
-        if (text?.toString().isNullOrEmpty() || ((text?.toString()?.length ?: 0) < 3)) {
-            addressError.value = resourceProvider.getString(R.string.valid_address_desc)
-        } else {
-            addressError.value = null
-        }
+        validateAllUpdateField()
     }
 
     fun isValidEmail(text: CharSequence?) {
@@ -287,26 +203,36 @@ class AddDoctorViewModel @Inject constructor(
             emailError.value = null
         }
         validateAllField()
+        validateAllUpdateField()
     }
 
     fun isValidContact(text: CharSequence?) {
         if (text?.toString().isNullOrEmpty()) {
-            contactNumError.value =
+            contactNumberError.value =
                 resourceProvider.getString(R.string.error_valid_phone_number)
         } else {
             if (Patterns.PHONE.matcher(text ?: "").matches()) {
                 if (text?.toString()?.length == 10) {
-                    contactNumError.value = null
+                    contactNumberError.value = null
                 } else {
-                    contactNumError.value =
+                    contactNumberError.value =
                         resourceProvider.getString(R.string.error_valid_phone_number)
                 }
             } else {
-                contactNumError.value =
+                contactNumberError.value =
                     resourceProvider.getString(R.string.error_valid_phone_number)
             }
         }
         validateAllField()
+    }
+
+    fun isValidAddress(text: CharSequence?) {
+        if (text?.toString().isNullOrEmpty() || ((text?.toString()?.length ?: 0) < 3)) {
+            addressError.value = resourceProvider.getString(R.string.valid_address_desc)
+        } else {
+            addressError.value = null
+        }
+        validateAllUpdateField()
     }
 
     fun isValidDob(text: CharSequence?) {
@@ -315,9 +241,34 @@ class AddDoctorViewModel @Inject constructor(
         } else {
             dobError.value = null
         }
-        validateAllField()
+        validateAllUpdateField()
     }
 
+    fun isValidDate(text: CharSequence?) {
+        if (text?.toString().isNullOrEmpty()) {
+            isAvailableDateError.value = resourceProvider.getString(R.string.valid_date_desc)
+        } else {
+            isAvailableDateError.value = null
+        }
+        validateAllUpdateField()
+    }
+
+    fun isValidTime(text: CharSequence?) {
+        if (text?.toString().isNullOrEmpty()) {
+            availableTimeError.value = resourceProvider.getString(R.string.valid_time_desc)
+        } else {
+            availableTimeError.value = null
+        }
+        validateAllUpdateField()
+    }
+
+    fun calenderClick(text_dob: View) {
+        isCalender.value = text_dob
+    }
+
+    fun timeClick() {
+        isTimeShow.value = true
+    }
 
     fun addDoctorData() {
         if (context.isNetworkAvailable()) {
@@ -326,6 +277,15 @@ class AddDoctorViewModel @Inject constructor(
             context.toast(resourceProvider.getString(R.string.check_internet_connection))
         }
     }
+
+    fun onUpdateClick() {
+        if (context.isNetworkAvailable()) {
+            updateUser()
+        } else {
+            context.toast(resourceProvider.getString(R.string.check_internet_connection))
+        }
+    }
+
 
     private fun addUserToAuthentication() {
         firebaseUser = firebaseAuth.currentUser!!
@@ -364,13 +324,143 @@ class AddDoctorViewModel @Inject constructor(
         }
     }
 
+    private fun updateUser() {
+
+        viewModelScope.launch {
+            var recordId: String = ""
+            session.getString(USER_ID).collectLatest {
+                val userData: UserDataRequestModel
+                if (isDoctor.value == true) {
+                    userData = UserDataRequestModel(
+                        userId = it.toString(),
+                        isDoctor = true,
+                        email = email.value.toString(),
+                        name = name.value.toString(),
+                        gender = "MALE",
+                        address = address.value.toString(),
+                        contactNumber = contactNumber.value.toString(),
+                        degree = binding?.chipGroup?.children?.toList()
+                            ?.map { (it as Chip).text.toString() } as ArrayList<String>?,
+                        specialities = binding?.chipGroupSpec?.children?.toList()
+                            ?.map { (it as Chip).text.toString() } as ArrayList<String>?,
+                        availableDays = "",
+                        isEmailVerified = true,
+                        isPhoneNumberVerified = true,
+                        availableTime = "",
+                        isAdmin = false,
+                        dob = SimpleDateFormat("dd-MM-yyyy").parse(dob.value.toString()),
+                        isUserVerified = true
+                    )
+                } else {
+                    //Here Code for User Update
+                    userData = UserDataRequestModel()
+                }
+                setShowProgress(true)
+                when (val response = authRepository.updateUserData(userData, fireStore)) {
+                    is ApiSuccessResponse -> {
+                        if (response.body.userId.isNotEmpty()) {
+                            name.value = ""
+                            email.value = ""
+                            address.value = ""
+                            contactNumber.value = ""
+                            dob.value = ""
+                            isAvailableDate.value = ""
+                            availableTime.value = ""
+                            setShowProgress(false)
+                            _navigationListener.value =
+                                R.id.action_updateDoctorFragment_to_LoginFragment
+                            _addDoctorResponse.value = resourceProvider.getString(R.string.success)
+                        }
+                    }
+
+                    is ApiErrorResponse -> {
+                        _addDoctorResponse.value = response.errorMessage
+                        setShowProgress(false)
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        _addDoctorResponse.value = response.errorMessage
+                        setShowProgress(false)
+                    }
+
+                    else -> {
+                        setShowProgress(false)
+                    }
+                }
+            }
+        }
+
+        /* val userData: UserDataRequestModel
+        if (isDoctor.value == true) {
+            Log.d("TAG1212", "updateUser: ${firebaseAuth.currentUser?.uid.toString()}")
+            userData = UserDataRequestModel(
+                userId = firebaseAuth.currentUser?.uid.toString(),
+                isDoctor = true,
+                email = email.value.toString(),
+                name = name.value.toString(),
+                gender = "MALE",
+                address = address.value.toString(),
+                contactNumber = contactNumber.value.toString(),
+                degree = binding?.chipGroup?.children?.toList()?.map { (it as Chip).text.toString() } as ArrayList<String>?,
+                specialities = binding?.chipGroupSpec?.children?.toList()?.map { (it as Chip).text.toString() } as ArrayList<String>?,
+                availableDays = "",
+                isEmailVerified = true,
+                isPhoneNumberVerified = true,
+                availableTime = "",
+                isAdmin = false,
+                dob = SimpleDateFormat("dd-MM-yyyy").parse(dob.value.toString()),
+                isUserVerified = true
+            )
+        } else {
+            //Here Code for User Update
+            userData = UserDataRequestModel()
+        }
+
+//        Log.d("userData----", Gson().toJson(userData))
+        viewModelScope.launch {
+            setShowProgress(true)
+            when (val response = authRepository.updateUserData(userData, fireStore)) {
+                is ApiSuccessResponse -> {
+                    if (response.body.userId.isNotEmpty()) {
+                        name.value = ""
+                        email.value = ""
+                        address.value = ""
+                        contactNumber.value = ""
+                        dob.value = ""
+                        isAvailableDate.value = ""
+                        availableTime.value = ""
+                        setShowProgress(false)
+                        _navigationListener.value =
+                            R.id.action_updateDoctorFragment_to_LoginFragment
+                        _addDoctorResponse.value = resourceProvider.getString(R.string.success)
+                    }
+                }
+
+                is ApiErrorResponse -> {
+                    _addDoctorResponse.value = response.errorMessage
+                    setShowProgress(false)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    _addDoctorResponse.value = response.errorMessage
+                    setShowProgress(false)
+                }
+
+                else -> {
+                    setShowProgress(false)
+                }
+            }
+        }
+*/
+    }
+
     private suspend fun addUserData() {
         val userData = UserDataRequestModel(
             userId = firebaseAuth.currentUser?.uid.toString(),
             isDoctor = true,
             email = email.value!!,
             name = name.value!!,
-            contactNumber = contactNum.value!!,
+            contactNumber = contactNumber.value!!,
             isNotificationEnable = toggleLiveData.value == true
         )
 
@@ -379,7 +469,7 @@ class AddDoctorViewModel @Inject constructor(
                 if (response.body.userId.isNotEmpty()) {
                     name.value = ""
                     email.value = ""
-                    contactNum.value = ""
+                    contactNumber.value = ""
                     setShowProgress(false)
                     _navigationListener.value = R.id.action_addDoctorFragment_to_LoginFragment
                     _addDoctorResponse.value = resourceProvider.getString(R.string.success)
@@ -401,56 +491,215 @@ class AddDoctorViewModel @Inject constructor(
             }
         }
     }
-
-    /*suspend fun updateUserData() {
-        val userData = UserDataRequestModel(
-            userId = firebaseAuth.currentUser?.uid.toString(),
-            name = name.value!!,
-            email = email.value!!,
-            address = address.value!!,
-            contactNumber = contactNum.value!!,
-            dob = SimpleDateFormat("dd/MM/yyyy").parse(dob.value!!),
-            isUserVerified = true,
-            isEmailVerified = true,
-            isPhoneNumberVerified = true
-        )
-        when (val response = authRepository.updateUserData(userData, fireStore)) {
-            is ApiSuccessResponse -> {
-                if (response.body.userId.isNotEmpty()) {
-                    name.value = ""
-                    email.value = ""
-                    contactNum.value = ""
-                    setShowProgress(false)
-                    _navigationListener.value = R.id.action_addDoctorFragment_to_LoginFragment
-                    _addDoctorResponse.value = resourceProvider.getString(R.string.success)
-                }
-            }
-
-            is ApiErrorResponse -> {
-                _addDoctorResponse.value = response.errorMessage
-                setShowProgress(false)
-            }
-
-            is ApiNoNetworkResponse -> {
-                _addDoctorResponse.value = response.errorMessage
-                setShowProgress(false)
-            }
-
-            else -> {
-                setShowProgress(false)
-            }
-        }
-    }*/
 
     fun hideProgress() {
         setShowProgress(false)
     }
 
     fun contactVerify() {
-        if (!contactNum.value.isNullOrEmpty()) {
+        if (!contactNumber.value.isNullOrEmpty()) {
             setShowProgress(true)
-            _clickResponse.value = contactNum.value.toString()
+            _clickResponse.value = contactNumber.value.toString()
         } else {
+        }
+    }
+
+    fun onEmailVerifyClick() {
+        if (!firebaseUser.isEmailVerified) {
+            emailVerification()
+        }
+    }
+
+    private fun emailVerification() {
+        viewModelScope.launch {
+            setShowProgress(true)
+            when (val response = authRepository.emailVerification(firebaseUser)) {
+                is ApiSuccessResponse -> {
+                    setShowProgress(false)
+                    isEmailSent.postValue(true)
+                }
+
+                is ApiErrorResponse -> {
+                    setApiError(response.errorMessage)
+                    setShowProgress(false)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    setNoNetworkError(response.errorMessage)
+                    setShowProgress(false)
+                }
+
+                else -> {
+                    setShowProgress(false)
+                }
+            }
+        }
+    }
+
+    fun emailVerified() {
+        viewModelScope.launch {
+            setShowProgress(true)
+            when (val response = authRepository.emailVerified(firebaseUser)) {
+                is ApiSuccessResponse -> {
+                    setShowProgress(false)
+                    isEmailVerified.postValue(response.body!!)
+                    session.putBoolean(USER_IS_EMAIL_VERIFIED, response.body!!)
+                }
+
+                is ApiErrorResponse -> {
+                    setApiError(response.errorMessage)
+                    setShowProgress(false)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    setNoNetworkError(response.errorMessage)
+                    setShowProgress(false)
+                }
+
+                else -> {
+                    setShowProgress(false)
+                }
+            }
+        }
+    }
+
+    private fun userReload() {
+        viewModelScope.launch {
+            setShowProgress(true)
+            when (val response = authRepository.userReload(firebaseUser)) {
+                is ApiSuccessResponse -> {
+                    setShowProgress(false)
+                    isUserReload.postValue(response.body!!)
+                }
+
+                is ApiErrorResponse -> {
+                    setApiError(response.errorMessage)
+                    setShowProgress(false)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    setNoNetworkError(response.errorMessage)
+                    setShowProgress(false)
+                }
+
+                else -> {
+                    setShowProgress(false)
+                }
+            }
+        }
+    }
+
+    private fun isEmailVerified() {
+        userReload()
+    }
+
+    suspend fun checkIsEmailEveryMin() {
+        session.getBoolean(USER_IS_EMAIL_VERIFIED).collectLatest {
+            if (it == null || it == false) {
+                isEmailVerified()
+                Log.d(TAG, "checkIsEmailEveryMin: false")
+            } else {
+                Log.d(TAG, "checkIsEmailEveryMin: true")
+                isEmailVerified.postValue(true)
+            }
+        }
+    }
+
+    fun getDegreeItems() {
+        viewModelScope.launch {
+            setShowProgress(true)
+            when (val response = authRepository.getDegreeList(fireStore)) {
+                is ApiSuccessResponse -> {
+                    setShowProgress(false)
+                    degreeItems.value = response.body
+                    Log.d("Data----", Gson().toJson(response.body))
+                }
+
+                is ApiErrorResponse -> {
+                    setShowProgress(false)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    setShowProgress(false)
+                }
+
+                else -> {
+                    setShowProgress(false)
+                }
+            }
+        }
+    }
+
+    fun getSpecializationItems() {
+        viewModelScope.launch {
+            setShowProgress(true)
+            when (val response = authRepository.getSpecializationList(fireStore)) {
+                is ApiSuccessResponse -> {
+                    setShowProgress(false)
+                    specializationItems.value = response.body
+                    Log.d("Data----", Gson().toJson(response.body))
+                }
+
+                is ApiErrorResponse -> {
+                    setShowProgress(false)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    setShowProgress(false)
+                }
+
+                else -> {
+                    setShowProgress(false)
+                }
+            }
+        }
+    }
+
+    fun addDegreeItems(data: String) {
+        viewModelScope.launch {
+            setShowProgress(true)
+            when (val response = authRepository.addDegree(fireStore, data)) {
+                is ApiSuccessResponse -> {
+                    setShowProgress(false)
+                    Log.d("Add Data----", Gson().toJson(response.body))
+                }
+
+                is ApiErrorResponse -> {
+                    setShowProgress(false)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    setShowProgress(false)
+                }
+
+                else -> {
+                    setShowProgress(false)
+                }
+            }
+        }
+    }
+
+    fun addSpecializationItems(data: String) {
+        viewModelScope.launch {
+            setShowProgress(true)
+            when (val response = authRepository.addSpecialization(fireStore, data)) {
+                is ApiSuccessResponse -> {
+                    setShowProgress(false)
+                    Log.d("Add Data----", Gson().toJson(response.body))
+                }
+
+                is ApiErrorResponse -> {
+                    setShowProgress(false)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    setShowProgress(false)
+                }
+
+                else -> {
+                    setShowProgress(false)
+                }
+            }
         }
     }
 

@@ -98,5 +98,15 @@
     <string name="check_internet_connection">Please Check your Internet Connection</string>
     <string name="otp_verification">Otp Verification</string>
     <string name="otp_desc">Thank you for registering with you, please\ntype otp as shared on your mobile\nXXXXXXX</string>
+    <string name="select_dob">Select Date of Birth</string>
+    <string name="valid_date_desc">Available Date can not be empty</string>
+    <string name="valid_time_desc">Available Time can not be empty</string>
+    <string name="doctor_update_successfully">Doctor information successfully Updated.</string>
+    <string name="complete_profile">Complete Profile</string>
+    <string name="complete_profile_desc">Please complete your profile to continue</string>
+    <string name="cancel">Cancel</string>
+    <string name="Verified">Verified</string>
+    <string name="verification_main_sent">Verification Email sent successfully</string>
+    <string name="doctor_list">Doctor List</string>
 
 </resources>

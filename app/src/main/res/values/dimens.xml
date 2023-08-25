@@ -17,4 +17,6 @@
     <dimen name="radius_10">10dp</dimen>
     <dimen name="parentHorizontalMargin_50">50dp</dimen>
     <dimen name="parentVerticalMargin_50">50dp</dimen>
+    <dimen name="dp_100">100dp</dimen>
+    <dimen name="dp_24">24dp</dimen>
 </resources>

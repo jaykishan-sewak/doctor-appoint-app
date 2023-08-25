@@ -12,9 +12,11 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import com.android.doctorapp.R
 import com.android.doctorapp.util.ImageUtils
 import com.android.doctorapp.util.extension.hideKeyboard
 import kotlinx.coroutines.CoroutineScope
@@ -169,3 +171,9 @@ fun spannableText(view: TextView, mainText: String?, secondaryText: String?, sec
     view.text = wordToSpan
 }
 
+@BindingAdapter("app:genderImage")
+fun setGenderImage(imageView: AppCompatImageView, gender: String) {
+    val drawableRes =
+        if (gender == "MALE") R.drawable.ic_male_placeholder else R.drawable.ic_female_placeholder
+    imageView.setImageResource(drawableRes)
+}

@@ -14,6 +14,8 @@ import javax.inject.Inject
 val USER_IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
 val USER_IS_EMAIL_VERIFIED = booleanPreferencesKey("is_email_verified")
 val USER_ID = stringPreferencesKey("user_id")
+val USER_IS_EMAIL_VERIFIED = booleanPreferencesKey("is_email_verified")
+
 
 private val Context.userPreferencesDataStore: DataStore<Preferences> by preferencesDataStore(
     name = "SESSION"
