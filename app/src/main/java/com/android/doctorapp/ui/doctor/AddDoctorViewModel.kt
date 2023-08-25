@@ -12,6 +12,7 @@ import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AuthRepository
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.local.USER_ID
+import com.android.doctorapp.repository.local.USER_IS_EMAIL_VERIFIED
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
@@ -71,15 +72,24 @@ class AddDoctorViewModel @Inject constructor(
     val isAvailableDate: MutableLiveData<String?> = MutableLiveData()
     private val isAvailableDateError: MutableLiveData<String?> = MutableLiveData()
 
-    val isTimeShow: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isTimeShow: MutableLiveData<Boolean> = SingleLiveEvent()
     val availableTime: MutableLiveData<String> = MutableLiveData()
     private val availableTimeError: MutableLiveData<String?> = MutableLiveData()
 
     val isPhoneVerify: MutableLiveData<Boolean> = MutableLiveData(true)
-    val isPhoneVerifyValue: MutableLiveData<String> = MutableLiveData("Verify")
+    val isPhoneVerifyValue: MutableLiveData<String> =
+        MutableLiveData(resourceProvider.getString(R.string.verify))
 
     val isDoctor: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isEmailSent: MutableLiveData<Boolean> = MutableLiveData(false)
+    val emailVerifyLabel: MutableLiveData<String> =
+        MutableLiveData(resourceProvider.getString(R.string.verify))
+    val isEmailVerified: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isUserReload: MutableLiveData<Boolean> = MutableLiveData(false)
 
+    init {
+        firebaseUser = firebaseAuth.currentUser!!
+    }
 
     fun getModelUserData(): MutableLiveData<List<UserDataRequestModel>> {
         viewModelScope.launch {
@@ -99,10 +109,12 @@ class AddDoctorViewModel @Inject constructor(
                             isDoctor.value = response.body.isDoctor
                             if (firebaseAuth.currentUser?.phoneNumber.isNullOrEmpty()) {
                                 isPhoneVerify.value = true
-                                isPhoneVerifyValue.value = "Verify"
+                                isPhoneVerifyValue.value =
+                                    resourceProvider.getString(R.string.verify)
                             } else {
                                 isPhoneVerify.value = false
-                                isPhoneVerifyValue.value = "Verified"
+                                isPhoneVerifyValue.value =
+                                    resourceProvider.getString(R.string.Verified)
                             }
                             data.value = listOf(userObj)
                             setShowProgress(false)
@@ -342,13 +354,11 @@ class AddDoctorViewModel @Inject constructor(
                 }
 
                 is ApiErrorResponse -> {
-                    Log.d(TAG, "updateUser: ${response.errorMessage}")
                     _addDoctorResponse.value = response.errorMessage
                     setShowProgress(false)
                 }
 
                 is ApiNoNetworkResponse -> {
-                    Log.d(TAG, "updateUser: ${response.errorMessage}")
                     _addDoctorResponse.value = response.errorMessage
                     setShowProgress(false)
                 }
@@ -410,4 +420,106 @@ class AddDoctorViewModel @Inject constructor(
         } else {
         }
     }
+
+    fun onEmailVerifyClick() {
+        if (!firebaseUser.isEmailVerified) {
+            emailVerification()
+        }
+    }
+
+    private fun emailVerification() {
+        viewModelScope.launch {
+            setShowProgress(true)
+            when (val response = authRepository.emailVerification(firebaseUser)) {
+                is ApiSuccessResponse -> {
+                    setShowProgress(false)
+                    isEmailSent.postValue(true)
+                }
+
+                is ApiErrorResponse -> {
+                    setApiError(response.errorMessage)
+                    setShowProgress(false)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    setNoNetworkError(response.errorMessage)
+                    setShowProgress(false)
+                }
+
+                else -> {
+                    setShowProgress(false)
+                }
+            }
+        }
+    }
+
+    fun emailVerified() {
+        viewModelScope.launch {
+            setShowProgress(true)
+            when (val response = authRepository.emailVerified(firebaseUser)) {
+                is ApiSuccessResponse -> {
+                    setShowProgress(false)
+                    isEmailVerified.postValue(response.body!!)
+                    session.putBoolean(USER_IS_EMAIL_VERIFIED, response.body!!)
+                }
+
+                is ApiErrorResponse -> {
+                    setApiError(response.errorMessage)
+                    setShowProgress(false)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    setNoNetworkError(response.errorMessage)
+                    setShowProgress(false)
+                }
+
+                else -> {
+                    setShowProgress(false)
+                }
+            }
+        }
+    }
+
+    private fun userReload() {
+        viewModelScope.launch {
+            setShowProgress(true)
+            when (val response = authRepository.userReload(firebaseUser)) {
+                is ApiSuccessResponse -> {
+                    setShowProgress(false)
+                    isUserReload.postValue(response.body!!)
+                }
+
+                is ApiErrorResponse -> {
+                    setApiError(response.errorMessage)
+                    setShowProgress(false)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    setNoNetworkError(response.errorMessage)
+                    setShowProgress(false)
+                }
+
+                else -> {
+                    setShowProgress(false)
+                }
+            }
+        }
+    }
+
+    private fun isEmailVerified() {
+        userReload()
+    }
+
+    suspend fun checkIsEmailEveryMin() {
+        session.getBoolean(USER_IS_EMAIL_VERIFIED).collectLatest {
+            if (it == null || it == false) {
+                isEmailVerified()
+                Log.d(TAG, "checkIsEmailEveryMin: false")
+            } else {
+                Log.d(TAG, "checkIsEmailEveryMin: true")
+                isEmailVerified.postValue(true)
+            }
+        }
+    }
+
 }

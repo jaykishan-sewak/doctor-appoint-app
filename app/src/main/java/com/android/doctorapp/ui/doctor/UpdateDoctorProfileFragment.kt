@@ -2,12 +2,16 @@ package com.android.doctorapp.ui.doctor
 
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.FragmentUpdateDoctorProfileBinding
@@ -24,6 +28,7 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
 import java.util.concurrent.TimeUnit
@@ -44,7 +49,16 @@ class UpdateDoctorProfileFragment :
     val mcurrentTime = Calendar.getInstance()
     val hour = mcurrentTime.get(Calendar.HOUR_OF_DAY)
     val minute = mcurrentTime.get(Calendar.MINUTE)
-
+    val handler = Handler(Looper.getMainLooper())
+    private val runnable = object : Runnable {
+        override fun run() {
+            viewModel.viewModelScope.launch {
+                Log.d(TAG, "run: Called")
+                viewModel.checkIsEmailEveryMin()
+            }
+            handler.postDelayed(this, 30000)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,7 +80,12 @@ class UpdateDoctorProfileFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+        handler.postDelayed(runnable, 1000)
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            override fun onCodeAutoRetrievalTimeOut(str: String) {
+                viewModel.hideProgress()
+            }
+
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
                 viewModel.hideProgress()
             }
@@ -93,7 +112,7 @@ class UpdateDoctorProfileFragment :
         }
         mTimePicker = TimePickerDialog(
             requireContext(), { view, hourOfDay, minute ->
-                viewModel.availableTime.value = "$hourOfDay : $minute"
+                viewModel.availableTime.value = "$hourOfDay:$minute"
             }, hour, minute, true
         )
         return binding {
@@ -153,8 +172,9 @@ class UpdateDoctorProfileFragment :
             }
         }
 
+
         viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
-            if (it.equals("Success")) {
+            if (it.equals(requireContext().resources.getString(R.string.success))) {
                 context?.toast(resources.getString(R.string.doctor_update_successfully))
                 viewModel.navigationListener.observe(viewLifecycleOwner) {
                     findNavController().navigate(it)
@@ -169,6 +189,32 @@ class UpdateDoctorProfileFragment :
                 }
             }
         }
+
+        viewModel.isEmailSent.observe(viewLifecycleOwner) {
+            if (it == true) {
+                context?.toast(requireContext().resources.getString(R.string.verification_main_sent))
+            }
+        }
+        viewModel.isUserReload.observe(viewLifecycleOwner) {
+            if (it == true) {
+                viewModel.emailVerified()
+            }
+        }
+        viewModel.isEmailVerified.observe(viewLifecycleOwner) {
+            if (it == true) {
+                viewModel.validateAllUpdateField()
+                viewModel.emailVerifyLabel.postValue(requireContext().resources.getString(R.string.Verified))
+                binding.textEmailVerify.isClickable = false
+                binding.textEmailVerify.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.green
+                    )
+                )
+                handler.removeCallbacks(runnable)
+            }
+        }
+
     }
 
     private fun sendVerificationCode(number: String) {

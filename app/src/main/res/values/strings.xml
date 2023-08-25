@@ -91,5 +91,9 @@
     <string name="valid_date_desc">Available Date can not be empty</string>
     <string name="valid_time_desc">Available Time can not be empty</string>
     <string name="doctor_update_successfully">Doctor information successfully Updated.</string>
-
+    <string name="complete_profile">Complete Profile</string>
+    <string name="complete_profile_desc">Please complete your profile to continue</string>
+    <string name="cancel">Cancel</string>
+    <string name="Verified">Verified</string>
+    <string name="verification_main_sent">Verification Email sent successfully</string>
 </resources>

@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
@@ -211,4 +212,32 @@ class AuthRepository @Inject constructor(
             ApiResponse.create(e.fillInStackTrace())
         }
     }
+
+    suspend fun emailVerification(firebaseUser: FirebaseUser): ApiResponse<Boolean> {
+        return try {
+            firebaseUser.sendEmailVerification().await()
+            ApiResponse.create (response = Response.success(true))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+    fun emailVerified(firebaseUser: FirebaseUser): ApiResponse<Boolean> {
+        return try {
+            val result = firebaseUser.isEmailVerified
+            ApiResponse.create(response = Response.success(result))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+    fun userReload(firebaseUser: FirebaseUser): ApiResponse<Boolean> {
+        return try {
+            val result = firebaseUser.reload()
+            ApiResponse.create(response = Response.success(true))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
 }

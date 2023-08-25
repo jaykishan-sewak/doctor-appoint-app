@@ -78,7 +78,8 @@ class OtpVerificationFragment :
             }
         }
         viewModel.navigationListener.observe(viewLifecycleOwner) {
-            findNavController().navigate(it)
+//            findNavController().navigate(it)
+            findNavController().popBackStack()
 //            findNavController().popBackStack(R.id.OtpVerificationFragment, true)
 
         }

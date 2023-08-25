@@ -39,10 +39,10 @@ class LoginViewModel @Inject constructor(
 
     var googleSignInClient: GoogleSignInClient
 
-    val email: MutableLiveData<String> = MutableLiveData()
+    val email: MutableLiveData<String> = MutableLiveData("docharsh@gmail.com")
     val emailError: MutableLiveData<String?> = MutableLiveData()
 
-    val password: MutableLiveData<String> = MutableLiveData()
+    val password: MutableLiveData<String> = MutableLiveData("Admin@123")
     val passwordError: MutableLiveData<String?> = MutableLiveData()
 
     val isDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -56,6 +56,8 @@ class LoginViewModel @Inject constructor(
     val signInAccountTask: MutableLiveData<Task<GoogleSignInAccount>> = MutableLiveData()
     val googleSignInAccount: MutableLiveData<GoogleSignInAccount> = MutableLiveData()
     val authCredential: MutableLiveData<AuthCredential> = MutableLiveData()
+
+    val isUserVerified: MutableLiveData<Boolean> = SingleLiveEvent()
 
 
     init {
@@ -143,7 +145,8 @@ class LoginViewModel @Inject constructor(
 
     private suspend fun getUserData() {
 
-        when (val response = authRepository.getRecordById(firebaseAuth.currentUser?.uid.toString(), fireStore)) {
+        when (val response =
+            authRepository.getRecordById(firebaseAuth.currentUser?.uid.toString(), fireStore)) {
 
             is ApiSuccessResponse -> {
                 email.value = ""
@@ -153,7 +156,8 @@ class LoginViewModel @Inject constructor(
                 if (response.body.isAdmin) {
                     _navigationListener.postValue(R.id.action_loginFragment_to_adminDashboardFragment)
                 } else if (response.body.isDoctor) {
-                    _navigationListener.postValue(R.id.action_loginFragment_to_doctorDashboardFragment)
+                    isUserVerified.value = response.body.isUserVerified
+//                    _navigationListener.postValue(R.id.action_loginFragment_to_doctorDashboardFragment)
                 } else {
                     _navigationListener.postValue(R.id.action_loginFragment_to_addUserProfileFragment)
                 }
