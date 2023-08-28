@@ -3,6 +3,8 @@ package com.android.doctorapp.ui.doctor
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +20,9 @@ import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.STORED_VERIFICATION_Id_KEY
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_CONTACT_NUMBER_KEY
+import com.android.doctorapp.util.extension.alert
+import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.selectDate
 import com.android.doctorapp.util.extension.toast
 import com.google.firebase.FirebaseException
@@ -41,7 +46,6 @@ class UpdateDoctorProfileFragment :
     private val runnable = object : Runnable {
         override fun run() {
             viewModel.viewModelScope.launch {
-                Log.d(TAG, "run: Called")
                 viewModel.checkIsEmailEveryMin()
             }
             handler.postDelayed(this, 30000)
@@ -74,11 +78,14 @@ class UpdateDoctorProfileFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+        handler.postDelayed(runnable, 1000)
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                viewModel.hideProgress()
             }
 
             override fun onVerificationFailed(e: FirebaseException) {
+                viewModel.hideProgress()
             }
 
             override fun onCodeSent(
@@ -90,6 +97,8 @@ class UpdateDoctorProfileFragment :
                 resendToken = token
                 val bundle = Bundle()
                 bundle.putString(STORED_VERIFICATION_Id_KEY, storedVerificationId)
+                bundle.putBoolean(IS_DOCTOR_OR_USER_KEY, true)
+                bundle.putString(USER_CONTACT_NUMBER_KEY, viewModel.contactNumber.value)
                 findNavController().navigate(
                     R.id.action_updateDoctorFragment_to_OtpVerificationFragment,
                     bundle
@@ -97,11 +106,19 @@ class UpdateDoctorProfileFragment :
 
             }
         }
-
-        return binding {
+        mTimePicker = TimePickerDialog(
+            requireContext(), { view, hourOfDay, minute ->
+                viewModel.availableTime.value = "$hourOfDay:$minute"
+            }, hour, minute, true
+        )
+        bindingView = binding {
             viewModel = this@UpdateDoctorProfileFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
-        }.root
+        }
+        viewModel.setBindingData(binding)
+        viewModel.getDegreeItems()
+        viewModel.getSpecializationItems()
+        return bindingView.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -124,8 +141,9 @@ class UpdateDoctorProfileFragment :
         }
 
         viewModel.isPhoneVerify.observe(viewLifecycleOwner) {
-            if (it) {
-                binding.textContactVerify.isClickable = false
+            if (!it) {
+                //                binding.textContactVerify.isClickable = false
+                viewModel.validateAllUpdateField()
                 binding.textContactVerify.setTextColor(
                     ContextCompat.getColor(
                         requireContext(),
@@ -142,16 +160,41 @@ class UpdateDoctorProfileFragment :
                     viewModel.dob.value = dobDate
                 }
             } else {
-                requireContext().selectDate(maxDate = null, minDate = Date().time)
-                { availableDate ->
+                requireContext().selectDate(
+                    maxDate = null,
+                    minDate = Date().time
+                ) { availableDate ->
                     viewModel.isAvailableDate.value = availableDate
+                }
+            }
+        }
+        viewModel.isTimeShow.observe(viewLifecycleOwner) {
+            if (it) {
+                mTimePicker.show()
+            }
+        }
+
+
+        viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
+            if (it.equals(requireContext().resources.getString(R.string.success))) {
+                context?.toast(resources.getString(R.string.doctor_update_successfully))
+                viewModel.navigationListener.observe(viewLifecycleOwner) { navId ->
+                    findNavController().navigate(navId)
+                    findNavController().popBackStack(R.id.LoginFragment, false)
+
+                }
+            } else {
+                context?.alert {
+                    setTitle(getString(R.string.doctor_not_save))
+                    setMessage(it)
+                    neutralButton { }
                 }
             }
         }
 
         viewModel.isEmailSent.observe(viewLifecycleOwner) {
             if (it == true) {
-                context?.toast("Verification Email sent successfully")
+                context?.toast(requireContext().resources.getString(R.string.verification_main_sent))
             }
         }
 
@@ -163,7 +206,10 @@ class UpdateDoctorProfileFragment :
 
         viewModel.isEmailVerified.observe(viewLifecycleOwner) {
             if (it == true) {
-                viewModel.emailVerifyLabel.postValue("Verified")
+                viewModel.validateAllUpdateField()
+                viewModel.emailVerifyLabel.postValue(requireContext().resources.getString(R.string.Verified))
+//                binding.textEmailVerify.isClickable = false
+                viewModel.isEmailEnable.value = false
                 binding.textEmailVerify.setTextColor(
                     ContextCompat.getColor(
                         requireContext(),
@@ -174,6 +220,116 @@ class UpdateDoctorProfileFragment :
             }
         }
 
+        viewModel.degreeList.observe(viewLifecycleOwner) {
+            val adapter =
+                CustomAutoCompleteAdapter(
+                    requireContext(),
+                    it?.degreeName!!
+                )
+            bindingView.autoCompleteTextView.setAdapter(adapter)
+
+            bindingView.autoCompleteTextView.setOnItemClickListener { _, _, position, _ ->
+                val selectedItem = adapter.getItem(position)
+                if (selectedItem == CustomAutoCompleteAdapter.ADD_SUGGESTION_ITEM) {
+                    addChip(enteredDegreeText.uppercase())
+                    bindingView.autoCompleteTextView.setText(enteredDegreeText.uppercase())
+                    addItem(enteredDegreeText.uppercase())
+                    bindingView.autoCompleteTextView.setText("")
+                } else {
+                    addChip(selectedItem!!)
+                    bindingView.autoCompleteTextView.setText("")
+                }
+            }
+            bindingView.autoCompleteTextView.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                    if (s.toString() != CustomAutoCompleteAdapter.ADD_SUGGESTION_ITEM)
+                        enteredDegreeText = s.toString()
+                }
+            })
+        }
+        viewModel.specializationList.observe(viewLifecycleOwner) {
+            val adapter =
+                CustomAutoCompleteAdapter(
+                    requireContext(),
+                    it?.specializations!!
+                )
+            bindingView.autoCompleteTextViewSpec.setAdapter(adapter)
+
+            bindingView.autoCompleteTextViewSpec.setOnItemClickListener { _, _, position, _ ->
+                val selectedItem = adapter.getItem(position)
+                if (selectedItem == CustomAutoCompleteAdapter.ADD_SUGGESTION_ITEM) {
+                    addSpecChip(enteredSpecializationText.uppercase())
+                    bindingView.autoCompleteTextViewSpec.setText(enteredSpecializationText.uppercase())
+                    addSpecializationItem(enteredSpecializationText.uppercase())
+                    bindingView.autoCompleteTextViewSpec.setText("")
+                } else {
+                    addSpecChip(selectedItem!!)
+                    bindingView.autoCompleteTextViewSpec.setText("")
+                }
+            }
+            bindingView.autoCompleteTextViewSpec.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+                override fun afterTextChanged(s: Editable?) {
+                    if (s.toString() != CustomAutoCompleteAdapter.ADD_SUGGESTION_ITEM)
+                        enteredSpecializationText = s.toString()
+                }
+            })
+        }
+
+
+    }
+
+    private fun addSpecializationItem(uppercase: String) {
+        viewModel.addSpecializationItems(uppercase)
+
+    }
+
+    private fun addItem(data: String) {
+        viewModel.addDegreeItems(data)
+    }
+
+    private fun addChip(text: String) {
+        val chip = Chip(requireContext())
+        chip.text = text
+        chip.isCloseIconVisible = true
+        chip.setOnCloseIconClickListener {
+            bindingView.chipGroup.removeView(chip)
+            viewModel.validateAllUpdateField()
+        }
+        bindingView.chipGroup.addView(chip)
+        viewModel.validateAllUpdateField()
+    }
+
+    private fun addSpecChip(text: String) {
+        val chip = Chip(requireContext())
+        chip.text = text
+        chip.isCloseIconVisible = true
+        chip.setOnCloseIconClickListener {
+            bindingView.chipGroupSpec.removeView(chip)
+            viewModel.validateAllUpdateField()
+        }
+        bindingView.chipGroupSpec.addView(chip)
+        viewModel.validateAllUpdateField()
     }
 
     private fun sendVerificationCode(number: String) {
@@ -186,5 +342,52 @@ class UpdateDoctorProfileFragment :
         PhoneAuthProvider.verifyPhoneNumber(options)
     }
 
+}
 
+
+class CustomAutoCompleteAdapter(context: Context, suggestions: List<String>) :
+    ArrayAdapter<String>(context, android.R.layout.simple_dropdown_item_1line, suggestions),
+    Filterable {
+
+    private var originalSuggestions: List<String> = suggestions.toList()
+
+    override fun getFilter(): Filter {
+        return customFilter
+    }
+
+    private val customFilter = object : Filter() {
+        override fun performFiltering(constraint: CharSequence?): FilterResults {
+            val results = FilterResults()
+            val filteredList = mutableListOf<String>()
+
+            if (constraint.isNullOrEmpty()) {
+                filteredList.addAll(originalSuggestions)
+            } else {
+                val filterPattern = constraint.toString().lowercase().trim()
+                for (suggestion in originalSuggestions) {
+                    if (suggestion.lowercase().contains(filterPattern)) {
+                        filteredList.add(suggestion)
+                    }
+                }
+            }
+
+            if (filteredList.isEmpty()) {
+                filteredList.add(ADD_SUGGESTION_ITEM)
+            }
+
+            results.values = filteredList
+            results.count = filteredList.size
+            return results
+        }
+
+        override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+            clear()
+            addAll(results?.values as List<String>)
+            notifyDataSetChanged()
+        }
+    }
+
+    companion object {
+        const val ADD_SUGGESTION_ITEM = "Add"
+    }
 }

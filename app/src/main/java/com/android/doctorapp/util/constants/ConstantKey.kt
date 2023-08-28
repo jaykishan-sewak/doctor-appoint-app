@@ -6,6 +6,7 @@ object ConstantKey {
         const val IS_DOCTOR_OR_USER = "isDoctorOrUser"
         const val STORED_VERIFICATION_Id_KEY = "storedVerificationId"
         const val IS_DOCTOR_OR_USER_KEY = "isDoctorOrUser"
+        const val USER_CONTACT_NUMBER_KEY = "userContactNumber"
     }
 
     object DBKeys {

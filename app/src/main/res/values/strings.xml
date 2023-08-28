@@ -97,6 +97,8 @@
     <string name="available_time">Available Time</string>
     <string name="check_internet_connection">Please Check your Internet Connection</string>
     <string name="otp_verification">Otp Verification</string>
+    <string name="otp_desc">Thank you for registering with you, please\ntype otp as shared on your mobile\nXXXXXXX%1$s</string>
+    <string name="valid_address_desc">Address must have at least three characters</string>
     <string name="otp_desc">Thank you for registering with you, please\ntype otp as shared on your mobile\nXXXXXXX</string>
     <string name="select_dob">Select Date of Birth</string>
     <string name="valid_date_desc">Available Date can not be empty</string>

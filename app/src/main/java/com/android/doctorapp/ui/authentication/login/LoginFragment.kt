@@ -134,6 +134,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
 
                     }
                 }
+            } else {
+                findNavController().navigate(R.id.action_loginFragment_to_doctorDashboardFragment)
             }
         }
 
