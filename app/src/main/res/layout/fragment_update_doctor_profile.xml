@@ -132,7 +132,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
-                    android:hint="@string/hint_user_contact"
+                    android:hint="@string/hint_doctor_contact"
                     app:error="@{viewModel.contactNumberError}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
