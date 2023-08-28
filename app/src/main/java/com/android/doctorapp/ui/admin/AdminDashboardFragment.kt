@@ -82,6 +82,10 @@ class AdminDashboardFragment :
                     viewModel.deleteDoctor(item.id, position)
                 }
 
+                override fun onItemEdit(item: UserDataResponseModel, position: Int) {
+                    TODO("Not yet implemented here call doctor edit screen")
+                }
+
             })
     }
 
