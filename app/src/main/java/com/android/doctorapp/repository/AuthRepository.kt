@@ -314,7 +314,8 @@ class AuthRepository @Inject constructor(
             val docList =
                 firestore.collection(ConstantKey.DBKeys.TABLE_SPECIALIZATION).get().await()
             val response = firestore.collection(ConstantKey.DBKeys.TABLE_SPECIALIZATION)
-                .document(docList.documents[0].id).update("specializations", FieldValue.arrayUnion(data)).await()
+                .document(docList.documents[0].id)
+                .update("specializations", FieldValue.arrayUnion(data)).await()
             ApiResponse.create(response = Response.success(true))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
