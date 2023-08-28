@@ -1,6 +1,5 @@
 package com.android.doctorapp.ui.profile
 
-import android.app.DatePickerDialog
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -20,13 +19,16 @@ import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.ui.doctor.AddDoctorViewModel
 import com.android.doctorapp.ui.doctor.UpdateDoctorProfileFragment
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.extension.alert
+import com.android.doctorapp.util.extension.neutralButton
+import com.android.doctorapp.util.extension.selectDate
 import com.android.doctorapp.util.extension.toast
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.coroutines.launch
-import java.util.Calendar
+import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -46,17 +48,6 @@ class AddUserProfileFragment :
             handler.postDelayed(this, 30000)
         }
     }
-
-    private val myCalendar = Calendar.getInstance()
-    private var date =
-        DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-            val date = (dayOfMonth.toString() + "-" + (monthOfYear + 1) + "-" + year)
-            viewModel.dob.value = date
-            myCalendar.set(Calendar.YEAR, year)
-            myCalendar.set(Calendar.MONTH, monthOfYear)
-            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-            //updateLabel()
-        }
 
     private lateinit var callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
     private val TAG = UpdateDoctorProfileFragment::class.java.simpleName
@@ -131,13 +122,32 @@ class AddUserProfileFragment :
 
     private fun checkLiveData() {
 
-        viewModel.isCalendarShow.observe(viewLifecycleOwner) {
-            if (it == true) {
-                context?.let { it1 ->
-                    DatePickerDialog(
-                        it1, date, myCalendar[Calendar.YEAR], myCalendar[Calendar.MONTH],
-                        myCalendar[Calendar.DAY_OF_MONTH]
-                    ).show()
+        viewModel.addUserResponse.observe(viewLifecycleOwner) {
+            if (it.equals("Success")) {
+                context?.toast(resources.getString(R.string.doctor_save_successfully))
+                viewModel.navigationListener.observe(viewLifecycleOwner) {
+                    findNavController().navigate(it)
+                    findNavController().popBackStack(R.id.LoginFragment, false)
+                }
+            } else {
+                context?.alert {
+                    setTitle(getString(R.string.doctor_not_save))
+                    setMessage(it)
+                    neutralButton { }
+                }
+            }
+        }
+
+        viewModel.isCalender.observe(viewLifecycleOwner) {
+
+            if (binding.textDateOfBirth.id == it?.id) {
+                requireContext().selectDate(maxDate = Date().time, minDate = null) { dobDate ->
+                    viewModel.dob.value = dobDate
+                }
+            } else {
+                requireContext().selectDate(maxDate = null, minDate = Date().time)
+                { availableDate ->
+                    viewModel.isAvailableDate.value = availableDate
                 }
             }
         }
@@ -156,6 +166,7 @@ class AddUserProfileFragment :
 
         viewModel.isEmailVerified.observe(viewLifecycleOwner) {
             if (it == true) {
+                viewModel.validateAllUpdateField()
                 viewModel.emailVerifyLabel.postValue("Verified")
                 binding.textEmailVerify.isClickable = false
                 binding.textEmailVerify.setTextColor(
@@ -179,16 +190,14 @@ class AddUserProfileFragment :
         }
 
         viewModel.isPhoneVerify.observe(viewLifecycleOwner) {
-            if (it == true) {
-                viewModel.isPhoneVerifyValue.value = "Verified"
-                binding.textContactVerify.isClickable = false
-                binding.textContactVerify.setTextColor(
+            if (!it) {
+                viewModel.validateAllUpdateField()
+                binding.textUserContactVerify.setTextColor(
                     ContextCompat.getColor(
                         requireContext(),
                         R.color.green
                     )
                 )
-
             }
         }
 

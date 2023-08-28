@@ -1,6 +1,5 @@
 package com.android.doctorapp.ui.doctor
 
-import android.app.DatePickerDialog
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -19,13 +18,14 @@ import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.STORED_VERIFICATION_Id_KEY
+import com.android.doctorapp.util.extension.selectDate
 import com.android.doctorapp.util.extension.toast
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.coroutines.launch
-import java.util.Calendar
+import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -48,16 +48,6 @@ class UpdateDoctorProfileFragment :
         }
     }
 
-    private val myCalendar = Calendar.getInstance()
-    private var date =
-        DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-            val date = (dayOfMonth.toString() + "-" + (monthOfYear + 1) + "-" + year)
-            viewModel.dob.value = date
-            myCalendar.set(Calendar.YEAR, year)
-            myCalendar.set(Calendar.MONTH, monthOfYear)
-            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-            //updateLabel()
-        }
 
     private lateinit var callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
     private val TAG = UpdateDoctorProfileFragment::class.java.simpleName
@@ -126,7 +116,7 @@ class UpdateDoctorProfileFragment :
         viewModel.getModelUserData().observe(viewLifecycleOwner) {
             viewModel.name.value = it[0].name
             viewModel.email.value = it[0].email
-            viewModel.contactNum.value = it[0].contactNumber
+            viewModel.contactNumber.value = it[0].contactNumber
         }
 
         viewModel.clickResponse.observe(viewLifecycleOwner) {
@@ -145,16 +135,20 @@ class UpdateDoctorProfileFragment :
             }
         }
 
-        viewModel.isCalendarShow.observe(viewLifecycleOwner) {
-            if (it == true) {
-                context?.let { it1 ->
-                    DatePickerDialog(
-                        it1, date, myCalendar[Calendar.YEAR], myCalendar[Calendar.MONTH],
-                        myCalendar[Calendar.DAY_OF_MONTH]
-                    ).show()
+        viewModel.isCalender.observe(viewLifecycleOwner) {
+
+            if (binding.textDateOfBirth.id == it?.id) {
+                requireContext().selectDate(maxDate = Date().time, minDate = null) { dobDate ->
+                    viewModel.dob.value = dobDate
+                }
+            } else {
+                requireContext().selectDate(maxDate = null, minDate = Date().time)
+                { availableDate ->
+                    viewModel.isAvailableDate.value = availableDate
                 }
             }
         }
+
         viewModel.isEmailSent.observe(viewLifecycleOwner) {
             if (it == true) {
                 context?.toast("Verification Email sent successfully")
@@ -180,11 +174,6 @@ class UpdateDoctorProfileFragment :
             }
         }
 
-//        viewModel.isDoctor.observe(viewLifecycleOwner) {
-//            if (it == false) {
-//                binding.constraintContact.background = null
-//            }
-//        }
     }
 
     private fun sendVerificationCode(number: String) {
@@ -196,47 +185,6 @@ class UpdateDoctorProfileFragment :
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)
     }
-
-    // 9925128658
-//    override fun onAttach(context: Context) {
-//        super.onAttach(context)
-//        Log.d(TAG, "onAttach: ")
-//    }
-//
-//    override fun onStart() {
-//        super.onStart()
-//        Log.d(TAG, "onStart: ")
-//    }
-//
-//    override fun onResume() {
-//        super.onResume()
-//        Log.d(TAG, "onResume: ")
-//    }
-//
-//    override fun onPause() {
-//        super.onPause()
-//        Log.d(TAG, "onPause: ")
-//    }
-//
-//    override fun onStop() {
-//        super.onStop()
-//        Log.d(TAG, "onStop: ")
-//    }
-//
-//    override fun onDestroyView() {
-//        super.onDestroyView()
-//        Log.d(TAG, "onDestroyView: ")
-//    }
-//
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        Log.d(TAG, "onDestroy: ")
-//    }
-//
-//    override fun onDetach() {
-//        super.onDetach()
-//        Log.d(TAG, "onDetach: ")
-//    }
 
 
 }

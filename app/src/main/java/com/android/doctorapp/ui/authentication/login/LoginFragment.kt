@@ -70,6 +70,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     }
 
     private fun registerObserver() {
+
         viewModel.loginResponse.observe(viewLifecycleOwner) {
             it?.let {
                 startActivityFinish<DashboardActivity> { }
@@ -81,7 +82,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                 context?.alert {
                     setTitle("Complete Profile")
                     setMessage("Please complete your profile to continue")
-                    neutralButton{
+                    neutralButton {
                         viewModel._navigationListener.postValue(R.id.action_loginFragment_to_updateUserFragment)
                     }
                     negativeButton("Cancel") {

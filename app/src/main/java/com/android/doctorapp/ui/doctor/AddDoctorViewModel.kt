@@ -57,7 +57,6 @@ class AddDoctorViewModel @Inject constructor(
 
     val toggleLiveData: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    val isDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
     val isDataValid1: MutableLiveData<Boolean> = MutableLiveData(false)
 
     private val _navigationListener = SingleLiveEvent<Int>()
@@ -65,6 +64,9 @@ class AddDoctorViewModel @Inject constructor(
 
     private val _addDoctorResponse = SingleLiveEvent<String>()
     val addDoctorResponse = _addDoctorResponse.asLiveData()
+
+    private val _addUserResponse = SingleLiveEvent<String>()
+    val addUserResponse = _addUserResponse.asLiveData()
 
     private val _clickResponse: MutableLiveData<String> = SingleLiveEvent()
     val clickResponse = _clickResponse.asLiveData()
@@ -133,6 +135,7 @@ class AddDoctorViewModel @Inject constructor(
                                 isPhoneVerify.value = false
                                 isPhoneVerifyValue.value =
                                     resourceProvider.getString(R.string.Verified)
+
                             }
                             data.value = listOf(userObj)
                             setShowProgress(false)
@@ -163,22 +166,28 @@ class AddDoctorViewModel @Inject constructor(
         return data
     }
 
-    private fun validateAllField() {
-        isDataValid.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
-                && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
-                && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty())
-    }
 
     fun validateAllUpdateField() {
-        isDataValid1.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
-                && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
-                && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
-                && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
-                && !dob.value.isNullOrEmpty() && dobError.value.isNullOrEmpty()
-                && !isAvailableDate.value.isNullOrEmpty() && isAvailableDateError.value.isNullOrEmpty()
-                && !availableTime.value.isNullOrEmpty() && availableTimeError.value.isNullOrEmpty()
-                && isPhoneVerify.value == false
-                )
+        if (isDoctor.value!!) {
+
+            isDataValid1.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
+                    && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
+                    && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
+                    && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
+                    && !dob.value.isNullOrEmpty() && dobError.value.isNullOrEmpty()
+                    && !isAvailableDate.value.isNullOrEmpty() && isAvailableDateError.value.isNullOrEmpty()
+                    && !availableTime.value.isNullOrEmpty() && availableTimeError.value.isNullOrEmpty()
+                    && isPhoneVerify.value == false
+                    )
+        } else {
+            isDataValid1.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
+                    && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
+                    && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
+                    && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
+                    && !dob.value.isNullOrEmpty() && dobError.value.isNullOrEmpty()
+                    && isPhoneVerify.value == false && isEmailVerified.value == true
+                    )
+        }
     }
 
 
@@ -190,7 +199,6 @@ class AddDoctorViewModel @Inject constructor(
         } else {
             nameError.value = null
         }
-        validateAllField()
         validateAllUpdateField()
     }
 
@@ -202,7 +210,6 @@ class AddDoctorViewModel @Inject constructor(
         } else {
             emailError.value = null
         }
-        validateAllField()
         validateAllUpdateField()
     }
 
@@ -223,7 +230,6 @@ class AddDoctorViewModel @Inject constructor(
                     resourceProvider.getString(R.string.error_valid_phone_number)
             }
         }
-        validateAllField()
     }
 
     fun isValidAddress(text: CharSequence?) {
@@ -353,7 +359,21 @@ class AddDoctorViewModel @Inject constructor(
                     )
                 } else {
                     //Here Code for User Update
-                    userData = UserDataRequestModel()
+                    userData = UserDataRequestModel(
+                        userId = it.toString(),
+                        isDoctor = false,
+                        email = email.value.toString(),
+                        name = name.value.toString(),
+                        gender = "FEMALE",
+                        address = address.value.toString(),
+                        contactNumber = contactNumber.value.toString(),
+                        isEmailVerified = true,
+                        isPhoneNumberVerified = true,
+                        isAdmin = false,
+                        dob = SimpleDateFormat("dd-MM-yyyy").parse(dob.value.toString()),
+                        isUserVerified = true
+                    )
+
                 }
                 setShowProgress(true)
                 when (val response = authRepository.updateUserData(userData, fireStore)) {
@@ -367,9 +387,17 @@ class AddDoctorViewModel @Inject constructor(
                             isAvailableDate.value = ""
                             availableTime.value = ""
                             setShowProgress(false)
-                            _navigationListener.value =
-                                R.id.action_updateDoctorFragment_to_LoginFragment
-                            _addDoctorResponse.value = resourceProvider.getString(R.string.success)
+                            if (isDoctor.value == true) {
+                                _navigationListener.value =
+                                    R.id.action_updateDoctorFragment_to_LoginFragment
+                                _addDoctorResponse.value =
+                                    resourceProvider.getString(R.string.success)
+                            } else {
+                                _navigationListener.value =
+                                    R.id.action_updateUserFragment_to_LoginFragment
+                                _addUserResponse.value =
+                                    resourceProvider.getString(R.string.success)
+                            }
                         }
                     }
 
@@ -390,68 +418,6 @@ class AddDoctorViewModel @Inject constructor(
             }
         }
 
-        /* val userData: UserDataRequestModel
-        if (isDoctor.value == true) {
-            Log.d("TAG1212", "updateUser: ${firebaseAuth.currentUser?.uid.toString()}")
-            userData = UserDataRequestModel(
-                userId = firebaseAuth.currentUser?.uid.toString(),
-                isDoctor = true,
-                email = email.value.toString(),
-                name = name.value.toString(),
-                gender = "MALE",
-                address = address.value.toString(),
-                contactNumber = contactNumber.value.toString(),
-                degree = binding?.chipGroup?.children?.toList()?.map { (it as Chip).text.toString() } as ArrayList<String>?,
-                specialities = binding?.chipGroupSpec?.children?.toList()?.map { (it as Chip).text.toString() } as ArrayList<String>?,
-                availableDays = "",
-                isEmailVerified = true,
-                isPhoneNumberVerified = true,
-                availableTime = "",
-                isAdmin = false,
-                dob = SimpleDateFormat("dd-MM-yyyy").parse(dob.value.toString()),
-                isUserVerified = true
-            )
-        } else {
-            //Here Code for User Update
-            userData = UserDataRequestModel()
-        }
-
-//        Log.d("userData----", Gson().toJson(userData))
-        viewModelScope.launch {
-            setShowProgress(true)
-            when (val response = authRepository.updateUserData(userData, fireStore)) {
-                is ApiSuccessResponse -> {
-                    if (response.body.userId.isNotEmpty()) {
-                        name.value = ""
-                        email.value = ""
-                        address.value = ""
-                        contactNumber.value = ""
-                        dob.value = ""
-                        isAvailableDate.value = ""
-                        availableTime.value = ""
-                        setShowProgress(false)
-                        _navigationListener.value =
-                            R.id.action_updateDoctorFragment_to_LoginFragment
-                        _addDoctorResponse.value = resourceProvider.getString(R.string.success)
-                    }
-                }
-
-                is ApiErrorResponse -> {
-                    _addDoctorResponse.value = response.errorMessage
-                    setShowProgress(false)
-                }
-
-                is ApiNoNetworkResponse -> {
-                    _addDoctorResponse.value = response.errorMessage
-                    setShowProgress(false)
-                }
-
-                else -> {
-                    setShowProgress(false)
-                }
-            }
-        }
-*/
     }
 
     private suspend fun addUserData() {
@@ -491,6 +457,7 @@ class AddDoctorViewModel @Inject constructor(
             }
         }
     }
+
 
     fun hideProgress() {
         setShowProgress(false)
@@ -589,14 +556,11 @@ class AddDoctorViewModel @Inject constructor(
         }
     }
 
-    private fun isEmailVerified() {
-        userReload()
-    }
 
     suspend fun checkIsEmailEveryMin() {
         session.getBoolean(USER_IS_EMAIL_VERIFIED).collectLatest {
-            if (it == null || it == false) {
-                isEmailVerified()
+            if (it == null || !it) {
+                userReload()
                 Log.d(TAG, "checkIsEmailEveryMin: false")
             } else {
                 Log.d(TAG, "checkIsEmailEveryMin: true")
@@ -604,6 +568,7 @@ class AddDoctorViewModel @Inject constructor(
             }
         }
     }
+
 
     fun getDegreeItems() {
         viewModelScope.launch {

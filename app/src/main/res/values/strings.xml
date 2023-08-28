@@ -108,5 +108,7 @@
     <string name="Verified">Verified</string>
     <string name="verification_main_sent">Verification Email sent successfully</string>
     <string name="doctor_list">Doctor List</string>
+    <string name="home_screen">Home Screen</string>
+    <string name="user_dashboard">User dashboard</string>
 
 </resources>

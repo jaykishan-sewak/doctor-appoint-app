@@ -39,10 +39,10 @@ class LoginViewModel @Inject constructor(
 
     var googleSignInClient: GoogleSignInClient
 
-    val email: MutableLiveData<String> = MutableLiveData("docharsh@gmail.com")
+    val email: MutableLiveData<String> = MutableLiveData()
     val emailError: MutableLiveData<String?> = MutableLiveData()
 
-    val password: MutableLiveData<String> = MutableLiveData("Admin@123")
+    val password: MutableLiveData<String> = MutableLiveData()
     val passwordError: MutableLiveData<String?> = MutableLiveData()
 
     val isDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -122,10 +122,6 @@ class LoginViewModel @Inject constructor(
                         getUserData()
 
                     }
-//                    email.value = ""
-//                    password.value = ""
-//                    setShowProgress(false)
-//                    _navigationListener.postValue(R.id.action_loginFragment_to_addDoctorFragment)
                 }
 
                 is ApiErrorResponse -> {
@@ -159,7 +155,7 @@ class LoginViewModel @Inject constructor(
                     _navigationListener.postValue(R.id.action_loginFragment_to_adminDashboardFragment)
                 } else if (response.body.isDoctor) {
                     isUserVerified.value = response.body.isUserVerified
-//                    _navigationListener.postValue(R.id.action_loginFragment_to_doctorDashboardFragment)
+
                 } else {
                     if (response.body.isUserVerified) {
                         _navigationListener.postValue(R.id.action_loginFragment_to_homeFragment)
@@ -316,6 +312,5 @@ class LoginViewModel @Inject constructor(
     fun onGoogleSignClick() {
         isGoogleClick.postValue(true)
     }
-
 
 }

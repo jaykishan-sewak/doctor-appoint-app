@@ -100,6 +100,10 @@
         tools:layout="@layout/fragment_update_doctor_profile">
 
         <action
+            android:id="@+id/action_updateUserFragment_to_LoginFragment"
+            app:destination="@id/LoginFragment" />
+
+        <action
             android:id="@+id/action_updateUserFragment_to_OtpVerificationFragment"
             app:destination="@+id/OtpVerificationFragment" />
 
