@@ -91,6 +91,8 @@ class AddUserProfileFragment :
                     storedVerificationId
                 )
                 bundle.putBoolean(ConstantKey.BundleKeys.IS_DOCTOR_OR_USER, false)
+                bundle.putString(ConstantKey.BundleKeys.USER_CONTACT_NUMBER_KEY, viewModel.contactNumber.value)
+
                 findNavController().navigate(
                     R.id.action_updateUserFragment_to_OtpVerificationFragment,
                     bundle

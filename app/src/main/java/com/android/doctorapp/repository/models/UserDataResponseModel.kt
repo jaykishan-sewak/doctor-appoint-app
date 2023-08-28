@@ -1,5 +1,7 @@
 package com.android.doctorapp.repository.models
 
+import java.util.Date
+
 data class UserDataResponseModel(
     var id:String = "",
     var userId: String = "",
@@ -9,8 +11,8 @@ data class UserDataResponseModel(
     var gender: String = "MALE",
     var address: String = "",
     var contactNumber:String = "",
-    var degree: String = "",
-    var specialities: String = "",
+    var degree: List<String>? = null,
+    var specialities: List<String>? = null,
     var availableDays: String = "",
     var isEmailVerified: Boolean = false,
     var isPhoneNumberVerified: Boolean = false,
@@ -18,8 +20,8 @@ data class UserDataResponseModel(
     var images: String = "",
     var isAdmin: Boolean = false,
     var isNotificationEnable: Boolean = false,
-    var dob: String = "",
+    var dob: Date? = null,
     var isUserVerified: Boolean = false,
     var onlineAvailabilityDateTime: String = "",
-    var offlineAvailabilityDateTime: String = ""
+    var offlineAvailabilityDateTime: String = "",
 )

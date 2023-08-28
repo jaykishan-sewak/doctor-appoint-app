@@ -129,7 +129,7 @@ class UpdateDoctorProfileFragment :
             viewModel = this@UpdateDoctorProfileFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
         }
-        viewModel.setBindingData(binding)
+        viewModel.setBindingData(bindingView)
         viewModel.getDegreeItems()
         viewModel.getSpecializationItems()
         return bindingView.root

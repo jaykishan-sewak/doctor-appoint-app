@@ -16,6 +16,7 @@ import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.ui.dashboard.DashboardActivity
+import com.android.doctorapp.util.constants.ConstantKey.USER
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.negativeButton
 import com.android.doctorapp.util.extension.neutralButton
@@ -78,18 +79,24 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
         }
 
         viewModel.isUserVerified.observe(viewLifecycleOwner) { it ->
-            if (it == false) {
-                context?.alert {
-                    setTitle("Complete Profile")
-                    setMessage("Please complete your profile to continue")
-                    neutralButton {
-                        viewModel._navigationListener.postValue(R.id.action_loginFragment_to_updateUserFragment)
+            context?.alert {
+                setTitle("Complete Profile")
+                setMessage("Please complete your profile to continue")
+                neutralButton { dialog ->
+                    dialog.dismiss()
+                    if (it == USER) {
+                        findNavController().navigate(R.id.action_loginFragment_to_updateUserFragment)
+                    } else {
+
+                        findNavController().navigate(R.id.action_loginFragment_to_updateDoctorFragment)
                     }
-                    negativeButton("Cancel") {
-                        requireActivity().finish()
-                    }
+
+                }
+                negativeButton("Cancel") {
+                    requireActivity().finish()
                 }
             }
+
         }
         viewModel.isGoogleClick.observe(viewLifecycleOwner) {
             if (it) {
@@ -98,9 +105,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
             }
         }
 
-        viewModel.navigationListener.observe(viewLifecycleOwner) {
-            findNavController().navigate(it)
-        }
 
         viewModel.signInAccountTask.observe(viewLifecycleOwner) {
             if (it.isSuccessful) {
@@ -119,7 +123,12 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
             viewModel.callGoogleAPI(it)
         }
 
-        viewModel.isUserVerified.observe(viewLifecycleOwner) {
+        viewModel.navigationListener.observe(viewLifecycleOwner) {
+            findNavController().navigate(it)
+        }
+
+
+        /*viewModel.isUserVerified.observe(viewLifecycleOwner) {
             if (!it) {
                 context?.alert {
                     setTitle(context.resources.getString(R.string.complete_profile))
@@ -137,7 +146,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
             } else {
                 findNavController().navigate(R.id.action_loginFragment_to_doctorDashboardFragment)
             }
-        }
+        }*/
 
     }
 

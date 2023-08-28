@@ -148,7 +148,7 @@
                     android:layout_height="@dimen/margin_50"
                     android:layout_marginTop="@dimen/margin_60"
                     android:background="@drawable/button_state_colors"
-                    android:enabled="@{viewModel.isUserDataValid()}"
+                    android:enabled="@{viewModel.isDataValid}"
                     android:onClick="@{()->viewModel.addDoctorData()}"
                     android:text="@string/submit"
                     android:textAllCaps="false"

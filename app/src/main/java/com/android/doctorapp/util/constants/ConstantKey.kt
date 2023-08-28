@@ -9,6 +9,9 @@ object ConstantKey {
         const val USER_CONTACT_NUMBER_KEY = "userContactNumber"
     }
 
+    const val DOCTOR = "DOCTOR"
+    const val USER = "USER"
+
     object DBKeys {
         const val TABLE_NAME = "user_data"
         const val FIELD_ADMIN = "admin"

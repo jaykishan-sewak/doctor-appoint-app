@@ -10,11 +10,14 @@ import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AuthRepository
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.local.USER_ID
+import com.android.doctorapp.repository.local.USER_IS_EMAIL_VERIFIED
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.LoginResponseModel
 import com.android.doctorapp.util.SingleLiveEvent
+import com.android.doctorapp.util.constants.ConstantKey.DOCTOR
+import com.android.doctorapp.util.constants.ConstantKey.USER
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
 import com.android.doctorapp.util.extension.isNetworkAvailable
@@ -57,7 +60,7 @@ class LoginViewModel @Inject constructor(
     val googleSignInAccount: MutableLiveData<GoogleSignInAccount> = MutableLiveData()
     val authCredential: MutableLiveData<AuthCredential> = MutableLiveData()
 
-    val isUserVerified: MutableLiveData<Boolean> = SingleLiveEvent()
+    val isUserVerified: MutableLiveData<String> = SingleLiveEvent()
 
 
     init {
@@ -151,16 +154,22 @@ class LoginViewModel @Inject constructor(
                 password.value = ""
                 setShowProgress(false)
                 session.putString(USER_ID, response.body.userId)
+                session.putBoolean(USER_IS_EMAIL_VERIFIED,false)
                 if (response.body.isAdmin) {
                     _navigationListener.postValue(R.id.action_loginFragment_to_adminDashboardFragment)
                 } else if (response.body.isDoctor) {
-                    isUserVerified.value = response.body.isUserVerified
+//                    isUserVerified.value = response.body.isUserVerified
 
+                    if (response.body.isUserVerified) {
+                        _navigationListener.postValue(R.id.action_loginFragment_to_doctorDashboardFragment)
+                    } else {
+                        isUserVerified.postValue(DOCTOR)
+                    }
                 } else {
                     if (response.body.isUserVerified) {
                         _navigationListener.postValue(R.id.action_loginFragment_to_homeFragment)
                     } else {
-                        isUserVerified.postValue(false)
+                        isUserVerified.postValue(USER)
                     }
                 }
             }

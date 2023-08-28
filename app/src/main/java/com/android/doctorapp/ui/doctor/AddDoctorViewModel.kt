@@ -1,7 +1,6 @@
 package com.android.doctorapp.ui.doctor
 
 import android.content.Context
-import android.util.Log
 import android.util.Patterns
 import android.view.View
 import androidx.core.view.children
@@ -27,7 +26,6 @@ import com.android.doctorapp.util.extension.isEmailAddressValid
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import com.google.android.material.chip.Chip
-import com.google.gson.Gson
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -57,6 +55,7 @@ class AddDoctorViewModel @Inject constructor(
 
     val toggleLiveData: MutableLiveData<Boolean> = MutableLiveData(false)
 
+    val isDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
     val isDataValid1: MutableLiveData<Boolean> = MutableLiveData(false)
 
     private val _navigationListener = SingleLiveEvent<Int>()
@@ -131,6 +130,8 @@ class AddDoctorViewModel @Inject constructor(
                                 contactNumber = response.body.contactNumber,
                                 isNotificationEnable = response.body.isNotificationEnable
                             )
+                            contactNumber.value = response.body.contactNumber
+                            name.value = response.body.name
                             isDoctor.value = response.body.isDoctor
                             if (firebaseAuth.currentUser?.phoneNumber.isNullOrEmpty()) {
                                 isPhoneVerify.value = true
@@ -199,6 +200,12 @@ class AddDoctorViewModel @Inject constructor(
         }
     }
 
+    private fun validateAllField() {
+        isDataValid.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
+                && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
+                && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty())
+    }
+
 
     fun isValidName(text: CharSequence?) {
         if (text?.toString().isNullOrEmpty() || ((text?.toString()?.length ?: 0) < 3)) {
@@ -208,6 +215,7 @@ class AddDoctorViewModel @Inject constructor(
         } else {
             nameError.value = null
         }
+        validateAllField()
         validateAllUpdateField()
     }
 
@@ -219,6 +227,7 @@ class AddDoctorViewModel @Inject constructor(
         } else {
             emailError.value = null
         }
+        validateAllField()
         validateAllUpdateField()
     }
 
@@ -239,6 +248,8 @@ class AddDoctorViewModel @Inject constructor(
                     resourceProvider.getString(R.string.error_valid_phone_number)
             }
         }
+        validateAllField()
+
     }
 
     fun isValidAddress(text: CharSequence?) {
@@ -380,7 +391,9 @@ class AddDoctorViewModel @Inject constructor(
                         isEmailVerified = true,
                         isPhoneNumberVerified = true,
                         isAdmin = false,
-                        dob = SimpleDateFormat("dd-MM-yyyy").parse(dob.value.toString()),
+                        dob = if (dob.value.isNullOrEmpty()) SimpleDateFormat("dd-MM-yyyy").parse(
+                            dob.value.toString()
+                        ) else null,
                         isUserVerified = true
                     )
 
