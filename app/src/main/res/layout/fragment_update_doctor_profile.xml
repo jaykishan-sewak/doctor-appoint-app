@@ -87,6 +87,7 @@
                     style="@style/verify_margin"
                     android:onClick="@{view -> viewModel.onEmailVerifyClick()}"
                     android:text="@={viewModel.emailVerifyLabel}"
+                    android:enabled="@{viewModel.isEmailEnable}"
                     android:textColor="@color/yellow"
                     app:layout_constraintBottom_toBottomOf="@+id/text_email"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -259,6 +260,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
+                    android:checked="@={viewModel.toggleLiveData}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_available_time" />
 

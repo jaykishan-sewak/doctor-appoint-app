@@ -23,6 +23,7 @@ class OtpVerificationViewModel @Inject constructor(
     val isDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
     val otpVerificationId: MutableLiveData<String?> = MutableLiveData()
     val isDoctorOrUser: MutableLiveData<Boolean?> = MutableLiveData(true)
+    val userContactNumber: MutableLiveData<String?> = MutableLiveData()
 
     private val _navigationListener = SingleLiveEvent<Int>()
     val navigationListener = _navigationListener.asLiveData()

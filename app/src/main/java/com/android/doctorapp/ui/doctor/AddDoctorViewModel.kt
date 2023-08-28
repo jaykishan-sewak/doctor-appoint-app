@@ -1,7 +1,6 @@
 package com.android.doctorapp.ui.doctor
 
 import android.content.Context
-import android.util.Log
 import android.util.Patterns
 import android.view.View
 import androidx.core.view.children
@@ -27,7 +26,6 @@ import com.android.doctorapp.util.extension.isEmailAddressValid
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import com.google.android.material.chip.Chip
-import com.google.gson.Gson
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -94,9 +92,13 @@ class AddDoctorViewModel @Inject constructor(
     val isEmailSent: MutableLiveData<Boolean> = MutableLiveData(false)
     val emailVerifyLabel: MutableLiveData<String> =
         MutableLiveData(resourceProvider.getString(R.string.verify))
-    val isEmailVerified: MutableLiveData<Boolean> = MutableLiveData(false)
-    val isUserReload: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isEmailVerified: MutableLiveData<Boolean?> = MutableLiveData(false)
+
+    val isEmailEnable: MutableLiveData<Boolean> = MutableLiveData(true)
+
+    val isUserReload: MutableLiveData<Boolean?> = MutableLiveData(false)
     var binding: FragmentUpdateDoctorProfileBinding? = null
+
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
         this.binding = binding
@@ -119,7 +121,8 @@ class AddDoctorViewModel @Inject constructor(
                             userObj = UserDataRequestModel(
                                 name = response.body.name,
                                 email = response.body.email,
-                                contactNumber = response.body.contactNumber
+                                contactNumber = response.body.contactNumber,
+                                isNotificationEnable = response.body.isNotificationEnable
                             )
                             isDoctor.value = response.body.isDoctor
                             if (firebaseAuth.currentUser?.phoneNumber.isNullOrEmpty()) {
@@ -131,6 +134,7 @@ class AddDoctorViewModel @Inject constructor(
                                 isPhoneVerifyValue.value =
                                     resourceProvider.getString(R.string.Verified)
                             }
+                            toggleLiveData.value = response.body.isNotificationEnable
                             data.value = listOf(userObj)
                             setShowProgress(false)
                         }
@@ -173,6 +177,9 @@ class AddDoctorViewModel @Inject constructor(
                 && !isAvailableDate.value.isNullOrEmpty() && isAvailableDateError.value.isNullOrEmpty()
                 && !availableTime.value.isNullOrEmpty() && availableTimeError.value.isNullOrEmpty()
                 && isPhoneVerify.value == false
+                && isEmailEnable.value == false
+                && binding?.chipGroup?.children?.toList()?.size!! > 0
+                && binding?.chipGroupSpec?.children?.toList()?.size!! > 0
                 )
     }
 
@@ -275,6 +282,8 @@ class AddDoctorViewModel @Inject constructor(
     fun onUpdateClick() {
         if (context.isNetworkAvailable()) {
             updateUser()
+//            Log.d(TAG, "onUpdateClick: ${binding?.chipGroupSpec?.children?.toList()?.size
+//            }")
         } else {
             context.toast(resourceProvider.getString(R.string.check_internet_connection))
         }
@@ -342,6 +351,7 @@ class AddDoctorViewModel @Inject constructor(
                         isPhoneNumberVerified = true,
                         availableTime = "",
                         isAdmin = false,
+                        isNotificationEnable = toggleLiveData.value == true,
                         dob = SimpleDateFormat("dd-MM-yyyy").parse(dob.value.toString()),
                         isUserVerified = true
                     )
@@ -536,8 +546,9 @@ class AddDoctorViewModel @Inject constructor(
             when (val response = authRepository.emailVerified(firebaseUser)) {
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
-                    isEmailVerified.postValue(response.body!!)
-                    session.putBoolean(USER_IS_EMAIL_VERIFIED, response.body!!)
+                    isEmailVerified.postValue(response.body)
+                    isEmailEnable.value = !response.body
+                    session.putBoolean(USER_IS_EMAIL_VERIFIED, response.body)
                 }
 
                 is ApiErrorResponse -> {
@@ -563,7 +574,7 @@ class AddDoctorViewModel @Inject constructor(
             when (val response = authRepository.userReload(firebaseUser)) {
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
-                    isUserReload.postValue(response.body!!)
+                    isUserReload.postValue(response.body)
                 }
 
                 is ApiErrorResponse -> {
@@ -583,18 +594,14 @@ class AddDoctorViewModel @Inject constructor(
         }
     }
 
-    private fun isEmailVerified() {
-        userReload()
-    }
 
     suspend fun checkIsEmailEveryMin() {
         session.getBoolean(USER_IS_EMAIL_VERIFIED).collectLatest {
-            if (it == null || it == false) {
-                isEmailVerified()
-                Log.d(TAG, "checkIsEmailEveryMin: false")
+            if (it == null || !it) {
+                userReload()
             } else {
-                Log.d(TAG, "checkIsEmailEveryMin: true")
                 isEmailVerified.postValue(true)
+                isEmailEnable.value = false
             }
         }
     }
@@ -606,7 +613,6 @@ class AddDoctorViewModel @Inject constructor(
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
                     degreeItems.value = response.body
-                    Log.d("Data----", Gson().toJson(response.body))
                 }
 
                 is ApiErrorResponse -> {
@@ -631,7 +637,6 @@ class AddDoctorViewModel @Inject constructor(
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
                     specializationItems.value = response.body
-                    Log.d("Data----", Gson().toJson(response.body))
                 }
 
                 is ApiErrorResponse -> {
@@ -655,7 +660,6 @@ class AddDoctorViewModel @Inject constructor(
             when (val response = authRepository.addDegree(fireStore, data)) {
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
-                    Log.d("Add Data----", Gson().toJson(response.body))
                 }
 
                 is ApiErrorResponse -> {
@@ -679,7 +683,6 @@ class AddDoctorViewModel @Inject constructor(
             when (val response = authRepository.addSpecialization(fireStore, data)) {
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
-                    Log.d("Add Data----", Gson().toJson(response.body))
                 }
 
                 is ApiErrorResponse -> {

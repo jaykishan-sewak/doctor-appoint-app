@@ -21,7 +21,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="@dimen/parentHorizontalMargin_50"
+            android:layout_marginHorizontal="@dimen/fab_margin"
             android:paddingVertical="@dimen/parentVerticalMargin_50">
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_15"
                 android:gravity="center"
-                android:text="@string/otp_desc"
+                android:text="@{viewModel.userContactNumber}"
                 android:textColor="@color/black"
                 android:textSize="13sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -59,9 +59,9 @@
                 app:pinHeight="@dimen/margin_35"
                 app:pinLength="6"
                 app:inputType="number"
-                app:cursorVisible="false"
+                app:cursorVisible="true"
     	        app:forceKeyboard="false"
-                app:password="true"
+                app:password="false"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/text_otp_verification_desc"

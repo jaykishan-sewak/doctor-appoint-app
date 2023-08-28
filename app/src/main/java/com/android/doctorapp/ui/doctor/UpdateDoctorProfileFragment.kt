@@ -7,7 +7,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +25,7 @@ import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.IS_DOCTOR_OR_USER_KEY
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.STORED_VERIFICATION_Id_KEY
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_CONTACT_NUMBER_KEY
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.selectDate
@@ -60,10 +60,9 @@ class UpdateDoctorProfileFragment :
     private val runnable = object : Runnable {
         override fun run() {
             viewModel.viewModelScope.launch {
-                Log.d(TAG, "run: Called")
                 viewModel.checkIsEmailEveryMin()
             }
-            handler.postDelayed(this, 30000)
+            handler.postDelayed(this, 10000)
         }
     }
     lateinit var bindingView: FragmentUpdateDoctorProfileBinding
@@ -114,6 +113,7 @@ class UpdateDoctorProfileFragment :
                 val bundle = Bundle()
                 bundle.putString(STORED_VERIFICATION_Id_KEY, storedVerificationId)
                 bundle.putBoolean(IS_DOCTOR_OR_USER_KEY, true)
+                bundle.putString(USER_CONTACT_NUMBER_KEY, viewModel.contactNumber.value)
                 findNavController().navigate(
                     R.id.action_updateDoctorFragment_to_OtpVerificationFragment,
                     bundle
@@ -153,7 +153,7 @@ class UpdateDoctorProfileFragment :
 
         viewModel.isPhoneVerify.observe(viewLifecycleOwner) {
             if (!it) {
-                binding.textContactVerify.isClickable = false
+                //                binding.textContactVerify.isClickable = false
                 viewModel.validateAllUpdateField()
                 binding.textContactVerify.setTextColor(
                     ContextCompat.getColor(
@@ -189,8 +189,8 @@ class UpdateDoctorProfileFragment :
         viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
             if (it.equals(requireContext().resources.getString(R.string.success))) {
                 context?.toast(resources.getString(R.string.doctor_update_successfully))
-                viewModel.navigationListener.observe(viewLifecycleOwner) {
-                    findNavController().navigate(it)
+                viewModel.navigationListener.observe(viewLifecycleOwner) { navId ->
+                    findNavController().navigate(navId)
                     findNavController().popBackStack(R.id.LoginFragment, false)
 
                 }
@@ -217,7 +217,8 @@ class UpdateDoctorProfileFragment :
             if (it == true) {
                 viewModel.validateAllUpdateField()
                 viewModel.emailVerifyLabel.postValue(requireContext().resources.getString(R.string.Verified))
-                binding.textEmailVerify.isClickable = false
+//                binding.textEmailVerify.isClickable = false
+                viewModel.isEmailEnable.value = false
                 binding.textEmailVerify.setTextColor(
                     ContextCompat.getColor(
                         requireContext(),
@@ -257,7 +258,8 @@ class UpdateDoctorProfileFragment :
                 ) {
                 }
 
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                }
 
                 override fun afterTextChanged(s: Editable?) {
                     if (s.toString() != CustomAutoCompleteAdapter.ADD_SUGGESTION_ITEM)
@@ -266,7 +268,6 @@ class UpdateDoctorProfileFragment :
             })
         }
         viewModel.specializationList.observe(viewLifecycleOwner) {
-            Log.d("specList---", Gson().toJson(it))
             val adapter =
                 CustomAutoCompleteAdapter(
                     requireContext(),
@@ -303,6 +304,8 @@ class UpdateDoctorProfileFragment :
                 }
             })
         }
+
+
     }
 
     private fun addSpecializationItem(uppercase: String) {
@@ -320,8 +323,10 @@ class UpdateDoctorProfileFragment :
         chip.isCloseIconVisible = true
         chip.setOnCloseIconClickListener {
             bindingView.chipGroup.removeView(chip)
+            viewModel.validateAllUpdateField()
         }
         bindingView.chipGroup.addView(chip)
+        viewModel.validateAllUpdateField()
     }
 
     private fun addSpecChip(text: String) {
@@ -330,8 +335,10 @@ class UpdateDoctorProfileFragment :
         chip.isCloseIconVisible = true
         chip.setOnCloseIconClickListener {
             bindingView.chipGroupSpec.removeView(chip)
+            viewModel.validateAllUpdateField()
         }
         bindingView.chipGroupSpec.addView(chip)
+        viewModel.validateAllUpdateField()
     }
 
     private fun sendVerificationCode(number: String) {
@@ -342,7 +349,6 @@ class UpdateDoctorProfileFragment :
             .setCallbacks(callbacks) // OnVerificationStateChangedCallbacks
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)
-        Log.d(TAG, "Auth started")
     }
 
 }
