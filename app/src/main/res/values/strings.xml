@@ -105,4 +105,7 @@
     <string name="user_dashboard">User Dashboard</string>
     <string name="confirm_password_doesn_t_match_try_again">Confirm Password doesn\'t match. Try again!</string>
     <string name="password_doesn_t_match_try_again">Password doesn\'t match. Try again!</string>
+    <string name="degree">Degree</string>
+    <string name="specialization">Specialization</string>
+
 </resources>
