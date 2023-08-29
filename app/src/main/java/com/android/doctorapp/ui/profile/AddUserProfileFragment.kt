@@ -76,11 +76,14 @@ class AddUserProfileFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+        handler.postDelayed(runnable, 10000)
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                viewModel.hideProgress()
             }
 
             override fun onVerificationFailed(e: FirebaseException) {
+                viewModel.hideProgress()
             }
 
             override fun onCodeSent(
@@ -107,7 +110,7 @@ class AddUserProfileFragment :
 
             }
         }
-        handler.postDelayed(runnable, 10000)
+
 
         // Inflate the layout for this fragment
         return binding {
@@ -131,8 +134,8 @@ class AddUserProfileFragment :
 
     private fun checkLiveData() {
 
-        viewModel.addUserResponse.observe(viewLifecycleOwner) {
-            if (it.equals("Success")) {
+        viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
+            if (it.equals(ConstantKey.SUCCESS)) {
                 context?.toast(resources.getString(R.string.user_save_successfully))
                 viewModel.navigationListener.observe(viewLifecycleOwner) {
                     findNavController().navigate(it)
@@ -142,7 +145,10 @@ class AddUserProfileFragment :
                 context?.alert {
                     setTitle(getString(R.string.user_not_save))
                     setMessage(it)
-                    neutralButton { }
+                    neutralButton { dialog ->
+                        dialog.dismiss()
+
+                    }
                 }
             }
         }
@@ -163,7 +169,7 @@ class AddUserProfileFragment :
 
         viewModel.isEmailSent.observe(viewLifecycleOwner) {
             if (it == true) {
-                context?.toast("Verification Email sent successfully")
+                context?.toast(resources.getString(R.string.verification_email_sent))
             }
         }
 
@@ -176,7 +182,7 @@ class AddUserProfileFragment :
         viewModel.isEmailVerified.observe(viewLifecycleOwner) {
             if (it == true) {
                 viewModel.validateAllUpdateField()
-                viewModel.emailVerifyLabel.postValue("Verified")
+                viewModel.emailVerifyLabel.postValue(resources.getString(R.string.verified))
                 binding.textEmailVerify.isClickable = false
                 binding.textEmailVerify.setTextColor(
                     ContextCompat.getColor(

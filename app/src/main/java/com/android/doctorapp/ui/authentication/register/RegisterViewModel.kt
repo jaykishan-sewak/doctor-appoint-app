@@ -1,7 +1,6 @@
 package com.android.doctorapp.ui.authentication.register
 
 import android.content.Context
-import android.util.Log
 import androidx.activity.result.ActivityResult
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -22,7 +21,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.AuthResult
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -43,13 +41,8 @@ class RegisterViewModel @Inject constructor(
 
     val isSignUpDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    private val _registerResponse: MutableLiveData<AuthResult> = MutableLiveData()
-    val registerResponse = _registerResponse.asLiveData()
-
     private val _navigationListener = SingleLiveEvent<Int>()
     val navigationListener = _navigationListener.asLiveData()
-
-    val logInListener = SingleLiveEvent<Int>()
 
     private val _addUserResponse = SingleLiveEvent<String>()
     val addUserResponse = _addUserResponse.asLiveData()
@@ -130,19 +123,14 @@ class RegisterViewModel @Inject constructor(
                 password = password.value.toString(),
             )) {
                 is ApiSuccessResponse -> {
-                    Log.d("response.body---", response.body.toString())
-                    Log.d("email", response.body.user!!.email!!)
                     addUserData()
-                    _registerResponse.postValue(response.body!!)
                 }
 
                 is ApiErrorResponse -> {
-                    Log.d("ApiErrorResponse.body---", response.errorMessage)
                     setShowProgress(false)
                 }
 
                 is ApiNoNetworkResponse -> {
-                    Log.d("ApiNoNetworkResponse.body---", response.errorMessage)
                     setShowProgress(false)
                 }
 
@@ -169,7 +157,6 @@ class RegisterViewModel @Inject constructor(
             )) {
                 is ApiSuccessResponse -> {
                     if (response.body.userId.isNotEmpty()) {
-                        //Log.d("response.body---", Gson().toJson(response.body))
                         email.value = ""
                         password.value = ""
                         confirmPassword.value = ""
@@ -180,13 +167,11 @@ class RegisterViewModel @Inject constructor(
                 }
 
                 is ApiErrorResponse -> {
-                    Log.d("ApiErrorResponse.body---", response.errorMessage)
                     _addUserResponse.value = response.errorMessage
                     setShowProgress(false)
                 }
 
                 is ApiNoNetworkResponse -> {
-                    Log.d("ApiNoNetworkResponse.body---", response.errorMessage)
                     _addUserResponse.value = response.errorMessage
                     setShowProgress(false)
                 }
@@ -314,7 +299,7 @@ class RegisterViewModel @Inject constructor(
         passwordError.postValue(null)
         confirmPassword.postValue("")
         confirmPasswordError.postValue(null)
-        logInListener.postValue(R.id.action_registerFragment_to_loginFragment)
+        _navigationListener.postValue(R.id.action_registerFragment_to_loginFragment)
 
     }
 

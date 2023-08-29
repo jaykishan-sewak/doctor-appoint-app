@@ -54,11 +54,7 @@ class RegisterFragment : BaseFragment<FragmentSignupBinding>(R.layout.fragment_s
 
     private fun registerObserver() {
         viewModel.apply {
-            registerResponse.observe(viewLifecycleOwner) {
-//                it?.let {
-//                    startActivityFinish<DashboardActivity> { }
-//                }
-            }
+
 
             viewModel.isGoogleClick.observe(viewLifecycleOwner) {
                 if (it) {
@@ -86,22 +82,21 @@ class RegisterFragment : BaseFragment<FragmentSignupBinding>(R.layout.fragment_s
             }
 
             viewModel.addUserResponse.observe(viewLifecycleOwner) {
-                if (it.equals("Success")) {
-                    context?.toast("User information successfully saved")
+                if (it.equals(resources.getString(R.string.success))) {
+                    context?.toast(resources.getString(R.string.user_save_successfully))
                     viewModel.navigationListener.observe(viewLifecycleOwner) {
                         findNavController().navigate(it)
                     }
-                }
-                else {
+                } else {
                     context?.alert {
-                        setTitle("User information not saved")
+                        setTitle(resources.getString(R.string.user_not_save))
                         setMessage(it)
-                        neutralButton {  }
+                        neutralButton { }
                     }
                 }
             }
 
-            viewModel.logInListener.observe(viewLifecycleOwner) {
+            viewModel.navigationListener.observe(viewLifecycleOwner) {
                 findNavController().navigate(it)
             }
         }

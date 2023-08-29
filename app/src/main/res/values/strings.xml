@@ -96,8 +96,8 @@
     <string name="complete_profile">Complete Profile</string>
     <string name="complete_profile_desc">Please complete your profile to continue</string>
     <string name="cancel">Cancel</string>
-    <string name="Verified">Verified</string>
-    <string name="verification_main_sent">Verification Email sent successfully</string>
+    <string name="verified">Verified</string>
+    <string name="verification_email_sent">Verification Email sent successfully</string>
     <string name="doctor_list">Doctor List</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="sign_up">Sign Up</string>

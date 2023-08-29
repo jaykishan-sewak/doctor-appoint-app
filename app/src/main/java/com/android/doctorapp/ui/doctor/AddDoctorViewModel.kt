@@ -50,9 +50,6 @@ class AddDoctorViewModel @Inject constructor(
     val contactNumber: MutableLiveData<String> = MutableLiveData()
     val contactNumberError: MutableLiveData<String?> = MutableLiveData()
 
-    val isUserDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
-
-
     val toggleLiveData: MutableLiveData<Boolean> = MutableLiveData(false)
 
     val isDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -63,9 +60,6 @@ class AddDoctorViewModel @Inject constructor(
 
     private val _addDoctorResponse = SingleLiveEvent<String>()
     val addDoctorResponse = _addDoctorResponse.asLiveData()
-
-    private val _addUserResponse = SingleLiveEvent<String>()
-    val addUserResponse = _addUserResponse.asLiveData()
 
     private val _clickResponse: MutableLiveData<String> = SingleLiveEvent()
     val clickResponse = _clickResponse.asLiveData()
@@ -138,7 +132,7 @@ class AddDoctorViewModel @Inject constructor(
                             } else {
                                 isPhoneVerify.value = false
                                 isPhoneVerifyValue.value =
-                                    resourceProvider.getString(R.string.Verified)
+                                    resourceProvider.getString(R.string.verified)
 
                             }
                             toggleLiveData.value = response.body.isNotificationEnable
@@ -165,7 +159,7 @@ class AddDoctorViewModel @Inject constructor(
                     context.toast(resourceProvider.getString(R.string.check_internet_connection))
                 }
             }
-//            }
+
 
         }
         return data
@@ -414,7 +408,7 @@ class AddDoctorViewModel @Inject constructor(
                             } else {
                                 _navigationListener.value =
                                     R.id.action_updateUserFragment_to_LoginFragment
-                                _addUserResponse.value =
+                                _addDoctorResponse.value =
                                     resourceProvider.getString(R.string.success)
                             }
                         }

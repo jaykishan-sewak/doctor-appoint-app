@@ -1,7 +1,6 @@
 package com.android.doctorapp.ui.admin
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +16,6 @@ import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.ui.admin.adapter.AdminDoctorItemAdapter
-import com.google.gson.Gson
 import javax.inject.Inject
 
 
@@ -80,7 +78,6 @@ class AdminDashboardFragment :
             items,
             object : AdminDoctorItemAdapter.OnItemClickListener {
                 override fun onItemClick(item: UserDataResponseModel, position: Int) {
-                    Log.d("item Cllick ---", Gson().toJson(item))
                 }
 
                 override fun onItemDelete(item: UserDataResponseModel, position: Int) {

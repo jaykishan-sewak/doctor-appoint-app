@@ -80,8 +80,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
 
         viewModel.isUserVerified.observe(viewLifecycleOwner) { it ->
             context?.alert {
-                setTitle("Complete Profile")
-                setMessage("Please complete your profile to continue")
+                setTitle(resources.getString(R.string.complete_profile))
+                setMessage(resources.getString(R.string.complete_profile_desc))
                 neutralButton { dialog ->
                     dialog.dismiss()
                     if (it == USER) {
@@ -92,7 +92,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                     }
 
                 }
-                negativeButton("Cancel") {
+                negativeButton(context.resources.getString(R.string.cancel)) {
                     requireActivity().finish()
                 }
             }
@@ -126,27 +126,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
         viewModel.navigationListener.observe(viewLifecycleOwner) {
             findNavController().navigate(it)
         }
-
-
-        /*viewModel.isUserVerified.observe(viewLifecycleOwner) {
-            if (!it) {
-                context?.alert {
-                    setTitle(context.resources.getString(R.string.complete_profile))
-                    setMessage(context.resources.getString(R.string.complete_profile_desc))
-                    neutralButton { dialog ->
-                        dialog.dismiss()
-                        findNavController().navigate(R.id.action_loginFragment_to_updateDoctorFragment)
-                    }
-                    negativeButton(context.resources.getString(R.string.cancel)) {
-//                        exitProcess(0)
-                        requireActivity().finishAffinity()
-
-                    }
-                }
-            } else {
-                findNavController().navigate(R.id.action_loginFragment_to_doctorDashboardFragment)
-            }
-        }*/
 
     }
 

@@ -35,7 +35,6 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
-import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
@@ -205,7 +204,7 @@ class UpdateDoctorProfileFragment :
 
         viewModel.isEmailSent.observe(viewLifecycleOwner) {
             if (it == true) {
-                context?.toast(requireContext().resources.getString(R.string.verification_main_sent))
+                context?.toast(requireContext().resources.getString(R.string.verification_email_sent))
             }
         }
         viewModel.isUserReload.observe(viewLifecycleOwner) {
@@ -216,7 +215,7 @@ class UpdateDoctorProfileFragment :
         viewModel.isEmailVerified.observe(viewLifecycleOwner) {
             if (it == true) {
                 viewModel.validateAllUpdateField()
-                viewModel.emailVerifyLabel.postValue(requireContext().resources.getString(R.string.Verified))
+                viewModel.emailVerifyLabel.postValue(requireContext().resources.getString(R.string.verified))
 //                binding.textEmailVerify.isClickable = false
                 viewModel.isEmailEnable.value = false
                 binding.textEmailVerify.setTextColor(

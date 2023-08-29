@@ -11,6 +11,8 @@ object ConstantKey {
 
     const val DOCTOR = "DOCTOR"
     const val USER = "USER"
+    const val NOT_FOUND = "Not Found"
+    const val SUCCESS = "Success"
 
     object DBKeys {
         const val TABLE_NAME = "user_data"

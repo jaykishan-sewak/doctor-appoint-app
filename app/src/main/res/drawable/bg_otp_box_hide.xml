@@ -3,9 +3,9 @@
     <item android:gravity="center">
         <shape android:shape="rectangle">
             <size
-                android:width="2dp"
-                android:height="10dp" />
-            <corners android:radius="1dp" />
+                android:width="@dimen/margin_2"
+                android:height="@dimen/margin_10" />
+            <corners android:radius="@dimen/margin_1" />
             <solid android:color="@android:color/darker_gray" />
         </shape>
     </item>
@@ -17,8 +17,8 @@
             android:toDegrees="60">
             <shape android:shape="rectangle">
                 <size
-                    android:width="2dp"
-                    android:height="10dp" />
+                    android:width="@dimen/margin_2"
+                    android:height="@dimen/margin_10" />
                 <corners android:radius="1dp" />
                 <solid android:color="@android:color/darker_gray" />
             </shape>
@@ -32,9 +32,9 @@
             android:toDegrees="-60">
             <shape android:shape="rectangle">
                 <size
-                    android:width="2dp"
-                    android:height="10dp" />
-                <corners android:radius="1dp" />
+                    android:width="@dimen/margin_2"
+                    android:height="@dimen/margin_10" />
+                <corners android:radius="@dimen/margin_1" />
                 <solid android:color="@android:color/darker_gray" />
             </shape>
         </rotate>

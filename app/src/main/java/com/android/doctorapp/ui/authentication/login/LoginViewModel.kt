@@ -158,7 +158,6 @@ class LoginViewModel @Inject constructor(
                 if (response.body.isAdmin) {
                     _navigationListener.postValue(R.id.action_loginFragment_to_adminDashboardFragment)
                 } else if (response.body.isDoctor) {
-//                    isUserVerified.value = response.body.isUserVerified
 
                     if (response.body.isUserVerified) {
                         _navigationListener.postValue(R.id.action_loginFragment_to_doctorDashboardFragment)

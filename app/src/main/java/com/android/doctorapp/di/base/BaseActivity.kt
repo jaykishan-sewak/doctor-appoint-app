@@ -10,6 +10,7 @@ import androidx.databinding.ViewDataBinding
 import com.android.doctorapp.R
 import com.android.doctorapp.di.base.annotation.BindingOnly
 import com.android.doctorapp.util.AppProgressDialog
+import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.neutralButton
 
@@ -76,7 +77,7 @@ abstract class BaseActivity<T : ViewDataBinding> constructor(
     private fun registerObservers() {
         viewModel.apply {
             apiError.observe(this@BaseActivity) {
-                if (it != "Not Found") {
+                if (it != ConstantKey.NOT_FOUND) {
                     alert {
                         setTitle(getString(R.string.wrong_crendentials))
                         setMessage(getString(R.string.you_have_entered_wrong_email_or_password))
