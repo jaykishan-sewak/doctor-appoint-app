@@ -104,5 +104,10 @@
     <string name="do_have_an_account">Do you have an account ?</string>
     <string name="user_dashboard">User Dashboard</string>
     <string name="confirm_password_doesn_t_match_try_again">Confirm Password doesn\'t match. Try again!</string>
+    <string name="gender">Gender</string>
     <string name="password_doesn_t_match_try_again">Password doesn\'t match. Try again!</string>
+    <string name="degree">Degree</string>
+    <string name="specialization">Specialization</string>
+    <string name="age_validate">Age Should be greater than 22</string>
+
 </resources>

@@ -50,7 +50,7 @@ class LoginViewModel @Inject constructor(
 
     val isDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    val _navigationListener = SingleLiveEvent<Int>()
+    private val _navigationListener = SingleLiveEvent<Int>()
     val navigationListener = _navigationListener.asLiveData()
 
     val isGoogleClick: MutableLiveData<Boolean> = MutableLiveData(false)

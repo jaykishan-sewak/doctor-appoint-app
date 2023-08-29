@@ -18,13 +18,13 @@ import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.toast
 import javax.inject.Inject
 
-class AddDoctorFragment: BaseFragment<FragmentAddDoctorBinding>(R.layout.fragment_add_doctor) {
+class AddDoctorFragment : BaseFragment<FragmentAddDoctorBinding>(R.layout.fragment_add_doctor) {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel by viewModels<AddDoctorViewModel> { viewModelFactory }
 
-     override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (requireActivity().application as AppComponentProvider).getAppComponent().inject(this)
     }
@@ -38,10 +38,10 @@ class AddDoctorFragment: BaseFragment<FragmentAddDoctorBinding>(R.layout.fragmen
             .build()
     }
 
-     override fun onCreateView(
-         inflater: LayoutInflater,
-         container: ViewGroup?,
-         savedInstanceState: Bundle?
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
         return binding {
@@ -62,9 +62,7 @@ class AddDoctorFragment: BaseFragment<FragmentAddDoctorBinding>(R.layout.fragmen
             if (it.equals("Success")) {
                 context?.toast(resources.getString(R.string.doctor_save_successfully))
                 viewModel.navigationListener.observe(viewLifecycleOwner) {
-                    findNavController().navigate(it)
-                    findNavController().popBackStack(R.id.LoginFragment, false)
-
+                    findNavController().popBackStack()
                 }
             } else {
                 context?.alert {

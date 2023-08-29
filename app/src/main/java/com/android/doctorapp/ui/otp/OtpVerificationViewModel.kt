@@ -19,8 +19,7 @@ class OtpVerificationViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     val _otpDigit = MutableLiveData<String>()
-    val otpDigit1: LiveData<String> get() = _otpDigit
-    val isDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
+    val otpDigit: LiveData<String> get() = _otpDigit
     val otpVerificationId: MutableLiveData<String?> = MutableLiveData()
     val isDoctorOrUser: MutableLiveData<Boolean?> = MutableLiveData(true)
     val userContactNumber: MutableLiveData<String?> = MutableLiveData()
@@ -37,15 +36,12 @@ class OtpVerificationViewModel @Inject constructor(
         return _otpDigit.value?.isNotEmpty() == true
     }
 
-    fun isAllValidate() {
-        isDataValid.value = !otpDigit1.value.isNullOrEmpty()
-    }
 
     fun otpVerification() {
         setShowProgress(true)
-        if (otpDigit1.value?.isNotEmpty() == true) {
+        if (otpDigit.value?.isNotEmpty() == true) {
             val credential: PhoneAuthCredential = PhoneAuthProvider.getCredential(
-                otpVerificationId.value.toString(), otpDigit1.value.toString()
+                otpVerificationId.value.toString(), otpDigit.value.toString()
             )
             signInWithPhoneAuthCredential(credential)
         } else {

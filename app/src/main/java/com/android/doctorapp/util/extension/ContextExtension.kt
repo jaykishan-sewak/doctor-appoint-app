@@ -80,11 +80,11 @@ fun Context.isNetworkAvailable(): Boolean {
 fun Context.selectDate(maxDate: Long?, minDate: Long?, handleClick: (date: String) -> Unit) {
     val myCalendar = Calendar.getInstance()
     val date = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
-        val date1 = String.format("%02d-%02d-%04d", dayOfMonth, month + 1, year)
+        val selectedDate = String.format("%02d-%02d-%04d", dayOfMonth, month + 1, year)
         myCalendar.set(Calendar.YEAR, year)
         myCalendar.set(Calendar.MONTH, month)
         myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-        handleClick.invoke(date1)
+        handleClick.invoke(selectedDate)
     }
 
     val datePickerDialog = DatePickerDialog(

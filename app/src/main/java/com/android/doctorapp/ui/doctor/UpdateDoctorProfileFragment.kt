@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -36,10 +37,14 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.coroutines.launch
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+
 
 class UpdateDoctorProfileFragment :
     BaseFragment<FragmentUpdateDoctorProfileBinding>(R.layout.fragment_update_doctor_profile) {
@@ -109,6 +114,14 @@ class UpdateDoctorProfileFragment :
                 viewModel.hideProgress()
                 storedVerificationId = verificationId
                 resendToken = token
+                val degreeList = binding.chipGroup.children.toList()
+                    .map { (it as Chip).text.toString() } as ArrayList<String>?
+                viewModel.degreeLiveList.addAll(degreeList!!)
+
+                val specialityList = binding.chipGroupSpec.children.toList()
+                    .map { (it as Chip).text.toString() } as ArrayList<String>?
+                viewModel.specializationLiveList.addAll(specialityList!!)
+
                 val bundle = Bundle()
                 bundle.putString(STORED_VERIFICATION_Id_KEY, storedVerificationId)
                 bundle.putBoolean(IS_DOCTOR_OR_USER_KEY, true)
@@ -128,10 +141,25 @@ class UpdateDoctorProfileFragment :
             viewModel = this@UpdateDoctorProfileFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
         }
+
         viewModel.setBindingData(bindingView)
         viewModel.getDegreeItems()
         viewModel.getSpecializationItems()
         return bindingView.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (viewModel.degreeLiveList.size > 0) {
+            for (i in 0 until viewModel.degreeLiveList.size) {
+                addChip(viewModel.degreeLiveList.get(i))
+            }
+        }
+        if (viewModel.specializationLiveList.size > 0) {
+            for (i in 0 until viewModel.specializationLiveList.size) {
+                addSpecChip(viewModel.specializationLiveList.get(i))
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -152,7 +180,6 @@ class UpdateDoctorProfileFragment :
 
         viewModel.isPhoneVerify.observe(viewLifecycleOwner) {
             if (!it) {
-                //                binding.textContactVerify.isClickable = false
                 viewModel.validateAllUpdateField()
                 binding.textContactVerify.setTextColor(
                     ContextCompat.getColor(
@@ -164,10 +191,14 @@ class UpdateDoctorProfileFragment :
         }
 
         viewModel.isCalender.observe(viewLifecycleOwner) {
-
             if (binding.textDateOfBirth.id == it?.id) {
                 requireContext().selectDate(maxDate = Date().time, minDate = null) { dobDate ->
-                    viewModel.dob.value = dobDate
+                    if (calculateAge(dobDate) > 22) {
+                        viewModel.dob.value = dobDate
+                        viewModel.dobError.value = null
+                    } else {
+                        viewModel.isDobGreater22()
+                    }
                 }
             } else {
                 requireContext().selectDate(
@@ -184,14 +215,12 @@ class UpdateDoctorProfileFragment :
             }
         }
 
-
         viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
             if (it.equals(requireContext().resources.getString(R.string.success))) {
                 context?.toast(resources.getString(R.string.doctor_update_successfully))
                 viewModel.navigationListener.observe(viewLifecycleOwner) { navId ->
                     findNavController().navigate(navId)
                     findNavController().popBackStack(R.id.LoginFragment, false)
-
                 }
             } else {
                 context?.alert {
@@ -303,8 +332,6 @@ class UpdateDoctorProfileFragment :
                 }
             })
         }
-
-
     }
 
     private fun addSpecializationItem(uppercase: String) {
@@ -349,6 +376,26 @@ class UpdateDoctorProfileFragment :
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)
     }
+
+    fun calculateAge(selectedDate: String?): Int {
+        val dateFormat = SimpleDateFormat("dd-mm-yyyy", Locale.getDefault())
+        val today = Calendar.getInstance()
+        val birthDate = Calendar.getInstance()
+        return try {
+            val date: Date = dateFormat.parse(selectedDate)
+            birthDate.time = date
+            var years =
+                today[Calendar.YEAR] - birthDate[Calendar.YEAR]
+            if (today[Calendar.MONTH] < birthDate[Calendar.MONTH] || today[Calendar.MONTH] == birthDate[Calendar.MONTH] && today[Calendar.DAY_OF_MONTH] < birthDate[Calendar.DAY_OF_MONTH]) {
+                years--
+            }
+            years
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            -1
+        }
+    }
+
 
 }
 
@@ -398,4 +445,5 @@ class CustomAutoCompleteAdapter(context: Context, suggestions: List<String>) :
     companion object {
         const val ADD_SUGGESTION_ITEM = "Add"
     }
+
 }
