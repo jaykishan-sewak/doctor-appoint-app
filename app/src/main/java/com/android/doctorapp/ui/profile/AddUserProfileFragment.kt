@@ -45,7 +45,7 @@ class AddUserProfileFragment :
             viewModel.viewModelScope.launch {
                 viewModel.checkIsEmailEveryMin()
             }
-            handler.postDelayed(this, 30000)
+            handler.postDelayed(this, 10000)
         }
     }
 
@@ -55,9 +55,14 @@ class AddUserProfileFragment :
     lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
 
 
-    override fun builder() = FragmentToolbar.Builder()
-        .withId(FragmentToolbar.NO_TOOLBAR)
-        .build()
+    override fun builder(): FragmentToolbar {
+        return FragmentToolbar.Builder()
+            .withId(R.id.toolbar)
+            .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.purple_500))
+            .withTitle(R.string.title_profile)
+            .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
+            .build()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,8 +96,10 @@ class AddUserProfileFragment :
                     storedVerificationId
                 )
                 bundle.putBoolean(ConstantKey.BundleKeys.IS_DOCTOR_OR_USER, false)
-                bundle.putString(ConstantKey.BundleKeys.USER_CONTACT_NUMBER_KEY, viewModel.contactNumber.value)
-
+                bundle.putString(
+                    ConstantKey.BundleKeys.USER_CONTACT_NUMBER_KEY,
+                    viewModel.contactNumber.value
+                )
                 findNavController().navigate(
                     R.id.action_updateUserFragment_to_OtpVerificationFragment,
                     bundle
@@ -100,7 +107,7 @@ class AddUserProfileFragment :
 
             }
         }
-        handler.postDelayed(runnable, 1000)
+        handler.postDelayed(runnable, 10000)
 
         // Inflate the layout for this fragment
         return binding {
@@ -126,14 +133,14 @@ class AddUserProfileFragment :
 
         viewModel.addUserResponse.observe(viewLifecycleOwner) {
             if (it.equals("Success")) {
-                context?.toast(resources.getString(R.string.doctor_save_successfully))
+                context?.toast(resources.getString(R.string.user_save_successfully))
                 viewModel.navigationListener.observe(viewLifecycleOwner) {
                     findNavController().navigate(it)
                     findNavController().popBackStack(R.id.LoginFragment, false)
                 }
             } else {
                 context?.alert {
-                    setTitle(getString(R.string.doctor_not_save))
+                    setTitle(getString(R.string.user_not_save))
                     setMessage(it)
                     neutralButton { }
                 }
@@ -182,9 +189,7 @@ class AddUserProfileFragment :
         }
 
         viewModel.getModelUserData().observe(viewLifecycleOwner) {
-            //viewModel.name.value = it[0].name
             viewModel.email.value = it[0].email
-            //viewModel.contactNum.value = it[0].contactNumber
         }
 
         viewModel.clickResponse.observe(viewLifecycleOwner) {

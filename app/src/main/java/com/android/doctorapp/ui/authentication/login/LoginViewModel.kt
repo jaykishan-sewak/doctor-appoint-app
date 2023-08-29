@@ -154,7 +154,7 @@ class LoginViewModel @Inject constructor(
                 password.value = ""
                 setShowProgress(false)
                 session.putString(USER_ID, response.body.userId)
-                session.putBoolean(USER_IS_EMAIL_VERIFIED,false)
+                session.putBoolean(USER_IS_EMAIL_VERIFIED, false)
                 if (response.body.isAdmin) {
                     _navigationListener.postValue(R.id.action_loginFragment_to_adminDashboardFragment)
                 } else if (response.body.isDoctor) {

@@ -130,8 +130,6 @@ class AddDoctorViewModel @Inject constructor(
                                 contactNumber = response.body.contactNumber,
                                 isNotificationEnable = response.body.isNotificationEnable
                             )
-                            contactNumber.value = response.body.contactNumber
-                            name.value = response.body.name
                             isDoctor.value = response.body.isDoctor
                             if (firebaseAuth.currentUser?.phoneNumber.isNullOrEmpty()) {
                                 isPhoneVerify.value = true
@@ -391,9 +389,7 @@ class AddDoctorViewModel @Inject constructor(
                         isEmailVerified = true,
                         isPhoneNumberVerified = true,
                         isAdmin = false,
-                        dob = if (dob.value.isNullOrEmpty()) SimpleDateFormat("dd-MM-yyyy").parse(
-                            dob.value.toString()
-                        ) else null,
+                        dob = SimpleDateFormat("dd-MM-yyyy").parse(dob.value.toString()),
                         isUserVerified = true
                     )
 

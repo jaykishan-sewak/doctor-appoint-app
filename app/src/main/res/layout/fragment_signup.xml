@@ -4,10 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.android.doctorapp.ui.authentication.register.RegisterViewModel" />
     </data>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -58,6 +60,7 @@
                 android:layout_marginTop="@dimen/margin_32"
                 android:hint="@string/profile_email"
                 app:error="@{viewModel.emailError}"
+                app:errorEnabled="@{viewModel.emailError!= null ? true : false}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvMsg">
@@ -77,6 +80,7 @@
                 android:layout_marginTop="@dimen/margin_10"
                 android:hint="@string/hint_password"
                 app:error="@{viewModel.passwordError}"
+                app:errorEnabled="@{viewModel.passwordError!= null ? true : false}"
                 app:layout_constraintEnd_toEndOf="@id/tlEmail"
                 app:layout_constraintStart_toStartOf="@id/tlEmail"
                 app:layout_constraintTop_toBottomOf="@id/tlEmail"
@@ -97,6 +101,7 @@
                 android:layout_marginTop="@dimen/margin_10"
                 android:hint="@string/confirm_password"
                 app:error="@{viewModel.confirmPasswordError}"
+                app:errorEnabled="@{viewModel.confirmPasswordError!= null ? true : false}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tlPassword"
@@ -107,7 +112,7 @@
                     style="@style/user_login_editText"
                     android:afterTextChanged="@{(text) -> viewModel.isConfirmPassword(text)}"
                     android:inputType="textPassword"
-                    android:text="@={viewModel.confirmPassword}"/>
+                    android:text="@={viewModel.confirmPassword}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.appcompat.widget.AppCompatButton
@@ -135,7 +140,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/tvLogIn"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnSignUp"/>
+                app:layout_constraintTop_toBottomOf="@+id/btnSignUp" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvLogIn"

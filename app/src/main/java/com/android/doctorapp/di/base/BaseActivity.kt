@@ -60,7 +60,7 @@ abstract class BaseActivity<T : ViewDataBinding> constructor(
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true){
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 finish()
             }
@@ -75,26 +75,30 @@ abstract class BaseActivity<T : ViewDataBinding> constructor(
 
     private fun registerObservers() {
         viewModel.apply {
-            apiError.observe(this@BaseActivity, {
-                alert {
-                    setTitle(getString(R.string.wrong_crendentials))
-                    setMessage(getString(R.string.you_have_entered_wrong_email_or_password))
-                    neutralButton { }
+            apiError.observe(this@BaseActivity) {
+                if (it != "Not Found") {
+                    alert {
+                        setTitle(getString(R.string.wrong_crendentials))
+                        setMessage(getString(R.string.you_have_entered_wrong_email_or_password))
+                        neutralButton { dialog ->
+                            dialog.dismiss()
+                        }
+                    }
                 }
-            })
+            }
 
-            noNetwork.observe(this@BaseActivity, {
+            noNetwork.observe(this@BaseActivity) {
                 alert {
                     setTitle(getString(R.string.no_network))
                     setMessage(it)
                     neutralButton { }
                 }
-            })
+            }
 
-            showProgress.observe(this@BaseActivity, {
+            showProgress.observe(this@BaseActivity) {
                 if (it) AppProgressDialog().getInstance()?.showProgress(this@BaseActivity)
                 else AppProgressDialog().getInstance()?.hideProgress()
-            })
+            }
         }
     }
 }

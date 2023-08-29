@@ -64,8 +64,6 @@ class RegisterViewModel @Inject constructor(
     val authCredential: MutableLiveData<AuthCredential> = MutableLiveData()
 
 
-
-
     init {
         // googleSignInOptions initialization
         googleInitialization(context)
@@ -96,7 +94,13 @@ class RegisterViewModel @Inject constructor(
         if (text.toString().isNotEmpty() && text.toString().isPassWordValid().not()) {
             passwordError.value = resourceProvider.getString(R.string.error_enter_password)
         } else {
-            passwordError.value = null
+            if (!confirmPassword.value.isNullOrEmpty() && text.toString() != confirmPassword.value) {
+                passwordError.value =
+                    resourceProvider.getString(R.string.password_doesn_t_match_try_again)
+            } else {
+                passwordError.value = null
+                confirmPasswordError.value = null
+            }
         }
         isAllValidate()
     }
@@ -106,7 +110,9 @@ class RegisterViewModel @Inject constructor(
             confirmPasswordError.value =
                 resourceProvider.getString(R.string.confirm_password_doesn_t_match_try_again)
         } else {
+            passwordError.value = null
             confirmPasswordError.value = null
+
         }
         isAllValidate()
     }
@@ -172,6 +178,7 @@ class RegisterViewModel @Inject constructor(
                         _addUserResponse.value = resourceProvider.getString(R.string.success)
                     }
                 }
+
                 is ApiErrorResponse -> {
                     Log.d("ApiErrorResponse.body---", response.errorMessage)
                     _addUserResponse.value = response.errorMessage
@@ -183,6 +190,7 @@ class RegisterViewModel @Inject constructor(
                     _addUserResponse.value = response.errorMessage
                     setShowProgress(false)
                 }
+
                 else -> {
                     setShowProgress(false)
                 }
@@ -212,6 +220,7 @@ class RegisterViewModel @Inject constructor(
                     setNoNetworkError(response.errorMessage)
                     setShowProgress(false)
                 }
+
                 else -> {
                     setShowProgress(false)
                 }
@@ -308,6 +317,7 @@ class RegisterViewModel @Inject constructor(
         logInListener.postValue(R.id.action_registerFragment_to_loginFragment)
 
     }
+
     fun onGoogleSignClick() {
         isGoogleClick.postValue(true)
     }
