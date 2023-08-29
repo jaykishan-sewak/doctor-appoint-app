@@ -127,27 +127,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
             findNavController().navigate(it)
         }
 
-
-        /*viewModel.isUserVerified.observe(viewLifecycleOwner) {
-            if (!it) {
-                context?.alert {
-                    setTitle(context.resources.getString(R.string.complete_profile))
-                    setMessage(context.resources.getString(R.string.complete_profile_desc))
-                    neutralButton { dialog ->
-                        dialog.dismiss()
-                        findNavController().navigate(R.id.action_loginFragment_to_updateDoctorFragment)
-                    }
-                    negativeButton(context.resources.getString(R.string.cancel)) {
-//                        exitProcess(0)
-                        requireActivity().finishAffinity()
-
-                    }
-                }
-            } else {
-                findNavController().navigate(R.id.action_loginFragment_to_doctorDashboardFragment)
-            }
-        }*/
-
     }
 
     private val launcher =

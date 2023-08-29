@@ -1,9 +1,12 @@
 package com.android.doctorapp.ui.doctor
 
 import android.content.Context
+import android.util.Log
 import android.util.Patterns
 import android.view.View
+import android.widget.RadioGroup
 import androidx.core.view.children
+import androidx.databinding.Bindable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -50,13 +53,10 @@ class AddDoctorViewModel @Inject constructor(
     val contactNumber: MutableLiveData<String> = MutableLiveData()
     val contactNumberError: MutableLiveData<String?> = MutableLiveData()
 
-    val isUserDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
+    val notificationToggleData: MutableLiveData<Boolean> = MutableLiveData(false)
 
-
-    val toggleLiveData: MutableLiveData<Boolean> = MutableLiveData(false)
-
-    val isDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
-    val isDataValid1: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isAddDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isUpdateDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
 
     private val _navigationListener = SingleLiveEvent<Int>()
     val navigationListener = _navigationListener.asLiveData()
@@ -80,7 +80,7 @@ class AddDoctorViewModel @Inject constructor(
     val addressError: MutableLiveData<String?> = MutableLiveData()
 
     val dob: MutableLiveData<String> = MutableLiveData()
-    private val dobError: MutableLiveData<String?> = MutableLiveData()
+    val dobError: MutableLiveData<String?> = MutableLiveData()
 
     val isCalender: MutableLiveData<View> = SingleLiveEvent()
     val isAvailableDate: MutableLiveData<String?> = MutableLiveData()
@@ -105,6 +105,10 @@ class AddDoctorViewModel @Inject constructor(
     val isUserReload: MutableLiveData<Boolean?> = MutableLiveData(false)
     var binding: FragmentUpdateDoctorProfileBinding? = null
 
+    val degreeLiveList = mutableListOf<String>()
+    val specializationLiveList = mutableListOf<String>()
+
+    private val selectGenderValue: MutableLiveData<String> = MutableLiveData("Male")
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
         this.binding = binding
@@ -141,7 +145,7 @@ class AddDoctorViewModel @Inject constructor(
                                     resourceProvider.getString(R.string.Verified)
 
                             }
-                            toggleLiveData.value = response.body.isNotificationEnable
+                            notificationToggleData.value = response.body.isNotificationEnable
                             data.value = listOf(userObj)
                             setShowProgress(false)
                         }
@@ -165,17 +169,14 @@ class AddDoctorViewModel @Inject constructor(
                     context.toast(resourceProvider.getString(R.string.check_internet_connection))
                 }
             }
-//            }
-
         }
         return data
     }
 
-
     fun validateAllUpdateField() {
         if (isDoctor.value!!) {
 
-            isDataValid1.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
+            isUpdateDataValid.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
                     && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
                     && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
                     && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
@@ -188,7 +189,7 @@ class AddDoctorViewModel @Inject constructor(
                     && binding?.chipGroupSpec?.children?.toList()?.size!! > 0
                     )
         } else {
-            isDataValid1.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
+            isUpdateDataValid.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
                     && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
                     && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
                     && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
@@ -199,11 +200,10 @@ class AddDoctorViewModel @Inject constructor(
     }
 
     private fun validateAllField() {
-        isDataValid.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
+        isAddDataValid.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
                 && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
                 && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty())
     }
-
 
     fun isValidName(text: CharSequence?) {
         if (text?.toString().isNullOrEmpty() || ((text?.toString()?.length ?: 0) < 3)) {
@@ -268,6 +268,11 @@ class AddDoctorViewModel @Inject constructor(
         validateAllUpdateField()
     }
 
+    fun isDobGreater22() {
+        dobError.value = resourceProvider.getString(R.string.age_validate)
+        validateAllUpdateField()
+    }
+
     fun isValidDate(text: CharSequence?) {
         if (text?.toString().isNullOrEmpty()) {
             isAvailableDateError.value = resourceProvider.getString(R.string.valid_date_desc)
@@ -277,6 +282,7 @@ class AddDoctorViewModel @Inject constructor(
         validateAllUpdateField()
     }
 
+
     fun isValidTime(text: CharSequence?) {
         if (text?.toString().isNullOrEmpty()) {
             availableTimeError.value = resourceProvider.getString(R.string.valid_time_desc)
@@ -284,6 +290,14 @@ class AddDoctorViewModel @Inject constructor(
             availableTimeError.value = null
         }
         validateAllUpdateField()
+    }
+
+    fun genderSelect(group: RadioGroup, checkedId: Int) {
+        if (R.id.radioButtonMale == checkedId) {
+            selectGenderValue.value = "MALE"
+        } else {
+            selectGenderValue.value = "FEMALE"
+        }
     }
 
     fun calenderClick(text_dob: View) {
@@ -360,7 +374,7 @@ class AddDoctorViewModel @Inject constructor(
                         isDoctor = true,
                         email = email.value.toString(),
                         name = name.value.toString(),
-                        gender = "MALE",
+                        gender = selectGenderValue.value.toString(),
                         address = address.value.toString(),
                         contactNumber = contactNumber.value.toString(),
                         degree = binding?.chipGroup?.children?.toList()
@@ -372,7 +386,7 @@ class AddDoctorViewModel @Inject constructor(
                         isPhoneNumberVerified = true,
                         availableTime = "",
                         isAdmin = false,
-                        isNotificationEnable = toggleLiveData.value == true,
+                        isNotificationEnable = notificationToggleData.value == true,
                         dob = SimpleDateFormat("dd-MM-yyyy").parse(dob.value.toString()),
                         isUserVerified = true
                     )
@@ -383,7 +397,7 @@ class AddDoctorViewModel @Inject constructor(
                         isDoctor = false,
                         email = email.value.toString(),
                         name = name.value.toString(),
-                        gender = "FEMALE",
+                        gender = selectGenderValue.value.toString(),
                         address = address.value.toString(),
                         contactNumber = contactNumber.value.toString(),
                         isEmailVerified = true,
@@ -408,7 +422,7 @@ class AddDoctorViewModel @Inject constructor(
                             setShowProgress(false)
                             if (isDoctor.value == true) {
                                 _navigationListener.value =
-                                    R.id.action_updateDoctorFragment_to_LoginFragment
+                                    R.id.action_updateDoctorFragment_to_doctorDashboardFragment
                                 _addDoctorResponse.value =
                                     resourceProvider.getString(R.string.success)
                             } else {
@@ -446,7 +460,7 @@ class AddDoctorViewModel @Inject constructor(
             email = email.value!!,
             name = name.value!!,
             contactNumber = contactNumber.value!!,
-            isNotificationEnable = toggleLiveData.value == true
+            isNotificationEnable = notificationToggleData.value == true
         )
 
         when (val response = authRepository.addDoctorData(userData, fireStore)) {

@@ -76,10 +76,10 @@ class OtpVerificationFragment :
     }
 
     private fun registerObserver() {
-        viewModel.otpDigit1.observe(viewLifecycleOwner) {
+        viewModel.otpDigit.observe(viewLifecycleOwner) {
             if (viewModel.isOtpFilled()) {
                 // Perform OTP verification
-                viewModel.isAllValidate()
+                viewModel.otpVerification()
             } else {
             }
         }

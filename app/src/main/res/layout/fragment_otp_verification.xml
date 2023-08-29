@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        
+
         <variable
             name="viewModel"
             type="com.android.doctorapp.ui.otp.OtpVerificationViewModel" />
-        
+
     </data>
 
     <ScrollView
@@ -53,34 +52,18 @@
                 android:id="@+id/otp_pin_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:pinBackground="@drawable/example_drawable"
                 android:layout_marginTop="@dimen/margin_32"
-                app:pinWidth="@dimen/margin_35"
+                app:cursorVisible="true"
+                app:forceKeyboard="false"
+                app:inputType="number"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_otp_verification_desc"
+                app:password="false"
+                app:pinBackground="@drawable/example_drawable"
                 app:pinHeight="@dimen/margin_35"
                 app:pinLength="6"
-                app:inputType="number"
-                app:cursorVisible="true"
-    	        app:forceKeyboard="false"
-                app:password="false"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_otp_verification_desc"
-                />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnLogin"
-                style="@style/user_login_editText"
-                android:layout_height="@dimen/margin_50"
-                android:layout_marginTop="@dimen/margin_60"
-                android:background="@drawable/button_state_colors"
-                android:text="@string/verify"
-                android:textAllCaps="false"
-                android:enabled="@{viewModel.isDataValid}"
-                android:onClick="@{() -> viewModel.otpVerification()}"
-                android:textColor="@color/white"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/otp_pin_view" />
+                app:pinWidth="@dimen/margin_35" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

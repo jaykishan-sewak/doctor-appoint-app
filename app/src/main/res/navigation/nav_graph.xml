@@ -42,8 +42,7 @@
 
         <action
             android:id="@+id/action_loginFragment_to_updateDoctorFragment"
-            app:destination="@+id/UpdateDoctorFragment"
-            />
+            app:destination="@+id/UpdateDoctorFragment" />
 
 
     </fragment>
@@ -85,8 +84,8 @@
         tools:layout="@layout/fragment_update_doctor_profile">
 
         <action
-            android:id="@+id/action_updateDoctorFragment_to_LoginFragment"
-            app:destination="@id/LoginFragment" />
+            android:id="@+id/action_updateDoctorFragment_to_doctorDashboardFragment"
+            app:destination="@id/DoctorDashboardFragment" />
 
         <action
             android:id="@+id/action_updateDoctorFragment_to_OtpVerificationFragment"
