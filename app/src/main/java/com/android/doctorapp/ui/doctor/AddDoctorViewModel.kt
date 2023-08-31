@@ -309,8 +309,8 @@ class AddDoctorViewModel @Inject constructor(
 
     fun addDoctorData() {
         if (context.isNetworkAvailable()) {
-            if(userId.value.isNullOrEmpty())
-            addUserToAuthentication()
+            if (userId.value.isNullOrEmpty())
+                addUserToAuthentication()
             else
                 updateDoctorData()
         } else {
@@ -503,7 +503,6 @@ class AddDoctorViewModel @Inject constructor(
             if (!contactNumber.value.isNullOrEmpty()) {
                 setShowProgress(true)
                 _clickResponse.value = contactNumber.value.toString()
-            } else {
             }
         } else {
             context.toast(resourceProvider.getString(R.string.check_internet_connection))
@@ -681,13 +680,13 @@ class AddDoctorViewModel @Inject constructor(
                         setShowProgress(false)
                     }
 
-                is ApiErrorResponse -> {
-                    setShowProgress(false)
-                }
+                    is ApiErrorResponse -> {
+                        setShowProgress(false)
+                    }
 
-                is ApiNoNetworkResponse -> {
-                    setShowProgress(false)
-                }
+                    is ApiNoNetworkResponse -> {
+                        setShowProgress(false)
+                    }
 
                     else -> {
                         setShowProgress(false)
@@ -725,7 +724,7 @@ class AddDoctorViewModel @Inject constructor(
         }
     }
 
-    private  fun updateDoctorData() {
+    private fun updateDoctorData() {
         viewModelScope.launch {
             if (tempEmail.value != email.value || tempContactNumber.value != contactNumber.value) {
                 setShowProgress(true)
@@ -761,11 +760,11 @@ class AddDoctorViewModel @Inject constructor(
                         setShowProgress(false)
                     }
 
-                else -> {
-                    setShowProgress(false)
+                    else -> {
+                        setShowProgress(false)
+                    }
                 }
             }
         }
     }
-
 }
