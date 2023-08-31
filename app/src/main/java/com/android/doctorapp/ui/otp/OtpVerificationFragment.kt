@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -26,10 +27,6 @@ class OtpVerificationFragment :
     private lateinit var verificationId: String
     lateinit var contactNumber: String
 
-
-    override fun builder() = FragmentToolbar.Builder()
-        .withId(FragmentToolbar.NO_TOOLBAR)
-        .build()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +60,19 @@ class OtpVerificationFragment :
             lifecycleOwner = viewLifecycleOwner
             viewModel = this@OtpVerificationFragment.viewModel
         }.root
+    }
+
+    override fun builder(): FragmentToolbar {
+        return FragmentToolbar.Builder()
+            .withId(R.id.toolbar)
+            .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.blue))
+            .withTitle(R.string.verify_account)
+            .withNavigationIcon(requireActivity().getDrawable(R.drawable.ic_back_white))
+            .withNavigationListener {
+                findNavController().popBackStack()
+            }
+            .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
+            .build()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
