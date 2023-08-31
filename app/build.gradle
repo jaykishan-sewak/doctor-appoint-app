@@ -91,4 +91,8 @@ dependencies {
     //google auth
     implementation 'com.google.android.gms:play-services-auth:20.6.0'
 
+    //otp
+    implementation 'com.github.GoodieBag:Pinview:v1.4'
+
+
 }

@@ -9,9 +9,13 @@ import javax.inject.Inject
 
 class AddDoctorRepository @Inject constructor() {
 
-    suspend fun addDoctorData(doctorRequestModel: UserDataRequestModel, firestore: FirebaseFirestore): ApiResponse<UserDataRequestModel> {
+    suspend fun addDoctorData(
+        doctorRequestModel: UserDataRequestModel,
+        firestore: FirebaseFirestore
+    ): ApiResponse<UserDataRequestModel> {
         return try {
-            val addDoctorResponse = firestore.collection("user_data").add(doctorRequestModel).await()
+            val addDoctorResponse =
+                firestore.collection("user_data").add(doctorRequestModel).await()
             ApiResponse.create(response = Response.success(doctorRequestModel))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())

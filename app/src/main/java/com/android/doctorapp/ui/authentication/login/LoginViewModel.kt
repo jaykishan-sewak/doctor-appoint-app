@@ -1,6 +1,5 @@
 package com.android.doctorapp.ui.authentication.login
 
-
 import android.content.Context
 import androidx.activity.result.ActivityResult
 import androidx.lifecycle.MutableLiveData
@@ -9,14 +8,21 @@ import com.android.doctorapp.R
 import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AuthRepository
+import com.android.doctorapp.repository.local.Session
+import com.android.doctorapp.repository.local.USER_ID
+import com.android.doctorapp.repository.local.USER_IS_EMAIL_VERIFIED
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.LoginResponseModel
 import com.android.doctorapp.util.SingleLiveEvent
+import com.android.doctorapp.util.constants.ConstantKey.DOCTOR
+import com.android.doctorapp.util.constants.ConstantKey.USER
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
+import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.isPassWordValid
+import com.android.doctorapp.util.extension.toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -28,7 +34,8 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val resourceProvider: ResourceProvider,
-    context: Context
+    private val context: Context,
+    private val session: Session
 ) : BaseViewModel() {
     private val _loginResponse = SingleLiveEvent<LoginResponseModel?>()
     val loginResponse = _loginResponse.asLiveData()
@@ -53,6 +60,8 @@ class LoginViewModel @Inject constructor(
     val googleSignInAccount: MutableLiveData<GoogleSignInAccount> = MutableLiveData()
     val authCredential: MutableLiveData<AuthCredential> = MutableLiveData()
 
+    val isUserVerified: MutableLiveData<String> = SingleLiveEvent()
+
 
     init {
         // googleSignInOptions initialization
@@ -64,7 +73,12 @@ class LoginViewModel @Inject constructor(
 
 
     fun onClick() {
-        callLoginAPI()
+        if (context.isNetworkAvailable()) {
+            callLoginAPI()
+        } else {
+            context.toast(resourceProvider.getString(R.string.check_internet_connection))
+        }
+
     }
 
     /**
@@ -77,18 +91,18 @@ class LoginViewModel @Inject constructor(
 
     fun isValidateEmail(text: CharSequence) {
         if (text.toString().isNotEmpty() && text.toString().isEmailAddressValid().not()) {
-            emailError.postValue(resourceProvider.getString(R.string.enter_valid_email))
+            emailError.value = resourceProvider.getString(R.string.enter_valid_email)
         } else {
-            emailError.postValue(null)
+            emailError.value = null
         }
         isAllValidate()
     }
 
     fun isValidPassword(text: CharSequence) {
         if (text.toString().isNotEmpty() && text.toString().isPassWordValid().not()) {
-            passwordError.postValue(resourceProvider.getString(R.string.error_enter_password))
+            passwordError.value = resourceProvider.getString(R.string.error_enter_password)
         } else {
-            passwordError.postValue(null)
+            passwordError.value = null
         }
         isAllValidate()
     }
@@ -107,11 +121,10 @@ class LoginViewModel @Inject constructor(
                 password = password.value.toString(),
             )) {
                 is ApiSuccessResponse -> {
-                    email.value = ""
-                    password.value = ""
-                    setShowProgress(false)
-                    _navigationListener.postValue(R.id.action_loginFragment_to_addUserProfileFragment)
-                    //_loginResponse.postValue(LoginResponseModel("test", "10", "test1", "test123"))
+                    if (!firebaseAuth.currentUser?.uid.isNullOrEmpty()) {
+                        getUserData()
+
+                    }
                 }
 
                 is ApiErrorResponse -> {
@@ -124,8 +137,54 @@ class LoginViewModel @Inject constructor(
                     setShowProgress(false)
                 }
 
-                else -> {}
+                else -> {
+                    setShowProgress(false)
+                }
             }
+        }
+    }
+
+    private suspend fun getUserData() {
+
+        when (val response =
+            authRepository.getRecordById(firebaseAuth.currentUser?.uid.toString(), fireStore)) {
+
+            is ApiSuccessResponse -> {
+                email.value = ""
+                password.value = ""
+                setShowProgress(false)
+                session.putString(USER_ID, response.body.userId)
+                session.putBoolean(USER_IS_EMAIL_VERIFIED, false)
+                if (response.body.isAdmin) {
+                    _navigationListener.postValue(R.id.action_loginFragment_to_adminDashboardFragment)
+                } else if (response.body.isDoctor) {
+
+                    if (response.body.isUserVerified) {
+                        _navigationListener.postValue(R.id.action_loginFragment_to_doctorDashboardFragment)
+                    } else {
+                        isUserVerified.postValue(DOCTOR)
+                    }
+                } else {
+                    if (response.body.isUserVerified) {
+                        _navigationListener.postValue(R.id.action_loginFragment_to_homeFragment)
+                    } else {
+                        isUserVerified.postValue(USER)
+                    }
+                }
+            }
+
+            is ApiErrorResponse -> {
+                setApiError(response.errorMessage)
+                setShowProgress(false)
+            }
+
+            is ApiNoNetworkResponse -> {
+                setNoNetworkError(response.errorMessage)
+                setShowProgress(false)
+
+            }
+
+            else -> {}
         }
     }
 
@@ -142,8 +201,10 @@ class LoginViewModel @Inject constructor(
             )) {
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
+                    if (!firebaseAuth.currentUser?.uid.isNullOrEmpty()) {
+                        getUserData()
+                    }
                     googleResponse.postValue(true)
-                    _navigationListener.postValue(R.id.action_loginFragment_to_addUserProfileFragment)
                 }
 
                 is ApiErrorResponse -> {
@@ -156,7 +217,9 @@ class LoginViewModel @Inject constructor(
                     setShowProgress(false)
                 }
 
-                else -> {}
+                else -> {
+                    setShowProgress(false)
+                }
             }
         }
     }
@@ -164,25 +227,29 @@ class LoginViewModel @Inject constructor(
     fun callSignInAccountTaskAPI(result: ActivityResult) {
         viewModelScope.launch {
             setShowProgress(true)
-            when (val response = authRepository.signInAccountTask(
-                result,
-            )) {
-                is ApiSuccessResponse -> {
-                    setShowProgress(false)
-                    signInAccountTask.postValue(response.body!!)
-                }
+            if (context.isNetworkAvailable()) {
+                when (val response = authRepository.signInAccountTask(
+                    result,
+                )) {
+                    is ApiSuccessResponse -> {
+                        setShowProgress(false)
+                        signInAccountTask.postValue(response.body!!)
+                    }
 
-                is ApiErrorResponse -> {
-                    setApiError(response.errorMessage)
-                    setShowProgress(false)
-                }
+                    is ApiErrorResponse -> {
+                        setApiError(response.errorMessage)
+                        setShowProgress(false)
+                    }
 
-                is ApiNoNetworkResponse -> {
-                    setNoNetworkError(response.errorMessage)
-                    setShowProgress(false)
-                }
+                    is ApiNoNetworkResponse -> {
+                        setNoNetworkError(response.errorMessage)
+                        setShowProgress(false)
+                    }
 
-                else -> {}
+                    else -> {}
+                }
+            } else {
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
             }
         }
     }
@@ -259,6 +326,5 @@ class LoginViewModel @Inject constructor(
     fun onGoogleSignClick() {
         isGoogleClick.postValue(true)
     }
-
 
 }

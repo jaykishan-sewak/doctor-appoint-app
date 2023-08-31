@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
@@ -16,9 +17,14 @@ import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.ui.dashboard.DashboardActivity
+import com.android.doctorapp.util.constants.ConstantKey.USER
+import com.android.doctorapp.util.extension.alert
+import com.android.doctorapp.util.extension.negativeButton
+import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.startActivityFinish
 import com.android.doctorapp.util.extension.toast
 import javax.inject.Inject
+
 
 class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login) {
 
@@ -65,13 +71,35 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
 //        }
     }
 
+
     private fun registerObserver() {
+
         viewModel.loginResponse.observe(viewLifecycleOwner) {
             it?.let {
                 startActivityFinish<DashboardActivity> { }
             }
         }
 
+        viewModel.isUserVerified.observe(viewLifecycleOwner) { it ->
+            context?.alert {
+                setTitle(resources.getString(R.string.complete_profile))
+                setMessage(resources.getString(R.string.complete_profile_desc))
+                neutralButton { dialog ->
+                    dialog.dismiss()
+                    if (it == USER) {
+                        findNavController().navigate(R.id.action_loginFragment_to_updateUserFragment)
+                    } else {
+
+                        findNavController().navigate(R.id.action_loginFragment_to_updateDoctorFragment)
+                    }
+
+                }
+                negativeButton(context.resources.getString(R.string.cancel)) {
+                    requireActivity().finish()
+                }
+            }
+
+        }
         viewModel.isGoogleClick.observe(viewLifecycleOwner) {
             if (it) {
                 val intent: Intent = viewModel.googleSignInClient.signInIntent
@@ -79,9 +107,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
             }
         }
 
-        viewModel.navigationListener.observe(viewLifecycleOwner) {
-            findNavController().navigate(it)
-        }
 
         viewModel.signInAccountTask.observe(viewLifecycleOwner) {
             if (it.isSuccessful) {
@@ -99,6 +124,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
         viewModel.authCredential.observe(viewLifecycleOwner) {
             viewModel.callGoogleAPI(it)
         }
+
+        viewModel.navigationListener.observe(viewLifecycleOwner) {
+            findNavController().navigate(it)
+        }
+
     }
 
     private val launcher =
