@@ -1,12 +1,10 @@
 package com.android.doctorapp.ui.doctor
 
 import android.content.Context
-import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.RadioGroup
 import androidx.core.view.children
-import androidx.databinding.Bindable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -501,16 +499,24 @@ class AddDoctorViewModel @Inject constructor(
     }
 
     fun contactVerify() {
-        if (!contactNumber.value.isNullOrEmpty()) {
-            setShowProgress(true)
-            _clickResponse.value = contactNumber.value.toString()
+        if (context.isNetworkAvailable()) {
+            if (!contactNumber.value.isNullOrEmpty()) {
+                setShowProgress(true)
+                _clickResponse.value = contactNumber.value.toString()
+            } else {
+            }
         } else {
+            context.toast(resourceProvider.getString(R.string.check_internet_connection))
         }
     }
 
     fun onEmailVerifyClick() {
-        if (!firebaseUser.isEmailVerified) {
-            emailVerification()
+        if (context.isNetworkAvailable()) {
+            if (!firebaseUser.isEmailVerified) {
+                emailVerification()
+            }
+        } else {
+            context.toast(resourceProvider.getString(R.string.check_internet_connection))
         }
     }
 
@@ -598,7 +604,11 @@ class AddDoctorViewModel @Inject constructor(
     suspend fun checkIsEmailEveryMin() {
         session.getBoolean(USER_IS_EMAIL_VERIFIED).collectLatest {
             if (it == null || !it) {
-                userReload()
+                if (context.isNetworkAvailable()) {
+                    userReload()
+                } else {
+                    context.toast(resourceProvider.getString(R.string.check_internet_connection))
+                }
             } else {
                 isEmailVerified.postValue(true)
                 isEmailEnable.value = false
@@ -671,13 +681,13 @@ class AddDoctorViewModel @Inject constructor(
                         setShowProgress(false)
                     }
 
-                    is ApiErrorResponse -> {
-                        setShowProgress(false)
-                    }
+                is ApiErrorResponse -> {
+                    setShowProgress(false)
+                }
 
-                    is ApiNoNetworkResponse -> {
-                        setShowProgress(false)
-                    }
+                is ApiNoNetworkResponse -> {
+                    setShowProgress(false)
+                }
 
                     else -> {
                         setShowProgress(false)
@@ -751,9 +761,8 @@ class AddDoctorViewModel @Inject constructor(
                         setShowProgress(false)
                     }
 
-                    else -> {
-                        setShowProgress(false)
-                    }
+                else -> {
+                    setShowProgress(false)
                 }
             }
         }

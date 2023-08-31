@@ -201,8 +201,10 @@ class LoginViewModel @Inject constructor(
             )) {
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
+                    if (!firebaseAuth.currentUser?.uid.isNullOrEmpty()) {
+                        getUserData()
+                    }
                     googleResponse.postValue(true)
-                    _navigationListener.postValue(R.id.action_loginFragment_to_addUserProfileFragment)
                 }
 
                 is ApiErrorResponse -> {
@@ -225,25 +227,29 @@ class LoginViewModel @Inject constructor(
     fun callSignInAccountTaskAPI(result: ActivityResult) {
         viewModelScope.launch {
             setShowProgress(true)
-            when (val response = authRepository.signInAccountTask(
-                result,
-            )) {
-                is ApiSuccessResponse -> {
-                    setShowProgress(false)
-                    signInAccountTask.postValue(response.body!!)
-                }
+            if (context.isNetworkAvailable()) {
+                when (val response = authRepository.signInAccountTask(
+                    result,
+                )) {
+                    is ApiSuccessResponse -> {
+                        setShowProgress(false)
+                        signInAccountTask.postValue(response.body!!)
+                    }
 
-                is ApiErrorResponse -> {
-                    setApiError(response.errorMessage)
-                    setShowProgress(false)
-                }
+                    is ApiErrorResponse -> {
+                        setApiError(response.errorMessage)
+                        setShowProgress(false)
+                    }
 
-                is ApiNoNetworkResponse -> {
-                    setNoNetworkError(response.errorMessage)
-                    setShowProgress(false)
-                }
+                    is ApiNoNetworkResponse -> {
+                        setNoNetworkError(response.errorMessage)
+                        setShowProgress(false)
+                    }
 
-                else -> {}
+                    else -> {}
+                }
+            } else {
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
             }
         }
     }

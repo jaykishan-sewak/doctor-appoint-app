@@ -165,7 +165,8 @@ class AuthRepository @Inject constructor(
     }
 
     suspend fun addUserData(
-        userRequestModel: UserDataRequestModel, firestore: FirebaseFirestore
+        userRequestModel: UserDataRequestModel,
+        firestore: FirebaseFirestore
     ): ApiResponse<UserDataRequestModel> {
         return try {
             firestore.collection("user_data").add(userRequestModel).await()

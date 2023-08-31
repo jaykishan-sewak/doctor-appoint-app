@@ -15,7 +15,9 @@ import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
+import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.isPassWordValid
+import com.android.doctorapp.util.extension.toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -27,7 +29,7 @@ import javax.inject.Inject
 class RegisterViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val authRepository: AuthRepository,
-    context: Context
+    private val context: Context
 ) : BaseViewModel() {
 
     val email: MutableLiveData<String> = MutableLiveData()
@@ -65,7 +67,11 @@ class RegisterViewModel @Inject constructor(
     }
 
     fun onRegisterClick() {
-        callRegisterApi()
+        if (context.isNetworkAvailable()) {
+            callRegisterApi()
+        } else {
+            context.toast(resourceProvider.getString(R.string.check_internet_connection))
+        }
     }
 
     private fun isAllValidate() {
@@ -216,25 +222,31 @@ class RegisterViewModel @Inject constructor(
     fun callSignInAccountTaskAPI(result: ActivityResult) {
         viewModelScope.launch {
             setShowProgress(true)
-            when (val response = authRepository.signInAccountTask(
-                result,
-            )) {
-                is ApiSuccessResponse -> {
-                    setShowProgress(false)
-                    signInAccountTask.postValue(response.body!!)
-                }
+            if (context.isNetworkAvailable()) {
+                when (val response = authRepository.signInAccountTask(
+                    result,
+                )) {
+                    is ApiSuccessResponse -> {
+                        setShowProgress(false)
+                        signInAccountTask.postValue(response.body!!)
+                    }
 
-                is ApiErrorResponse -> {
-                    setApiError(response.errorMessage)
-                    setShowProgress(false)
-                }
+                    is ApiErrorResponse -> {
+                        setApiError(response.errorMessage)
+                        setShowProgress(false)
+                    }
 
-                is ApiNoNetworkResponse -> {
-                    setNoNetworkError(response.errorMessage)
-                    setShowProgress(false)
-                }
+                    is ApiNoNetworkResponse -> {
+                        setNoNetworkError(response.errorMessage)
+                        setShowProgress(false)
+                    }
 
-                else -> {}
+                    else -> {
+                        setShowProgress(false)
+                    }
+                }
+            } else {
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
             }
         }
     }
