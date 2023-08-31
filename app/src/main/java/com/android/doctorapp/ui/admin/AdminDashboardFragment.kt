@@ -34,10 +34,6 @@ class AdminDashboardFragment :
         .withId(R.id.toolbar)
         .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.blue))
         .withTitle(R.string.doctor_list)
-        .withNavigationIcon(requireActivity().getDrawable(R.drawable.ic_back_white))
-        .withNavigationListener {
-            findNavController().popBackStack()
-        }
         .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
         .build()
 

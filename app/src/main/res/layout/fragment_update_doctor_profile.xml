@@ -191,6 +191,7 @@
                         android:background="@null"
                         android:imeOptions="actionNext"
                         android:inputType="phone"
+                        android:maxLength="10"
                         android:singleLine="true"
                         android:text="@={viewModel.contactNumber}"
                         android:textColor="@color/black"

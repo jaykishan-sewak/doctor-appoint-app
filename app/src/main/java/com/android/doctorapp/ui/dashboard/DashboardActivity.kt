@@ -10,7 +10,7 @@ import com.android.doctorapp.di.base.BaseActivity
 
 class DashboardActivity : BaseActivity<ActivityDashboardBinding>(R.layout.activity_dashboard) {
 
-    private lateinit var navController: NavController
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

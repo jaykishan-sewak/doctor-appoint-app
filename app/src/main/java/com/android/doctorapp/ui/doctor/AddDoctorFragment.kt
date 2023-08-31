@@ -35,6 +35,10 @@ class AddDoctorFragment : BaseFragment<FragmentAddDoctorBinding>(R.layout.fragme
             .withId(R.id.toolbar)
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.blue))
             .withTitle(if (viewModel.email.value.isNullOrEmpty()) R.string.add_doctor else R.string.update_doctor)
+            .withNavigationIcon(requireActivity().getDrawable(R.drawable.ic_back_white))
+            .withNavigationListener {
+                findNavController().popBackStack()
+            }
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
             .build()
     }
