@@ -63,7 +63,7 @@
     <string name="please_fill_the_details_and_create_account">Please fill the details and create account</string>
     <string name="forgot_password">Forgot Password</string>
     <string name="third_fragment">Third Fragment</string>
-    <string name="add_doctor">Add Doctor Data</string>
+    <string name="add_doctor">Add Doctor</string>
     <string name="hint_doctor_name">Name</string>
     <string name="hint_doctor_email">Email</string>
     <string name="hint_doctor_contact">Contact Number</string>
@@ -109,5 +109,6 @@
     <string name="degree">Degree</string>
     <string name="specialization">Specialization</string>
     <string name="age_validate">Age Should be greater than 22</string>
-
+    <string name="update_doctor">Update Doctor</string>
+    <string name="update">Update</string>
 </resources>

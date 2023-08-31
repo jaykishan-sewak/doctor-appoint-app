@@ -16,6 +16,7 @@ import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.ui.admin.adapter.AdminDoctorItemAdapter
+import com.android.doctorapp.util.constants.ConstantKey
 import javax.inject.Inject
 
 
@@ -85,7 +86,15 @@ class AdminDashboardFragment :
                 }
 
                 override fun onItemEdit(item: UserDataResponseModel, position: Int) {
-                    TODO("Not yet implemented here call doctor edit screen")
+                    val bundle = Bundle()
+                    bundle.putString(ConstantKey.BundleKeys.USER_NAME, item.name)
+                    bundle.putString(ConstantKey.BundleKeys.USER_EMAIL, item.email)
+                    bundle.putString(ConstantKey.BundleKeys.USER_CONTACT_NUMBER_KEY, item.contactNumber)
+                    bundle.putString(ConstantKey.BundleKeys.USER_ID, item.userId)
+                    findNavController().navigate(
+                        R.id.admin_to_add_doctor, bundle
+                    )
+
                 }
 
             })

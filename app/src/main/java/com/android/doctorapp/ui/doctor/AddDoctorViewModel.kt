@@ -104,8 +104,10 @@ class AddDoctorViewModel @Inject constructor(
 
     val degreeLiveList = mutableListOf<String>()
     val specializationLiveList = mutableListOf<String>()
-
     private val selectGenderValue: MutableLiveData<String> = MutableLiveData("Male")
+    val userId: MutableLiveData<String> = MutableLiveData("")
+    val tempEmail: MutableLiveData<String?> = MutableLiveData()
+    val tempContactNumber: MutableLiveData<String?> = MutableLiveData()
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
         this.binding = binding
@@ -309,7 +311,10 @@ class AddDoctorViewModel @Inject constructor(
 
     fun addDoctorData() {
         if (context.isNetworkAvailable()) {
+            if(userId.value.isNullOrEmpty())
             addUserToAuthentication()
+            else
+                updateDoctorData()
         } else {
             context.toast(resourceProvider.getString(R.string.check_internet_connection))
         }
@@ -604,93 +609,151 @@ class AddDoctorViewModel @Inject constructor(
 
     fun getDegreeItems() {
         viewModelScope.launch {
-            setShowProgress(true)
-            when (val response = authRepository.getDegreeList(fireStore)) {
-                is ApiSuccessResponse -> {
-                    setShowProgress(false)
-                    degreeItems.value = response.body
-                }
+            if (context.isNetworkAvailable()) {
+                setShowProgress(true)
+                when (val response = authRepository.getDegreeList(fireStore)) {
+                    is ApiSuccessResponse -> {
+                        setShowProgress(false)
+                        degreeItems.value = response.body
+                    }
 
-                is ApiErrorResponse -> {
-                    setShowProgress(false)
-                }
+                    is ApiErrorResponse -> {
+                        setShowProgress(false)
+                    }
 
-                is ApiNoNetworkResponse -> {
-                    setShowProgress(false)
-                }
+                    is ApiNoNetworkResponse -> {
+                        setShowProgress(false)
+                    }
 
-                else -> {
-                    setShowProgress(false)
+                    else -> {
+                        setShowProgress(false)
+                    }
                 }
-            }
+            } else
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
+
         }
     }
 
     fun getSpecializationItems() {
         viewModelScope.launch {
-            setShowProgress(true)
-            when (val response = authRepository.getSpecializationList(fireStore)) {
-                is ApiSuccessResponse -> {
-                    setShowProgress(false)
-                    specializationItems.value = response.body
-                }
+            if (context.isNetworkAvailable()) {
+                setShowProgress(true)
+                when (val response = authRepository.getSpecializationList(fireStore)) {
+                    is ApiSuccessResponse -> {
+                        setShowProgress(false)
+                        specializationItems.value = response.body
+                    }
 
-                is ApiErrorResponse -> {
-                    setShowProgress(false)
-                }
+                    is ApiErrorResponse -> {
+                        setShowProgress(false)
+                    }
 
-                is ApiNoNetworkResponse -> {
-                    setShowProgress(false)
-                }
+                    is ApiNoNetworkResponse -> {
+                        setShowProgress(false)
+                    }
 
-                else -> {
-                    setShowProgress(false)
+                    else -> {
+                        setShowProgress(false)
+                    }
                 }
-            }
+            } else
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
         }
     }
 
     fun addDegreeItems(data: String) {
         viewModelScope.launch {
-            setShowProgress(true)
-            when (val response = authRepository.addDegree(fireStore, data)) {
-                is ApiSuccessResponse -> {
-                    setShowProgress(false)
-                }
+            if (context.isNetworkAvailable()) {
+                setShowProgress(true)
+                when (val response = authRepository.addDegree(fireStore, data)) {
+                    is ApiSuccessResponse -> {
+                        setShowProgress(false)
+                    }
 
-                is ApiErrorResponse -> {
-                    setShowProgress(false)
-                }
+                    is ApiErrorResponse -> {
+                        setShowProgress(false)
+                    }
 
-                is ApiNoNetworkResponse -> {
-                    setShowProgress(false)
-                }
+                    is ApiNoNetworkResponse -> {
+                        setShowProgress(false)
+                    }
 
-                else -> {
-                    setShowProgress(false)
+                    else -> {
+                        setShowProgress(false)
+                    }
                 }
-            }
+            } else
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
+
         }
     }
 
     fun addSpecializationItems(data: String) {
         viewModelScope.launch {
-            setShowProgress(true)
-            when (val response = authRepository.addSpecialization(fireStore, data)) {
-                is ApiSuccessResponse -> {
-                    setShowProgress(false)
-                }
+            if (context.isNetworkAvailable()) {
+                setShowProgress(true)
+                when (val response = authRepository.addSpecialization(fireStore, data)) {
+                    is ApiSuccessResponse -> {
+                        setShowProgress(false)
+                    }
 
-                is ApiErrorResponse -> {
-                    setShowProgress(false)
-                }
+                    is ApiErrorResponse -> {
+                        setShowProgress(false)
+                    }
 
-                is ApiNoNetworkResponse -> {
-                    setShowProgress(false)
-                }
+                    is ApiNoNetworkResponse -> {
+                        setShowProgress(false)
+                    }
 
-                else -> {
-                    setShowProgress(false)
+                    else -> {
+                        setShowProgress(false)
+                    }
+                }
+            } else
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
+        }
+    }
+
+    private  fun updateDoctorData() {
+        viewModelScope.launch {
+            if (tempEmail.value != email.value || tempContactNumber.value != contactNumber.value) {
+                setShowProgress(true)
+                val userData = UserDataRequestModel(
+                    userId = userId.value!!,
+                    isDoctor = true,
+                    email = email.value!!,
+                    name = name.value!!,
+                    contactNumber = contactNumber.value!!,
+                    isNotificationEnable = notificationToggleData.value == true
+                )
+
+                when (val response = authRepository.updateDoctorData(userData, fireStore)) {
+                    is ApiSuccessResponse -> {
+                        if (response.body.userId.isNotEmpty()) {
+                            name.value = ""
+                            email.value = ""
+                            contactNumber.value = ""
+                            setShowProgress(false)
+                            _navigationListener.value =
+                                R.id.action_addDoctorFragment_to_LoginFragment
+                            _addDoctorResponse.value = resourceProvider.getString(R.string.success)
+                        }
+                    }
+
+                    is ApiErrorResponse -> {
+                        _addDoctorResponse.value = response.errorMessage
+                        setShowProgress(false)
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        _addDoctorResponse.value = response.errorMessage
+                        setShowProgress(false)
+                    }
+
+                    else -> {
+                        setShowProgress(false)
+                    }
                 }
             }
         }

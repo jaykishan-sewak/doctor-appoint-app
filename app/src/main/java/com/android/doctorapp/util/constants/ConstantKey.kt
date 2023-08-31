@@ -7,6 +7,10 @@ object ConstantKey {
         const val STORED_VERIFICATION_Id_KEY = "storedVerificationId"
         const val IS_DOCTOR_OR_USER_KEY = "isDoctorOrUser"
         const val USER_CONTACT_NUMBER_KEY = "userContactNumber"
+        const val USER_NAME = "userName"
+        const val USER_EMAIL = "userEmail"
+        const val USER_ID = "userId"
+
     }
 
     const val DOCTOR = "DOCTOR"
@@ -20,6 +24,7 @@ object ConstantKey {
         const val FIELD_DOCTOR = "doctor"
         const val TABLE_DEGREE= "degree"
         const val TABLE_SPECIALIZATION= "specialization"
+        const val FIELD_USER_ID = "userId"
 
     }
 }

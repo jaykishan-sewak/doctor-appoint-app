@@ -1,6 +1,5 @@
 package com.android.doctorapp.repository
 
-import android.util.Log
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.local.USER_IS_LOGGED_IN
 import com.android.doctorapp.repository.models.ApiResponse
@@ -12,6 +11,7 @@ import com.android.doctorapp.repository.models.SpecializationResponseModel
 import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.repository.network.AppApi
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_USER_ID
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
@@ -234,7 +234,7 @@ class AuthRepository @Inject constructor(
     suspend fun emailVerification(firebaseUser: FirebaseUser): ApiResponse<Boolean> {
         return try {
             firebaseUser.sendEmailVerification().await()
-            ApiResponse.create (response = Response.success(true))
+            ApiResponse.create(response = Response.success(true))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
         }
@@ -257,7 +257,6 @@ class AuthRepository @Inject constructor(
             ApiResponse.create(e.fillInStackTrace())
         }
     }
-
 
 
     suspend fun getDegreeList(firestore: FirebaseFirestore): ApiResponse<DegreeResponseModel> {
@@ -317,6 +316,27 @@ class AuthRepository @Inject constructor(
                 .document(docList.documents[0].id)
                 .update("specializations", FieldValue.arrayUnion(data)).await()
             ApiResponse.create(response = Response.success(true))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+    suspend fun updateDoctorData(
+        doctorRequestModel: UserDataRequestModel,
+        fireStore: FirebaseFirestore
+    ): ApiResponse<UserDataRequestModel> {
+        return try {
+            val response = fireStore.collection(ConstantKey.DBKeys.TABLE_NAME)
+                .whereEqualTo(FIELD_USER_ID, doctorRequestModel.userId)
+                .get()
+                .await()
+
+            val updateUserResponse = fireStore.collection(ConstantKey.DBKeys.TABLE_NAME)
+                .document(response.documents[0].id)
+                .set(doctorRequestModel)
+                .await()
+
+            ApiResponse.create(response = Response.success(doctorRequestModel))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
         }

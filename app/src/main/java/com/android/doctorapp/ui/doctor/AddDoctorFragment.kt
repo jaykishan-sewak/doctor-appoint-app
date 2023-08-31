@@ -13,6 +13,7 @@ import com.android.doctorapp.databinding.FragmentAddDoctorBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.toast
@@ -33,7 +34,7 @@ class AddDoctorFragment : BaseFragment<FragmentAddDoctorBinding>(R.layout.fragme
         return FragmentToolbar.Builder()
             .withId(R.id.toolbar)
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.blue))
-            .withTitle(R.string.add_doctor)
+            .withTitle(if (viewModel.email.value.isNullOrEmpty()) R.string.add_doctor else R.string.update_doctor)
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
             .build()
     }
@@ -44,6 +45,21 @@ class AddDoctorFragment : BaseFragment<FragmentAddDoctorBinding>(R.layout.fragme
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+        val arguments: Bundle? = arguments
+        if (arguments != null) {
+            viewModel.name.value = arguments.getString(ConstantKey.BundleKeys.USER_NAME).toString()
+            viewModel.email.value =
+                arguments.getString(ConstantKey.BundleKeys.USER_EMAIL).toString()
+            viewModel.contactNumber.value =
+                arguments.getString(ConstantKey.BundleKeys.USER_CONTACT_NUMBER_KEY).toString()
+            viewModel.userId.value =
+                arguments.getString(ConstantKey.BundleKeys.USER_ID).toString()
+            viewModel.tempEmail.value =
+                arguments.getString(ConstantKey.BundleKeys.USER_EMAIL).toString()
+            viewModel.tempContactNumber.value =
+                arguments.getString(ConstantKey.BundleKeys.USER_CONTACT_NUMBER_KEY).toString()
+
+        }
         return binding {
             viewModel = this@AddDoctorFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
