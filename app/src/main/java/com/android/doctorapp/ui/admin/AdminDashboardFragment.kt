@@ -17,6 +17,9 @@ import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.ui.admin.adapter.AdminDoctorItemAdapter
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.extension.alert
+import com.android.doctorapp.util.extension.negativeButton
+import com.android.doctorapp.util.extension.positiveButton
 import javax.inject.Inject
 
 
@@ -82,14 +85,30 @@ class AdminDashboardFragment :
                 }
 
                 override fun onItemDelete(item: UserDataResponseModel, position: Int) {
-                    viewModel.deleteDoctor(item.id, position)
+                    context?.alert {
+                        setTitle(resources.getString(R.string.delete))
+                        setMessage(resources.getString(R.string.are_you_sure_want_to_delete))
+
+                        positiveButton { dialog ->
+                            viewModel.deleteDoctor(item.id, position)
+                            dialog.dismiss()
+                        }
+
+                        negativeButton(resources.getString(R.string.cancel)) { dialog ->
+                            dialog.dismiss()
+                        }
+
+                    }
                 }
 
                 override fun onItemEdit(item: UserDataResponseModel, position: Int) {
                     val bundle = Bundle()
                     bundle.putString(ConstantKey.BundleKeys.USER_NAME, item.name)
                     bundle.putString(ConstantKey.BundleKeys.USER_EMAIL, item.email)
-                    bundle.putString(ConstantKey.BundleKeys.USER_CONTACT_NUMBER_KEY, item.contactNumber)
+                    bundle.putString(
+                        ConstantKey.BundleKeys.USER_CONTACT_NUMBER_KEY,
+                        item.contactNumber
+                    )
                     bundle.putString(ConstantKey.BundleKeys.USER_ID, item.userId)
                     findNavController().navigate(
                         R.id.admin_to_add_doctor, bundle
