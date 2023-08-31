@@ -1,6 +1,5 @@
 package com.android.doctorapp.repository
 
-import android.util.Log
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.local.USER_IS_LOGGED_IN
 import com.android.doctorapp.repository.models.ApiResponse
@@ -165,7 +164,8 @@ class AuthRepository @Inject constructor(
     }
 
     suspend fun addUserData(
-        userRequestModel: UserDataRequestModel, firestore: FirebaseFirestore
+        userRequestModel: UserDataRequestModel,
+        firestore: FirebaseFirestore
     ): ApiResponse<UserDataRequestModel> {
         return try {
             firestore.collection("user_data").add(userRequestModel).await()
@@ -234,7 +234,7 @@ class AuthRepository @Inject constructor(
     suspend fun emailVerification(firebaseUser: FirebaseUser): ApiResponse<Boolean> {
         return try {
             firebaseUser.sendEmailVerification().await()
-            ApiResponse.create (response = Response.success(true))
+            ApiResponse.create(response = Response.success(true))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
         }
@@ -257,7 +257,6 @@ class AuthRepository @Inject constructor(
             ApiResponse.create(e.fillInStackTrace())
         }
     }
-
 
 
     suspend fun getDegreeList(firestore: FirebaseFirestore): ApiResponse<DegreeResponseModel> {
