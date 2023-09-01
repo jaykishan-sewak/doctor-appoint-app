@@ -1,6 +1,7 @@
 package com.android.doctorapp.ui.doctor
 
 import android.content.Context
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.RadioGroup
@@ -21,12 +22,14 @@ import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.DegreeResponseModel
 import com.android.doctorapp.repository.models.SpecializationResponseModel
 import com.android.doctorapp.repository.models.UserDataRequestModel
+import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import com.google.android.material.chip.Chip
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -106,7 +109,7 @@ class AddDoctorViewModel @Inject constructor(
     val userId: MutableLiveData<String> = MutableLiveData("")
     val tempEmail: MutableLiveData<String?> = MutableLiveData()
     val tempContactNumber: MutableLiveData<String?> = MutableLiveData()
-
+    val doctorDetails: MutableLiveData<UserDataResponseModel?> = MutableLiveData()
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
         this.binding = binding
     }
@@ -765,6 +768,35 @@ class AddDoctorViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun getDoctorDetail() {
+        viewModelScope.launch {
+            if (context.isNetworkAvailable()) {
+                setShowProgress(true)
+
+                when (val response = authRepository.getDoctorDetails(userId.value!!, fireStore)) {
+                    is ApiSuccessResponse -> {
+                        setShowProgress(false)
+                        doctorDetails.value = response.body
+                        Log.d("Data---", Gson().toJson(response.body))
+                    }
+
+                    is ApiErrorResponse -> {
+                        setShowProgress(false)
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        setShowProgress(false)
+                    }
+
+                    else -> {
+                        setShowProgress(false)
+                    }
+                }
+            } else
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
         }
     }
 }

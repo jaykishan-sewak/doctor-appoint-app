@@ -78,6 +78,11 @@ class AdminDashboardFragment :
             items,
             object : AdminDoctorItemAdapter.OnItemClickListener {
                 override fun onItemClick(item: UserDataResponseModel, position: Int) {
+                    val bundle = Bundle()
+                    bundle.putString(ConstantKey.BundleKeys.USER_ID, item.userId)
+                    findNavController().navigate(
+                        R.id.admin_to_doctor_details, bundle
+                    )
                 }
 
                 override fun onItemDelete(item: UserDataResponseModel, position: Int) {

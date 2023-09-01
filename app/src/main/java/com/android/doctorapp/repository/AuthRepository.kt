@@ -9,6 +9,7 @@ import com.android.doctorapp.repository.models.LoginResponseModel
 import com.android.doctorapp.repository.models.RegisterRequestModel
 import com.android.doctorapp.repository.models.SpecializationResponseModel
 import com.android.doctorapp.repository.models.UserDataRequestModel
+import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.repository.network.AppApi
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_USER_ID
@@ -338,6 +339,27 @@ class AuthRepository @Inject constructor(
                 .await()
 
             ApiResponse.create(response = Response.success(doctorRequestModel))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+
+    suspend fun getDoctorDetails(
+        userId: String,
+        fireStore: FirebaseFirestore
+    ): ApiResponse<UserDataResponseModel> {
+        return try {
+            val response = fireStore.collection(ConstantKey.DBKeys.TABLE_NAME)
+                .whereEqualTo(FIELD_USER_ID, userId)
+                .get()
+                .await()
+
+            var dataModel = UserDataResponseModel()
+            for (snapshot in response) {
+                dataModel = snapshot.toObject()
+            }
+            ApiResponse.create(response = Response.success(dataModel))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
         }
