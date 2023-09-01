@@ -158,8 +158,11 @@
 
     <fragment
         android:id="@+id/DoctorDetailsFragment"
-        android:name="com.android.doctorapp.ui.doctor.DoctorDetailsFragment"
+        android:name="com.android.doctorapp.ui.admin.DoctorDetailsFragment"
         tools:layout="@layout/fragment_doctor_details">
+        <action
+            android:id="@+id/admin_to_add_doctor"
+            app:destination="@+id/AddDoctorFragment" />
 
     </fragment>
 </navigation>

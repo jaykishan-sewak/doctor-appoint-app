@@ -2,6 +2,7 @@ package com.android.doctorapp.ui.admin
 
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
 import com.android.doctorapp.di.ResourceProvider
@@ -31,6 +32,10 @@ class AdminDashboardViewModel @Inject constructor(
 
     val _navigationListener = SingleLiveEvent<Int>()
     val navigationListener = _navigationListener.asLiveData()
+    val doctorDetails: MutableLiveData<UserDataResponseModel?> = MutableLiveData()
+    val userId: MutableLiveData<String> = MutableLiveData("")
+    val itemPosition: MutableLiveData<Int> = MutableLiveData()
+    val deleteId: MutableLiveData<String> = MutableLiveData("")
 
     fun getItems() {
         viewModelScope.launch {
@@ -62,7 +67,7 @@ class AdminDashboardViewModel @Inject constructor(
         }
     }
 
-    fun deleteDoctor(id: String, index: Int) {
+    fun deleteDoctor(id: String) {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 setShowProgress(true)
@@ -71,8 +76,8 @@ class AdminDashboardViewModel @Inject constructor(
                         setShowProgress(false)
                         if (response.body) {
                             val currentList = items.value?.toMutableList() ?: mutableListOf()
-                            if (index in 0 until currentList.size) {
-                                currentList.removeAt(index)
+                            if (itemPosition.value in 0 until currentList.size) {
+                                currentList.removeAt(itemPosition.value!!)
                                 items.postValue(currentList)
                             }
                             Log.d("Data----", "${response.body}")
@@ -101,4 +106,41 @@ class AdminDashboardViewModel @Inject constructor(
         _navigationListener.value = R.id.admin_to_add_doctor
     }
 
+
+    fun getDoctorDetail() {
+        viewModelScope.launch {
+            if (context.isNetworkAvailable()) {
+                setShowProgress(true)
+
+                when (val response = adminRepository.getDoctorDetails(userId.value!!, fireStore)) {
+                    is ApiSuccessResponse -> {
+                        setShowProgress(false)
+                        doctorDetails.value = response.body
+                        Log.d("Data---", Gson().toJson(response.body))
+                    }
+
+                    is ApiErrorResponse -> {
+                        setShowProgress(false)
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        setShowProgress(false)
+                    }
+
+                    else -> {
+                        setShowProgress(false)
+                    }
+                }
+            } else
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
+        }
+    }
+
+    fun moveToUpdateScreen() {
+        _navigationListener.value = R.id.admin_to_add_doctor
+    }
+
+    fun deleteDoctorData(id: String) {
+        deleteId.value = id
+    }
 }

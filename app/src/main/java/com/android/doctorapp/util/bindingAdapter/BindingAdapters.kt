@@ -180,7 +180,11 @@ fun setGenderImage(imageView: AppCompatImageView, gender: String) {
 }
 
 
-@BindingAdapter("app:specialization")
-fun setSpecialization(textView: AppCompatTextView, specialities: List<String>) {
-    textView.text=if(specialities.isNotEmpty()) android.text.TextUtils.join(",", specialities) else "";
+@BindingAdapter("app:string")
+fun setString(textView: AppCompatTextView, specialities: List<String>?) {
+    textView.text = if (specialities?.isNotEmpty() == true)
+        android.text.TextUtils.join(",", specialities)
+     else
+        ""
+
 }

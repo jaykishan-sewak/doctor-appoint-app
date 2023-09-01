@@ -343,25 +343,4 @@ class AuthRepository @Inject constructor(
             ApiResponse.create(e.fillInStackTrace())
         }
     }
-
-
-    suspend fun getDoctorDetails(
-        userId: String,
-        fireStore: FirebaseFirestore
-    ): ApiResponse<UserDataResponseModel> {
-        return try {
-            val response = fireStore.collection(ConstantKey.DBKeys.TABLE_NAME)
-                .whereEqualTo(FIELD_USER_ID, userId)
-                .get()
-                .await()
-
-            var dataModel = UserDataResponseModel()
-            for (snapshot in response) {
-                dataModel = snapshot.toObject()
-            }
-            ApiResponse.create(response = Response.success(dataModel))
-        } catch (e: Exception) {
-            ApiResponse.create(e.fillInStackTrace())
-        }
-    }
 }

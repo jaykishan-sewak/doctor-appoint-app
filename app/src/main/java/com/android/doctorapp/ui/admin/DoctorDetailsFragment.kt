@@ -1,4 +1,4 @@
-package com.android.doctorapp.ui.doctor
+package com.android.doctorapp.ui.admin
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,13 +14,17 @@ import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.extension.alert
+import com.android.doctorapp.util.extension.negativeButton
+import com.android.doctorapp.util.extension.positiveButton
+import com.google.gson.Gson
 import javax.inject.Inject
 
 class DoctorDetailsFragment :
     BaseFragment<FragmentDoctorDetailsBinding>(R.layout.fragment_doctor_details) {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModel by viewModels<AddDoctorViewModel> { viewModelFactory }
+    private val viewModel by viewModels<AdminDashboardViewModel> { viewModelFactory }
 
     override fun builder(): FragmentToolbar {
         return FragmentToolbar.Builder()
@@ -50,6 +54,7 @@ class DoctorDetailsFragment :
         if (arguments != null) {
             viewModel.userId.value =
                 arguments.getString(ConstantKey.BundleKeys.USER_ID).toString()
+            viewModel.itemPosition.value = arguments.getInt(ConstantKey.BundleKeys.ITEM_POSITION)
         }
         viewModel.getDoctorDetail()
         return binding {
@@ -65,6 +70,34 @@ class DoctorDetailsFragment :
     }
 
     private fun registerObserver() {
+        viewModel.navigationListener.observe(viewLifecycleOwner) {
+            val bundle = Bundle()
+            bundle.putString(
+                ConstantKey.BundleKeys.DOCTOR_DATA,
+                Gson().toJson(viewModel.doctorDetails.value)
+            )
+            findNavController().navigate(
+                it, bundle
+            )
+        }
+        viewModel.deleteId.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) {
+                context?.alert {
+                    setTitle(resources.getString(R.string.delete))
+                    setMessage(resources.getString(R.string.are_you_sure_want_to_delete))
+
+                    positiveButton { dialog ->
+                        viewModel.deleteDoctor(it)
+                        findNavController().popBackStack()
+                        dialog.dismiss()
+                    }
+                    negativeButton(resources.getString(R.string.cancel)) { dialog ->
+                        dialog.dismiss()
+                    }
+                }
+
+            }
+        }
     }
 
 }

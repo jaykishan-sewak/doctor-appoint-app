@@ -10,7 +10,8 @@ object ConstantKey {
         const val USER_NAME = "userName"
         const val USER_EMAIL = "userEmail"
         const val USER_ID = "userId"
-
+        const val DOCTOR_DATA= "doctorData"
+        const val ITEM_POSITION = "itemPosition"
     }
 
     const val DOCTOR = "DOCTOR"

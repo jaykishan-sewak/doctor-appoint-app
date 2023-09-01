@@ -8,7 +8,7 @@ import com.android.doctorapp.ui.authentication.login.LoginFragment
 import com.android.doctorapp.ui.profile.ProfileFragment
 import com.android.doctorapp.ui.authentication.register.RegisterFragment
 import com.android.doctorapp.ui.doctor.AddDoctorFragment
-import com.android.doctorapp.ui.doctor.DoctorDetailsFragment
+import com.android.doctorapp.ui.admin.DoctorDetailsFragment
 import com.android.doctorapp.ui.profile.AddUserProfileFragment
 import com.android.doctorapp.ui.doctor.UpdateDoctorProfileFragment
 import com.android.doctorapp.ui.otp.OtpVerificationFragment
@@ -31,5 +31,5 @@ interface AppComponent {
     fun inject(fragment: UpdateDoctorProfileFragment)
     fun inject(fragment: AdminDashboardFragment)
     fun inject(fragment: OtpVerificationFragment)
-    fun inject(fragment:DoctorDetailsFragment)
+    fun inject(fragment: DoctorDetailsFragment)
 }

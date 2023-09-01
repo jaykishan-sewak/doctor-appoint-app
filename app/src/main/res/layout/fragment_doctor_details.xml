@@ -3,10 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <import type="android.view.View" />
+
         <variable
             name="viewModel"
-            type="com.android.doctorapp.ui.doctor.AddDoctorViewModel" />
+            type="com.android.doctorapp.ui.admin.AdminDashboardViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -35,9 +37,9 @@
                 android:layout_height="150dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/margin_10"
+                android:background="@color/doctor_bg"
                 android:elevation="@dimen/margin_5"
                 app:cardCornerRadius="16dp"
-                android:background="@color/doctor_bg"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -45,49 +47,84 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/doctor_bg"
-                    >
+                    android:background="@color/doctor_bg">
+
                     <androidx.cardview.widget.CardView
                         android:id="@+id/ivDoctorImageView"
                         android:layout_width="@dimen/dp_100"
                         android:layout_height="@dimen/dp_100"
                         android:layout_gravity="center"
+                        android:layout_marginStart="@dimen/margin_10"
                         android:layout_marginTop="@dimen/margin_10"
                         android:elevation="@dimen/margin_5"
                         app:cardCornerRadius="250dp"
-                        android:layout_marginStart="@dimen/margin_10"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent">
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/ivDoctorImage"
                             android:layout_width="@dimen/dp_100"
                             android:layout_height="@dimen/dp_100"
                             android:scaleType="centerCrop"
-                            app:genderImage="@{viewModel.doctorDetails.gender}" />
+                            app:genderImage="@{viewModel.doctorDetails!=null ?viewModel.doctorDetails.gender :``}" />
 
                     </androidx.cardview.widget.CardView>
+
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tvDoctorName"
-                        app:layout_constraintStart_toEndOf="@id/ivDoctorImageView"
-                        app:layout_constraintTop_toTopOf="@id/ivDoctorImageView"
-                        android:layout_marginStart="@dimen/margin_15"
                         style="@style/label_text2"
-                        android:text="@{viewModel.doctorDetails.name}"
+                        android:layout_marginStart="@dimen/margin_15"
+                        android:text="@{viewModel.doctorDetails!=null ? viewModel.doctorDetails.name:``}"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toEndOf="@id/ivDoctorImageView"
+                        app:layout_constraintTop_toTopOf="@id/ivDoctorImageView" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvDoctorDegree"
+                        style="@style/label_text2"
+                        android:layout_marginStart="@dimen/margin_15"
+                        android:text="@string/degree_label"
+                        android:layout_marginTop="@dimen/margin_10"
+                        app:layout_constraintStart_toEndOf="@id/ivDoctorImageView"
+                        app:layout_constraintTop_toBottomOf="@id/tvDoctorName"
                         android:textStyle="bold"
                         />
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tvDoctorSpec"
-                        app:layout_constraintStart_toEndOf="@id/ivDoctorImageView"
-                        android:layout_marginStart="@dimen/margin_15"
+                        android:id="@+id/tvDoctorDegreeValue"
                         style="@style/label_text2"
+                        android:layout_marginStart="@dimen/margin_5"
+                        app:layout_constraintStart_toEndOf="@id/tvDoctorDegree"
+                        app:layout_constraintTop_toTopOf="@id/tvDoctorDegree"
+                        app:layout_constraintBottom_toBottomOf="@id/tvDoctorDegree"
+                        app:layout_constraintEnd_toEndOf="parent"
                         android:textSize="14sp"
                         android:textColor="@color/grey"
-                        app:specialization="@{viewModel.doctorDetails.specialities}"
-                        android:layout_marginTop="@dimen/margin_15"
-                        app:layout_constraintTop_toBottomOf="@id/tvDoctorName"
+                        android:maxLines="1"
+                        app:string="@{viewModel.doctorDetails != null ? viewModel.doctorDetails.degree : null}"
                         />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvDoctorSpec"
+                        style="@style/label_text2"
+                        android:layout_marginStart="@dimen/margin_15"
+                        android:text="@string/specialization_label"
+                        android:layout_marginTop="@dimen/margin_10"
+                        app:layout_constraintStart_toEndOf="@id/ivDoctorImageView"
+                        app:layout_constraintTop_toBottomOf="@id/tvDoctorDegree"
+                        android:textStyle="bold"
+                        />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvDoctorSpecValue"
+                        style="@style/label_text2"
+                        android:layout_marginStart="@dimen/margin_5"
+                        android:textColor="@color/grey"
+                        android:textSize="14sp"
+                        app:string="@{viewModel.doctorDetails != null ? viewModel.doctorDetails.specialities : null}"
+                        app:layout_constraintStart_toEndOf="@id/tvDoctorSpec"
+                        app:layout_constraintTop_toTopOf="@id/tvDoctorSpec"
+                        app:layout_constraintBottom_toBottomOf="@id/tvDoctorSpec"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:maxLines="1"/>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
@@ -98,7 +135,7 @@
                 android:layout_height="@dimen/margin_50"
                 android:layout_marginTop="@dimen/margin_60"
                 android:background="@drawable/button_state_colors"
-                android:onClick="@{()->viewModel.addDoctorData()}"
+                android:onClick="@{()->viewModel.moveToUpdateScreen()}"
                 android:text="@string/update"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
@@ -106,13 +143,14 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/doctorView" />
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnDelete"
                 style="@style/user_login_editText"
                 android:layout_height="@dimen/margin_50"
                 android:layout_marginTop="@dimen/margin_60"
                 android:background="@drawable/button_state_colors"
-                android:onClick="@{()->viewModel.addDoctorData()}"
+                android:onClick="@{()->viewModel.deleteDoctorData(viewModel.doctorDetails.id)}"
                 android:text="@string/delete"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
