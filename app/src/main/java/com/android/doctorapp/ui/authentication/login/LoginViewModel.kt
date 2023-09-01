@@ -166,7 +166,7 @@ class LoginViewModel @Inject constructor(
                     }
                 } else {
                     if (response.body.isUserVerified) {
-                        _navigationListener.postValue(R.id.action_loginFragment_to_homeFragment)
+                        _navigationListener.postValue(R.id.action_loginFragment_to_userDashboardFragment)
                     } else {
                         isUserVerified.postValue(USER)
                     }
