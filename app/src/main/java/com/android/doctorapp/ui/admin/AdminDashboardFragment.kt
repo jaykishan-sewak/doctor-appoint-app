@@ -30,7 +30,7 @@ class AdminDashboardFragment :
     private lateinit var adapter: AdminDoctorItemAdapter
     override fun builder() = FragmentToolbar.Builder()
         .withId(R.id.toolbar)
-        .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.blue))
+        .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
         .withTitle(R.string.doctor_list)
         .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
         .build()

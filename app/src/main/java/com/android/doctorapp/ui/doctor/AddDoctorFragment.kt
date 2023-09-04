@@ -34,7 +34,7 @@ class AddDoctorFragment : BaseFragment<FragmentAddDoctorBinding>(R.layout.fragme
 
     override fun builder(): FragmentToolbar {
         return FragmentToolbar.Builder().withId(R.id.toolbar)
-            .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.blue))
+            .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             .withTitle(if (viewModel.email.value.isNullOrEmpty()) R.string.add_doctor else R.string.update_doctor)
             .withNavigationIcon(requireActivity().getDrawable(R.drawable.ic_back_white))
             .withNavigationListener {

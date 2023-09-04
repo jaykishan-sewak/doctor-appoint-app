@@ -29,7 +29,7 @@ class DoctorDetailsFragment :
     override fun builder(): FragmentToolbar {
         return FragmentToolbar.Builder()
             .withId(R.id.toolbar)
-            .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.blue))
+            .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             .withTitle(R.string.doctor_details)
             .withNavigationIcon(requireActivity().getDrawable(R.drawable.ic_back_white))
             .withNavigationListener {
