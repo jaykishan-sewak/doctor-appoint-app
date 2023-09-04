@@ -1,7 +1,6 @@
 package com.android.doctorapp.ui.doctor
 
 import android.app.TimePickerDialog
-import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -10,9 +9,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.Filter
-import android.widget.Filterable
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.viewModels
@@ -24,6 +20,7 @@ import com.android.doctorapp.databinding.FragmentUpdateDoctorProfileBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.ui.doctor.adapter.CustomAutoCompleteAdapter
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.IS_DOCTOR_OR_USER_KEY
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.STORED_VERIFICATION_Id_KEY
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_CONTACT_NUMBER_KEY
@@ -57,9 +54,9 @@ class UpdateDoctorProfileFragment :
     lateinit var storedVerificationId: String
     lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
     lateinit var mTimePicker: TimePickerDialog
-    val mcurrentTime = Calendar.getInstance()
-    val hour = mcurrentTime.get(Calendar.HOUR_OF_DAY)
-    val minute = mcurrentTime.get(Calendar.MINUTE)
+    private val mCurrentTime:Calendar = Calendar.getInstance()
+    private val hour = mCurrentTime.get(Calendar.HOUR_OF_DAY)
+    private val minute = mCurrentTime.get(Calendar.MINUTE)
     val handler = Handler(Looper.getMainLooper())
     private val runnable = object : Runnable {
         override fun run() {
@@ -156,12 +153,12 @@ class UpdateDoctorProfileFragment :
         super.onResume()
         if (viewModel.degreeLiveList.size > 0) {
             for (i in 0 until viewModel.degreeLiveList.size) {
-                addChip(viewModel.degreeLiveList.get(i))
+                addChip(viewModel.degreeLiveList[i])
             }
         }
         if (viewModel.specializationLiveList.size > 0) {
             for (i in 0 until viewModel.specializationLiveList.size) {
-                addSpecChip(viewModel.specializationLiveList.get(i))
+                addSpecChip(viewModel.specializationLiveList[i])
             }
         }
     }
@@ -381,7 +378,7 @@ class UpdateDoctorProfileFragment :
         PhoneAuthProvider.verifyPhoneNumber(options)
     }
 
-    fun calculateAge(selectedDate: String?): Int {
+    private fun calculateAge(selectedDate: String?): Int {
         val dateFormat = SimpleDateFormat("dd-mm-yyyy", Locale.getDefault())
         val today = Calendar.getInstance()
         val birthDate = Calendar.getInstance()
@@ -400,54 +397,5 @@ class UpdateDoctorProfileFragment :
         }
     }
 
-
-}
-
-
-class CustomAutoCompleteAdapter(context: Context, suggestions: List<String>) :
-    ArrayAdapter<String>(context, android.R.layout.simple_dropdown_item_1line, suggestions),
-    Filterable {
-
-    private var originalSuggestions: List<String> = suggestions.toList()
-
-    override fun getFilter(): Filter {
-        return customFilter
-    }
-
-    private val customFilter = object : Filter() {
-        override fun performFiltering(constraint: CharSequence?): FilterResults {
-            val results = FilterResults()
-            val filteredList = mutableListOf<String>()
-
-            if (constraint.isNullOrEmpty()) {
-                filteredList.addAll(originalSuggestions)
-            } else {
-                val filterPattern = constraint.toString().lowercase().trim()
-                for (suggestion in originalSuggestions) {
-                    if (suggestion.lowercase().contains(filterPattern)) {
-                        filteredList.add(suggestion)
-                    }
-                }
-            }
-
-            if (filteredList.isEmpty()) {
-                filteredList.add(ADD_SUGGESTION_ITEM)
-            }
-
-            results.values = filteredList
-            results.count = filteredList.size
-            return results
-        }
-
-        override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-            clear()
-            addAll(results?.values as List<String>)
-            notifyDataSetChanged()
-        }
-    }
-
-    companion object {
-        const val ADD_SUGGESTION_ITEM = "Add"
-    }
 
 }
