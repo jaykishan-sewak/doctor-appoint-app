@@ -15,6 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/app_bg"
+        android:clickable="true"
+        android:focusable="true"
         tools:context=".ui.profile.UserDashboardFragment">
 
 
@@ -32,11 +34,13 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_margin="20dp"
+            android:afterTextChanged="@{(text) -> viewModel.lengthChecked(text)}"
             android:background="@drawable/search_bg"
             android:drawableStart="@drawable/baseline_search_24"
             android:drawablePadding="10dp"
             android:hint="@string/type_name"
             android:paddingStart="10dp"
+            android:text="@={viewModel.searchData}"
             android:textColorHint="@color/edittext_bg_grey"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"

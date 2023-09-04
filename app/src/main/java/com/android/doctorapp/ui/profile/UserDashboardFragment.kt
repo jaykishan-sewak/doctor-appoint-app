@@ -60,14 +60,17 @@ class UserDashboardFragment :
 
     private fun registerObserver(layoutBinding: FragmentUserDashboardBinding) {
         viewModel.getItems()
-        viewModel.doctorList.observe(viewLifecycleOwner) {
-            updateRecyclerView(it)
-            layoutBinding.recyclerView.layoutManager = LinearLayoutManager(requireActivity())
-            layoutBinding.recyclerView.adapter = adapter
+        updateRecyclerView(emptyList())
+        layoutBinding.recyclerView.layoutManager = LinearLayoutManager(requireActivity())
+        layoutBinding.recyclerView.adapter = adapter
 
+        viewModel.doctorList.observe(viewLifecycleOwner) { it1 ->
+            adapter.filterList(it1)
         }
 
+
     }
+
 
     private fun updateRecyclerView(items: List<UserDataResponseModel>) {
         adapter = UserDoctorItemAdapter(

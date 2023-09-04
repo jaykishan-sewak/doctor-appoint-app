@@ -35,6 +35,11 @@ class UserDoctorItemAdapter(
         return if (userList.isNotEmpty()) userList.size else 0
     }
 
+    fun filterList(filterList: List<UserDataResponseModel>) {
+        userList = filterList
+        notifyDataSetChanged()
+    }
+
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val objects = userList[position]
         holder.bind(objects, listener, position)

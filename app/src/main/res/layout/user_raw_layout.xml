@@ -41,7 +41,6 @@
                 android:id="@+id/ivDoctorImageView"
                 android:layout_width="@dimen/dp_70"
                 android:layout_height="@dimen/dp_70"
-                android:layout_gravity="center"
                 android:elevation="@dimen/margin_5"
                 app:cardCornerRadius="30dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -59,17 +58,14 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvDoctorName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/doctor_text_view"
                 android:layout_marginStart="@dimen/margin_10"
                 android:text="@{userData.name}"
                 android:textColor="@color/blue"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/tvDegreeLabel"
                 app:layout_constraintStart_toEndOf="@+id/ivDoctorImageView"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_chainStyle="packed" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvDegreeLabel"
@@ -77,14 +73,13 @@
                 android:layout_marginStart="@dimen/margin_10"
                 android:text="@string/label_degree"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/tvGenderText"
                 app:layout_constraintStart_toEndOf="@+id/ivDoctorImageView"
                 app:layout_constraintTop_toBottomOf="@id/tvDoctorName" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvDoctorDegree"
                 style="@style/doctor_text_view"
-                android:maxWidth="150sp"
+                android:maxWidth="120dp"
                 android:maxLines="2"
                 android:textStyle="bold"
                 app:doctorSpecialization="@{userData.degree}"
@@ -97,7 +92,6 @@
                 android:layout_marginStart="@dimen/margin_10"
                 android:text="@{userData.gender}"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/doctorRatingBar"
                 app:layout_constraintStart_toEndOf="@+id/ivDoctorImageView"
                 app:layout_constraintTop_toBottomOf="@id/tvDoctorDegree" />
 
@@ -107,7 +101,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_10"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ivDoctorImageView"
                 app:layout_constraintTop_toBottomOf="@id/tvGenderText" />
 
