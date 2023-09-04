@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true">
+
+        <include
+            android:id="@+id/toolbarContainer"
+            layout="@layout/custom_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/doctor_detail_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_150"
+            android:layout_marginHorizontal="@dimen/margin_30"
+            android:layout_marginTop="@dimen/margin_10"
+            android:background="@drawable/book_appointment_bg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbarContainer" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ic_doctor_profile"
+            android:layout_width="@dimen/profile_image_dimension"
+            android:layout_height="@dimen/profile_image_dimension"
+            android:layout_marginStart="@dimen/margin_30"
+            android:layout_marginTop="@dimen/margin_20"
+            android:src="@mipmap/ic_launcher"
+            app:layout_constraintStart_toStartOf="@id/doctor_detail_view"
+            app:layout_constraintTop_toTopOf="@id/doctor_detail_view" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_doctor_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_20"
+            android:layout_marginTop="@dimen/margin_15"
+            android:text="Dr. Test 1"
+            android:textColor="@color/white"
+            android:textSize="14dp"
+            app:layout_constraintStart_toEndOf="@+id/ic_doctor_profile"
+            app:layout_constraintTop_toTopOf="@+id/ic_doctor_profile" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_doctor_specialization"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CARDIOLOGISTS"
+            android:textColor="@color/white"
+            android:textSize="14dp"
+            app:layout_constraintStart_toStartOf="@+id/text_doctor_name"
+            app:layout_constraintTop_toBottomOf="@+id/text_doctor_name" />
+
+        <androidx.appcompat.widget.AppCompatRatingBar
+            android:id="@+id/rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:max="5"
+            android:rating="3.5"
+            android:scaleX=".5"
+            android:scaleY=".5"
+            android:transformPivotX="0dp"
+            android:transformPivotY="0dp"
+            app:layout_constraintStart_toStartOf="@+id/text_doctor_specialization"
+            app:layout_constraintTop_toBottomOf="@+id/text_doctor_specialization" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_title_schedule"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_20"
+            android:text="@string/title_schedule"
+            android:textColor="@color/blue"
+            app:layout_constraintStart_toStartOf="@+id/doctor_detail_view"
+            app:layout_constraintTop_toBottomOf="@+id/doctor_detail_view" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_schedule_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_10"
+            app:layout_constraintEnd_toEndOf="@+id/doctor_detail_view"
+            app:layout_constraintStart_toStartOf="@+id/doctor_detail_view"
+            app:layout_constraintTop_toBottomOf="@+id/text_title_schedule" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_select_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_10"
+            android:text="@string/title_select_time"
+            app:layout_constraintStart_toStartOf="@+id/rv_schedule_date"
+            app:layout_constraintTop_toBottomOf="@+id/rv_schedule_date" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_time"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/margin_10"
+            app:layout_constraintBottom_toTopOf="@+id/appCompatButton"
+            app:layout_constraintEnd_toEndOf="@+id/rv_schedule_date"
+            app:layout_constraintStart_toStartOf="@+id/text_select_time"
+            app:layout_constraintTop_toBottomOf="@+id/text_select_time" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/appCompatButton"
+            style="@style/user_login_editText"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_50"
+            android:layout_marginHorizontal="@dimen/margin_20"
+            android:layout_marginBottom="@dimen/margin_10"
+            android:background="@drawable/button_state_colors"
+            android:text="@string/title_appointment"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

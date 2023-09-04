@@ -114,4 +114,7 @@
     <string name="update">Update</string>
     <string name="delete">Delete!!</string>
     <string name="are_you_sure_want_to_delete">Are you sure you want to delete?</string>
+    <string name="title_appointment">Book Appointment</string>
+    <string name="title_schedule">Schedule</string>
+    <string name="title_select_time">Select Time</string>
 </resources>

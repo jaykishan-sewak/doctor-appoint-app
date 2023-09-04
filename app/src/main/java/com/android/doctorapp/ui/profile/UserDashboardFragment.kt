@@ -33,7 +33,7 @@ class UserDashboardFragment :
         super.onCreateView(inflater, container, savedInstanceState)
 
         binding.tvUserDashboardClick.setOnClickListener {
-            findNavController().navigate(R.id.UpdateDoctorFragment)
+            findNavController().navigate(R.id.action_userDashboard_to_bookAppointment)
         }
 
         return binding {

@@ -125,6 +125,17 @@
         android:name="com.android.doctorapp.ui.profile.UserDashboardFragment"
         tools:layout="@layout/fragment_user_dashboard">
 
+        <action
+            android:id="@+id/action_userDashboard_to_bookAppointment"
+            app:destination="@+id/BookAppointment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/BookAppointment"
+        android:name="com.android.doctorapp.ui.appointment.BookAppointmentFragment"
+        tools:layout="@layout/fragment_book_appointment">
+
     </fragment>
 
     <fragment

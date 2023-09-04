@@ -18,6 +18,7 @@ import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.android.doctorapp.R
 import com.android.doctorapp.util.ImageUtils
+import com.android.doctorapp.util.extension.convertDate
 import com.android.doctorapp.util.extension.hideKeyboard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -176,4 +177,8 @@ fun setGenderImage(imageView: AppCompatImageView, gender: String) {
     val drawableRes =
         if (gender == "MALE") R.drawable.ic_male_placeholder else R.drawable.ic_female_placeholder
     imageView.setImageResource(drawableRes)
+}
+@BindingAdapter("app:appointmentDate")
+fun convertDateFormat(textView: TextView,originalDateStr: String) {
+    textView.text = convertDate(originalDateStr)
 }

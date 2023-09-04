@@ -9,7 +9,10 @@ import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.android.doctorapp.BuildConfig
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 fun Context.toast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
@@ -94,4 +97,19 @@ fun Context.selectDate(maxDate: Long?, minDate: Long?, handleClick: (date: Strin
     maxDate?.let { datePickerDialog.datePicker.maxDate = it }
     minDate?.let { datePickerDialog.datePicker.minDate = it }
     datePickerDialog.show()
+}
+
+fun convertDate(originalDateStr: String): String {
+    return try {
+        val originalDateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.getDefault())
+        val targetDateFormat = SimpleDateFormat("EE dd", Locale.getDefault())
+
+        val calendar = Calendar.getInstance()
+        calendar.time = originalDateFormat.parse(originalDateStr) ?: Date()
+
+        targetDateFormat.format(calendar.time)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
+    }
 }
