@@ -6,20 +6,20 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.AppointmentTimeRowLayoutBinding
-import com.android.doctorapp.repository.models.AppointmentTimeModel
 
 class AppointmentTimeAdapter(
-        private var appointmentTimeList: ArrayList<AppointmentTimeModel>
+        private val listener: OnItemClickListener
 ): RecyclerView.Adapter<AppointmentTimeAdapter.ItemViewHolder>() {
 
     class ItemViewHolder(val view: AppointmentTimeRowLayoutBinding): RecyclerView.ViewHolder(view.root) {
-        fun bind(item: AppointmentTimeModel, position: Int) {
-            view.apply {
-                appointmentViewModel = item
-                index = position
-            }
-
-        }
+//        fun bind(item: AppointmentTimeModel, listener: OnItemClickListener, position: Int) {
+//            view.apply {
+//                timeModel = item
+//                index = position
+//                onItemClickListener = listener
+//            }
+//
+//        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -31,11 +31,17 @@ class AppointmentTimeAdapter(
     }
 
     override fun getItemCount(): Int {
-         return if (appointmentTimeList.isNotEmpty()) appointmentTimeList.size else 0
+//         return if (appointmentTimeList.isNotEmpty()) appointmentTimeList.size else 0
+        return 10
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        val objects = appointmentTimeList[position]
-        holder.bind(objects, position)
+//        val objects = appointmentTimeList[position]
+//        holder.bind(objects, listener, position)
     }
+
+    interface OnItemClickListener {
+//        fun onItemClick(item: AppointmentTimeModel, position: Int)
+    }
+
 }

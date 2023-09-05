@@ -113,3 +113,19 @@ fun convertDate(originalDateStr: String): String {
         ""
     }
 }
+
+fun convertTime(originalTimeStr: String): String {
+    return try {
+        val originalTimeFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.getDefault())
+        val targetTimeFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
+
+        val calendar = Calendar.getInstance()
+        calendar.time = originalTimeFormat.parse(originalTimeStr) ?: Date()
+
+        targetTimeFormat.format(calendar.time)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        Log.d("TAG", "convertTime: ${e.printStackTrace()}")
+        ""
+    }
+}

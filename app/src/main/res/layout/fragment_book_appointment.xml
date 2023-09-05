@@ -7,6 +7,10 @@
 
         <import type="android.view.View" />
 
+        <variable
+            name="viewModel"
+            type="com.android.doctorapp.ui.appointment.AppointmentViewModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -112,20 +116,21 @@
             android:id="@+id/rv_time"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="@dimen/margin_10"
-            app:layout_constraintBottom_toTopOf="@+id/appCompatButton"
+            android:layout_marginVertical="@dimen/margin_10"
+            app:layout_constraintBottom_toTopOf="@+id/button_book_appointment"
             app:layout_constraintEnd_toEndOf="@+id/rv_schedule_date"
             app:layout_constraintStart_toStartOf="@+id/text_select_time"
             app:layout_constraintTop_toBottomOf="@+id/text_select_time" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/appCompatButton"
+            android:id="@+id/button_book_appointment"
             style="@style/user_login_editText"
             android:layout_width="match_parent"
             android:layout_height="@dimen/margin_50"
             android:layout_marginHorizontal="@dimen/margin_20"
             android:layout_marginBottom="@dimen/margin_10"
             android:background="@drawable/button_state_colors"
+            android:enabled="@{viewModel.isBookAppointmentDataValid}"
             android:text="@string/title_appointment"
             android:textAllCaps="false"
             android:textColor="@color/white"

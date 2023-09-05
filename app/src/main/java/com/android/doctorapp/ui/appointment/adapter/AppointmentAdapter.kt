@@ -1,26 +1,32 @@
 package com.android.doctorapp.ui.appointment.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.AppointmentDateRowLayoutBinding
-import com.android.doctorapp.repository.models.AppointmentDateModel
+import com.android.doctorapp.repository.models.AppointmentDateTimeModel
+import com.android.doctorapp.repository.models.DateModel
 
 class AppointmentAdapter(
-    private var appointmentList: ArrayList<AppointmentDateModel>
+    private var appointmentList: ArrayList<DateModel>,
 ): RecyclerView.Adapter<AppointmentAdapter.ItemViewHolder>() {
 
     class ItemViewHolder(val view: AppointmentDateRowLayoutBinding): RecyclerView.ViewHolder(view.root) {
-        fun bind(item: AppointmentDateModel, position: Int) {
+        fun bind(item: DateModel, position: Int) {
             view.apply {
                 appointmentViewModel = item
                 index = position
             }
-
         }
+    /*fun bind(item: AppointmentDateTimeModel, listener: OnItemClickListener, position: Int) {
+            view.apply {
+                appointmentViewModel = item
+                index = position
+                onItemClickListener = listener
+            }
+        }*/
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -38,5 +44,11 @@ class AppointmentAdapter(
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val objects = appointmentList[position]
         holder.bind(objects, position)
+//        holder.bind(objects, listener, position)
     }
+
+    interface OnItemClickListener {
+        fun onItemClick(item: AppointmentDateTimeModel, position: Int)
+    }
+
 }

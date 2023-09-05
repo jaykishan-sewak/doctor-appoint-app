@@ -19,6 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import com.android.doctorapp.R
 import com.android.doctorapp.util.ImageUtils
 import com.android.doctorapp.util.extension.convertDate
+import com.android.doctorapp.util.extension.convertTime
 import com.android.doctorapp.util.extension.hideKeyboard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -181,4 +182,9 @@ fun setGenderImage(imageView: AppCompatImageView, gender: String) {
 @BindingAdapter("app:appointmentDate")
 fun convertDateFormat(textView: TextView,originalDateStr: String) {
     textView.text = convertDate(originalDateStr)
+}
+
+@BindingAdapter("app:appointmentTime")
+fun convertTimeFormat(textView: TextView, originalTimeStr: String) {
+    textView.text = convertTime(originalTimeStr)
 }

@@ -1,6 +1,7 @@
 package com.android.doctorapp.ui.appointment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,8 @@ import com.android.doctorapp.databinding.FragmentBookAppointmentBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.models.AppointmentDateTimeModel
+import com.android.doctorapp.repository.models.DateModel
 import com.android.doctorapp.ui.appointment.adapter.AppointmentAdapter
 import com.android.doctorapp.ui.appointment.adapter.AppointmentTimeAdapter
 import javax.inject.Inject
@@ -61,19 +64,61 @@ class BookAppointmentFragment: BaseFragment<FragmentBookAppointmentBinding>(R.la
     }
 
     private fun registerObserver() {
-//        viewModel.get15DaysList()
-        viewModel.scheduleDateList.observe(viewLifecycleOwner) {
-            adapter = AppointmentAdapter(it)
+        /*viewModel.scheduleDateList.observe(viewLifecycleOwner) {
+//            adapter = AppointmentAdapter(it)
+            Log.d("TAG", "registerObserver: date")
+            updateDateRecyclerView(it)
             binding.rvScheduleDate.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
             binding.rvScheduleDate.adapter = adapter
         }
 
         viewModel.scheduleTimeList.observe(viewLifecycleOwner) {
-            timeAdapter = AppointmentTimeAdapter(it)
+            Log.d("TAG", "registerObserver: time")
+            updateTimeRecyclerView(it)
             binding.rvTime.layoutManager = GridLayoutManager(requireContext(), 4)
             binding.rvTime.adapter = timeAdapter
-        }
+        }*/
 
+        viewModel.scheduleDateTimeList.observe(viewLifecycleOwner) {
+//            it.list.forEach {
+//                Log.d("TAG", "registerObserver: $it")
+//            }
+//            val abc = it.list
+            updateRecyclerview(it.list)
+            binding.rvScheduleDate.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            binding.rvScheduleDate.adapter = adapter
+        }
     }
+
+    private fun updateRecyclerview(dateTimeList: ArrayList<DateModel>) {
+        adapter = AppointmentAdapter(dateTimeList)
+    }
+
+
+    /*private fun updateDateRecyclerView(item: ArrayList<AppointmentDateTimeModel>) {
+        adapter = AppointmentAdapter(item,
+        object: AppointmentAdapter.OnItemClickListener {
+            override fun onItemClick(item: AppointmentDateTimeModel, position: Int) {
+//                Log.d("TAG", "onItemClick: ${item.date}")
+                viewModel.isTimeSelected.value = true
+                item.isDateBook = true
+                viewModel.validateDateTime()
+                Log.d("TAG", "onItemClick: date Call")
+            }
+
+        })
+    }
+
+    private fun updateTimeRecyclerView(item: ArrayList<AppointmentTimeModel>) {
+        timeAdapter = AppointmentTimeAdapter(item,
+            object : AppointmentTimeAdapter.OnItemClickListener {
+                override fun onItemClick(item: AppointmentTimeModel, position: Int) {
+                    viewModel.isTimeSelected.value = true
+                    item.isTimeBook = true
+                    viewModel.validateDateTime()
+                    Log.d("TAG", "onItemClick: time call")
+                }
+            })
+    }*/
 
 }
