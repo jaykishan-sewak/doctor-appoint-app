@@ -18,10 +18,12 @@ import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.ui.doctor.AddDoctorViewModel
 import com.android.doctorapp.ui.doctor.UpdateDoctorProfileFragment
+import com.android.doctorapp.ui.userdashboard.UserDashboardActivity
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.selectDate
+import com.android.doctorapp.util.extension.startActivityFinish
 import com.android.doctorapp.util.extension.toast
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.PhoneAuthCredential
@@ -137,10 +139,13 @@ class AddUserProfileFragment :
         viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
             if (it.equals(ConstantKey.SUCCESS)) {
                 context?.toast(resources.getString(R.string.user_save_successfully))
-                viewModel.navigationListener.observe(viewLifecycleOwner) {
-                    findNavController().navigate(it)
-                    findNavController().popBackStack(R.id.LoginFragment, false)
-                }
+                startActivityFinish<UserDashboardActivity>()
+
+//                viewModel.navigationListener.observe(viewLifecycleOwner) {
+//                    findNavController().navigate(it)
+//                    findNavController().popBackStack(R.id.LoginFragment, false)
+//                }
+
             } else {
                 context?.alert {
                     setTitle(getString(R.string.user_not_save))

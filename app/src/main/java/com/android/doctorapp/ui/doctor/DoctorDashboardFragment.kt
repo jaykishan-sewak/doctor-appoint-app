@@ -4,14 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.FragmentDoctorDashboardBinding
-import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 
-class DoctorDashboardFragment: BaseFragment<FragmentDoctorDashboardBinding>(R.layout.fragment_doctor_dashboard) {
+class DoctorDashboardFragment :
+    BaseFragment<FragmentDoctorDashboardBinding>(R.layout.fragment_doctor_dashboard) {
 
     override fun builder() = FragmentToolbar.Builder()
         .withId(FragmentToolbar.NO_TOOLBAR)
@@ -19,6 +18,7 @@ class DoctorDashboardFragment: BaseFragment<FragmentDoctorDashboardBinding>(R.la
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
     }
 
     override fun onCreateView(
@@ -28,9 +28,6 @@ class DoctorDashboardFragment: BaseFragment<FragmentDoctorDashboardBinding>(R.la
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
 
-        binding.txtClick.setOnClickListener {
-            findNavController().navigate(R.id.UpdateDoctorFragment)
-        }
 
         return binding {
             lifecycleOwner = viewLifecycleOwner

@@ -37,15 +37,19 @@ class LoginViewModel @Inject constructor(
     private val context: Context,
     private val session: Session
 ) : BaseViewModel() {
-    private val _loginResponse = SingleLiveEvent<LoginResponseModel?>()
+    private val _loginResponse = SingleLiveEvent<LoginResponseModel>()
     val loginResponse = _loginResponse.asLiveData()
+
+    val doctorChecked: MutableLiveData<Boolean> = MutableLiveData(false)
+    val userChecked: MutableLiveData<Boolean> = MutableLiveData(false)
+    val adminChecked: MutableLiveData<Boolean> = MutableLiveData(false)
 
     var googleSignInClient: GoogleSignInClient
 
-    val email: MutableLiveData<String> = MutableLiveData()
+    val email: MutableLiveData<String> = MutableLiveData("201260107537setice@gmail.com")
     val emailError: MutableLiveData<String?> = MutableLiveData()
 
-    val password: MutableLiveData<String> = MutableLiveData()
+    val password: MutableLiveData<String> = MutableLiveData("Admin@123")
     val passwordError: MutableLiveData<String?> = MutableLiveData()
 
     val isDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -157,16 +161,19 @@ class LoginViewModel @Inject constructor(
                 session.putBoolean(USER_IS_EMAIL_VERIFIED, false)
                 if (response.body.isAdmin) {
                     _navigationListener.postValue(R.id.action_loginFragment_to_adminDashboardFragment)
+
                 } else if (response.body.isDoctor) {
 
                     if (response.body.isUserVerified) {
-                        _navigationListener.postValue(R.id.action_loginFragment_to_doctorDashboardFragment)
+//                        _navigationListener.postValue(R.id.action_loginFragment_to_doctordashboard)
+                        doctorChecked.value = true
                     } else {
                         isUserVerified.postValue(DOCTOR)
                     }
                 } else {
                     if (response.body.isUserVerified) {
-                        _navigationListener.postValue(R.id.action_loginFragment_to_homeFragment)
+//                        _navigationListener.postValue(R.id.action_loginFragment_to_homeFragment)
+                        userChecked.value = true
                     } else {
                         isUserVerified.postValue(USER)
                     }
