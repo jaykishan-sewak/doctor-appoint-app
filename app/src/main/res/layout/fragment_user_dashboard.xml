@@ -16,14 +16,13 @@
         android:layout_height="match_parent"
         android:background="@color/app_bg"
         android:clickable="true"
-        android:focusable="true"
-        tools:context=".ui.profile.UserDashboardFragment">
+        android:focusable="true">
 
 
         <include
             android:id="@+id/toolbarContainer"
             layout="@layout/custom_toolbar"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -31,7 +30,7 @@
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/searchEt"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_60"
             android:layout_margin="@dimen/margin_20"
             android:afterTextChanged="@{(text) -> viewModel.lengthChecked(text)}"
@@ -48,8 +47,8 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
             android:layout_marginTop="@dimen/margin_20"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
