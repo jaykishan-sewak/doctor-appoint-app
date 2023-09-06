@@ -16,7 +16,6 @@ import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.ui.doctordashboard.DoctorDashboardActivity
-import com.android.doctorapp.ui.userdashboard.UserDashboardActivity
 import com.android.doctorapp.util.constants.ConstantKey.USER
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.negativeButton
@@ -75,13 +74,13 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
 
         viewModel.doctorChecked.observe(viewLifecycleOwner) {
             if (it) {
-                startActivityFinish<DoctorDashboardActivity> { }
+                startActivityFinish<DoctorDashboardActivity>()
             }
         }
 
         viewModel.userChecked.observe(viewLifecycleOwner) {
             if (it) {
-                startActivityFinish<UserDashboardActivity>()
+                startActivityFinish<DoctorDashboardActivity>()
             }
         }
 
