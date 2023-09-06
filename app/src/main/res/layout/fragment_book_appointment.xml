@@ -130,7 +130,6 @@
             android:layout_marginHorizontal="@dimen/margin_20"
             android:layout_marginBottom="@dimen/margin_10"
             android:background="@drawable/button_state_colors"
-            android:enabled="@{viewModel.isBookAppointmentDataValid}"
             android:text="@string/title_appointment"
             android:textAllCaps="false"
             android:textColor="@color/white"

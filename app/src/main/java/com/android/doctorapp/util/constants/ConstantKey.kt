@@ -27,4 +27,9 @@ object ConstantKey {
         const val FIELD_USER_ID = "userId"
 
     }
+
+    const val FORMATTED_DATE = "dd-mm-yyyy"
+    const val FULL_DATE_FORMAT = "EEE MMM dd HH:mm:ss z yyyy"
+
+
 }

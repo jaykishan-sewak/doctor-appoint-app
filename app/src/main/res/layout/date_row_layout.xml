@@ -5,12 +5,12 @@
     <data>
 
         <variable
-            name="timeModel"
-            type="com.android.doctorapp.repository.models.TimeSlotModel" />
+            name="dateSlotModel"
+            type="com.android.doctorapp.repository.models.DateSlotModel" />
 
         <variable
             name="onItemClickListener"
-            type="com.android.doctorapp.ui.appointment.adapter.AppointmentTimeAdapter.OnItemClickListener" />
+            type="com.android.doctorapp.ui.appointment.adapter.AppointmentDateAdapter.OnItemClickListener" />
 
         <variable
             name="index"
@@ -19,23 +19,25 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/margin_50"
         android:layout_height="@dimen/margin_60"
-        android:layout_margin="@dimen/margin_5">
-        <!--        android:onClick="@{()->onItemClickListener.onItemClick(timeModel,index)}"-->
+        android:layout_margin="@dimen/margin_5"
+        android:background="@{dateSlotModel.disable ? @drawable/disable_date_time_bg : @drawable/blue_border_drawable}"
+        android:onClick="@{()->onItemClickListener.onItemClick(dateSlotModel,index)}">
 
-        <androidx.appcompat.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/text_schedule_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="@dimen/margin_5"
             android:textColor="@color/black"
-            app:appointmentTime="@{timeModel.timeSlot.toString()}"
+            app:appointmentDate="@{dateSlotModel.date.toString()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+        <!--            app:appointmentDate="@{appointmentViewModel.date.toString()}"-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
