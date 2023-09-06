@@ -48,9 +48,6 @@ class UserDoctorItemAdapter(
     interface OnItemClickListener {
         fun onItemClick(item: UserDataResponseModel, position: Int)
 
-        fun onItemDelete(item: UserDataResponseModel, position: Int)
-
-        fun onItemEdit(item: UserDataResponseModel, position: Int)
 
     }
 }

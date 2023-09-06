@@ -60,7 +60,7 @@ class UserDashboardFragment :
 
     private fun registerObserver(layoutBinding: FragmentUserDashboardBinding) {
         viewModel.getItems()
-        updateRecyclerView(emptyList())
+        setAdapter(emptyList())
         layoutBinding.recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         layoutBinding.recyclerView.adapter = adapter
 
@@ -72,22 +72,13 @@ class UserDashboardFragment :
     }
 
 
-    private fun updateRecyclerView(items: List<UserDataResponseModel>) {
+    private fun setAdapter(items: List<UserDataResponseModel>) {
         adapter = UserDoctorItemAdapter(
             items,
             object : UserDoctorItemAdapter.OnItemClickListener {
                 override fun onItemClick(item: UserDataResponseModel, position: Int) {
                     findNavController().navigate(R.id.action_userDashboard_to_bookAppointment)
                 }
-
-                override fun onItemDelete(item: UserDataResponseModel, position: Int) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onItemEdit(item: UserDataResponseModel, position: Int) {
-                    TODO("Not yet implemented")
-                }
-
             }
         )
     }

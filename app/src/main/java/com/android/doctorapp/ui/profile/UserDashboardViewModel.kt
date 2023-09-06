@@ -30,29 +30,27 @@ class UserDashboardViewModel @Inject constructor(
     private val items = MutableLiveData<List<UserDataResponseModel>>()
     val doctorList = items.asLiveData()
 
-    val searchData: MutableLiveData<String> = MutableLiveData()
     private val tempData = MutableLiveData<List<UserDataResponseModel>>()
 
     fun lengthChecked(text: CharSequence) {
         if (text.toString().length >= 3) {
             Log.d(TAG, "lengthChecked: Called")
-            searchStarts()
+            searchStarts(text.toString())
         } else
             items.value = tempData.value
     }
 
-    private fun searchStarts() {
-        if (!searchData.value.isNullOrEmpty()) {
-            val filterList = doctorList.value?.filter { data ->
-                data.name.lowercase().contains(searchData.value!!) || data.gender.lowercase()
-                    .contains(searchData.value!!) || (data.degree != null && data.degree!!.contains(
-                    searchData.value!!.uppercase()
-                ))
-            }
-            if (filterList!!.isNotEmpty())
-                items.value = filterList!!
-            Log.d("filter list---", Gson().toJson(filterList))
+    private fun searchStarts(text: String) {
+        val filterList = doctorList.value?.filter { data ->
+            data.name.lowercase().contains(text) || data.gender.lowercase()
+                .contains(text) || (data.degree != null && data.degree!!.contains(
+                text.uppercase()
+            ))
         }
+        if (filterList!!.isNotEmpty())
+            items.value = filterList!!
+        Log.d("filter list---", Gson().toJson(filterList))
+
 
     }
 
