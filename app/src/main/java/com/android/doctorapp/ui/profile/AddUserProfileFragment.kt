@@ -142,11 +142,6 @@ class AddUserProfileFragment :
                 context?.toast(resources.getString(R.string.user_save_successfully))
                 startActivityFinish<UserDashboardActivity>()
 
-//                viewModel.navigationListener.observe(viewLifecycleOwner) {
-//                    findNavController().navigate(it)
-//                    findNavController().popBackStack(R.id.LoginFragment, false)
-//                }
-
             } else {
                 context?.alert {
                     setTitle(getString(R.string.user_not_save))

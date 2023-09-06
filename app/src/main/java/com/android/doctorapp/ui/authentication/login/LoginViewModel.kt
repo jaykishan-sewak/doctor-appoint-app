@@ -46,10 +46,10 @@ class LoginViewModel @Inject constructor(
 
     var googleSignInClient: GoogleSignInClient
 
-    val email: MutableLiveData<String> = MutableLiveData("201260107537setice@gmail.com")
+    val email: MutableLiveData<String> = MutableLiveData()
     val emailError: MutableLiveData<String?> = MutableLiveData()
 
-    val password: MutableLiveData<String> = MutableLiveData("Admin@123")
+    val password: MutableLiveData<String> = MutableLiveData()
     val passwordError: MutableLiveData<String?> = MutableLiveData()
 
     val isDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -165,14 +165,12 @@ class LoginViewModel @Inject constructor(
                 } else if (response.body.isDoctor) {
 
                     if (response.body.isUserVerified) {
-//                        _navigationListener.postValue(R.id.action_loginFragment_to_doctordashboard)
                         doctorChecked.value = true
                     } else {
                         isUserVerified.postValue(DOCTOR)
                     }
                 } else {
                     if (response.body.isUserVerified) {
-//                        _navigationListener.postValue(R.id.action_loginFragment_to_homeFragment)
                         userChecked.value = true
                     } else {
                         isUserVerified.postValue(USER)

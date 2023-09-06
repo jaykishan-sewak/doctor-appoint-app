@@ -20,10 +20,6 @@
             android:id="@+id/action_loginFragment_to_addUserProfileFragment"
             app:destination="@+id/AddUserProfileFragment" />
 
-        <!--        <action-->
-        <!--            android:id="@+id/action_loginFragment_to_doctorDashboardFragment"-->
-        <!--            app:destination="@+id/DoctorDashboardFragment" />-->
-
         <action
             android:id="@+id/action_loginFragment_to_adminDashboardFragment"
             app:destination="@+id/AdminDashboardFragment" />
@@ -77,10 +73,6 @@
         android:name="com.android.doctorapp.ui.doctor.UpdateDoctorProfileFragment"
         tools:layout="@layout/fragment_update_doctor_profile">
 
-        <!--        <action-->
-        <!--            android:id="@+id/action_updateDoctorFragment_to_doctorDashboardFragment"-->
-        <!--            app:destination="@id/DoctorDashboardFragment" />-->
-
         <action
             android:id="@+id/action_updateDoctorFragment_to_OtpVerificationFragment"
             app:destination="@+id/OtpVerificationFragment" />
@@ -112,13 +104,6 @@
             app:destination="@+id/AddDoctorFragment" />
 
     </fragment>
-
-    <!--    <fragment-->
-    <!--        android:id="@+id/DoctorDashboardFragment"-->
-    <!--        android:name="com.android.doctorapp.ui.doctor.DoctorDashboardFragment"-->
-    <!--        tools:layout="@layout/fragment_doctor_dashboard">-->
-
-    <!--    </fragment>-->
 
     <fragment
         android:id="@+id/UserDashboardFragment"

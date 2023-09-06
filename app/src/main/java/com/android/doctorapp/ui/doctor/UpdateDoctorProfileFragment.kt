@@ -222,11 +222,6 @@ class UpdateDoctorProfileFragment :
             if (it.equals(requireContext().resources.getString(R.string.success))) {
                 context?.toast(resources.getString(R.string.doctor_update_successfully))
                 startActivityFinish<DoctorDashboardActivity> { }
-
-//                viewModel.navigationListener.observe(viewLifecycleOwner) { navId ->
-//                    findNavController().navigate(navId)
-//                    findNavController().popBackStack(R.id.LoginFragment, false)
-//                }
             } else {
                 context?.alert {
                     setTitle(getString(R.string.doctor_not_save))
@@ -250,7 +245,6 @@ class UpdateDoctorProfileFragment :
             if (it == true) {
                 viewModel.validateAllUpdateField()
                 viewModel.emailVerifyLabel.postValue(requireContext().resources.getString(R.string.verified))
-//                binding.textEmailVerify.isClickable = false
                 viewModel.isEmailEnable.value = false
                 binding.textEmailVerify.setTextColor(
                     ContextCompat.getColor(

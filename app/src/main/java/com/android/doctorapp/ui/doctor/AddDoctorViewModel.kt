@@ -423,13 +423,9 @@ class AddDoctorViewModel @Inject constructor(
                             availableTime.value = ""
                             setShowProgress(false)
                             if (isDoctor.value == true) {
-//                                _navigationListener.value =
-//                                    R.id.action_updateDoctorFragment_to_doctorDashboardFragment
                                 _addDoctorResponse.value =
                                     resourceProvider.getString(R.string.success)
                             } else {
-//                                _navigationListener.value =
-//                                    R.id.action_updateUserFragment_to_LoginFragment
                                 _addDoctorResponse.value =
                                     resourceProvider.getString(R.string.success)
                             }

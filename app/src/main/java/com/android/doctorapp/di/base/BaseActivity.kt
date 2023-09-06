@@ -38,23 +38,9 @@ abstract class BaseActivity<T : ViewDataBinding> constructor(
         }
     }
 
-    //    override fun onBackPressed() {
-//        if (navController.currentDestination?.id == R.id.UpdateUserFragment) {
-//            finish()
-//        } else if (navController.currentDestination?.id == R.id.UpdateDoctorFragment) {
-//            finish()
-//        } else if(navController.currentDestination?.id == R.id.AdminDashboardFragment){
-//            finish()
-//        } else if (navController.currentDestination?.id == R.id.AddDoctorFragment) {
-//            onBackPressedDispatcher.onBackPressed()
-//        } else {
-//            onBackPressedDispatcher.onBackPressed()
-//        }
-//    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        navController = findNavController(R.id.nav_host_fragment_content_main)
-
     }
 
     override fun onDestroy() {

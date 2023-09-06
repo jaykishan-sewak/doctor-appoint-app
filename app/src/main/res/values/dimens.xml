@@ -24,5 +24,6 @@
     <dimen name="parentVerticalMargin_50">50dp</dimen>
     <dimen name="dp_100">100dp</dimen>
     <dimen name="dp_24">24dp</dimen>
+    <dimen name="dp_0">0dp</dimen>
     <dimen name="dp_250">250dp</dimen>
 </resources>
