@@ -128,6 +128,7 @@ class UpdateDoctorProfileFragment :
                 bundle.putString(STORED_VERIFICATION_Id_KEY, storedVerificationId)
                 bundle.putBoolean(IS_DOCTOR_OR_USER_KEY, true)
                 bundle.putString(USER_CONTACT_NUMBER_KEY, viewModel.contactNumber.value)
+                viewModel.isEmailSent.value = false
                 findNavController().navigate(
                     R.id.action_updateDoctorFragment_to_OtpVerificationFragment,
                     bundle
@@ -221,6 +222,7 @@ class UpdateDoctorProfileFragment :
             if (it.equals(requireContext().resources.getString(R.string.success))) {
                 context?.toast(resources.getString(R.string.doctor_update_successfully))
                 startActivityFinish<DoctorDashboardActivity> { }
+
 //                viewModel.navigationListener.observe(viewLifecycleOwner) { navId ->
 //                    findNavController().navigate(navId)
 //                    findNavController().popBackStack(R.id.LoginFragment, false)

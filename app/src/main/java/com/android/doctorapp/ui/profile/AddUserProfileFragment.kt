@@ -105,6 +105,7 @@ class AddUserProfileFragment :
                     ConstantKey.BundleKeys.USER_CONTACT_NUMBER_KEY,
                     viewModel.contactNumber.value
                 )
+                viewModel.isEmailSent.value = false
                 findNavController().navigate(
                     R.id.action_updateUserFragment_to_OtpVerificationFragment,
                     bundle
