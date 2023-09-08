@@ -27,8 +27,7 @@ class AdminDashboardViewModel @Inject constructor(
     private val context: Context
 
 ) : BaseViewModel() {
-    private val items = SingleLiveEvent<List<UserDataResponseModel>>()
-    val doctorList = items.asLiveData()
+    val doctorList = MutableLiveData<List<UserDataResponseModel>>()
 
     val _navigationListener = SingleLiveEvent<Int>()
     val navigationListener = _navigationListener.asLiveData()
@@ -36,6 +35,10 @@ class AdminDashboardViewModel @Inject constructor(
     val userId: MutableLiveData<String> = MutableLiveData("")
     val itemPosition: MutableLiveData<Int> = MutableLiveData()
     val deleteId: MutableLiveData<String> = MutableLiveData("")
+
+    init {
+        getItems()
+    }
 
     fun getItems() {
         viewModelScope.launch {
@@ -45,7 +48,7 @@ class AdminDashboardViewModel @Inject constructor(
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
                         if (response.body.isNotEmpty()) {
-                            items.value = response.body!!
+                            doctorList.value = response.body!!
                             Log.d("Data----", Gson().toJson(response.body))
                         }
                     }
@@ -75,10 +78,10 @@ class AdminDashboardViewModel @Inject constructor(
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
                         if (response.body) {
-                            val currentList = items.value?.toMutableList() ?: mutableListOf()
+                            val currentList = doctorList.value?.toMutableList() ?: mutableListOf()
                             if (itemPosition.value in 0 until currentList.size) {
                                 currentList.removeAt(itemPosition.value!!)
-                                items.postValue(currentList)
+                                doctorList.postValue(currentList)
                             }
                             Log.d("Data----", "${response.body}")
                         }

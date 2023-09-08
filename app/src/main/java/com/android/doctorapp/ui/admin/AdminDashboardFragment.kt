@@ -17,6 +17,7 @@ import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.ui.admin.adapter.AdminDoctorItemAdapter
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.ADMIN_FRAGMENT
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.ITEM_POSITION
 import javax.inject.Inject
 
@@ -55,8 +56,18 @@ class AdminDashboardFragment :
         return layoutBinding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val navController = findNavController()
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(ADMIN_FRAGMENT)
+            ?.observe(viewLifecycleOwner) {
+                if (it) {
+                    viewModel.getItems()
+                }
+            }
+    }
+
     private fun registerObserver(layoutBinding: FragmentAdminDashboardBinding) {
-        viewModel.getItems()
         viewModel.doctorList.observe(viewLifecycleOwner) {
             updateRecyclerView(it)
             layoutBinding.recyclerView.layoutManager = GridLayoutManager(requireActivity(), 2)
@@ -83,14 +94,6 @@ class AdminDashboardFragment :
                         R.id.admin_to_doctor_details, bundle
                     )
                 }
-
-                override fun onItemDelete(item: UserDataResponseModel, position: Int) {
-
-                }
-
-                override fun onItemEdit(item: UserDataResponseModel, position: Int) {
-                }
-
             })
     }
 
