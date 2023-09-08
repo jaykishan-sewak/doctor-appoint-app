@@ -1,5 +1,6 @@
 package com.android.doctorapp.ui.appointment.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -39,7 +40,6 @@ class AppointmentTimeAdapter(
 
     override fun getItemCount(): Int {
         return if (timeList.isNotEmpty()) timeList.size else 0
-//        return 10
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {

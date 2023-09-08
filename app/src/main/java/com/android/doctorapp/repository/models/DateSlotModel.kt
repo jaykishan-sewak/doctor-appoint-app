@@ -4,5 +4,6 @@ import java.util.Date
 
 data class DateSlotModel(
     var date: Date? = null,
-    var disable: Boolean = false
+    var disable: Boolean = false,
+    var dateSelect: Boolean = false
 )

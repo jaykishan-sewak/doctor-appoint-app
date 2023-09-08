@@ -1,13 +1,31 @@
 package com.android.doctorapp.ui.appointment
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import com.android.doctorapp.R
+import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
+import com.android.doctorapp.repository.AppointmentRepository
+import com.android.doctorapp.repository.local.Session
+import com.android.doctorapp.repository.local.USER_ID
+import com.android.doctorapp.repository.models.ApiErrorResponse
+import com.android.doctorapp.repository.models.ApiNoNetworkResponse
+import com.android.doctorapp.repository.models.ApiSuccessResponse
+import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.repository.models.TimeSlotModel
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.constants.ConstantKey.FULL_DATE_FORMAT
+import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.asLiveData
+import com.android.doctorapp.util.extension.isNetworkAvailable
+import com.android.doctorapp.util.extension.negativeButton
+import com.android.doctorapp.util.extension.neutralButton
+import com.android.doctorapp.util.extension.toast
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -15,7 +33,11 @@ import java.util.Locale
 import javax.inject.Inject
 
 
-class AppointmentViewModel @Inject constructor() : BaseViewModel() {
+class AppointmentViewModel @Inject constructor(
+    private val appointmentRepository: AppointmentRepository,
+    private val session: Session
+
+) : BaseViewModel() {
 
     private val dateFormatFull = SimpleDateFormat(FULL_DATE_FORMAT)
     val dateFormat = SimpleDateFormat(FORMATTED_DATE)
@@ -31,20 +53,22 @@ class AppointmentViewModel @Inject constructor() : BaseViewModel() {
     private val _holidayDateList = MutableLiveData<ArrayList<Date>>()
     val holidayDateList = _holidayDateList.asLiveData()
     private val holidayList = ArrayList<Date>()
-    
+
     private val weekOfDayList = ArrayList<String>()
 
     val isBookAppointmentDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
     var isTimeSelected: MutableLiveData<Boolean> = MutableLiveData(false)
     var isDateSelected: MutableLiveData<Boolean> = MutableLiveData(false)
 
+        val isBookAppointmentClick: MutableLiveData<Boolean> = MutableLiveData(false)
+    val onlineBookingToggleData: MutableLiveData<Boolean> = MutableLiveData(false)
 
     init {
         getHolidayList()
         getWeekOfDayList()
         get15DaysList()
     }
-    
+
     private fun getWeekOfDayList() {
         weekOfDayList.add("Sun")
         weekOfDayList.add("Sat")
@@ -146,7 +170,7 @@ class AppointmentViewModel @Inject constructor() : BaseViewModel() {
         timeList.add(
             TimeSlotModel(
                 timeSlot = dateFormatFull.parse("Tue Sep 05 17:00:00 GMT+05:30 2023"),
-                isTimeSlotBook = false,
+                isTimeSlotBook = false
             )
         )
         timeList.add(
@@ -170,7 +194,7 @@ class AppointmentViewModel @Inject constructor() : BaseViewModel() {
         timeList.add(
             TimeSlotModel(
                 timeSlot = dateFormatFull.parse("Tue Sep 05 21:00:00 GMT+05:30 2023"),
-                isTimeSlotBook = false,
+                isTimeSlotBook = false
             )
         )
         timeList.add(
@@ -202,7 +226,7 @@ class AppointmentViewModel @Inject constructor() : BaseViewModel() {
             ""
         }
     }
-    
+
     private fun convertDayName(inputDateString: String): String {
         return try {
             val inputFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy")
@@ -216,9 +240,59 @@ class AppointmentViewModel @Inject constructor() : BaseViewModel() {
         }
     }
 
-     fun validateDateTime() {
+    fun validateDateTime() {
         isBookAppointmentDataValid.value = isDateSelected.value == true
                 && isTimeSelected.value == true
+    }
+
+    fun changeDateClick(item: TimeSlotModel, position: Int) {
+        timeList.forEachIndexed { index, timeSlotModel ->
+            if (index == position) {
+                timeList[index] = TimeSlotModel(timeSlot = item.timeSlot, isTimeSlotBook = true)
+                return@forEachIndexed
+            } /*else {
+               timeList[index] = TimeSlotModel(timeSlot = item.timeSlot, isTimeSlotBook = false)
+               return@forEachIndexed
+           }*/
+        }
+        _timeSlotList.value = timeList
+    }
+
+    fun bookAppointment() {
+        isBookAppointmentClick.value = true
+    }
+
+    fun addBookingAppointmentData(selectedTime: Date) {
+        setShowProgress(true)
+        viewModelScope.launch {
+            session.getString(USER_ID).collectLatest {
+                val appointmentModel = AppointmentModel(
+                    bookingDateTime = selectedTime,
+                    isOnline = onlineBookingToggleData.value == true,
+                    status = "PROGRESS",
+                    userId = it.toString()
+                )
+                when (val response = appointmentRepository.addBookingAppointment(appointmentModel, fireStore)) {
+                    is ApiSuccessResponse -> {
+                        setShowProgress(false)
+
+                    }
+                    is ApiErrorResponse -> {
+                         setShowProgress(false)
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                         setShowProgress(false)
+                    }
+
+                    else -> {
+                        setShowProgress(false)
+                    }
+
+
+                }
+            }
+        }
     }
 
 }

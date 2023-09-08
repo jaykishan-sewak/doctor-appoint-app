@@ -23,4 +23,9 @@
     <color name="edit_bg">#bebebe</color>
     <color name="light_green">#33cc33</color>
     <color name="red">#e60000</color>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+
 </resources>

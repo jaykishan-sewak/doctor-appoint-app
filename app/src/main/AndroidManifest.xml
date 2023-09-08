@@ -18,7 +18,9 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".ui.userdashboard.UserDashboardActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.InfusionTemplate.NoActionBar"
+            />
         <activity
             android:name=".ui.splash.SplashScreenActivity"
             android:exported="true"
@@ -36,9 +38,11 @@
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".ui.doctordashboard.DoctorDashboardActivity"
+            android:exported="false"
             android:theme="@style/Theme.InfusionTemplate.NoActionBar" />
         <activity
             android:name=".ui.settings.SettingsActivity"
+            android:exported="false"
             android:theme="@style/Theme.InfusionTemplate.NoActionBar" />
     </application>
 

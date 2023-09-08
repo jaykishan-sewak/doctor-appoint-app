@@ -105,7 +105,7 @@
 
     </fragment>
 
-    <fragment
+   <!-- <fragment
         android:id="@+id/UserDashboardFragment"
         android:name="com.android.doctorapp.ui.profile.UserDashboardFragment"
         tools:layout="@layout/fragment_user_dashboard">
@@ -124,7 +124,7 @@
             android:id="@+id/action_userDashboard_to_bookAppointment"
             app:destination="@+id/BookAppointment" />
 
-    </fragment>
+    </fragment>-->
 
 
     <fragment

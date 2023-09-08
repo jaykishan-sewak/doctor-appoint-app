@@ -30,7 +30,7 @@ class UserDashboardFragment :
     override fun builder(): FragmentToolbar {
         return FragmentToolbar.Builder()
             .withId(R.id.toolbar)
-            .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.blue))
+            .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             .withTitle(R.string.nearest_doctor)
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
             .build()

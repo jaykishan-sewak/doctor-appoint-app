@@ -130,4 +130,7 @@
     <string name="doctor_request_fragment">Doctor request fragment</string>
     <string name="user_appointment_fragment">User Appointment fragment</string>
     <string name="user_request_fragment">User Request fragment</string>
+    <string name="booking">Booking</string>
+    <string name="dialog_appointment_desc">Are you sure you want to Booking Appointment?</string>
+    <string name="online_booking">Online Booking</string>
 </resources>

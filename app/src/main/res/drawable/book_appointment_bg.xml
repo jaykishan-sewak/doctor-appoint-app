@@ -9,5 +9,5 @@
     <corners
         android:radius="@dimen/margin_15" />
     <solid
-        android:color="@color/blue" />
+        android:color="@color/colorPrimary" />
 </shape>
