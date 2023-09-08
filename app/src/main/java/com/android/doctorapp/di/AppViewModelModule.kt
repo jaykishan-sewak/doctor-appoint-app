@@ -6,10 +6,13 @@ import com.android.doctorapp.ui.admin.AdminDashboardViewModel
 import com.android.doctorapp.ui.authentication.login.LoginViewModel
 import com.android.doctorapp.ui.authentication.register.RegisterViewModel
 import com.android.doctorapp.ui.doctor.AddDoctorViewModel
+import com.android.doctorapp.ui.doctordashboard.doctorfragment.AppointmentDoctorViewModel
+import com.android.doctorapp.ui.doctordashboard.doctorfragment.RequestDoctorViewModel
 import com.android.doctorapp.ui.home.HomeViewModel
 import com.android.doctorapp.ui.otp.OtpVerificationViewModel
 import com.android.doctorapp.ui.profile.ProfileViewModel
-import com.android.doctorapp.ui.profile.UserDashboardViewModel
+import com.android.doctorapp.ui.userdashboard.userfragment.UserAppointmentViewModel
+import com.android.doctorapp.ui.userdashboard.userfragment.UserRequestViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -54,8 +57,25 @@ abstract class AppViewModelModule {
     @ViewModelMapKey(AdminDashboardViewModel::class)
     abstract fun bindAdminDashboardViewModel(viewModel: AdminDashboardViewModel): ViewModel
 
+
     @Binds
     @IntoMap
-    @ViewModelMapKey(UserDashboardViewModel::class)
-    abstract fun bindUserDashboardViewModel(viewModel: UserDashboardViewModel): ViewModel
+    @ViewModelMapKey(UserAppointmentViewModel::class)
+    abstract fun bindUserAppointmentViewModel(viewModel: UserAppointmentViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelMapKey(UserRequestViewModel::class)
+    abstract fun bindUserRequestViewModel(viewModel: UserRequestViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelMapKey(AppointmentDoctorViewModel::class)
+    abstract fun bindAppointmentDoctorViewModel(viewModel: AppointmentDoctorViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelMapKey(RequestDoctorViewModel::class)
+    abstract fun bindRequestDoctorViewModel(viewModel: RequestDoctorViewModel): ViewModel
+
 }

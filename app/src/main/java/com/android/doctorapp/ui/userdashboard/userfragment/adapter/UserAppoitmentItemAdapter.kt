@@ -1,4 +1,4 @@
-package com.android.doctorapp.ui.profile.adapter
+package com.android.doctorapp.ui.userdashboard.userfragment.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,10 +8,10 @@ import com.android.doctorapp.R
 import com.android.doctorapp.databinding.UserRawLayoutBinding
 import com.android.doctorapp.repository.models.UserDataResponseModel
 
-class UserDoctorItemAdapter(
+class UserAppoitmentItemAdapter(
     private var userList: List<UserDataResponseModel>,
     private val listener: OnItemClickListener
-) : RecyclerView.Adapter<UserDoctorItemAdapter.ItemViewHolder>() {
+) : RecyclerView.Adapter<UserAppoitmentItemAdapter.ItemViewHolder>() {
 
     class ItemViewHolder(val view: UserRawLayoutBinding) : RecyclerView.ViewHolder(view.root) {
         fun bind(item: UserDataResponseModel, listener: OnItemClickListener, position: Int) {
@@ -23,12 +23,15 @@ class UserDoctorItemAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): UserAppoitmentItemAdapter.ItemViewHolder {
         val layoutInflater =
             LayoutInflater.from(parent.context)
         val itemView: UserRawLayoutBinding =
             DataBindingUtil.inflate(layoutInflater, R.layout.user_raw_layout, parent, false)
-        return ItemViewHolder(itemView)
+        return UserAppoitmentItemAdapter.ItemViewHolder(itemView)
     }
 
     override fun getItemCount(): Int {
@@ -40,14 +43,13 @@ class UserDoctorItemAdapter(
         notifyDataSetChanged()
     }
 
-    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: UserAppoitmentItemAdapter.ItemViewHolder, position: Int) {
         val objects = userList[position]
         holder.bind(objects, listener, position)
     }
 
     interface OnItemClickListener {
         fun onItemClick(item: UserDataResponseModel, position: Int)
-
 
     }
 }

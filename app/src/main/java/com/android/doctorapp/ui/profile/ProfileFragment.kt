@@ -13,10 +13,7 @@ import com.android.doctorapp.databinding.FragmentProfileBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
-import com.android.doctorapp.ui.authentication.AuthenticationActivity
 import com.android.doctorapp.util.extension.fetchImageOrShowError
-import com.android.doctorapp.util.extension.showImagePicker
-import com.android.doctorapp.util.extension.startActivityFinish
 import javax.inject.Inject
 
 class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_profile) {
@@ -32,7 +29,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
     override fun builder(): FragmentToolbar {
         return FragmentToolbar.Builder()
             .withId(R.id.toolbar)
-            .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.purple_500))
+            .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             .withTitle(R.string.title_profile)
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
             .build()
@@ -57,15 +54,15 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
     }
 
     private fun registerObservers() {
-        viewModel.apply {
-            navigateToLogin.observe(viewLifecycleOwner, {
-                if (it) startActivityFinish<AuthenticationActivity> { }
-            })
-
-            onProfilePictureClicked.observe(viewLifecycleOwner, {
-                showImagePicker(startForProfileImageResult)
-            })
-        }
+//        viewModel.apply {
+//            navigateToLogin.observe(viewLifecycleOwner, {
+//                if (it) startActivityFinish<AuthenticationActivity> { }
+//            })
+//
+//            onProfilePictureClicked.observe(viewLifecycleOwner, {
+//                showImagePicker(startForProfileImageResult)
+//            })
+//        }
     }
 
     private val startForProfileImageResult =
