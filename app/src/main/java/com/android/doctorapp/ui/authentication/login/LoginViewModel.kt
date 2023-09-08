@@ -21,7 +21,6 @@ import com.android.doctorapp.util.constants.ConstantKey.USER
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
 import com.android.doctorapp.util.extension.isNetworkAvailable
-import com.android.doctorapp.util.extension.isPassWordValid
 import com.android.doctorapp.util.extension.toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -37,7 +36,7 @@ class LoginViewModel @Inject constructor(
     private val context: Context,
     private val session: Session
 ) : BaseViewModel() {
-    private val _loginResponse = SingleLiveEvent<LoginResponseModel>()
+    private val _loginResponse = SingleLiveEvent<LoginResponseModel?>()
     val loginResponse = _loginResponse.asLiveData()
 
     val doctorChecked: MutableLiveData<Boolean> = MutableLiveData(false)
