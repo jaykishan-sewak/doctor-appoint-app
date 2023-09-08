@@ -21,10 +21,6 @@
             app:destination="@+id/AddUserProfileFragment" />
 
         <action
-            android:id="@+id/action_loginFragment_to_doctorDashboardFragment"
-            app:destination="@+id/DoctorDashboardFragment" />
-
-        <action
             android:id="@+id/action_loginFragment_to_adminDashboardFragment"
             app:destination="@+id/AdminDashboardFragment" />
 
@@ -78,10 +74,6 @@
         tools:layout="@layout/fragment_update_doctor_profile">
 
         <action
-            android:id="@+id/action_updateDoctorFragment_to_doctorDashboardFragment"
-            app:destination="@id/DoctorDashboardFragment" />
-
-        <action
             android:id="@+id/action_updateDoctorFragment_to_OtpVerificationFragment"
             app:destination="@+id/OtpVerificationFragment" />
 
@@ -114,13 +106,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/DoctorDashboardFragment"
-        android:name="com.android.doctorapp.ui.doctor.DoctorDashboardFragment"
-        tools:layout="@layout/fragment_doctor_dashboard">
-
-    </fragment>
-
-    <fragment
         android:id="@+id/UserDashboardFragment"
         android:name="com.android.doctorapp.ui.profile.UserDashboardFragment"
         tools:layout="@layout/fragment_user_dashboard">
@@ -130,13 +115,17 @@
             app:destination="@+id/BookAppointment" />
 
     </fragment>
-
     <fragment
         android:id="@+id/BookAppointment"
         android:name="com.android.doctorapp.ui.appointment.BookAppointmentFragment"
         tools:layout="@layout/fragment_book_appointment">
 
+        <action
+            android:id="@+id/action_userDashboard_to_bookAppointment"
+            app:destination="@+id/BookAppointment" />
+
     </fragment>
+
 
     <fragment
         android:id="@+id/HomeFragment"

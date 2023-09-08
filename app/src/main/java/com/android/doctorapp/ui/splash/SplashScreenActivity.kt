@@ -8,7 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import com.android.doctorapp.repository.local.PreferenceDataStore
 import com.android.doctorapp.repository.local.USER_IS_LOGGED_IN
 import com.android.doctorapp.ui.authentication.AuthenticationActivity
-import com.android.doctorapp.ui.dashboard.DashboardActivity
+import com.android.doctorapp.ui.doctordashboard.DoctorDashboardActivity
 import com.android.doctorapp.util.extension.startActivityFinish
 import kotlinx.coroutines.launch
 
@@ -22,7 +22,7 @@ class SplashScreenActivity : AppCompatActivity() {
                 USER_IS_LOGGED_IN).asLiveData().observe(
                 this@SplashScreenActivity, {
                     if (it == true) {
-                        startActivityFinish<DashboardActivity> { }
+                        startActivityFinish<DoctorDashboardActivity> { }
                     } else {
                         startActivityFinish<AuthenticationActivity> { }
                     }

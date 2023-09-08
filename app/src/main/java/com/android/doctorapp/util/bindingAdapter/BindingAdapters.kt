@@ -13,6 +13,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -187,4 +188,11 @@ fun convertDateFormat(textView: TextView,originalDateStr: String) {
 @BindingAdapter("app:appointmentTime")
 fun convertTimeFormat(textView: TextView, originalTimeStr: String) {
     textView.text = convertTime(originalTimeStr)
+}
+
+@BindingAdapter("app:doctorSpecialization")
+fun setSpecialization(textView: AppCompatTextView, specialities: List<String>?) {
+    textView.text = if (specialities?.isNotEmpty() == true)
+        android.text.TextUtils.join(",", specialities)
+    else ""
 }

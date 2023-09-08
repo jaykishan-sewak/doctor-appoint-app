@@ -12,6 +12,7 @@ import com.android.doctorapp.ui.doctor.AddDoctorFragment
 import com.android.doctorapp.ui.profile.AddUserProfileFragment
 import com.android.doctorapp.ui.doctor.UpdateDoctorProfileFragment
 import com.android.doctorapp.ui.otp.OtpVerificationFragment
+import com.android.doctorapp.ui.profile.UserDashboardFragment
 import dagger.Component
 
 @AuthScopes
@@ -32,4 +33,5 @@ interface AppComponent {
     fun inject(fragment: AdminDashboardFragment)
     fun inject(fragment: OtpVerificationFragment)
     fun inject(fragment: BookAppointmentFragment)
+    fun inject(fragment: UserDashboardFragment)
 }
