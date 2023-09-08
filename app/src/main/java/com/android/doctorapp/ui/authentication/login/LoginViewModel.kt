@@ -40,6 +40,10 @@ class LoginViewModel @Inject constructor(
     private val _loginResponse = SingleLiveEvent<LoginResponseModel?>()
     val loginResponse = _loginResponse.asLiveData()
 
+    val doctorChecked: MutableLiveData<Boolean> = MutableLiveData(false)
+    val userChecked: MutableLiveData<Boolean> = MutableLiveData(false)
+    val adminChecked: MutableLiveData<Boolean> = MutableLiveData(false)
+
     var googleSignInClient: GoogleSignInClient
 
     val email: MutableLiveData<String> = MutableLiveData()
@@ -157,16 +161,17 @@ class LoginViewModel @Inject constructor(
                 session.putBoolean(USER_IS_EMAIL_VERIFIED, false)
                 if (response.body.isAdmin) {
                     _navigationListener.postValue(R.id.action_loginFragment_to_adminDashboardFragment)
+
                 } else if (response.body.isDoctor) {
 
                     if (response.body.isUserVerified) {
-                        _navigationListener.postValue(R.id.action_loginFragment_to_doctorDashboardFragment)
+                        doctorChecked.value = true
                     } else {
                         isUserVerified.postValue(DOCTOR)
                     }
                 } else {
                     if (response.body.isUserVerified) {
-                        _navigationListener.postValue(R.id.action_loginFragment_to_homeFragment)
+                        userChecked.value = true
                     } else {
                         isUserVerified.postValue(USER)
                     }

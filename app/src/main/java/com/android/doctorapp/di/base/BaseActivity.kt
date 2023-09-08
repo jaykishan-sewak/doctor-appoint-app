@@ -1,8 +1,6 @@
 package com.android.doctorapp.di.base
 
 import android.os.Bundle
-import android.os.PersistableBundle
-import androidx.activity.OnBackPressedCallback
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
@@ -10,14 +8,12 @@ import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import com.android.doctorapp.R
 import com.android.doctorapp.di.base.annotation.BindingOnly
 import com.android.doctorapp.util.AppProgressDialog
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.neutralButton
-import kotlin.system.exitProcess
 
 abstract class BaseActivity<T : ViewDataBinding> constructor(
     @LayoutRes private val contentLayoutId: Int
@@ -42,23 +38,9 @@ abstract class BaseActivity<T : ViewDataBinding> constructor(
         }
     }
 
-    override fun onBackPressed() {
-        if (navController.currentDestination?.id == R.id.UpdateUserFragment) {
-            finish()
-        } else if (navController.currentDestination?.id == R.id.UpdateDoctorFragment) {
-            finish()
-        } else if(navController.currentDestination?.id == R.id.AdminDashboardFragment){
-            finish()
-        } else if (navController.currentDestination?.id == R.id.AddDoctorFragment) {
-            onBackPressedDispatcher.onBackPressed()
-        } else {
-            onBackPressedDispatcher.onBackPressed()
-        }
-    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        navController = findNavController(R.id.nav_host_fragment_content_main)
-
     }
 
     override fun onDestroy() {

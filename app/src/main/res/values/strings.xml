@@ -11,6 +11,7 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
     <string name="enter_valid_email">Please enter valid email.</string>
+    <string name="enter_password">Please enter password.</string>
     <string name="error_enter_password">Password must be 8+ charcters with 1 uppercaese, 1 lowercase and 1 special symbol.</string>
     <string name="title_home">Home</string>
     <string name="title_profile">Profile</string>
@@ -114,6 +115,18 @@
     <string name="update">Update</string>
     <string name="delete">Delete</string>
     <string name="are_you_sure_want_to_delete">Are you sure you want to delete?</string>
+    <string name="nearest_doctor">Nearest doctor</string>
+    <string name="book_appointment">Book Appointment</string>
+    <string name="specialist">Specialist :</string>
+    <string name="label_degree">Degree :</string>
+    <string name="view">View</string>
+    <string name="type_name">Type Name</string>
+    <string name="appointment">Appointment</string>
+    <string name="request">Request</string>
+    <string name="doctor_appointment_fragment">Doctor Appointment fragment</string>
+    <string name="doctor_request_fragment">Doctor request fragment</string>
+    <string name="user_appointment_fragment">User Appointment fragment</string>
+    <string name="user_request_fragment">User Request fragment</string>
     <string name="doctor_details">Doctor Details</string>
     <string name="degree_label">Degree: </string>
     <string name="specialization_label">Specialization: </string>
