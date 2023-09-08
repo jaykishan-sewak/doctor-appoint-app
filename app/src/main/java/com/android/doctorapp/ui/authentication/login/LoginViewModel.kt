@@ -21,6 +21,7 @@ import com.android.doctorapp.util.constants.ConstantKey.USER
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
 import com.android.doctorapp.util.extension.isNetworkAvailable
+import com.android.doctorapp.util.extension.isPassWordValid
 import com.android.doctorapp.util.extension.toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
