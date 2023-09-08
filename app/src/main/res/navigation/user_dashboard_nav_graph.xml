@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/user_dashboard_nav_graph"
-    app:startDestination="@id/user_navigation_appointment">
+    app:startDestination="@id/navigation_appointment">
 
     <fragment
         android:id="@+id/navigation_request"
@@ -13,16 +13,26 @@
     </fragment>
 
     <fragment
-        android:id="@+id/user_navigation_appointment"
+        android:id="@+id/navigation_appointment"
         android:name="com.android.doctorapp.ui.userdashboard.userfragment.UserAppointmentFragment"
         tools:layout="@layout/fragment_user_appointment">
 
+        <action
+            android:id="@+id/action_user_appointment_to_bookAppointment"
+            app:destination="@+id/BookAppointment" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.android.doctorapp.ui.profile.ProfileFragment"
         tools:layout="@layout/fragment_profile">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/BookAppointment"
+        android:name="com.android.doctorapp.ui.appointment.BookAppointmentFragment"
+        tools:layout="@layout/fragment_book_appointment">
 
     </fragment>
 
