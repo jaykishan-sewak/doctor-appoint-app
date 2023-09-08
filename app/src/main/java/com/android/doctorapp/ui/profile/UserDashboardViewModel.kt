@@ -34,8 +34,7 @@ class UserDashboardViewModel @Inject constructor(
 
     fun lengthChecked(text: CharSequence) {
         if (text.toString().length >= 3) {
-            Log.d(TAG, "lengthChecked: Called")
-            searchStarts(text.toString())
+            searchStarts(text.toString().lowercase())
         } else
             items.value = tempData.value
     }
@@ -49,7 +48,6 @@ class UserDashboardViewModel @Inject constructor(
         }
         if (filterList!!.isNotEmpty())
             items.value = filterList!!
-        Log.d("filter list---", Gson().toJson(filterList))
 
 
     }
@@ -64,7 +62,6 @@ class UserDashboardViewModel @Inject constructor(
                         if (response.body.isNotEmpty()) {
                             items.value = response.body!!
                             tempData.value = items.value
-                            Log.d("DoctorData----", Gson().toJson(response.body))
                         }
                     }
 
