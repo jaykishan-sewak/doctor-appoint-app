@@ -24,12 +24,14 @@ import com.android.doctorapp.databinding.FragmentUpdateDoctorProfileBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.ui.doctordashboard.DoctorDashboardActivity
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.IS_DOCTOR_OR_USER_KEY
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.STORED_VERIFICATION_Id_KEY
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_CONTACT_NUMBER_KEY
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.selectDate
+import com.android.doctorapp.util.extension.startActivityFinish
 import com.android.doctorapp.util.extension.toast
 import com.google.android.material.chip.Chip
 import com.google.firebase.FirebaseException
@@ -126,6 +128,7 @@ class UpdateDoctorProfileFragment :
                 bundle.putString(STORED_VERIFICATION_Id_KEY, storedVerificationId)
                 bundle.putBoolean(IS_DOCTOR_OR_USER_KEY, true)
                 bundle.putString(USER_CONTACT_NUMBER_KEY, viewModel.contactNumber.value)
+                viewModel.isEmailSent.value = false
                 findNavController().navigate(
                     R.id.action_updateDoctorFragment_to_OtpVerificationFragment,
                     bundle
@@ -218,10 +221,7 @@ class UpdateDoctorProfileFragment :
         viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
             if (it.equals(requireContext().resources.getString(R.string.success))) {
                 context?.toast(resources.getString(R.string.doctor_update_successfully))
-                viewModel.navigationListener.observe(viewLifecycleOwner) { navId ->
-                    findNavController().navigate(navId)
-                    findNavController().popBackStack(R.id.LoginFragment, false)
-                }
+                startActivityFinish<DoctorDashboardActivity> { }
             } else {
                 context?.alert {
                     setTitle(getString(R.string.doctor_not_save))
@@ -245,7 +245,6 @@ class UpdateDoctorProfileFragment :
             if (it == true) {
                 viewModel.validateAllUpdateField()
                 viewModel.emailVerifyLabel.postValue(requireContext().resources.getString(R.string.verified))
-//                binding.textEmailVerify.isClickable = false
                 viewModel.isEmailEnable.value = false
                 binding.textEmailVerify.setTextColor(
                     ContextCompat.getColor(

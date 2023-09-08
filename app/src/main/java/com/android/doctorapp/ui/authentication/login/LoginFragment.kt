@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
@@ -16,7 +15,8 @@ import com.android.doctorapp.databinding.FragmentLoginBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
-import com.android.doctorapp.ui.dashboard.DashboardActivity
+import com.android.doctorapp.ui.doctordashboard.DoctorDashboardActivity
+import com.android.doctorapp.ui.userdashboard.UserDashboardActivity
 import com.android.doctorapp.util.constants.ConstantKey.USER
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.negativeButton
@@ -49,7 +49,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
 
-
         return binding {
             lifecycleOwner = viewLifecycleOwner
             viewModel = this@LoginFragment.viewModel
@@ -74,9 +73,15 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
 
     private fun registerObserver() {
 
-        viewModel.loginResponse.observe(viewLifecycleOwner) {
-            it?.let {
-                startActivityFinish<DashboardActivity> { }
+        viewModel.doctorChecked.observe(viewLifecycleOwner) {
+            if (it) {
+                startActivityFinish<DoctorDashboardActivity>()
+            }
+        }
+
+        viewModel.userChecked.observe(viewLifecycleOwner) {
+            if (it) {
+                startActivityFinish<UserDashboardActivity>()
             }
         }
 
@@ -89,7 +94,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                     if (it == USER) {
                         findNavController().navigate(R.id.action_loginFragment_to_updateUserFragment)
                     } else {
-
                         findNavController().navigate(R.id.action_loginFragment_to_updateDoctorFragment)
                     }
 
