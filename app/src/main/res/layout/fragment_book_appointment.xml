@@ -109,6 +109,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_10"
             android:text="@string/title_select_time"
+            android:textColor="@color/blue"
             app:layout_constraintStart_toStartOf="@+id/rv_schedule_date"
             app:layout_constraintTop_toBottomOf="@+id/rv_schedule_date" />
 
@@ -129,6 +130,7 @@
             android:layout_height="@dimen/margin_50"
             android:layout_marginHorizontal="@dimen/margin_20"
             android:layout_marginBottom="@dimen/margin_10"
+            android:enabled="@{viewModel.isBookAppointmentDataValid}"
             android:background="@drawable/button_state_colors"
             android:text="@string/title_appointment"
             android:textAllCaps="false"

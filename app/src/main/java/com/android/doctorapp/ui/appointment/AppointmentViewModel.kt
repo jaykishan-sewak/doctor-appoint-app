@@ -31,10 +31,23 @@ class AppointmentViewModel @Inject constructor() : BaseViewModel() {
     private val _holidayDateList = MutableLiveData<ArrayList<Date>>()
     val holidayDateList = _holidayDateList.asLiveData()
     private val holidayList = ArrayList<Date>()
+    
+    private val weekOfDayList = ArrayList<String>()
+
+    val isBookAppointmentDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
+    var isTimeSelected: MutableLiveData<Boolean> = MutableLiveData(false)
+    var isDateSelected: MutableLiveData<Boolean> = MutableLiveData(false)
+
 
     init {
         getHolidayList()
+        getWeekOfDayList()
         get15DaysList()
+    }
+    
+    private fun getWeekOfDayList() {
+        weekOfDayList.add("Sun")
+        weekOfDayList.add("Sat")
     }
 
     private fun getHolidayList() {
@@ -74,18 +87,20 @@ class AppointmentViewModel @Inject constructor() : BaseViewModel() {
         }
 
         daysList.forEachIndexed { index, dateSlotModel ->
-
-            holidayList.forEachIndexed { _index, data ->
+            holidayList.forEachIndexed { _, data ->
                 if (convertDate(dateSlotModel.date.toString()) == convertDate(data.toString())) {
                     daysList[index] = DateSlotModel(date = dateSlotModel.date, disable = true)
                     return@forEachIndexed
                 }
             }
-
+            weekOfDayList.forEachIndexed { _, str ->
+                if (convertDayName(dateSlotModel.date.toString()) == str) {
+                    daysList[index] = DateSlotModel(date = dateSlotModel.date, disable = true)
+                    return@forEachIndexed
+                }
+            }
         }
         _daysDateList.value = daysList
-
-
     }
 
     private fun getTimeSlot() {
@@ -131,7 +146,7 @@ class AppointmentViewModel @Inject constructor() : BaseViewModel() {
         timeList.add(
             TimeSlotModel(
                 timeSlot = dateFormatFull.parse("Tue Sep 05 17:00:00 GMT+05:30 2023"),
-                isTimeSlotBook = true,
+                isTimeSlotBook = false,
             )
         )
         timeList.add(
@@ -143,7 +158,7 @@ class AppointmentViewModel @Inject constructor() : BaseViewModel() {
         timeList.add(
             TimeSlotModel(
                 timeSlot = dateFormatFull.parse("Tue Sep 05 19:00:00 GMT+05:30 2023"),
-                isTimeSlotBook = false
+                isTimeSlotBook = true
             )
         )
         timeList.add(
@@ -155,13 +170,13 @@ class AppointmentViewModel @Inject constructor() : BaseViewModel() {
         timeList.add(
             TimeSlotModel(
                 timeSlot = dateFormatFull.parse("Tue Sep 05 21:00:00 GMT+05:30 2023"),
-                isTimeSlotBook = true,
+                isTimeSlotBook = false,
             )
         )
         timeList.add(
             TimeSlotModel(
                 timeSlot = dateFormatFull.parse("Tue Sep 05 22:00:00 GMT+05:30 2023"),
-                isTimeSlotBook = false
+                isTimeSlotBook = true
             )
         )
 
@@ -186,6 +201,24 @@ class AppointmentViewModel @Inject constructor() : BaseViewModel() {
             Log.d("Format issue--", e.message.toString())
             ""
         }
+    }
+    
+    private fun convertDayName(inputDateString: String): String {
+        return try {
+            val inputFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy")
+            val outputFormat = SimpleDateFormat("EEE")
+
+            val date = inputFormat.parse(inputDateString)
+            outputFormat.format(date)
+        } catch (e: Exception) {
+            Log.d("TAG", "convertDayName: ${e.message}")
+            ""
+        }
+    }
+
+     fun validateDateTime() {
+        isBookAppointmentDataValid.value = isDateSelected.value == true
+                && isTimeSelected.value == true
     }
 
 }

@@ -24,7 +24,7 @@ import com.android.doctorapp.ui.appointment.adapter.AppointmentTimeAdapter
 import javax.inject.Inject
 
 class BookAppointmentFragment :
-    BaseFragment<FragmentBookAppointmentBinding>(R.layout.fragment_book_appointment) {
+    BaseFragment<FragmentBookAppointmentBinding>(R.layout.fragment_book_appointment),AppointmentDateAdapter.OnItemClickListener ,AppointmentTimeAdapter.OnItemClickListener{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -49,7 +49,7 @@ class BookAppointmentFragment :
     override fun builder(): FragmentToolbar {
         return FragmentToolbar.Builder()
             .withId(R.id.toolbar)
-            .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.purple_500))
+            .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.blue))
             .withTitle(R.string.title_appointment)
             .withNavigationIcon(requireActivity().getDrawable(R.drawable.ic_back_white))
             .withNavigationListener {
@@ -61,6 +61,9 @@ class BookAppointmentFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.rvScheduleDate.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.rvTime.layoutManager = GridLayoutManager(requireContext(), 4)
         setUpWithViewModel(viewModel)
         registerObserver()
     }
@@ -68,14 +71,11 @@ class BookAppointmentFragment :
     private fun registerObserver() {
         viewModel.daysDateList.observe(viewLifecycleOwner) {
             updateDateRecyclerview(it)
-            binding.rvScheduleDate.layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             binding.rvScheduleDate.adapter = appointmentDateAdapter
         }
 
         viewModel.timeSlotList.observe(viewLifecycleOwner) {
             updateTimeRecyclerview(it)
-            binding.rvTime.layoutManager = GridLayoutManager(requireContext(), 4)
             binding.rvTime.adapter = appointmentTimeAdapter
         }
 
@@ -83,19 +83,30 @@ class BookAppointmentFragment :
 
     private fun updateDateRecyclerview(dateList: ArrayList<DateSlotModel>) {
 
-        appointmentDateAdapter = AppointmentDateAdapter(dateList,
-            object : AppointmentDateAdapter.OnItemClickListener {
+        appointmentDateAdapter = AppointmentDateAdapter(dateList, this)
+            /*object : AppointmentDateAdapter.OnItemClickListener {
                 override fun onItemClick(item: DateSlotModel, position: Int) {
+                    viewModel.isDateSelected.value = true
+                    viewModel.validateDateTime()
                 }
-            })
+            })*/
     }
 
     private fun updateTimeRecyclerview(timeList: ArrayList<TimeSlotModel>) {
-        appointmentTimeAdapter = AppointmentTimeAdapter(timeList,
-            object : AppointmentTimeAdapter.OnItemClickListener {
+        appointmentTimeAdapter = AppointmentTimeAdapter(timeList, this)
+            /*object : AppointmentTimeAdapter.OnItemClickListener {
                 override fun onItemClick(item: TimeSlotModel, position: Int) {
-                    Log.d("TAG", "onItemClick: $item")
+                    viewModel.validateDateTime()
+                    viewModel.isTimeSelected.value = true
                 }
-            })
+            })*/
+    }
+
+    override fun onItemClick(item: DateSlotModel, position: Int) {
+        Log.d("TAG", "onItemClick Date : $position")
+    }
+
+    override fun onItemClick(item: TimeSlotModel, position: Int) {
+        Log.d("TAG", "onItemClick Time : $position")
     }
 }
