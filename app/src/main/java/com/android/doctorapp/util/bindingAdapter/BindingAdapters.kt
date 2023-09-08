@@ -13,6 +13,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -176,4 +177,11 @@ fun setGenderImage(imageView: AppCompatImageView, gender: String) {
     val drawableRes =
         if (gender == "MALE") R.drawable.ic_male_placeholder else R.drawable.ic_female_placeholder
     imageView.setImageResource(drawableRes)
+}
+
+@BindingAdapter("app:doctorSpecialization")
+fun setSpecialization(textView: AppCompatTextView, specialities: List<String>?) {
+    textView.text = if (specialities?.isNotEmpty() == true)
+        android.text.TextUtils.join(",", specialities)
+    else ""
 }

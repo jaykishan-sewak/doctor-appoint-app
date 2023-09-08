@@ -11,6 +11,7 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
     <string name="enter_valid_email">Please enter valid email.</string>
+    <string name="enter_password">Please enter password.</string>
     <string name="error_enter_password">Password must be 8+ charcters with 1 uppercaese, 1 lowercase and 1 special symbol.</string>
     <string name="title_home">Home</string>
     <string name="title_profile">Profile</string>
@@ -47,7 +48,6 @@
     <string name="error">Error</string>
     <string name="something_went_wrong">Something went wrong Please try again.</string>
     <string name="welcome_to_settings">Welcome to settings</string>
-    <string name="log_in_now">Log In Now</string>
     <string name="please_login_to_continue_using_our_app">Please login to continue using our app</string>
     <string name="or_connect_with">Or connect with</string>
     <string name="log_in">Log In</string>
@@ -114,4 +114,10 @@
     <string name="update">Update</string>
     <string name="delete">Delete!!</string>
     <string name="are_you_sure_want_to_delete">Are you sure you want to delete?</string>
+    <string name="nearest_doctor">Nearest doctor</string>
+    <string name="book_appointment">Book Appointment</string>
+    <string name="specialist">Specialist :</string>
+    <string name="label_degree">Degree :</string>
+    <string name="view">View</string>
+    <string name="type_name">Type Name</string>
 </resources>

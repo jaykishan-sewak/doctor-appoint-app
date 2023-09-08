@@ -22,6 +22,7 @@ import com.android.doctorapp.repository.models.DegreeResponseModel
 import com.android.doctorapp.repository.models.SpecializationResponseModel
 import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.util.SingleLiveEvent
+import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
 import com.android.doctorapp.util.extension.isNetworkAvailable
@@ -102,7 +103,8 @@ class AddDoctorViewModel @Inject constructor(
 
     val degreeLiveList = mutableListOf<String>()
     val specializationLiveList = mutableListOf<String>()
-    private val selectGenderValue: MutableLiveData<String> = MutableLiveData("Male")
+    private val selectGenderValue: MutableLiveData<String> =
+        MutableLiveData(ConstantKey.GENDER_VALUE)
     val userId: MutableLiveData<String> = MutableLiveData("")
     val tempEmail: MutableLiveData<String?> = MutableLiveData()
     val tempContactNumber: MutableLiveData<String?> = MutableLiveData()

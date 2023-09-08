@@ -21,7 +21,6 @@ import com.android.doctorapp.util.constants.ConstantKey.USER
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
 import com.android.doctorapp.util.extension.isNetworkAvailable
-import com.android.doctorapp.util.extension.isPassWordValid
 import com.android.doctorapp.util.extension.toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -99,8 +98,8 @@ class LoginViewModel @Inject constructor(
     }
 
     fun isValidPassword(text: CharSequence) {
-        if (text.toString().isNotEmpty() && text.toString().isPassWordValid().not()) {
-            passwordError.value = resourceProvider.getString(R.string.error_enter_password)
+        if (text.toString().isEmpty()) {
+            passwordError.value = resourceProvider.getString(R.string.enter_password)
         } else {
             passwordError.value = null
         }
@@ -166,7 +165,7 @@ class LoginViewModel @Inject constructor(
                     }
                 } else {
                     if (response.body.isUserVerified) {
-                        _navigationListener.postValue(R.id.action_loginFragment_to_homeFragment)
+                        _navigationListener.postValue(R.id.action_loginFragment_to_userDashboardFragment)
                     } else {
                         isUserVerified.postValue(USER)
                     }
