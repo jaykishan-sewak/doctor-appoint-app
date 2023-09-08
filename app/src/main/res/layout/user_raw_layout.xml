@@ -10,7 +10,7 @@
 
         <variable
             name="onItemClickListener"
-            type="com.android.doctorapp.ui.profile.adapter.UserDoctorItemAdapter.OnItemClickListener" />
+            type="com.android.doctorapp.ui.userdashboard.userfragment.adapter.UserAppoitmentItemAdapter.OnItemClickListener" />
 
         <variable
             name="index"
