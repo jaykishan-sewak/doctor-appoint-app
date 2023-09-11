@@ -3,6 +3,7 @@ package com.android.doctorapp.di
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.android.doctorapp.ui.admin.AdminDashboardViewModel
+import com.android.doctorapp.ui.appointment.AppointmentViewModel
 import com.android.doctorapp.ui.authentication.login.LoginViewModel
 import com.android.doctorapp.ui.authentication.register.RegisterViewModel
 import com.android.doctorapp.ui.doctor.AddDoctorViewModel
@@ -56,6 +57,11 @@ abstract class AppViewModelModule {
     @IntoMap
     @ViewModelMapKey(AdminDashboardViewModel::class)
     abstract fun bindAdminDashboardViewModel(viewModel: AdminDashboardViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelMapKey(AppointmentViewModel::class)
+    abstract fun bindAppointmentViewModel(viewModel: AppointmentViewModel): ViewModel
 
 
     @Binds

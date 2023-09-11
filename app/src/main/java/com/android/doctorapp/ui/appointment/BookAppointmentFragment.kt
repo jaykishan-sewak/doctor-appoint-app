@@ -1,27 +1,161 @@
 package com.android.doctorapp.ui.appointment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.doctorapp.R
+import com.android.doctorapp.databinding.FragmentBookAppointmentBinding
+import com.android.doctorapp.di.AppComponentProvider
+import com.android.doctorapp.di.base.BaseFragment
+import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.models.DateSlotModel
+import com.android.doctorapp.repository.models.TimeSlotModel
+import com.android.doctorapp.ui.appointment.adapter.AppointmentDateAdapter
+import com.android.doctorapp.ui.appointment.adapter.AppointmentTimeAdapter
+import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.extension.alert
+import com.android.doctorapp.util.extension.negativeButton
+import com.android.doctorapp.util.extension.neutralButton
+import java.util.Date
+import javax.inject.Inject
 
+class BookAppointmentFragment :
+    BaseFragment<FragmentBookAppointmentBinding>(R.layout.fragment_book_appointment) {
 
-class BookAppointmentFragment : Fragment() {
-
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModel: AppointmentViewModel by viewModels { viewModelFactory }
+    private lateinit var appointmentTimeAdapter: AppointmentTimeAdapter
+    private lateinit var appointmentDateAdapter: AppointmentDateAdapter
+    private var timePreviousPosition: Int = -1
+    private var datePreviousPosition: Int = -1
+    private lateinit var selectedTime: Date
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        (requireActivity().application as AppComponentProvider).getAppComponent().inject(this)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_book_appointment, container, false)
+    ): View {
+        super.onCreateView(inflater, container, savedInstanceState)
+        val arguments: Bundle? = arguments
+        if (arguments != null) {
+            viewModel.userId.value = arguments.getString(ConstantKey.BundleKeys.USER_ID).toString()
+        }
+        val layoutBinding = binding {
+            lifecycleOwner = viewLifecycleOwner
+            viewModel = this@BookAppointmentFragment.viewModel
+        }
+        setUpWithViewModel(viewModel)
+        registerObserver(layoutBinding)
+        return layoutBinding.root
     }
 
+    override fun builder(): FragmentToolbar {
+        return FragmentToolbar.Builder()
+            .withId(R.id.toolbar)
+            .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
+            .withTitle(R.string.title_appointment)
+            .withNavigationIcon(requireActivity().getDrawable(R.drawable.ic_back_white))
+            .withNavigationListener {
+                findNavController().popBackStack()
+            }
+            .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
+            .build()
+    }
+
+    private fun registerObserver(layoutBinding: FragmentBookAppointmentBinding) {
+        binding.rvScheduleDate.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.rvTime.layoutManager = GridLayoutManager(requireContext(), 4)
+
+        viewModel.getDoctorData()
+
+        viewModel.daysDateList.observe(viewLifecycleOwner) {
+            updateDateRecyclerview(it)
+            layoutBinding.rvScheduleDate.adapter = appointmentDateAdapter
+        }
+
+        viewModel.timeSlotList.observe(viewLifecycleOwner) {
+            updateTimeRecyclerview(it)
+            layoutBinding.rvTime.adapter = appointmentTimeAdapter
+        }
+
+        viewModel.isBookAppointmentClick.observe(viewLifecycleOwner) { it ->
+            if (it) {
+                context?.alert {
+                    setTitle(resources.getString(R.string.booking))
+                    setMessage(resources.getString(R.string.dialog_appointment_desc))
+                    neutralButton { dialog ->
+                        dialog.dismiss()
+                        viewModel.addBookingAppointmentData(selectedTime)
+                    }
+                    negativeButton(context.resources.getString(R.string.cancel)) { dialog ->
+                        dialog.dismiss()
+                    }
+
+                }
+            }
+        }
+
+    }
+
+    private fun updateDateRecyclerview(dateList: ArrayList<DateSlotModel>) {
+        appointmentDateAdapter = AppointmentDateAdapter(dateList,
+            object : AppointmentDateAdapter.OnItemClickListener {
+                override fun onItemClick(item: DateSlotModel, position: Int) {
+                    dateList.forEachIndexed { index, dateSlotModel ->
+                        if (dateSlotModel.date == item.date) {
+                            datePreviousPosition = position
+                            dateList[index].disable = true
+                        } else {
+                            if (dateList[index].disable) {
+                                dateList[index].disable = index != datePreviousPosition
+                            } else {
+                                dateList[index].disable = false
+                            }
+                        }
+                        appointmentDateAdapter.notifyDataSetChanged()
+                    }
+
+                    viewModel.isDateSelected.value = true
+                    viewModel.validateDateTime()
+                }
+            })
+    }
+
+    private fun updateTimeRecyclerview(timeList: ArrayList<TimeSlotModel>) {
+        appointmentTimeAdapter = AppointmentTimeAdapter(timeList,
+            object : AppointmentTimeAdapter.OnItemClickListener {
+                override fun onItemClick(item: TimeSlotModel, position: Int) {
+                    timeList.forEachIndexed { index, timeSlotModel ->
+                        if (timeSlotModel.timeSlot == item.timeSlot) {
+                            timePreviousPosition = position
+                            timeList[index].isTimeSlotBook = true
+                            selectedTime = item.timeSlot!!
+                        } else {
+                            if (timeList[index].isTimeSlotBook) {
+                                timeList[index].isTimeSlotBook = index != timePreviousPosition
+                            } else {
+                                timeList[index].isTimeSlotBook = false
+                            }
+                        }
+                        appointmentTimeAdapter.notifyDataSetChanged()
+                    }
+                    viewModel.isTimeSelected.value = true
+                    viewModel.validateDateTime()
+                }
+            })
+    }
 }

@@ -102,11 +102,11 @@ class AddDoctorViewModel @Inject constructor(
     val isUserReload: MutableLiveData<Boolean?> = MutableLiveData(false)
     var binding: FragmentUpdateDoctorProfileBinding? = null
 
-    val degreeLiveList = mutableListOf<String>()
-    val specializationLiveList = mutableListOf<String>()
+    val degreeLiveList = MutableLiveData<List<String>>()
+    val specializationLiveList = MutableLiveData<List<String>>()
     private val selectGenderValue: MutableLiveData<String> =
-        MutableLiveData(ConstantKey.GENDER_VALUE)
-    val userId: MutableLiveData<String> = MutableLiveData()
+        MutableLiveData(ConstantKey.MALE_GENDER)
+    val userId: MutableLiveData<String?> = MutableLiveData(null)
     val tempEmail: MutableLiveData<String?> = MutableLiveData()
     val tempContactNumber: MutableLiveData<String?> = MutableLiveData()
 
@@ -150,6 +150,8 @@ class AddDoctorViewModel @Inject constructor(
 
                             }
                             notificationToggleData.value = response.body.isNotificationEnable
+                            degreeLiveList.value = response.body.degree?.toList()
+                            specializationLiveList.value = response.body.specialities?.toList()
                             data.value = listOf(userObj)
                             setShowProgress(false)
                         }
@@ -677,7 +679,7 @@ class AddDoctorViewModel @Inject constructor(
     fun addDegreeItems(data: String) {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
-                setShowProgress(true)
+                setShowProgress(false)
                 when (val response = authRepository.addDegree(fireStore, data)) {
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
@@ -704,7 +706,7 @@ class AddDoctorViewModel @Inject constructor(
     fun addSpecializationItems(data: String) {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
-                setShowProgress(true)
+                setShowProgress(false)
                 when (val response = authRepository.addSpecialization(fireStore, data)) {
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
