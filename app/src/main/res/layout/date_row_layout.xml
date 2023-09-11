@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:alpha="@{dateSlotModel.disable ? 0.4F : 1F}"
-            android:background="@{dateSlotModel.disable ? @drawable/disable_date_time_bg : @drawable/blue_border_drawable}"
+            android:background="@{dateSlotModel.dateSelect ? @drawable/selected_date_time_bg : @drawable/blue_border_drawable}"
             android:enabled="@{!dateSlotModel.disable}"
             android:gravity="center"
             android:onClick="@{()->onItemClickListener.onItemClick(dateSlotModel,index)}"

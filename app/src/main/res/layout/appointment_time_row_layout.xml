@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+         <import type="com.android.doctorapp.R" />
 
         <variable
             name="timeModel"
@@ -23,17 +24,17 @@
         android:layout_height="@dimen/margin_60"
         android:layout_margin="@dimen/margin_5">
 
+<!--            style="@{timeModel.isTimeSlotBook ? R.style.date_time_select : R.style.date_time_unselect}"-->
+<!--            style="@{timeModel.isTimeSlotBook ? @style.date_time_select : @style/date_time_unselect}"-->
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/text_schedule_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:alpha="@{timeModel.isTimeSlotBook ? 0.4F : 1F}"
-            android:background="@{timeModel.isTimeSlotBook ? @drawable/disable_date_time_bg : @drawable/blue_border_drawable}"
+            android:background="@{timeModel.isTimeClick ? @drawable/selected_date_time_bg : @drawable/blue_border_drawable}"
             android:enabled="@{!timeModel.isTimeSlotBook}"
-            android:gravity="center"
             android:onClick="@{()->onItemClickListener.onItemClick(timeModel,index)}"
-            android:padding="@dimen/margin_5"
-            android:textColor="@color/black"
             app:appointmentTime="@{timeModel.timeSlot.toString()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

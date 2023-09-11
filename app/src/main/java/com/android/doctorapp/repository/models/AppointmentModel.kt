@@ -7,5 +7,8 @@ data class AppointmentModel (
     var isOnline: Boolean = false,
     var reason: String = "",
     var status: String = "",
+    var userName: String = "",
+    var age: String = "",
+    var contactNumber: String = "",
     var userId: String = ""
 )

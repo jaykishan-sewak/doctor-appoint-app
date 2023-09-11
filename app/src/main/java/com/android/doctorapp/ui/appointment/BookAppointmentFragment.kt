@@ -34,7 +34,8 @@ class BookAppointmentFragment :
     private val viewModel: AppointmentViewModel by viewModels { viewModelFactory }
     private lateinit var appointmentTimeAdapter: AppointmentTimeAdapter
     private lateinit var appointmentDateAdapter: AppointmentDateAdapter
-    private var timePreviousPosition: Int = -1
+
+    //    private var timePreviousPosition: Int = -1
     private var datePreviousPosition: Int = -1
     private lateinit var selectedTime: Date
 
@@ -116,7 +117,7 @@ class BookAppointmentFragment :
             object : AppointmentDateAdapter.OnItemClickListener {
                 override fun onItemClick(item: DateSlotModel, position: Int) {
                     dateList.forEachIndexed { index, dateSlotModel ->
-                        if (dateSlotModel.date == item.date) {
+                        /*if (dateSlotModel.date == item.date) {
                             datePreviousPosition = position
                             dateList[index].disable = true
                         } else {
@@ -125,7 +126,8 @@ class BookAppointmentFragment :
                             } else {
                                 dateList[index].disable = false
                             }
-                        }
+                        }*/
+                        dateList[index].dateSelect = dateSlotModel.date == item.date
                         appointmentDateAdapter.notifyDataSetChanged()
                     }
 
@@ -141,17 +143,29 @@ class BookAppointmentFragment :
                 override fun onItemClick(item: TimeSlotModel, position: Int) {
                     timeList.forEachIndexed { index, timeSlotModel ->
                         if (timeSlotModel.timeSlot == item.timeSlot) {
-                            timePreviousPosition = position
-                            timeList[index].isTimeSlotBook = true
+//                            timePreviousPosition = position
+                            timeList[index].isTimeClick = true
                             selectedTime = item.timeSlot!!
                         } else {
-                            if (timeList[index].isTimeSlotBook) {
-                                timeList[index].isTimeSlotBook = index != timePreviousPosition
-                            } else {
-                                timeList[index].isTimeSlotBook = false
-                            }
+//                            if (timeList[index].isTimeSlotBook) {
+////                                timeList[index].isTimeSlotBook = index != timePreviousPosition
+//                            } else {
+//                                timeList[index].isTimeSlotBook = false
+//                            }
+                            timeList[index].isTimeClick = false
                         }
                         appointmentTimeAdapter.notifyDataSetChanged()
+//                        viewModel.changeTimeBg()
+                        /*if (timeSlotModel.timeSlot == item.timeSlot) {
+                            timePreviousPosition = position
+                            timeList[index].isTimeClick = true
+                        } else {
+                            if (timeList[index].isTimeSlotBook) {
+
+                            } else {
+
+                            }
+                        }*/
                     }
                     viewModel.isTimeSelected.value = true
                     viewModel.validateDateTime()

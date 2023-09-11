@@ -60,6 +60,10 @@ class AppointmentViewModel @Inject constructor(
     val userId: MutableLiveData<String> = MutableLiveData("")
     val doctorName: MutableLiveData<String> = MutableLiveData()
     val doctorSpecialities: MutableLiveData<String> = MutableLiveData()
+    private val userName = MutableLiveData<String>()
+    private val contactNumber = MutableLiveData<String>()
+    private val age = MutableLiveData<String>()
+
 
     init {
         getHolidayList()
@@ -255,6 +259,9 @@ class AppointmentViewModel @Inject constructor(
                     bookingDateTime = selectedTime,
                     isOnline = onlineBookingToggleData.value == true,
                     status = "PROGRESS",
+                    userName = userName.value.toString(),
+                    age = age.value.toString(),
+                    contactNumber = contactNumber.value.toString(),
                     userId = it.toString()
                 )
                 when (val response =
@@ -289,7 +296,8 @@ class AppointmentViewModel @Inject constructor(
                     is ApiSuccessResponse -> {
                         doctorName.value = response.body.name
                         doctorSpecialities.value = response.body.specialities.toString()
-                        setShowProgress(false)
+                        getUserData()
+//                        setShowProgress(false)
                     }
 
                     is ApiErrorResponse -> {
@@ -309,6 +317,43 @@ class AppointmentViewModel @Inject constructor(
                 }
             } else {
                 context.toast(resourceProvider.getString(R.string.check_internet_connection))
+            }
+        }
+    }
+
+    private fun getUserData() {
+        viewModelScope.launch {
+            session.getString(USER_ID).collectLatest {
+                if (context.isNetworkAvailable()) {
+                    when (val response =
+                        appointmentRepository.getUserById(it.toString(), fireStore)) {
+                        is ApiSuccessResponse -> {
+                            userName.value = response.body.name
+                            contactNumber.value = response.body.contactNumber
+                            age.value = response.body.dob.toString()
+                            setShowProgress(false)
+
+                        }
+
+                        is ApiErrorResponse -> {
+                            context.toast(response.errorMessage)
+                            setShowProgress(false)
+                        }
+
+                        is ApiNoNetworkResponse -> {
+                            context.toast(response.errorMessage)
+                            setShowProgress(false)
+                        }
+
+                        else -> {
+                            context.toast(resourceProvider.getString(R.string.something_went_wrong))
+                            setShowProgress(false)
+                        }
+                    }
+                } else {
+                    context.toast(resourceProvider.getString(R.string.check_internet_connection))
+                }
+
             }
         }
     }
