@@ -371,6 +371,16 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_available_date" />
 
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_add_holiday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_holiday"
+                    android:onClick="@{() -> viewModel.addHoliday()}"
+                    android:layout_marginTop="@dimen/margin_10"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_available_time" />
+
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txt_doctor_notification"
                     android:layout_width="wrap_content"
@@ -388,7 +398,7 @@
                     android:layout_marginTop="@dimen/margin_10"
                     android:checked="@={viewModel.notificationToggleData}"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_available_time" />
+                    app:layout_constraintTop_toBottomOf="@+id/btn_add_holiday" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnLogin"

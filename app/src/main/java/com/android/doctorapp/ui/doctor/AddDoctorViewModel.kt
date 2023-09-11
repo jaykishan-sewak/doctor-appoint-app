@@ -31,6 +31,7 @@ import com.google.android.material.chip.Chip
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.util.Date
 import javax.inject.Inject
 
 class AddDoctorViewModel @Inject constructor(
@@ -105,9 +106,13 @@ class AddDoctorViewModel @Inject constructor(
     val specializationLiveList = mutableListOf<String>()
     private val selectGenderValue: MutableLiveData<String> =
         MutableLiveData(ConstantKey.GENDER_VALUE)
-    val userId: MutableLiveData<String> = MutableLiveData("")
+    val userId: MutableLiveData<String> = MutableLiveData()
     val tempEmail: MutableLiveData<String?> = MutableLiveData()
     val tempContactNumber: MutableLiveData<String?> = MutableLiveData()
+
+    val holidayClickResponse: MutableLiveData<Boolean> = MutableLiveData(false)
+
+    val holidayDateList: MutableLiveData<ArrayList<Date>> = MutableLiveData()
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
         this.binding = binding
@@ -765,4 +770,9 @@ class AddDoctorViewModel @Inject constructor(
             }
         }
     }
+
+    fun addHoliday() {
+        holidayClickResponse.value = true
+    }
+
 }

@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -74,6 +75,7 @@ class UpdateDoctorProfileFragment :
     lateinit var bindingView: FragmentUpdateDoctorProfileBinding
     var enteredDegreeText: String = ""
     var enteredSpecializationText: String = ""
+    private val holidayList = ArrayList<Date>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -330,6 +332,17 @@ class UpdateDoctorProfileFragment :
                         enteredSpecializationText = s.toString()
                 }
             })
+        }
+
+        viewModel.holidayClickResponse.observe(viewLifecycleOwner) {
+            if (it) {
+                requireContext().selectDate(
+                    maxDate = Date().time,
+                    minDate = null) { holidayDate ->
+                     Log.d(TAG, "registerObserver: $holidayDate")
+                    holidayList.add()
+                }
+            }
         }
     }
 

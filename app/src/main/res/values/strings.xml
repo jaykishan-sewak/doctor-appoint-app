@@ -127,4 +127,5 @@
     <string name="doctor_request_fragment">Doctor request fragment</string>
     <string name="user_appointment_fragment">User Appointment fragment</string>
     <string name="user_request_fragment">User Request fragment</string>
+    <string name="add_holiday">Add Holiday</string>
 </resources>
