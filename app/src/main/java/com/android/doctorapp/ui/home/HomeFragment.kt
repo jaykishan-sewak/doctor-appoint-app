@@ -61,7 +61,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     override fun builder(): FragmentToolbar {
         return FragmentToolbar.Builder()
             .withId(R.id.toolbar)
-            .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.purple_500))
+            .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             .withTitle(R.string.title_home)
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
             .withMenu(R.menu.menu_main)

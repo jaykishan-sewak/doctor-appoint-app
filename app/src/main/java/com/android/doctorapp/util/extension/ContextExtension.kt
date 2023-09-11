@@ -9,7 +9,13 @@ import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.android.doctorapp.BuildConfig
+import com.android.doctorapp.util.constants.ConstantKey.DATE_AND_DAY_NAME_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.FULL_DATE_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.HOUR_MIN_AM_PM_FORMAT
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 fun Context.toast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
@@ -94,4 +100,34 @@ fun Context.selectDate(maxDate: Long?, minDate: Long?, handleClick: (date: Strin
     maxDate?.let { datePickerDialog.datePicker.maxDate = it }
     minDate?.let { datePickerDialog.datePicker.minDate = it }
     datePickerDialog.show()
+}
+
+fun convertDate(originalDateStr: String): String {
+    return try {
+        val originalDateFormat = SimpleDateFormat(FULL_DATE_FORMAT, Locale.getDefault())
+        val targetDateFormat = SimpleDateFormat(DATE_AND_DAY_NAME_FORMAT, Locale.getDefault())
+
+        val calendar = Calendar.getInstance()
+        calendar.time = originalDateFormat.parse(originalDateStr) ?: Date()
+
+        targetDateFormat.format(calendar.time)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
+    }
+}
+
+fun convertTime(originalTimeStr: String): String {
+    return try {
+        val originalTimeFormat = SimpleDateFormat(FULL_DATE_FORMAT, Locale.getDefault())
+        val targetTimeFormat = SimpleDateFormat(HOUR_MIN_AM_PM_FORMAT, Locale.getDefault())
+
+        val calendar = Calendar.getInstance()
+        calendar.time = originalTimeFormat.parse(originalTimeStr) ?: Date()
+
+        targetTimeFormat.format(calendar.time)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
+    }
 }

@@ -115,6 +115,9 @@
     <string name="update">Update</string>
     <string name="delete">Delete</string>
     <string name="are_you_sure_want_to_delete">Are you sure you want to delete?</string>
+    <string name="title_appointment">Book Appointment</string>
+    <string name="title_schedule">Schedule</string>
+    <string name="title_select_time">Select Time</string>
     <string name="nearest_doctor">Nearest doctor</string>
     <string name="book_appointment">Book Appointment</string>
     <string name="specialist">Specialist :</string>
@@ -130,4 +133,7 @@
     <string name="doctor_details">Doctor Details</string>
     <string name="degree_label">Degree: </string>
     <string name="specialization_label">Specialization: </string>
+    <string name="booking">Booking</string>
+    <string name="dialog_appointment_desc">Are you sure you want to Booking Appointment?</string>
+    <string name="online_booking">Online Booking</string>
 </resources>
