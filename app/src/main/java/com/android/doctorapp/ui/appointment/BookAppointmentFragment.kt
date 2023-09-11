@@ -1,7 +1,6 @@
 package com.android.doctorapp.ui.appointment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,14 +17,12 @@ import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.repository.models.TimeSlotModel
-import com.android.doctorapp.ui.appointment.adapter.AppointmentAdapter
 import com.android.doctorapp.ui.appointment.adapter.AppointmentDateAdapter
 import com.android.doctorapp.ui.appointment.adapter.AppointmentTimeAdapter
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.negativeButton
 import com.android.doctorapp.util.extension.neutralButton
-import com.android.doctorapp.util.extension.toast
 import java.util.Date
 import javax.inject.Inject
 
@@ -52,6 +49,10 @@ class BookAppointmentFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+        val arguments: Bundle? = arguments
+        if (arguments != null) {
+            viewModel.userId.value = arguments.getString(ConstantKey.BundleKeys.USER_ID).toString()
+        }
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
             viewModel = this@BookAppointmentFragment.viewModel
@@ -78,6 +79,8 @@ class BookAppointmentFragment :
         binding.rvScheduleDate.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rvTime.layoutManager = GridLayoutManager(requireContext(), 4)
+
+        viewModel.getDoctorData()
 
         viewModel.daysDateList.observe(viewLifecycleOwner) {
             updateDateRecyclerview(it)
@@ -109,7 +112,6 @@ class BookAppointmentFragment :
     }
 
     private fun updateDateRecyclerview(dateList: ArrayList<DateSlotModel>) {
-        val TAG = "Hello"
         appointmentDateAdapter = AppointmentDateAdapter(dateList,
             object : AppointmentDateAdapter.OnItemClickListener {
                 override fun onItemClick(item: DateSlotModel, position: Int) {
@@ -134,7 +136,6 @@ class BookAppointmentFragment :
     }
 
     private fun updateTimeRecyclerview(timeList: ArrayList<TimeSlotModel>) {
-        val TAG = "Hello"
         appointmentTimeAdapter = AppointmentTimeAdapter(timeList,
             object : AppointmentTimeAdapter.OnItemClickListener {
                 override fun onItemClick(item: TimeSlotModel, position: Int) {
@@ -143,7 +144,6 @@ class BookAppointmentFragment :
                             timePreviousPosition = position
                             timeList[index].isTimeSlotBook = true
                             selectedTime = item.timeSlot!!
-//                            appointmentTimeAdapter.notifyItemChanged(position)
                         } else {
                             if (timeList[index].isTimeSlotBook) {
                                 timeList[index].isTimeSlotBook = index != timePreviousPosition
@@ -153,7 +153,6 @@ class BookAppointmentFragment :
                         }
                         appointmentTimeAdapter.notifyDataSetChanged()
                     }
-
                     viewModel.isTimeSelected.value = true
                     viewModel.validateDateTime()
                 }

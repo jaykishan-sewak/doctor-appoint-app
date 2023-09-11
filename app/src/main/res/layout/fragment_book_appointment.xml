@@ -50,38 +50,37 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/text_doctor_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_20"
             android:layout_marginTop="@dimen/margin_15"
-            android:text="Dr. Test 1"
+            android:layout_marginEnd="@dimen/margin_20"
+            android:text="@{viewModel.doctorName}"
             android:textColor="@color/white"
-            android:textSize="14dp"
+            app:layout_constraintEnd_toEndOf="@+id/doctor_detail_view"
             app:layout_constraintStart_toEndOf="@+id/ic_doctor_profile"
             app:layout_constraintTop_toTopOf="@+id/ic_doctor_profile" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/text_doctor_specialization"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="CARDIOLOGISTS"
+            android:text="@{viewModel.doctorSpecialities}"
             android:textColor="@color/white"
-            android:textSize="14dp"
+            app:layout_constraintEnd_toEndOf="@+id/text_doctor_name"
             app:layout_constraintStart_toStartOf="@+id/text_doctor_name"
             app:layout_constraintTop_toBottomOf="@+id/text_doctor_name" />
 
-        <androidx.appcompat.widget.AppCompatRatingBar
-            android:id="@+id/rating"
+        <RatingBar
+            android:id="@+id/doctorRatingBar"
+            style="@style/Widget.AppCompat.RatingBar.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:max="5"
             android:rating="3.5"
-            android:scaleX=".5"
-            android:scaleY=".5"
-            android:transformPivotX="0dp"
-            android:transformPivotY="0dp"
             app:layout_constraintStart_toStartOf="@+id/text_doctor_specialization"
             app:layout_constraintTop_toBottomOf="@+id/text_doctor_specialization" />
+
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/text_title_schedule"

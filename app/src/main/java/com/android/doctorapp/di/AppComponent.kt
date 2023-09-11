@@ -36,7 +36,6 @@ interface AppComponent {
     fun inject(fragment: AdminDashboardFragment)
     fun inject(fragment: OtpVerificationFragment)
     fun inject(fragment: BookAppointmentFragment)
-    fun inject(fragment: UserDashboardFragment)
     fun inject(fragment: UserAppointmentFragment)
     fun inject(fragment: UserRequestFragment)
     fun inject(fragment: AppointmentDoctorFragment)

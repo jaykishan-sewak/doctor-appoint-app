@@ -40,9 +40,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-<!--                    android:background="@{timeModel.timeSelect ? @drawable/disable_date_time_bg : @drawable/blue_border_drawable}"-->
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

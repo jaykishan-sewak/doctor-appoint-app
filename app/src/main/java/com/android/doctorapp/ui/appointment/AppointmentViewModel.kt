@@ -1,7 +1,6 @@
 package com.android.doctorapp.ui.appointment
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -16,13 +15,9 @@ import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.repository.models.TimeSlotModel
-import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.constants.ConstantKey.FULL_DATE_FORMAT
-import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isNetworkAvailable
-import com.android.doctorapp.util.extension.negativeButton
-import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.toast
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -35,12 +30,12 @@ import javax.inject.Inject
 
 class AppointmentViewModel @Inject constructor(
     private val appointmentRepository: AppointmentRepository,
-    private val session: Session
-
+    private val session: Session,
+    private val context: Context,
+    private val resourceProvider: ResourceProvider
 ) : BaseViewModel() {
 
     private val dateFormatFull = SimpleDateFormat(FULL_DATE_FORMAT)
-    val dateFormat = SimpleDateFormat(FORMATTED_DATE)
 
     private val _daysDateList = MutableLiveData<ArrayList<DateSlotModel>>()
     val daysDateList = _daysDateList.asLiveData()
@@ -51,7 +46,6 @@ class AppointmentViewModel @Inject constructor(
     private val timeList = ArrayList<TimeSlotModel>()
 
     private val _holidayDateList = MutableLiveData<ArrayList<Date>>()
-    val holidayDateList = _holidayDateList.asLiveData()
     private val holidayList = ArrayList<Date>()
 
     private val weekOfDayList = ArrayList<String>()
@@ -60,8 +54,12 @@ class AppointmentViewModel @Inject constructor(
     var isTimeSelected: MutableLiveData<Boolean> = MutableLiveData(false)
     var isDateSelected: MutableLiveData<Boolean> = MutableLiveData(false)
 
-        val isBookAppointmentClick: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isBookAppointmentClick: MutableLiveData<Boolean> = MutableLiveData(false)
     val onlineBookingToggleData: MutableLiveData<Boolean> = MutableLiveData(false)
+
+    val userId: MutableLiveData<String> = MutableLiveData("")
+    val doctorName: MutableLiveData<String> = MutableLiveData()
+    val doctorSpecialities: MutableLiveData<String> = MutableLiveData()
 
     init {
         getHolidayList()
@@ -222,7 +220,7 @@ class AppointmentViewModel @Inject constructor(
             val date = inputFormat.parse(inputDateString)
             outputFormat.format(date)
         } catch (e: Exception) {
-            Log.d("Format issue--", e.message.toString())
+            e.fillInStackTrace()
             ""
         }
     }
@@ -235,7 +233,7 @@ class AppointmentViewModel @Inject constructor(
             val date = inputFormat.parse(inputDateString)
             outputFormat.format(date)
         } catch (e: Exception) {
-            Log.d("TAG", "convertDayName: ${e.message}")
+            e.printStackTrace()
             ""
         }
     }
@@ -243,19 +241,6 @@ class AppointmentViewModel @Inject constructor(
     fun validateDateTime() {
         isBookAppointmentDataValid.value = isDateSelected.value == true
                 && isTimeSelected.value == true
-    }
-
-    fun changeDateClick(item: TimeSlotModel, position: Int) {
-        timeList.forEachIndexed { index, timeSlotModel ->
-            if (index == position) {
-                timeList[index] = TimeSlotModel(timeSlot = item.timeSlot, isTimeSlotBook = true)
-                return@forEachIndexed
-            } /*else {
-               timeList[index] = TimeSlotModel(timeSlot = item.timeSlot, isTimeSlotBook = false)
-               return@forEachIndexed
-           }*/
-        }
-        _timeSlotList.value = timeList
     }
 
     fun bookAppointment() {
@@ -272,25 +257,58 @@ class AppointmentViewModel @Inject constructor(
                     status = "PROGRESS",
                     userId = it.toString()
                 )
-                when (val response = appointmentRepository.addBookingAppointment(appointmentModel, fireStore)) {
+                when (val response =
+                    appointmentRepository.addBookingAppointment(appointmentModel, fireStore)) {
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
 
                     }
+
                     is ApiErrorResponse -> {
-                         setShowProgress(false)
+                        setShowProgress(false)
                     }
 
                     is ApiNoNetworkResponse -> {
-                         setShowProgress(false)
+                        setShowProgress(false)
                     }
 
                     else -> {
                         setShowProgress(false)
                     }
-
-
                 }
+            }
+        }
+    }
+
+    fun getDoctorData() {
+        viewModelScope.launch {
+            if (context.isNetworkAvailable()) {
+                setShowProgress(true)
+                when (val response =
+                    appointmentRepository.getDoctorById(userId.value.toString(), fireStore)) {
+                    is ApiSuccessResponse -> {
+                        doctorName.value = response.body.name
+                        doctorSpecialities.value = response.body.specialities.toString()
+                        setShowProgress(false)
+                    }
+
+                    is ApiErrorResponse -> {
+                        context.toast(response.errorMessage)
+                        setShowProgress(false)
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        context.toast(response.errorMessage)
+                        setShowProgress(false)
+                    }
+
+                    else -> {
+                        context.toast(resourceProvider.getString(R.string.something_went_wrong))
+                        setShowProgress(false)
+                    }
+                }
+            } else {
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
             }
         }
     }
