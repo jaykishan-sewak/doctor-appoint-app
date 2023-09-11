@@ -17,6 +17,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
+
 fun Context.toast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
@@ -91,6 +92,13 @@ fun Context.selectDate(maxDate: Long?, minDate: Long?, handleClick: (date: Strin
         myCalendar.set(Calendar.MONTH, month)
         myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
         handleClick.invoke(selectedDate)
+
+//        val sdf = SimpleDateFormat(FULL_DATE_FORMAT)
+//        val formatedDate = sdf.format(myCalendar.getTime())
+//
+//        val date = sdf.parse(formatedDate)
+//        Log.d("TAG", "selectDate: $date")
+
     }
 
     val datePickerDialog = DatePickerDialog(
@@ -130,4 +138,19 @@ fun convertTime(originalTimeStr: String): String {
         e.printStackTrace()
         ""
     }
+}
+
+fun Context.convertDateToFull(inputDateString: String) {
+    /*try {
+        val formatter = SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH)
+        val dateInString = "07-Mar-2023"
+        val date = formatter.parse(dateInString)
+        Log.d("TAG", "convertDateToFull: $date")
+
+    } catch (ex: ParseException) {
+        Log.d("TAG", "convertDateToFull Catch : ${ex.message}")
+        ex.printStackTrace()
+    }*/
+
+
 }

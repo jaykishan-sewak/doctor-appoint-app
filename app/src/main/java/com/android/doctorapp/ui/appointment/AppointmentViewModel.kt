@@ -15,6 +15,8 @@ import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.repository.models.TimeSlotModel
+import com.android.doctorapp.util.constants.ConstantKey.DATE_NAME_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.constants.ConstantKey.FULL_DATE_FORMAT
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isNetworkAvailable
@@ -214,8 +216,8 @@ class AppointmentViewModel @Inject constructor(
 
     private fun convertDate(inputDateString: String): String {
         return try {
-            val inputFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy")
-            val outputFormat = SimpleDateFormat("dd-MM-yyyy")
+            val inputFormat = SimpleDateFormat(FULL_DATE_FORMAT)
+            val outputFormat = SimpleDateFormat(FORMATTED_DATE)
 
             val date = inputFormat.parse(inputDateString)
             outputFormat.format(date)
@@ -227,8 +229,8 @@ class AppointmentViewModel @Inject constructor(
 
     private fun convertDayName(inputDateString: String): String {
         return try {
-            val inputFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy")
-            val outputFormat = SimpleDateFormat("EEE")
+            val inputFormat = SimpleDateFormat(FULL_DATE_FORMAT)
+            val outputFormat = SimpleDateFormat(DATE_NAME_FORMAT)
 
             val date = inputFormat.parse(inputDateString)
             outputFormat.format(date)
