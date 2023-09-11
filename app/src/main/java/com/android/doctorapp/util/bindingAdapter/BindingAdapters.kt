@@ -21,6 +21,7 @@ import com.android.doctorapp.R
 import com.android.doctorapp.util.ImageUtils
 import com.android.doctorapp.util.extension.convertDate
 import com.android.doctorapp.util.extension.convertTime
+import com.android.doctorapp.util.constants.ConstantKey.MALE_GENDER
 import com.android.doctorapp.util.extension.hideKeyboard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -177,7 +178,7 @@ fun spannableText(view: TextView, mainText: String?, secondaryText: String?, sec
 @BindingAdapter("app:genderImage")
 fun setGenderImage(imageView: AppCompatImageView, gender: String) {
     val drawableRes =
-        if (gender == "MALE") R.drawable.ic_male_placeholder else R.drawable.ic_female_placeholder
+        if (gender.isNotEmpty() && gender == MALE_GENDER) R.drawable.ic_male_placeholder else R.drawable.ic_female_placeholder
     imageView.setImageResource(drawableRes)
 }
 @BindingAdapter("app:appointmentDate")
@@ -195,4 +196,13 @@ fun setSpecialization(textView: AppCompatTextView, specialities: List<String>?) 
     textView.text = if (specialities?.isNotEmpty() == true)
         android.text.TextUtils.join(",", specialities)
     else ""
+}
+
+@BindingAdapter("app:string")
+fun setString(textView: AppCompatTextView, specialities: List<String>?) {
+    textView.text = if (specialities?.isNotEmpty() == true)
+        android.text.TextUtils.join(",", specialities)
+     else
+        ""
+
 }

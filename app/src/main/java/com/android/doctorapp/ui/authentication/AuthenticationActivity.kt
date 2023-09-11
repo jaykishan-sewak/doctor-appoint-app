@@ -1,7 +1,6 @@
 package com.android.doctorapp.ui.authentication
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.navigation.findNavController
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.ActivityMainBinding
@@ -26,10 +25,9 @@ class AuthenticationActivity : BaseActivity<ActivityMainBinding>(R.layout.activi
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         navController = findNavController(R.id.nav_host_fragment_content_main)
-
     }
 
 }

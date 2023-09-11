@@ -99,7 +99,10 @@
         <action
             android:id="@+id/admin_to_add_doctor"
             app:destination="@+id/AddDoctorFragment" />
-
+        <action
+            android:id="@+id/admin_to_doctor_details"
+            app:destination="@+id/DoctorDetailsFragment"
+            />
     </fragment>
 
 
@@ -129,4 +132,13 @@
 
     </fragment>
 
+    <fragment
+        android:id="@+id/DoctorDetailsFragment"
+        android:name="com.android.doctorapp.ui.admin.DoctorDetailsFragment"
+        tools:layout="@layout/fragment_doctor_details">
+        <action
+            android:id="@+id/admin_to_add_doctor"
+            app:destination="@+id/AddDoctorFragment" />
+
+    </fragment>
 </navigation>

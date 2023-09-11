@@ -86,6 +86,10 @@ class AddUserProfileFragment :
 
             override fun onVerificationFailed(e: FirebaseException) {
                 viewModel.hideProgress()
+                context?.alert {
+                    setMessage(e.message)
+                    neutralButton { }
+                }
             }
 
             override fun onCodeSent(

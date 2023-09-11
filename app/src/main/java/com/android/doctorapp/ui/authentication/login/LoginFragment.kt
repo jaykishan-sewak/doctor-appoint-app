@@ -15,6 +15,7 @@ import com.android.doctorapp.databinding.FragmentLoginBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.ui.admin.AdminDashboardActivity
 import com.android.doctorapp.ui.doctordashboard.DoctorDashboardActivity
 import com.android.doctorapp.ui.userdashboard.UserDashboardActivity
 import com.android.doctorapp.util.constants.ConstantKey.USER
@@ -82,6 +83,12 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
         viewModel.userChecked.observe(viewLifecycleOwner) {
             if (it) {
                 startActivityFinish<UserDashboardActivity>()
+            }
+        }
+
+        viewModel.adminChecked.observe(viewLifecycleOwner) {
+            if (it) {
+                startActivityFinish<AdminDashboardActivity>()
             }
         }
 

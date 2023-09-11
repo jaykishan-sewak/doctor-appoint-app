@@ -159,8 +159,7 @@ class LoginViewModel @Inject constructor(
                 session.putString(USER_ID, response.body.userId)
                 session.putBoolean(USER_IS_EMAIL_VERIFIED, false)
                 if (response.body.isAdmin) {
-                    _navigationListener.postValue(R.id.action_loginFragment_to_adminDashboardFragment)
-
+                    adminChecked.value = true
                 } else if (response.body.isDoctor) {
 
                     if (response.body.isUserVerified) {
