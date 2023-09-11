@@ -28,7 +28,6 @@ class OtpVerificationFragment :
     lateinit var contactNumber: String
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (requireActivity().application as AppComponentProvider).getAppComponent().inject(this)

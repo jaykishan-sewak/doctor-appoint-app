@@ -1,8 +1,6 @@
-package com.android.doctorapp.ui.profile
+package com.android.doctorapp.ui.userdashboard.userfragment
 
-import android.content.ContentValues.TAG
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -16,15 +14,13 @@ import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
-import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class UserDashboardViewModel @Inject constructor(
+class UserAppointmentViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val adminRepository: AdminRepository,
     private val context: Context
-
 ) : BaseViewModel() {
 
     private val items = MutableLiveData<List<UserDataResponseModel>>()

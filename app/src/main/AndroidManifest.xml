@@ -20,7 +20,7 @@
             android:name=".ui.userdashboard.UserDashboardActivity"
             android:exported="false"
             android:theme="@style/Theme.InfusionTemplate.NoActionBar"
-            />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.splash.SplashScreenActivity"
             android:exported="true"
@@ -39,7 +39,8 @@
         <activity
             android:name=".ui.doctordashboard.DoctorDashboardActivity"
             android:exported="false"
-            android:theme="@style/Theme.InfusionTemplate.NoActionBar" />
+            android:theme="@style/Theme.InfusionTemplate.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.settings.SettingsActivity"
             android:exported="false"
