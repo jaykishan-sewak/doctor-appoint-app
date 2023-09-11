@@ -83,7 +83,7 @@ class UpdateDoctorProfileFragment :
     override fun builder(): FragmentToolbar {
         return FragmentToolbar.Builder()
             .withId(R.id.toolbar)
-            .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.purple_500))
+            .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             .withTitle(R.string.title_profile)
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
             .build()
