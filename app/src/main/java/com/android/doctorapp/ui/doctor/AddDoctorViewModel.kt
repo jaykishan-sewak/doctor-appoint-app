@@ -104,7 +104,7 @@ class AddDoctorViewModel @Inject constructor(
     val degreeLiveList = MutableLiveData<List<String>>()
     val specializationLiveList = MutableLiveData<List<String>>()
     private val selectGenderValue: MutableLiveData<String> =
-        MutableLiveData(ConstantKey.GENDER_VALUE)
+        MutableLiveData(ConstantKey.MALE_GENDER)
     val userId: MutableLiveData<String?> = MutableLiveData(null)
     val tempEmail: MutableLiveData<String?> = MutableLiveData()
     val tempContactNumber: MutableLiveData<String?> = MutableLiveData()

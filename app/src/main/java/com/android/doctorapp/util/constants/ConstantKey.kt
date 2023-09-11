@@ -19,7 +19,7 @@ object ConstantKey {
     const val USER = "USER"
     const val NOT_FOUND = "Not Found"
     const val SUCCESS = "Success"
-    const val GENDER_VALUE = "MALE"
+    const val MALE_GENDER = "MALE"
 
     object DBKeys {
         const val TABLE_NAME = "user_data"

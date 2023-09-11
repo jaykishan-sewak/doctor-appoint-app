@@ -19,6 +19,7 @@ import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.android.doctorapp.R
 import com.android.doctorapp.util.ImageUtils
+import com.android.doctorapp.util.constants.ConstantKey.MALE_GENDER
 import com.android.doctorapp.util.extension.hideKeyboard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -175,7 +176,7 @@ fun spannableText(view: TextView, mainText: String?, secondaryText: String?, sec
 @BindingAdapter("app:genderImage")
 fun setGenderImage(imageView: AppCompatImageView, gender: String) {
     val drawableRes =
-        if (gender.isNotEmpty() && gender == "MALE") R.drawable.ic_male_placeholder else R.drawable.ic_female_placeholder
+        if (gender.isNotEmpty() && gender == MALE_GENDER) R.drawable.ic_male_placeholder else R.drawable.ic_female_placeholder
     imageView.setImageResource(drawableRes)
 }
 
