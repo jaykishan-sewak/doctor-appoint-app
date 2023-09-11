@@ -52,7 +52,6 @@ class AdminDashboardViewModel @Inject constructor(
                         setShowProgress(false)
                         if (response.body.isNotEmpty()) {
                             doctorList.value = response.body!!
-                            Log.d("Data----", Gson().toJson(response.body))
                         }
                     }
 
@@ -86,7 +85,6 @@ class AdminDashboardViewModel @Inject constructor(
                                 currentList.removeAt(itemPosition.value!!)
                                 doctorList.postValue(currentList)
                             }
-                            Log.d("Data----", "${response.body}")
                         }
                     }
 
@@ -122,7 +120,6 @@ class AdminDashboardViewModel @Inject constructor(
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
                         doctorDetails.value = response.body
-                        Log.d("Data---", Gson().toJson(response.body))
                     }
 
                     is ApiErrorResponse -> {
