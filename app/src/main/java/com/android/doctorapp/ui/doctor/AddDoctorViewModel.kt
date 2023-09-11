@@ -101,8 +101,8 @@ class AddDoctorViewModel @Inject constructor(
     val isUserReload: MutableLiveData<Boolean?> = MutableLiveData(false)
     var binding: FragmentUpdateDoctorProfileBinding? = null
 
-    val degreeLiveList = mutableListOf<String>()
-    val specializationLiveList = mutableListOf<String>()
+    val degreeLiveList = MutableLiveData<List<String>>()
+    val specializationLiveList = MutableLiveData<List<String>>()
     private val selectGenderValue: MutableLiveData<String> =
         MutableLiveData(ConstantKey.GENDER_VALUE)
     val userId: MutableLiveData<String?> = MutableLiveData(null)
@@ -145,6 +145,8 @@ class AddDoctorViewModel @Inject constructor(
 
                             }
                             notificationToggleData.value = response.body.isNotificationEnable
+                            degreeLiveList.value = response.body.degree?.toList()
+                            specializationLiveList.value = response.body.specialities?.toList()
                             data.value = listOf(userObj)
                             setShowProgress(false)
                         }

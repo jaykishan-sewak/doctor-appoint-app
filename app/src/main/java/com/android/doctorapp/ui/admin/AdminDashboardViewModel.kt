@@ -8,6 +8,8 @@ import com.android.doctorapp.R
 import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AdminRepository
+import com.android.doctorapp.repository.local.Session
+import com.android.doctorapp.repository.local.USER_ID
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
@@ -24,7 +26,8 @@ import javax.inject.Inject
 class AdminDashboardViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val adminRepository: AdminRepository,
-    private val context: Context
+    private val context: Context,
+    private val session: Session
 
 ) : BaseViewModel() {
     val doctorList = MutableLiveData<List<UserDataResponseModel>>()
@@ -140,7 +143,10 @@ class AdminDashboardViewModel @Inject constructor(
     }
 
     fun moveToUpdateScreen() {
-        _navigationListener.value = R.id.admin_to_add_doctor
+        viewModelScope.launch {
+            session.putString(USER_ID, doctorDetails.value?.userId!!)
+        }
+        _navigationListener.value = R.id.admin_to_update_doctor
     }
 
     fun deleteDoctorData(id: String) {

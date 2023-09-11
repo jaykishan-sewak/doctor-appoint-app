@@ -49,6 +49,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:paddingHorizontal="@dimen/margin_10"
                     android:background="@color/doctor_bg">
 
                     <androidx.cardview.widget.CardView
@@ -98,11 +99,10 @@
                         android:layout_marginStart="@dimen/margin_5"
                         app:layout_constraintStart_toEndOf="@id/tvDoctorDegree"
                         app:layout_constraintTop_toTopOf="@id/tvDoctorDegree"
-                        app:layout_constraintBottom_toBottomOf="@id/tvDoctorDegree"
                         app:layout_constraintEnd_toEndOf="parent"
                         android:textSize="14sp"
+                        android:layout_marginTop="@dimen/margin_4"
                         android:textColor="@color/grey"
-                        android:maxLines="1"
                         app:string="@{viewModel.doctorDetails != null ? viewModel.doctorDetails.degree : null}"
                         />
                     <androidx.appcompat.widget.AppCompatTextView
@@ -121,12 +121,12 @@
                         android:layout_marginStart="@dimen/margin_5"
                         android:textColor="@color/grey"
                         android:textSize="14sp"
+                        android:layout_marginTop="@dimen/margin_4"
                         app:string="@{viewModel.doctorDetails != null ? viewModel.doctorDetails.specialities : null}"
                         app:layout_constraintStart_toEndOf="@id/tvDoctorSpec"
                         app:layout_constraintTop_toTopOf="@id/tvDoctorSpec"
-                        app:layout_constraintBottom_toBottomOf="@id/tvDoctorSpec"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:maxLines="1"/>
+                        />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 

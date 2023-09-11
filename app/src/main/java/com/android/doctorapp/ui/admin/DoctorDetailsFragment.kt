@@ -14,10 +14,10 @@ import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.ADMIN_FRAGMENT
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.negativeButton
 import com.android.doctorapp.util.extension.positiveButton
-import com.google.gson.Gson
 import javax.inject.Inject
 
 class DoctorDetailsFragment :
@@ -70,11 +70,16 @@ class DoctorDetailsFragment :
     }
 
     private fun registerObserver() {
+        val navController = findNavController()
+        navController.previousBackStackEntry?.savedStateHandle?.set(
+            ConstantKey.BundleKeys.ADMIN_FRAGMENT,
+            false
+        )
         viewModel.navigationListener.observe(viewLifecycleOwner) {
             val bundle = Bundle()
-            bundle.putString(
-                ConstantKey.BundleKeys.DOCTOR_DATA,
-                Gson().toJson(viewModel.doctorDetails.value)
+            bundle.putBoolean(
+                ADMIN_FRAGMENT,
+                true
             )
             findNavController().navigate(
                 it, bundle
@@ -88,7 +93,11 @@ class DoctorDetailsFragment :
 
                     positiveButton { dialog ->
                         viewModel.deleteDoctor(it)
-                        findNavController().popBackStack()
+                        navController.previousBackStackEntry?.savedStateHandle?.set(
+                            ConstantKey.BundleKeys.ADMIN_FRAGMENT,
+                            true
+                        )
+                        navController.popBackStack()
                         dialog.dismiss()
                     }
                     negativeButton(resources.getString(R.string.cancel)) { dialog ->

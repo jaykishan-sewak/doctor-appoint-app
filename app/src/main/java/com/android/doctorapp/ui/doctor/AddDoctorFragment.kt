@@ -13,13 +13,9 @@ import com.android.doctorapp.databinding.FragmentAddDoctorBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
-import com.android.doctorapp.repository.models.UserDataResponseModel
-import com.android.doctorapp.util.constants.ConstantKey
-import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.ADMIN_FRAGMENT
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.toast
-import com.google.gson.Gson
 import javax.inject.Inject
 
 class AddDoctorFragment : BaseFragment<FragmentAddDoctorBinding>(R.layout.fragment_add_doctor) {
@@ -47,20 +43,6 @@ class AddDoctorFragment : BaseFragment<FragmentAddDoctorBinding>(R.layout.fragme
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        val arguments: Bundle? = arguments
-        if (arguments != null) {
-            val doctorData = Gson().fromJson(
-                arguments.getString(ConstantKey.BundleKeys.DOCTOR_DATA).toString(),
-                UserDataResponseModel::class.java
-            )
-            viewModel.name.value = doctorData.name
-            viewModel.email.value = doctorData.email
-            viewModel.contactNumber.value = doctorData.contactNumber
-            viewModel.userId.value = doctorData.userId
-            viewModel.tempEmail.value = doctorData.email
-            viewModel.tempContactNumber.value = doctorData.contactNumber
-
-        }
         return binding {
             viewModel = this@AddDoctorFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
@@ -74,14 +56,11 @@ class AddDoctorFragment : BaseFragment<FragmentAddDoctorBinding>(R.layout.fragme
     }
 
     private fun registerObserver() {
-        val navController = findNavController()
-        navController.previousBackStackEntry?.savedStateHandle?.set(ADMIN_FRAGMENT, false)
         viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
             if (it.equals("Success")) {
                 context?.toast(resources.getString(R.string.doctor_save_successfully))
                 viewModel.navigationListener.observe(viewLifecycleOwner) {
-                    navController.previousBackStackEntry?.savedStateHandle?.set(ADMIN_FRAGMENT, true)
-                    navController.popBackStack()
+                    findNavController().popBackStack()
                 }
             } else {
                 context?.alert {

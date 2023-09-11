@@ -22,6 +22,7 @@ import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.ui.doctor.adapter.CustomAutoCompleteAdapter
 import com.android.doctorapp.ui.doctordashboard.DoctorDashboardActivity
+import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.IS_DOCTOR_OR_USER_KEY
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.STORED_VERIFICATION_Id_KEY
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_CONTACT_NUMBER_KEY
@@ -56,10 +57,11 @@ class UpdateDoctorProfileFragment :
     lateinit var storedVerificationId: String
     lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
     lateinit var mTimePicker: TimePickerDialog
-    private val mCurrentTime:Calendar = Calendar.getInstance()
+    private val mCurrentTime: Calendar = Calendar.getInstance()
     private val hour = mCurrentTime.get(Calendar.HOUR_OF_DAY)
     private val minute = mCurrentTime.get(Calendar.MINUTE)
     val handler = Handler(Looper.getMainLooper())
+    var isFromAdmin: Boolean = false
     private val runnable = object : Runnable {
         override fun run() {
             viewModel.viewModelScope.launch {
@@ -81,8 +83,12 @@ class UpdateDoctorProfileFragment :
         return FragmentToolbar.Builder()
             .withId(R.id.toolbar)
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.purple_500))
-            .withTitle(R.string.title_profile)
+            .withTitle(if (isFromAdmin) R.string.update_doctor else R.string.title_profile)
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
+            .withNavigationIcon(if (isFromAdmin) requireActivity().getDrawable(R.drawable.ic_back_white) else null)
+            .withNavigationListener {
+                findNavController().popBackStack()
+            }
             .build()
     }
 
@@ -93,6 +99,10 @@ class UpdateDoctorProfileFragment :
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
         handler.postDelayed(runnable, 1000)
+        val arguments: Bundle? = arguments
+        if (arguments != null)
+            isFromAdmin = arguments.getBoolean(ConstantKey.BundleKeys.ADMIN_FRAGMENT)
+
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             override fun onCodeAutoRetrievalTimeOut(str: String) {
                 viewModel.hideProgress()
@@ -119,11 +129,11 @@ class UpdateDoctorProfileFragment :
                 resendToken = token
                 val degreeList = binding.chipGroup.children.toList()
                     .map { (it as Chip).text.toString() } as ArrayList<String>?
-                viewModel.degreeLiveList.addAll(degreeList!!)
+                viewModel.degreeLiveList.value = degreeList!!
 
                 val specialityList = binding.chipGroupSpec.children.toList()
                     .map { (it as Chip).text.toString() } as ArrayList<String>?
-                viewModel.specializationLiveList.addAll(specialityList!!)
+                viewModel.specializationLiveList.value = specialityList!!
 
                 val bundle = Bundle()
                 bundle.putString(STORED_VERIFICATION_Id_KEY, storedVerificationId)
@@ -154,16 +164,6 @@ class UpdateDoctorProfileFragment :
 
     override fun onResume() {
         super.onResume()
-        if (viewModel.degreeLiveList.size > 0) {
-            for (i in 0 until viewModel.degreeLiveList.size) {
-                addChip(viewModel.degreeLiveList[i])
-            }
-        }
-        if (viewModel.specializationLiveList.size > 0) {
-            for (i in 0 until viewModel.specializationLiveList.size) {
-                addSpecChip(viewModel.specializationLiveList[i])
-            }
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -222,7 +222,10 @@ class UpdateDoctorProfileFragment :
         viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
             if (it.equals(requireContext().resources.getString(R.string.success))) {
                 context?.toast(resources.getString(R.string.doctor_update_successfully))
-                startActivityFinish<DoctorDashboardActivity> { }
+                if (isFromAdmin) {
+                    findNavController().popBackStack()
+                } else
+                    startActivityFinish<DoctorDashboardActivity> { }
             } else {
                 context?.alert {
                     setTitle(getString(R.string.doctor_not_save))
@@ -331,6 +334,21 @@ class UpdateDoctorProfileFragment :
                         enteredSpecializationText = s.toString()
                 }
             })
+        }
+        viewModel.degreeLiveList.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) {
+                for (element in it) {
+                    addChip(element)
+                }
+            }
+        }
+
+        viewModel.specializationLiveList.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) {
+                for (element in it) {
+                    addSpecChip(element)
+                }
+            }
         }
     }
 
