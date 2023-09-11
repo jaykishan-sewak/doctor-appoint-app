@@ -10,11 +10,17 @@ import com.android.doctorapp.di.base.BaseActivity
 class AuthenticationActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
 //    private lateinit var navController: NavController
+    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        super.onCreate(savedInstanceState, persistentState)
+        navController = findNavController(R.id.nav_host_fragment_content_main)
 
+    }
 
     override fun onBackPressed() {
-        if (navController.currentDestination?.id == R.id.UpdateUserFragment) {
-            finish()
+        if (navController.currentDestination?.id == R.id.LoginFragment) {
+            onBackPressedDispatcher.onBackPressed()
+        } else if (navController.currentDestination?.id == R.id.LoginFragment) {
+            onBackPressedDispatcher.onBackPressed()
         } else if (navController.currentDestination?.id == R.id.UpdateDoctorFragment) {
             finish()
         } else if (navController.currentDestination?.id == R.id.AdminDashboardFragment) {
@@ -24,12 +30,6 @@ class AuthenticationActivity : BaseActivity<ActivityMainBinding>(R.layout.activi
         } else {
             onBackPressedDispatcher.onBackPressed()
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-        navController = findNavController(R.id.nav_host_fragment_content_main)
-
     }
 
 }

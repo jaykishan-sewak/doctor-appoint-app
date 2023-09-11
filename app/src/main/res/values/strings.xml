@@ -121,7 +121,7 @@
     <string name="label_degree">Degree :</string>
     <string name="view">View</string>
     <string name="type_name">Type Name</string>
-    <string name="appointment">Appointment</string>
+    <string name="appointment">Appointments</string>
     <string name="request">Request</string>
     <string name="doctor_appointment_fragment">Doctor Appointment fragment</string>
     <string name="doctor_request_fragment">Doctor request fragment</string>

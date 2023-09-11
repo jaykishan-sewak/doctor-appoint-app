@@ -7,11 +7,14 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.FragmentAppointmentDoctorBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.models.MyObject
+import com.android.doctorapp.repository.models.RecyclerViewContainer
 import javax.inject.Inject
 
 
@@ -21,6 +24,8 @@ class AppointmentDoctorFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel: AppointmentDoctorViewModel by viewModels { viewModelFactory }
+    private lateinit var viewAdapter: RecyclerView.Adapter<*>
+    private var itemList = mutableListOf<RecyclerViewContainer>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +46,29 @@ class AppointmentDoctorFragment :
         registerObserver(layoutBinding)
         return layoutBinding.root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setData()
+        setRecyclerView()
+    }
+
+    private fun setData() {
+        val object1 = MyObject("Viral Patel")
+        val object2 = MyObject("Hiral Patel")
+
+        val item1 = RecyclerViewContainer(null, true, "23-09-2023", "ViewAll")
+        val item2 = RecyclerViewContainer(object1, false, null, null)
+        val item3 = RecyclerViewContainer(object2, false, null, null)
+        val item4 = RecyclerViewContainer(null, true, "24-09-2023", "ViewAll")
+        val item5 = RecyclerViewContainer(null, true, "23-09-2023", "ViewAll")
+
+    }
+
+    private fun setRecyclerView() {
+
+    }
+
 
     private fun registerObserver(layoutBinding: FragmentAppointmentDoctorBinding) {
 
