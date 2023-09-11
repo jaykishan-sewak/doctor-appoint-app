@@ -1,7 +1,6 @@
 package com.android.doctorapp.ui.doctor
 
 import android.app.TimePickerDialog
-import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -10,9 +9,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.Filter
-import android.widget.Filterable
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.viewModels
@@ -24,7 +20,9 @@ import com.android.doctorapp.databinding.FragmentUpdateDoctorProfileBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.ui.doctor.adapter.CustomAutoCompleteAdapter
 import com.android.doctorapp.ui.doctordashboard.DoctorDashboardActivity
+import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.IS_DOCTOR_OR_USER_KEY
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.STORED_VERIFICATION_Id_KEY
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_CONTACT_NUMBER_KEY
@@ -59,10 +57,11 @@ class UpdateDoctorProfileFragment :
     lateinit var storedVerificationId: String
     lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
     lateinit var mTimePicker: TimePickerDialog
-    val mcurrentTime = Calendar.getInstance()
-    val hour = mcurrentTime.get(Calendar.HOUR_OF_DAY)
-    val minute = mcurrentTime.get(Calendar.MINUTE)
+    private val mCurrentTime: Calendar = Calendar.getInstance()
+    private val hour = mCurrentTime.get(Calendar.HOUR_OF_DAY)
+    private val minute = mCurrentTime.get(Calendar.MINUTE)
     val handler = Handler(Looper.getMainLooper())
+    var isFromAdmin: Boolean = false
     private val runnable = object : Runnable {
         override fun run() {
             viewModel.viewModelScope.launch {
@@ -84,8 +83,12 @@ class UpdateDoctorProfileFragment :
         return FragmentToolbar.Builder()
             .withId(R.id.toolbar)
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.purple_500))
-            .withTitle(R.string.title_profile)
+            .withTitle(if (isFromAdmin) R.string.update_doctor else R.string.title_profile)
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
+            .withNavigationIcon(if (isFromAdmin) requireActivity().getDrawable(R.drawable.ic_back_white) else null)
+            .withNavigationListener {
+                findNavController().popBackStack()
+            }
             .build()
     }
 
@@ -96,6 +99,10 @@ class UpdateDoctorProfileFragment :
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
         handler.postDelayed(runnable, 1000)
+        val arguments: Bundle? = arguments
+        if (arguments != null)
+            isFromAdmin = arguments.getBoolean(ConstantKey.BundleKeys.ADMIN_FRAGMENT)
+
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             override fun onCodeAutoRetrievalTimeOut(str: String) {
                 viewModel.hideProgress()
@@ -107,6 +114,10 @@ class UpdateDoctorProfileFragment :
 
             override fun onVerificationFailed(e: FirebaseException) {
                 viewModel.hideProgress()
+                context?.alert {
+                    setMessage(e.message)
+                    neutralButton { }
+                }
             }
 
             override fun onCodeSent(
@@ -118,11 +129,11 @@ class UpdateDoctorProfileFragment :
                 resendToken = token
                 val degreeList = binding.chipGroup.children.toList()
                     .map { (it as Chip).text.toString() } as ArrayList<String>?
-                viewModel.degreeLiveList.addAll(degreeList!!)
+                viewModel.degreeLiveList.value = degreeList!!
 
                 val specialityList = binding.chipGroupSpec.children.toList()
                     .map { (it as Chip).text.toString() } as ArrayList<String>?
-                viewModel.specializationLiveList.addAll(specialityList!!)
+                viewModel.specializationLiveList.value = specialityList!!
 
                 val bundle = Bundle()
                 bundle.putString(STORED_VERIFICATION_Id_KEY, storedVerificationId)
@@ -153,16 +164,6 @@ class UpdateDoctorProfileFragment :
 
     override fun onResume() {
         super.onResume()
-        if (viewModel.degreeLiveList.size > 0) {
-            for (i in 0 until viewModel.degreeLiveList.size) {
-                addChip(viewModel.degreeLiveList.get(i))
-            }
-        }
-        if (viewModel.specializationLiveList.size > 0) {
-            for (i in 0 until viewModel.specializationLiveList.size) {
-                addSpecChip(viewModel.specializationLiveList.get(i))
-            }
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -221,7 +222,10 @@ class UpdateDoctorProfileFragment :
         viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
             if (it.equals(requireContext().resources.getString(R.string.success))) {
                 context?.toast(resources.getString(R.string.doctor_update_successfully))
-                startActivityFinish<DoctorDashboardActivity> { }
+                if (isFromAdmin) {
+                    findNavController().popBackStack()
+                } else
+                    startActivityFinish<DoctorDashboardActivity> { }
             } else {
                 context?.alert {
                     setTitle(getString(R.string.doctor_not_save))
@@ -331,6 +335,21 @@ class UpdateDoctorProfileFragment :
                 }
             })
         }
+        viewModel.degreeLiveList.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) {
+                for (element in it) {
+                    addChip(element)
+                }
+            }
+        }
+
+        viewModel.specializationLiveList.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) {
+                for (element in it) {
+                    addSpecChip(element)
+                }
+            }
+        }
     }
 
     private fun addSpecializationItem(uppercase: String) {
@@ -376,7 +395,7 @@ class UpdateDoctorProfileFragment :
         PhoneAuthProvider.verifyPhoneNumber(options)
     }
 
-    fun calculateAge(selectedDate: String?): Int {
+    private fun calculateAge(selectedDate: String?): Int {
         val dateFormat = SimpleDateFormat("dd-mm-yyyy", Locale.getDefault())
         val today = Calendar.getInstance()
         val birthDate = Calendar.getInstance()
@@ -395,54 +414,5 @@ class UpdateDoctorProfileFragment :
         }
     }
 
-
-}
-
-
-class CustomAutoCompleteAdapter(context: Context, suggestions: List<String>) :
-    ArrayAdapter<String>(context, android.R.layout.simple_dropdown_item_1line, suggestions),
-    Filterable {
-
-    private var originalSuggestions: List<String> = suggestions.toList()
-
-    override fun getFilter(): Filter {
-        return customFilter
-    }
-
-    private val customFilter = object : Filter() {
-        override fun performFiltering(constraint: CharSequence?): FilterResults {
-            val results = FilterResults()
-            val filteredList = mutableListOf<String>()
-
-            if (constraint.isNullOrEmpty()) {
-                filteredList.addAll(originalSuggestions)
-            } else {
-                val filterPattern = constraint.toString().lowercase().trim()
-                for (suggestion in originalSuggestions) {
-                    if (suggestion.lowercase().contains(filterPattern)) {
-                        filteredList.add(suggestion)
-                    }
-                }
-            }
-
-            if (filteredList.isEmpty()) {
-                filteredList.add(ADD_SUGGESTION_ITEM)
-            }
-
-            results.values = filteredList
-            results.count = filteredList.size
-            return results
-        }
-
-        override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-            clear()
-            addAll(results?.values as List<String>)
-            notifyDataSetChanged()
-        }
-    }
-
-    companion object {
-        const val ADD_SUGGESTION_ITEM = "Add"
-    }
 
 }

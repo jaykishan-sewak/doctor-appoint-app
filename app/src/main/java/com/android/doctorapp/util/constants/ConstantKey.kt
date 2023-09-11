@@ -10,14 +10,16 @@ object ConstantKey {
         const val USER_NAME = "userName"
         const val USER_EMAIL = "userEmail"
         const val USER_ID = "userId"
-
+        const val DOCTOR_DATA= "doctorData"
+        const val ITEM_POSITION = "itemPosition"
+        const val ADMIN_FRAGMENT = "adminFragment"
     }
 
     const val DOCTOR = "DOCTOR"
     const val USER = "USER"
     const val NOT_FOUND = "Not Found"
     const val SUCCESS = "Success"
-    const val GENDER_VALUE = "MALE"
+    const val MALE_GENDER = "MALE"
 
     object DBKeys {
         const val TABLE_NAME = "user_data"
@@ -26,6 +28,13 @@ object ConstantKey {
         const val TABLE_DEGREE = "degree"
         const val TABLE_SPECIALIZATION = "specialization"
         const val FIELD_USER_ID = "userId"
-
+        const val TABLE_APPOINTMENT = "appointment"
     }
+
+    const val FORMATTED_DATE = "dd-mm-yyyy"
+    const val FULL_DATE_FORMAT = "EEE MMM dd HH:mm:ss z yyyy"
+    const val DATE_AND_DAY_NAME_FORMAT = "EE dd"
+    const val HOUR_MIN_AM_PM_FORMAT = "h:mm a"
+
+
 }

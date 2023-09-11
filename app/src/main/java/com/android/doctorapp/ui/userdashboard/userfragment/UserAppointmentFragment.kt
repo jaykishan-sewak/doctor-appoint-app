@@ -16,6 +16,7 @@ import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.ui.userdashboard.userfragment.adapter.UserAppoitmentItemAdapter
+import com.android.doctorapp.util.constants.ConstantKey
 import javax.inject.Inject
 
 
@@ -75,7 +76,9 @@ class UserAppointmentFragment :
             items,
             object : UserAppoitmentItemAdapter.OnItemClickListener {
                 override fun onItemClick(item: UserDataResponseModel, position: Int) {
-                    findNavController().navigate(R.id.action_user_appointment_to_bookAppointment)
+                    val bundle = Bundle()
+                    bundle.putString(ConstantKey.BundleKeys.USER_ID, item.userId)
+                    findNavController().navigate(R.id.action_user_appointment_to_bookAppointment, bundle)
                 }
             }
         )
