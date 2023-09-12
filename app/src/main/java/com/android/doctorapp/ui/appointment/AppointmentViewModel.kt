@@ -15,6 +15,8 @@ import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.repository.models.TimeSlotModel
+import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.DAY_NAME_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.FULL_DATE_FORMAT
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isNetworkAvailable
@@ -62,6 +64,7 @@ class AppointmentViewModel @Inject constructor(
     val doctorSpecialities: MutableLiveData<String> = MutableLiveData()
     private val userName = MutableLiveData<String>()
     private val contactNumber = MutableLiveData<String>()
+    private lateinit var ageDate: Date
     private val age = MutableLiveData<String>()
 
     private val _navigationListener: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -135,7 +138,6 @@ class AppointmentViewModel @Inject constructor(
     private fun getTimeSlot() {
         val calendar = Calendar.getInstance()
         val hoursList = mutableListOf<Date>()
-        val sdf = SimpleDateFormat("h:mm a", Locale.getDefault())
 
         for (i in 0 until 10) {
             calendar.add(Calendar.HOUR_OF_DAY, 1)
@@ -221,8 +223,8 @@ class AppointmentViewModel @Inject constructor(
 
     private fun convertDate(inputDateString: String): String {
         return try {
-            val inputFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy")
-            val outputFormat = SimpleDateFormat("dd-MM-yyyy")
+            val inputFormat = SimpleDateFormat(FULL_DATE_FORMAT)
+            val outputFormat = SimpleDateFormat(DATE_MM_FORMAT)
 
             val date = inputFormat.parse(inputDateString)
             outputFormat.format(date)
@@ -234,8 +236,8 @@ class AppointmentViewModel @Inject constructor(
 
     private fun convertDayName(inputDateString: String): String {
         return try {
-            val inputFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy")
-            val outputFormat = SimpleDateFormat("EEE")
+            val inputFormat = SimpleDateFormat(FULL_DATE_FORMAT)
+            val outputFormat = SimpleDateFormat(DAY_NAME_FORMAT)
 
             val date = inputFormat.parse(inputDateString)
             outputFormat.format(date)
@@ -262,7 +264,7 @@ class AppointmentViewModel @Inject constructor(
                     bookingDateTime = selectedTime,
                     isOnline = onlineBookingToggleData.value == true,
                     status = "PROGRESS",
-                    userName = userName.value.toString(),
+                    name = userName.value.toString(),
                     age = age.value.toString(),
                     contactNumber = contactNumber.value.toString(),
                     userId = it.toString()
@@ -302,7 +304,6 @@ class AppointmentViewModel @Inject constructor(
                         doctorName.value = response.body.name
                         doctorSpecialities.value = response.body.specialities.toString()
                         getUserData()
-//                        setShowProgress(false)
                     }
 
                     is ApiErrorResponse -> {
@@ -335,7 +336,8 @@ class AppointmentViewModel @Inject constructor(
                         is ApiSuccessResponse -> {
                             userName.value = response.body.name
                             contactNumber.value = response.body.contactNumber
-                            age.value = response.body.dob.toString()
+                            ageDate = response.body.dob!!
+                            age.value = calculateAge(response.body.dob.toString())
                             setShowProgress(false)
                         }
 
@@ -362,4 +364,19 @@ class AppointmentViewModel @Inject constructor(
         }
     }
 
+    private fun calculateAge(dateOfBirth: String): String {
+        val dateFormatter = SimpleDateFormat(FULL_DATE_FORMAT)
+        val dob: Date = dateFormatter.parse(dateOfBirth)
+        val calendarDob = Calendar.getInstance()
+        calendarDob.time = dob
+
+        val currentDate = Calendar.getInstance()
+
+        val years = currentDate.get(Calendar.YEAR) - calendarDob.get(Calendar.YEAR)
+        if (currentDate.get(Calendar.DAY_OF_YEAR) < calendarDob.get(Calendar.DAY_OF_YEAR)) {
+            // Adjust age if birthday hasn't occurred yet this year
+            return "${years - 1}"
+        }
+        return years.toString()
+    }
 }
