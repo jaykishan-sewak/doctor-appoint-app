@@ -147,6 +147,7 @@ class BookAppointmentFragment :
                             appointmentTimeAdapter.notifyItemChanged(index)
                         }
                     }
+                    appointmentTimeAdapter.notifyDataSetChanged()
                     viewModel.isTimeSelected.value = true
                     viewModel.validateDateTime()
                 }

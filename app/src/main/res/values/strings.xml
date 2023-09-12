@@ -137,4 +137,5 @@
     <string name="dialog_appointment_desc">Are you sure you want to Booking Appointment?</string>
     <string name="online_booking">Online Booking</string>
     <string name="appointment_booking_success">Appointment Book Successfully</string>
+    <string name="appointment_detail">Appointment Details</string>
 </resources>
