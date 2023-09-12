@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.android.doctorapp.ui.appointment.AppointmentViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true">
+
+        <include
+            android:id="@+id/toolbarContainer"
+            layout="@layout/custom_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
+            app:layout_constraintTop_toBottomOf="@id/toolbarContainer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="@dimen/margin_16"
+            >
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvPatientNameLabel"
+                style="@style/label_text2"
+                android:text="Patient Name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.6"
+                android:textAlignment="textStart"
+                android:textStyle="bold"
+                />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvPatientNameValue"
+                style="@style/label_text"
+                android:text="Vikas Pandey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvPatientNameLabel"
+                app:layout_constraintBottom_toBottomOf="@id/tvPatientNameLabel"
+                app:layout_constraintWidth_percent="0.4"
+                android:textAlignment="textEnd"
+                app:layout_constraintStart_toEndOf="@id/tvPatientNameLabel"
+                />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvPatientAgeLabel"
+                style="@style/label_text2"
+                android:text="Age"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintWidth_percent="0.6"
+                android:textAlignment="textStart"
+                app:layout_constraintTop_toBottomOf="@id/tvPatientNameLabel"
+                android:layout_marginTop="@dimen/margin_10"
+                android:textStyle="bold"
+                />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvPatientAgeValue"
+                style="@style/label_text"
+                android:text="29"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintWidth_percent="0.4"
+                android:textAlignment="textEnd"
+                app:layout_constraintStart_toEndOf="@id/tvPatientAgeLabel"
+                android:layout_marginTop="@dimen/margin_10"
+                app:layout_constraintTop_toTopOf="@id/tvPatientAgeLabel"
+                app:layout_constraintBottom_toBottomOf="@id/tvPatientAgeLabel"
+
+                />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvPatientAddress"
+                style="@style/label_text2"
+                android:text="Address"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintWidth_percent="0.6"
+                android:textAlignment="textStart"
+                app:layout_constraintTop_toBottomOf="@id/tvPatientAgeLabel"
+                android:layout_marginTop="@dimen/margin_10"
+                android:textStyle="bold"
+                />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvPatientAddressValue"
+                style="@style/label_text"
+                android:text="Meghaninagar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintWidth_percent="0.4"
+                android:textAlignment="textEnd"
+                app:layout_constraintStart_toEndOf="@id/tvPatientAddress"
+                android:layout_marginTop="@dimen/margin_10"
+                app:layout_constraintTop_toTopOf="@id/tvPatientAddress"
+                app:layout_constraintBottom_toBottomOf="@id/tvPatientAddress"
+                />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvDateLabel"
+                style="@style/label_text2"
+                android:text="Date"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintWidth_percent="0.6"
+                android:textAlignment="textStart"
+                app:layout_constraintTop_toBottomOf="@id/tvPatientAddress"
+                android:layout_marginTop="@dimen/margin_10"
+                android:textStyle="bold"
+                />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvDateValue"
+                style="@style/label_text"
+                android:text="24/01/1994"
+                app:layout_constraintWidth_percent="0.4"
+                android:textAlignment="textEnd"
+                app:layout_constraintStart_toEndOf="@id/tvDateLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="@dimen/margin_10"
+                app:layout_constraintTop_toTopOf="@id/tvDateLabel"
+                app:layout_constraintBottom_toBottomOf="@id/tvDateLabel"
+                />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvTimeLabel"
+                style="@style/label_text2"
+                android:text="Time"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintWidth_percent="0.6"
+                android:textAlignment="textStart"
+                app:layout_constraintTop_toBottomOf="@id/tvDateLabel"
+                android:layout_marginTop="@dimen/margin_10"
+                android:textStyle="bold"
+                />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvTimeValue"
+                style="@style/label_text"
+                android:text="10:00 AM"
+                app:layout_constraintWidth_percent="0.4"
+                android:textAlignment="textEnd"
+                app:layout_constraintStart_toEndOf="@id/tvTimeLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="@dimen/margin_10"
+                app:layout_constraintTop_toTopOf="@id/tvTimeLabel"
+                app:layout_constraintBottom_toBottomOf="@id/tvTimeLabel"
+                />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/button_book_appointment"
+                style="@style/user_login_editText"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/margin_50"
+                android:background="@drawable/button_state_colors"
+                android:text="@string/cancel"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="@dimen/margin_10"
+                app:layout_constraintStart_toStartOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

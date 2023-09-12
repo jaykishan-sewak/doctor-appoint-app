@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_nav_view"
-    app:startDestination="@id/navigation_appointment">
+    app:startDestination="@id/AppointmentDetails">
 
     <fragment
         android:id="@+id/navigation_request"
@@ -25,5 +25,10 @@
         tools:layout="@layout/fragment_profile">
 
     </fragment>
+    <fragment
+        android:id="@+id/AppointmentDetails"
+        android:name="com.android.doctorapp.ui.appointment.AppointmentDetailFragment"
+        tools:layout="@layout/fragment_appointment_detail">
 
+    </fragment>
 </navigation>

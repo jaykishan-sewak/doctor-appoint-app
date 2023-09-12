@@ -33,16 +33,17 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingHorizontal="@dimen/margin_10"
-            android:paddingVertical="@dimen/margin_15">
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_10"
+            android:paddingVertical="@dimen/margin_15"
+            >
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/ivDoctorImageView"
                 android:layout_width="@dimen/dp_70"
                 android:layout_height="@dimen/dp_70"
                 android:elevation="@dimen/margin_5"
-                app:cardCornerRadius="30dp"
+                app:cardCornerRadius="250dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
