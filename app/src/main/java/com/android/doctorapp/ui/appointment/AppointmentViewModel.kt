@@ -64,6 +64,9 @@ class AppointmentViewModel @Inject constructor(
     private val contactNumber = MutableLiveData<String>()
     private val age = MutableLiveData<String>()
 
+    private val _navigationListener: MutableLiveData<Boolean> = MutableLiveData(false)
+    val navigationListener = _navigationListener.asLiveData()
+
 
     init {
         getHolidayList()
@@ -267,6 +270,8 @@ class AppointmentViewModel @Inject constructor(
                 when (val response =
                     appointmentRepository.addBookingAppointment(appointmentModel, fireStore)) {
                     is ApiSuccessResponse -> {
+                        context.toast(resourceProvider.getString(R.string.appointment_booking_success))
+                        _navigationListener.value = true
                         setShowProgress(false)
 
                     }
@@ -332,7 +337,6 @@ class AppointmentViewModel @Inject constructor(
                             contactNumber.value = response.body.contactNumber
                             age.value = response.body.dob.toString()
                             setShowProgress(false)
-
                         }
 
                         is ApiErrorResponse -> {
