@@ -2,11 +2,14 @@ package com.android.doctorapp.ui.admin
 
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
 import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AdminRepository
+import com.android.doctorapp.repository.local.Session
+import com.android.doctorapp.repository.local.USER_ID
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
@@ -23,14 +26,22 @@ import javax.inject.Inject
 class AdminDashboardViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val adminRepository: AdminRepository,
-    private val context: Context
+    private val context: Context,
+    private val session: Session
 
 ) : BaseViewModel() {
-    private val items = SingleLiveEvent<List<UserDataResponseModel>>()
-    val doctorList = items.asLiveData()
+    val doctorList = MutableLiveData<List<UserDataResponseModel>>()
 
     val _navigationListener = SingleLiveEvent<Int>()
     val navigationListener = _navigationListener.asLiveData()
+    val doctorDetails: MutableLiveData<UserDataResponseModel?> = MutableLiveData()
+    val userId: MutableLiveData<String> = MutableLiveData("")
+    val itemPosition: MutableLiveData<Int> = MutableLiveData()
+    val deleteId: MutableLiveData<String> = MutableLiveData("")
+
+    init {
+        getItems()
+    }
 
     fun getItems() {
         viewModelScope.launch {
@@ -40,8 +51,7 @@ class AdminDashboardViewModel @Inject constructor(
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
                         if (response.body.isNotEmpty()) {
-                            items.value = response.body!!
-                            Log.d("Data----", Gson().toJson(response.body))
+                            doctorList.value = response.body!!
                         }
                     }
 
@@ -62,7 +72,7 @@ class AdminDashboardViewModel @Inject constructor(
         }
     }
 
-    fun deleteDoctor(id: String, index: Int) {
+    fun deleteDoctor(id: String) {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 setShowProgress(true)
@@ -70,12 +80,11 @@ class AdminDashboardViewModel @Inject constructor(
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
                         if (response.body) {
-                            val currentList = items.value?.toMutableList() ?: mutableListOf()
-                            if (index in 0 until currentList.size) {
-                                currentList.removeAt(index)
-                                items.postValue(currentList)
+                            val currentList = doctorList.value?.toMutableList() ?: mutableListOf()
+                            if (itemPosition.value in 0 until currentList.size) {
+                                currentList.removeAt(itemPosition.value!!)
+                                doctorList.postValue(currentList)
                             }
-                            Log.d("Data----", "${response.body}")
                         }
                     }
 
@@ -101,4 +110,43 @@ class AdminDashboardViewModel @Inject constructor(
         _navigationListener.value = R.id.admin_to_add_doctor
     }
 
+
+    fun getDoctorDetail() {
+        viewModelScope.launch {
+            if (context.isNetworkAvailable()) {
+                setShowProgress(true)
+
+                when (val response = adminRepository.getDoctorDetails(userId.value!!, fireStore)) {
+                    is ApiSuccessResponse -> {
+                        setShowProgress(false)
+                        doctorDetails.value = response.body
+                    }
+
+                    is ApiErrorResponse -> {
+                        setShowProgress(false)
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        setShowProgress(false)
+                    }
+
+                    else -> {
+                        setShowProgress(false)
+                    }
+                }
+            } else
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
+        }
+    }
+
+    fun moveToUpdateScreen() {
+        viewModelScope.launch {
+            session.putString(USER_ID, doctorDetails.value?.userId!!)
+        }
+        _navigationListener.value = R.id.admin_to_update_doctor
+    }
+
+    fun deleteDoctorData(id: String) {
+        deleteId.value = id
+    }
 }

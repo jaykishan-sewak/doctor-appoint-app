@@ -12,7 +12,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/app_bg">
+        android:background="@color/app_bg"
+        android:focusable="true"
+        android:clickable="true">
         <include
             android:id="@+id/toolbarContainer"
             layout="@layout/custom_toolbar"
@@ -26,6 +28,7 @@
             android:id="@+id/recyclerView"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:paddingVertical="@dimen/margin_10"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -42,8 +45,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/baseline_add_24"
-            app:backgroundTint="@color/purple_500"
             app:tint="@color/white"
+            app:backgroundTint="@color/colorAccent"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
