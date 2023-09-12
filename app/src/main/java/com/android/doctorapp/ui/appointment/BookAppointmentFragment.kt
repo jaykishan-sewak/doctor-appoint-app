@@ -34,8 +34,6 @@ class BookAppointmentFragment :
     private val viewModel: AppointmentViewModel by viewModels { viewModelFactory }
     private lateinit var appointmentTimeAdapter: AppointmentTimeAdapter
     private lateinit var appointmentDateAdapter: AppointmentDateAdapter
-    private var timePreviousPosition: Int = -1
-    private var datePreviousPosition: Int = -1
     private lateinit var selectedTime: Date
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,7 +106,11 @@ class BookAppointmentFragment :
                 }
             }
         }
-
+        viewModel.navigationListener.observe(viewLifecycleOwner) {it ->
+            if (it) {
+                findNavController().popBackStack()
+            }
+        }
     }
 
     private fun updateDateRecyclerview(dateList: ArrayList<DateSlotModel>) {
@@ -117,16 +119,12 @@ class BookAppointmentFragment :
                 override fun onItemClick(item: DateSlotModel, position: Int) {
                     dateList.forEachIndexed { index, dateSlotModel ->
                         if (dateSlotModel.date == item.date) {
-                            datePreviousPosition = position
-                            dateList[index].disable = true
+                            dateList[index].dateSelect = true
+                            appointmentDateAdapter.notifyItemChanged(index)
                         } else {
-                            if (dateList[index].disable) {
-                                dateList[index].disable = index != datePreviousPosition
-                            } else {
-                                dateList[index].disable = false
-                            }
+                            dateList[index].dateSelect = false
+                            appointmentDateAdapter.notifyItemChanged(index)
                         }
-                        appointmentDateAdapter.notifyDataSetChanged()
                     }
 
                     viewModel.isDateSelected.value = true
@@ -141,15 +139,12 @@ class BookAppointmentFragment :
                 override fun onItemClick(item: TimeSlotModel, position: Int) {
                     timeList.forEachIndexed { index, timeSlotModel ->
                         if (timeSlotModel.timeSlot == item.timeSlot) {
-                            timePreviousPosition = position
-                            timeList[index].isTimeSlotBook = true
+                            timeList[index].isTimeClick = true
                             selectedTime = item.timeSlot!!
+                            appointmentTimeAdapter.notifyItemChanged(index)
                         } else {
-                            if (timeList[index].isTimeSlotBook) {
-                                timeList[index].isTimeSlotBook = index != timePreviousPosition
-                            } else {
-                                timeList[index].isTimeSlotBook = false
-                            }
+                            timeList[index].isTimeClick = false
+                            appointmentTimeAdapter.notifyItemChanged(index)
                         }
                     }
                     appointmentTimeAdapter.notifyDataSetChanged()

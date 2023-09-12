@@ -23,6 +23,7 @@ import com.android.doctorapp.repository.models.SpecializationResponseModel
 import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
 import com.android.doctorapp.util.extension.isNetworkAvailable
@@ -393,7 +394,7 @@ class AddDoctorViewModel @Inject constructor(
                         availableTime = "",
                         isAdmin = false,
                         isNotificationEnable = notificationToggleData.value == true,
-                        dob = SimpleDateFormat("dd-MM-yyyy").parse(dob.value.toString()),
+                        dob = SimpleDateFormat(DATE_MM_FORMAT).parse(dob.value.toString()),
                         isUserVerified = true
                     )
                 } else {
@@ -409,7 +410,7 @@ class AddDoctorViewModel @Inject constructor(
                         isEmailVerified = true,
                         isPhoneNumberVerified = true,
                         isAdmin = false,
-                        dob = SimpleDateFormat("dd-MM-yyyy").parse(dob.value.toString()),
+                        dob = SimpleDateFormat(DATE_MM_FORMAT).parse(dob.value.toString()),
                         isUserVerified = true
                     )
 

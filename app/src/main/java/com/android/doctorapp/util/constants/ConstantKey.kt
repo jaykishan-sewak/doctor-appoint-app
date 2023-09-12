@@ -35,6 +35,7 @@ object ConstantKey {
     const val FULL_DATE_FORMAT = "EEE MMM dd HH:mm:ss z yyyy"
     const val DATE_AND_DAY_NAME_FORMAT = "EE dd"
     const val HOUR_MIN_AM_PM_FORMAT = "h:mm a"
-
+    const val DATE_MM_FORMAT = "dd-MM-yyyy"
+    const val DAY_NAME_FORMAT = "EEE"
 
 }
