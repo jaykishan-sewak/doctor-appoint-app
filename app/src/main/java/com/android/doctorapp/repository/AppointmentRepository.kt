@@ -3,9 +3,11 @@ package com.android.doctorapp.repository
 import com.android.doctorapp.repository.models.ApiResponse
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.UserDataRequestModel
+import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_USER_ID
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_APPOINTMENT
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_NAME
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.tasks.await
@@ -45,5 +47,23 @@ class AppointmentRepository @Inject constructor() {
             ApiResponse.create(e.fillInStackTrace())
         }
     }
+
+    suspend fun getAppointmentsList(firestore: FirebaseFirestore): ApiResponse<List<AppointmentModel>> {
+        return try {
+            val response = firestore.collection(ConstantKey.DBKeys.TABLE_APPOINTMENT).get().await()
+
+            val appointmentsList = arrayListOf<AppointmentModel>()
+            for (document: DocumentSnapshot in response.documents) {
+                val user = document.toObject(AppointmentModel::class.java)
+                user?.let {
+                    appointmentsList.add(it)
+                }
+            }
+            ApiResponse.create(response = Response.success(appointmentsList))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
 
 }
