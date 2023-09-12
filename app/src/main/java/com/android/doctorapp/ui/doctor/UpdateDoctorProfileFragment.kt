@@ -336,7 +336,7 @@ class UpdateDoctorProfileFragment :
             })
         }
         viewModel.degreeLiveList.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty()) {
+            if (!it.isNullOrEmpty()) {
                 for (element in it) {
                     addChip(element)
                 }
@@ -344,7 +344,7 @@ class UpdateDoctorProfileFragment :
         }
 
         viewModel.specializationLiveList.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty()) {
+            if (!it.isNullOrEmpty()) {
                 for (element in it) {
                     addSpecChip(element)
                 }

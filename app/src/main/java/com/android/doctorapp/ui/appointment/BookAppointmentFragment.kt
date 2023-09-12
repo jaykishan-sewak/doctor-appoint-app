@@ -151,8 +151,8 @@ class BookAppointmentFragment :
                                 timeList[index].isTimeSlotBook = false
                             }
                         }
-                        appointmentTimeAdapter.notifyDataSetChanged()
                     }
+                    appointmentTimeAdapter.notifyDataSetChanged()
                     viewModel.isTimeSelected.value = true
                     viewModel.validateDateTime()
                 }

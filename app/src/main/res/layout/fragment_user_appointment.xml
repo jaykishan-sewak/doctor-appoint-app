@@ -31,7 +31,7 @@
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/searchEt"
             android:layout_width="@dimen/dp_0"
-            android:layout_height="@dimen/dp_60"
+            android:layout_height="@dimen/dp_48"
             android:layout_margin="@dimen/margin_20"
             android:afterTextChanged="@{(text) -> viewModel.lengthChecked(text)}"
             android:background="@drawable/search_bg"
@@ -49,7 +49,7 @@
             android:id="@+id/recyclerView"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_0"
-            android:layout_marginTop="@dimen/margin_20"
+            android:paddingVertical="@dimen/margin_10"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
