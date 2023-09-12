@@ -10,6 +10,7 @@ data class AppointmentModel(
     var status: String = "",
     var userId: String = "",
     var name: String = "",
+    var contactNumber: String = "",
     var age: String = ""
 )
 
