@@ -32,7 +32,7 @@ object ConstantKey {
     }
 
     const val FORMATTED_DATE = "dd-MM-yyyy"
-    const val DATE_MONTH_FORMAT = "dd-mm-yyyy"
+    const val DATE_MONTH_FORMAT = "dd-MMM-yyyy"
     const val FULL_DATE_FORMAT = "EEE MMM dd HH:mm:ss z yyyy"
     const val DATE_AND_DAY_NAME_FORMAT = "EE dd"
     const val HOUR_MIN_AM_PM_FORMAT = "h:mm a"

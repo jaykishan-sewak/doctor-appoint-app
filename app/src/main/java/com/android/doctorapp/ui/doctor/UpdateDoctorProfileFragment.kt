@@ -29,6 +29,7 @@ import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.STORED_VERIFI
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_CONTACT_NUMBER_KEY
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.convertDateToFull
+import com.android.doctorapp.util.extension.convertDateToMonth
 import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.selectDate
 import com.android.doctorapp.util.extension.startActivityFinish
@@ -359,7 +360,9 @@ class UpdateDoctorProfileFragment :
 //                    holidayList.add()
 
 //                    Log.d(TAG, "registerObserver: $abc")
-                    requireContext().convertDateToFull(holidayDate)
+                    Log.d(TAG, "registerObserver: $holidayDate")
+                    convertDateToMonth(holidayDate)
+//                    requireContext().convertDateToFull(holidayDate)
                 }
             }
         }

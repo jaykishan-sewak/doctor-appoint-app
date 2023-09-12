@@ -10,8 +10,12 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.android.doctorapp.BuildConfig
 import com.android.doctorapp.util.constants.ConstantKey.DATE_AND_DAY_NAME_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.DATE_MONTH_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.constants.ConstantKey.FULL_DATE_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.HOUR_MIN_AM_PM_FORMAT
+import java.text.DateFormat
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -140,17 +144,30 @@ fun convertTime(originalTimeStr: String): String {
     }
 }
 
+fun convertDateToMonth(inputDateString: String): String {
+    return  try {
+        val originalDateFormat = SimpleDateFormat(FORMATTED_DATE, Locale.getDefault())
+        val targetDateFormat = SimpleDateFormat(DATE_MONTH_FORMAT, Locale.getDefault())
+
+        val calendar = Calendar.getInstance()
+        calendar.time = originalDateFormat.parse(inputDateString) ?: Date()
+        targetDateFormat.format(calendar.time)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
+    }
+}
+
+
 fun Context.convertDateToFull(inputDateString: String) {
-    /*try {
+    try {
         val formatter = SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH)
-        val dateInString = "07-Mar-2023"
-        val date = formatter.parse(dateInString)
+//        val dateInString = "07-Mar-2023"
+        val date = formatter.parse(inputDateString)
         Log.d("TAG", "convertDateToFull: $date")
 
     } catch (ex: ParseException) {
         Log.d("TAG", "convertDateToFull Catch : ${ex.message}")
         ex.printStackTrace()
-    }*/
-
-
+    }
 }
