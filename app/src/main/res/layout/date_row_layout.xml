@@ -35,6 +35,7 @@
             android:padding="@dimen/margin_5"
             android:textColor="@color/black"
             app:appointmentDate="@{dateSlotModel.date.toString()}"
+            app:dateStyle="@{dateSlotModel}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

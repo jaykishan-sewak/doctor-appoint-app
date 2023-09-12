@@ -127,8 +127,15 @@ class BookAppointmentFragment :
                                 dateList[index].disable = false
                             }
                         }*/
-                        dateList[index].dateSelect = dateSlotModel.date == item.date
-                        appointmentDateAdapter.notifyDataSetChanged()
+                        if (dateSlotModel.date == item.date) {
+                            dateList[index].dateSelect = true
+                            appointmentDateAdapter.notifyItemChanged(index)
+                        } else {
+                            dateList[index].dateSelect = false
+                            appointmentDateAdapter.notifyItemChanged(index)
+                        }
+//                        dateList[index].dateSelect = dateSlotModel.date == item.date
+//                        appointmentDateAdapter.notifyDataSetChanged()
                     }
 
                     viewModel.isDateSelected.value = true
@@ -146,6 +153,7 @@ class BookAppointmentFragment :
 //                            timePreviousPosition = position
                             timeList[index].isTimeClick = true
                             selectedTime = item.timeSlot!!
+                            appointmentTimeAdapter.notifyItemChanged(index)
                         } else {
 //                            if (timeList[index].isTimeSlotBook) {
 ////                                timeList[index].isTimeSlotBook = index != timePreviousPosition
@@ -153,8 +161,9 @@ class BookAppointmentFragment :
 //                                timeList[index].isTimeSlotBook = false
 //                            }
                             timeList[index].isTimeClick = false
+                            appointmentTimeAdapter.notifyItemChanged(index)
                         }
-                        appointmentTimeAdapter.notifyDataSetChanged()
+//                        appointmentTimeAdapter.notifyDataSetChanged()
 //                        viewModel.changeTimeBg()
                         /*if (timeSlotModel.timeSlot == item.timeSlot) {
                             timePreviousPosition = position
