@@ -16,12 +16,15 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.FragmentUpdateDoctorProfileBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.models.WeekOffModel
 import com.android.doctorapp.ui.doctor.adapter.CustomAutoCompleteAdapter
+import com.android.doctorapp.ui.doctor.adapter.WeekOffDayAdapter
 import com.android.doctorapp.ui.doctordashboard.DoctorDashboardActivity
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.IS_DOCTOR_OR_USER_KEY
@@ -56,7 +59,8 @@ class UpdateDoctorProfileFragment :
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel by viewModels<AddDoctorViewModel> { viewModelFactory }
     private lateinit var callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
-    private val TAG = UpdateDoctorProfileFragment::class.java.simpleName
+
+    //    private val TAG = UpdateDoctorProfileFragment::class.java.simpleName
     lateinit var storedVerificationId: String
     lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
     lateinit var mTimePicker: TimePickerDialog
@@ -77,6 +81,8 @@ class UpdateDoctorProfileFragment :
     var enteredDegreeText: String = ""
     var enteredSpecializationText: String = ""
     private val holidayList = ArrayList<Date>()
+    private lateinit var weekOffDayAdapter: WeekOffDayAdapter
+    private val weekOffList = ArrayList<WeekOffModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -160,19 +166,18 @@ class UpdateDoctorProfileFragment :
             lifecycleOwner = viewLifecycleOwner
         }
 
+        binding.rvWeekOff.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         viewModel.setBindingData(bindingView)
         viewModel.getDegreeItems()
         viewModel.getSpecializationItems()
+        setUpWithViewModel(viewModel)
+        registerObserver(bindingView)
         return bindingView.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setUpWithViewModel(viewModel)
-        registerObserver()
-    }
 
-    private fun registerObserver() {
+    private fun registerObserver(layoutBinding: FragmentUpdateDoctorProfileBinding) {
         viewModel.getModelUserData().observe(viewLifecycleOwner) {
             viewModel.name.value = it[0].name
             viewModel.email.value = it[0].email
@@ -185,7 +190,7 @@ class UpdateDoctorProfileFragment :
         viewModel.isPhoneVerify.observe(viewLifecycleOwner) {
             if (!it) {
                 viewModel.validateAllUpdateField()
-                binding.textContactVerify.setTextColor(
+                layoutBinding.textContactVerify.setTextColor(
                     ContextCompat.getColor(
                         requireContext(),
                         R.color.green
@@ -195,7 +200,7 @@ class UpdateDoctorProfileFragment :
         }
 
         viewModel.isCalender.observe(viewLifecycleOwner) {
-            if (binding.textDateOfBirth.id == it?.id) {
+            if (layoutBinding.textDateOfBirth.id == it?.id) {
                 requireContext().selectDate(maxDate = Date().time, minDate = null) { dobDate ->
                     if (calculateAge(dobDate) > 22) {
                         viewModel.dob.value = dobDate
@@ -250,7 +255,7 @@ class UpdateDoctorProfileFragment :
                 viewModel.validateAllUpdateField()
                 viewModel.emailVerifyLabel.postValue(requireContext().resources.getString(R.string.verified))
                 viewModel.isEmailEnable.value = false
-                binding.textEmailVerify.setTextColor(
+                layoutBinding.textEmailVerify.setTextColor(
                     ContextCompat.getColor(
                         requireContext(),
                         R.color.green
@@ -349,26 +354,42 @@ class UpdateDoctorProfileFragment :
                     addSpecChip(element)
                 }
             }
-        }*/
+        }
 
         viewModel.holidayClickResponse.observe(viewLifecycleOwner) {
             if (it) {
                 requireContext().selectDate(
-                    maxDate = Date().time,
-                    minDate = null) { holidayDate ->
-//                     Log.d(TAG, "registerObserver: ${requireContext().convertDateToFull()}")
-//                    holidayList.add()
-
-//                    Log.d(TAG, "registerObserver: $abc")
-                    Log.d(TAG, "registerObserver: $holidayDate")
-                    convertDateToMonth(holidayDate)
-//                    requireContext().convertDateToFull(holidayDate)
+                    maxDate = null,
+                    minDate = null
+                ) { holidayDate ->
+                    val monthDate = convertDateToMonth(holidayDate)
+                    holidayList.add(convertDateToFull(monthDate))
                 }
             }
         }
+
+        viewModel.weekDayNameList.observe(viewLifecycleOwner) {
+            /*weekOffDayAdapter = WeekOffDayAdapter(it,
+                object : WeekOffDayAdapter.OnItemClickListener {
+                    override fun onItemClick(item: WeekOffModel, position: Int) {
+//                        Log.d("TAG", "onItemClick: ${item.dayName}")
+                        weekOffList.forEachIndexed { index, weekOffModel ->
+                            if (weekOffList[index].dayName == item.dayName) {
+//                                weekOffList[index].isWeekOff = true
+                                Log.d("TAG", "onItemClick: if")
+                            } else {
+                                Log.d("TAG", "onItemClick: else")
+                            }
+                        }
+                    }
+
+                })*/
+            updateWeekOffRecyclerview(it)
+            layoutBinding.rvWeekOff.adapter = weekOffDayAdapter
+
+        }
+
     }
-
-
 
     private fun addSpecializationItem(uppercase: String) {
         viewModel.addSpecializationItems(uppercase)
@@ -432,5 +453,32 @@ class UpdateDoctorProfileFragment :
         }
     }
 
+    private fun updateWeekOffRecyclerview(weekOffDayList: ArrayList<WeekOffModel>) {
+        weekOffDayAdapter = WeekOffDayAdapter(weekOffDayList,
+                object : WeekOffDayAdapter.OnItemClickListener {
+                    override fun onItemClick(item: WeekOffModel, position: Int) {
+                        /*weekOffDayList.forEachIndexed { index, weekOffModel ->
+                            if (weekOffDayList[index].dayName == item.dayName) {
+                                weekOffDayList[index].isWeekOff = true
+                            } else {
+                                if (weekOffDayList[index].isWeekOff) {
+                                    weekOffDayList[index].isWeekOff = true
+                                } else {
+                                    weekOffDayList[index].isWeekOff = false
+                                }
+                            }
+                        }
+                        weekOffDayAdapter.notifyDataSetChanged()*/
+                        weekOffDayList.forEachIndexed { index, weekOffModel ->
+                            if (weekOffDayList[index].isWeekOff == item.isWeekOff) {
+                                Log.d("TAG", "onItemClick: if   -->   ${weekOffModel.dayName}")
+                            } else {
+                                Log.d("TAG", "onItemClick: else -->   ${weekOffModel.dayName}")
+                            }
+                        }
+                    }
+
+                })
+    }
 
 }

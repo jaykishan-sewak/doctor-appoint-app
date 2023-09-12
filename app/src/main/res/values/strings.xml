@@ -138,4 +138,11 @@
     <string name="dialog_appointment_desc">Are you sure you want to Booking Appointment?</string>
     <string name="online_booking">Online Booking</string>
     <string name="appointment_detail">Appointment Details</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
 </resources>

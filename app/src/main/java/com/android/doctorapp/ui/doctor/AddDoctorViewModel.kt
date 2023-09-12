@@ -1,8 +1,10 @@
 package com.android.doctorapp.ui.doctor
 
 import android.content.Context
+import android.util.Log
 import android.util.Patterns
 import android.view.View
+import android.widget.CheckBox
 import android.widget.RadioGroup
 import androidx.core.view.children
 import androidx.lifecycle.MutableLiveData
@@ -21,6 +23,7 @@ import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.DegreeResponseModel
 import com.android.doctorapp.repository.models.SpecializationResponseModel
 import com.android.doctorapp.repository.models.UserDataRequestModel
+import com.android.doctorapp.repository.models.WeekOffModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.extension.asLiveData
@@ -111,8 +114,10 @@ class AddDoctorViewModel @Inject constructor(
     val tempContactNumber: MutableLiveData<String?> = MutableLiveData()
 
     val holidayClickResponse: MutableLiveData<Boolean> = MutableLiveData(false)
-
     val holidayDateList: MutableLiveData<ArrayList<Date>> = MutableLiveData()
+
+    private val weekDayList = ArrayList<WeekOffModel>()
+    val weekDayNameList = MutableLiveData<ArrayList<WeekOffModel>>()
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
         this.binding = binding
@@ -120,6 +125,7 @@ class AddDoctorViewModel @Inject constructor(
 
     init {
         firebaseUser = firebaseAuth.currentUser!!
+        getWeekDayList()
     }
 
     fun getModelUserData(): MutableLiveData<List<UserDataRequestModel>> {
@@ -775,6 +781,19 @@ class AddDoctorViewModel @Inject constructor(
 
     fun addHoliday() {
         holidayClickResponse.value = true
+    }
+
+    private fun getWeekDayList() {
+        weekDayList.add(WeekOffModel(dayName = "Monday", isWeekOff = false))
+        weekDayList.add(WeekOffModel(dayName = "Tuesday", isWeekOff = false))
+        weekDayList.add(WeekOffModel(dayName = "Wednesday", isWeekOff = false))
+        weekDayList.add(WeekOffModel(dayName = "Thursday", isWeekOff = false))
+        weekDayList.add(WeekOffModel(dayName = "Friday", isWeekOff = false))
+        weekDayList.add(WeekOffModel(dayName = "Saturday", isWeekOff = false))
+        weekDayList.add(WeekOffModel(dayName = "Sunday", isWeekOff = false))
+
+        weekDayNameList.value = weekDayList
+
     }
 
 }

@@ -27,7 +27,7 @@ class AppointmentDateAdapter(
         val layoutInflater =
             LayoutInflater.from(parent.context)
         val itemView: DateRowLayoutBinding =
-            DataBindingUtil.inflate(layoutInflater, R.layout.date_row_layout, parent, false)
+                DataBindingUtil.inflate(layoutInflater, R.layout.date_row_layout, parent, false)
         return ItemViewHolder(itemView)
     }
 
