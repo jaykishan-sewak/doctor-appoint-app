@@ -138,4 +138,10 @@
     <string name="online_booking">Online Booking</string>
     <string name="appointment_booking_success">Appointment Book Successfully</string>
     <string name="appointment_detail">Appointment Details</string>
+    <string name="confirm">Confirm</string>
+    <string name="reject">Reject</string>
+    <string name="approve_appointment_desc">Are you sure you want to approve appointment?</string>
+    <string name="reject_appointment_desc">Are you sure you want to reject appointment?</string>
+    <string name="enter_reason">Enter reason</string>
+
 </resources>

@@ -31,4 +31,10 @@
         tools:layout="@layout/fragment_appointment_detail">
 
     </fragment>
+    <fragment
+        android:id="@+id/CustomDialogFragment"
+        android:name="com.android.doctorapp.ui.appointment.dialog.CustomDialogFragment"
+        tools:layout="@layout/custom_dialog">
+
+    </fragment>
 </navigation>
