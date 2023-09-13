@@ -138,4 +138,6 @@
     <string name="online_booking">Online Booking</string>
     <string name="appointment_booking_success">Appointment Book Successfully</string>
     <string name="appointment_detail">Appointment Details</string>
+    <string name="viewAll">ViewAll</string>
+    <string name="contact">Contact :</string>
 </resources>

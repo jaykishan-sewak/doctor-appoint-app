@@ -1,6 +1,7 @@
 package com.android.doctorapp.ui.doctordashboard.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -52,7 +53,16 @@ class PatientListAdapter(private var dataset: List<Any>) :
                 HeaderViewHolder(itemView)
             }
 
-            else -> throw IllegalArgumentException("Invalid view type")
+            else -> {
+                val itemView: DoctorAppointmentsHeaderLayoutBinding =
+                    DataBindingUtil.inflate(
+                        inflater,
+                        R.layout.doctor_appointments_header_layout,
+                        parent,
+                        false
+                    )
+                HeaderViewHolder(itemView)
+            }
         }
     }
 
@@ -62,11 +72,12 @@ class PatientListAdapter(private var dataset: List<Any>) :
             is UserItemViewHolder -> {
                 val userObject = item as AppointmentModel
                 holder.bind(userObject)
+
             }
 
             is HeaderViewHolder -> {
                 val header = item as Header
-                holder.bind(header)
+                holder.bind(header, position)
             }
         }
     }
@@ -77,7 +88,7 @@ class PatientListAdapter(private var dataset: List<Any>) :
 
     fun filterList(filterList: List<Any>) {
         dataset = filterList
-        notifyDataSetChanged()
+        notifyItemRangeChanged(0, dataset.size)
     }
 
 }
@@ -93,7 +104,10 @@ private class UserItemViewHolder(private val binding: DoctorAppointmentsItemLayo
 private class HeaderViewHolder(private val binding: DoctorAppointmentsHeaderLayoutBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(header: Header) {
+    fun bind(header: Header, position: Int) {
+        if (position == 0) {
+            binding.headerDivider.visibility = View.GONE
+        }
         binding.header = header
     }
 }
