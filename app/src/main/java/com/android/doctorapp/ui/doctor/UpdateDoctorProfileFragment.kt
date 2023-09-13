@@ -30,6 +30,7 @@ import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.IS_DOCTOR_OR_USER_KEY
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.STORED_VERIFICATION_Id_KEY
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_CONTACT_NUMBER_KEY
+import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.convertDateToFull
 import com.android.doctorapp.util.extension.convertDateToMonth
@@ -429,7 +430,7 @@ class UpdateDoctorProfileFragment :
     }
 
     private fun calculateAge(selectedDate: String?): Int {
-        val dateFormat = SimpleDateFormat("dd-mm-yyyy", Locale.getDefault())
+        val dateFormat = SimpleDateFormat(FORMATTED_DATE, Locale.getDefault())
         val today = Calendar.getInstance()
         val birthDate = Calendar.getInstance()
         return try {

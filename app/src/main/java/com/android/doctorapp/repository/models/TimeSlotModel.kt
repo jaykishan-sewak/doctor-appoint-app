@@ -4,5 +4,6 @@ import java.util.Date
 
 class TimeSlotModel(
     var timeSlot: Date? = null,
-    var isTimeSlotBook: Boolean = false
+    var isTimeSlotBook: Boolean = false,
+    var isTimeClick: Boolean = false
 )

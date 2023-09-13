@@ -5,6 +5,7 @@ import android.graphics.Paint
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.webkit.WebView
@@ -12,12 +13,15 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.android.doctorapp.R
+import com.android.doctorapp.repository.models.DateSlotModel
+import com.android.doctorapp.repository.models.TimeSlotModel
 import com.android.doctorapp.util.ImageUtils
 import com.android.doctorapp.util.extension.convertDate
 import com.android.doctorapp.util.extension.convertTime
@@ -183,7 +187,9 @@ fun setGenderImage(imageView: AppCompatImageView, gender: String) {
 }
 @BindingAdapter("app:appointmentDate")
 fun convertDateFormat(textView: TextView,originalDateStr: String) {
-    textView.text = convertDate(originalDateStr)
+    val fullDate = convertDate(originalDateStr)
+    val splitDate = fullDate.replace(" ", "\n")
+    textView.text = splitDate
 }
 
 @BindingAdapter("app:appointmentTime")
@@ -197,6 +203,23 @@ fun setSpecialization(textView: AppCompatTextView, specialities: List<String>?) 
         android.text.TextUtils.join(",", specialities)
     else ""
 }
+@BindingAdapter("app:timeStyle")
+fun setTimeButtonStyle(appCompatButton: AppCompatButton, timeSlotModel: TimeSlotModel) {
+    if (timeSlotModel.isTimeClick) {
+        appCompatButton.setTextAppearance(R.style.date_time_select)
+    } else {
+        appCompatButton.setTextAppearance(R.style.date_time_unselect)
+    }
+}
+@BindingAdapter("app:dateStyle")
+fun setDateButtonStyle(appCompatButton: AppCompatButton, dateSlotModel: DateSlotModel) {
+    if (dateSlotModel.dateSelect) {
+        appCompatButton.setTextAppearance(R.style.date_time_select)
+    } else {
+        appCompatButton.setTextAppearance(R.style.date_time_unselect)
+    }
+}
+
 
 @BindingAdapter("app:string")
 fun setString(textView: AppCompatTextView, specialities: List<String>?) {
