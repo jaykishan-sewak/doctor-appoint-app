@@ -38,15 +38,6 @@ class WeekOffDayAdapter(
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val objects = daysList[position]
-//        holder.itemView.setOnClickListener {
-//            if (daysList[position].isWeekOff) {
-//                daysList[position].isWeekOff = false
-//                notifyItemChanged(position)
-//            } else {
-//                 daysList[position].isWeekOff = true
-//                notifyItemChanged(position)
-//            }
-//        }
         holder.bind(objects, listener, position)
     }
 

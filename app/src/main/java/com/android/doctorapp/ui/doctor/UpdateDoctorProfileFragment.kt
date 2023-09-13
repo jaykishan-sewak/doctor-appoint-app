@@ -16,13 +16,16 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.FragmentUpdateDoctorProfileBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.models.TimeSlotModel
 import com.android.doctorapp.repository.models.WeekOffModel
+import com.android.doctorapp.ui.doctor.adapter.AddDoctorTimingAdapter
 import com.android.doctorapp.ui.doctor.adapter.CustomAutoCompleteAdapter
 import com.android.doctorapp.ui.doctor.adapter.WeekOffDayAdapter
 import com.android.doctorapp.ui.doctordashboard.DoctorDashboardActivity
@@ -67,8 +70,8 @@ class UpdateDoctorProfileFragment :
     lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
     lateinit var mTimePicker: TimePickerDialog
     private val mCurrentTime: Calendar = Calendar.getInstance()
-    private val hour = mCurrentTime.get(Calendar.HOUR_OF_DAY)
-    private val minute = mCurrentTime.get(Calendar.MINUTE)
+//    private val hour = mCurrentTime.get(Calendar.HOUR_OF_DAY)
+//    private val minute = mCurrentTime.get(Calendar.MINUTE)
     val handler = Handler(Looper.getMainLooper())
     var isFromAdmin: Boolean = false
     private val runnable = object : Runnable {
@@ -87,8 +90,11 @@ class UpdateDoctorProfileFragment :
     private val tempStrWeekOffList = ArrayList<String>()
 
     val calendar = Calendar.getInstance()
-    val hourOfDay1 = calendar.get(Calendar.HOUR_OF_DAY)
-    val minute1 = calendar.get(Calendar.MINUTE)
+//    val hourOfDay1 = calendar.get(Calendar.HOUR_OF_DAY)
+//    val minute1 = calendar.get(Calendar.MINUTE)
+
+    private var addTimeList = ArrayList<TimeSlotModel>()
+    private lateinit var addDoctorTimeAdapter: AddDoctorTimingAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -168,7 +174,7 @@ class UpdateDoctorProfileFragment :
             }, hour, minute, true
         )*/
 
-        mTimePicker = TimePickerDialog(
+        /*mTimePicker = TimePickerDialog(
             requireContext(), { view, hourOfDay, minute ->
 //                viewModel.availableTime.value = "$hourOfDay:$minute"
                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
@@ -179,7 +185,7 @@ class UpdateDoctorProfileFragment :
                 Log.d("TAG", "onCreateView: $formattedTime")
 
             }, hourOfDay1, minute1, true
-        )
+        )*/
 
         /*mTimePicker = TimePickerDialog(
             requireContext(), { view, hourOfDay, minute ->
@@ -211,50 +217,16 @@ class UpdateDoctorProfileFragment :
             lifecycleOwner = viewLifecycleOwner
         }
 
-        binding.text.setOnClickListener {
-            showTimePickerDialog()
-        }
-
-
         binding.rvWeekOff.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        bindingView.rvAddTiming.layoutManager =
+            GridLayoutManager(requireContext(), 3)
         viewModel.setBindingData(bindingView)
         viewModel.getDegreeItems()
         viewModel.getSpecializationItems()
         setUpWithViewModel(viewModel)
         registerObserver(bindingView)
         return bindingView.root
-    }
-
-    private fun showTimePickerDialog() {
-
-
-        val currentTime = Calendar.getInstance()
-        val hour1 = currentTime.get(Calendar.HOUR_OF_DAY)
-        val minute1 = currentTime.get(Calendar.MINUTE)
-
-        // Create a TimePickerDialog with the current time
-        val test = TimePickerDialog(
-            requireContext(),
-            TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
-                // Handle the selected time here, e.g., display it or use it
-//                val selectedTime = "$selectedHour:$selectedMinute"
-//                    openTimePickerButton.text = "Selected Time: $selectedTime"
-
-                calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
-                calendar.set(Calendar.MINUTE, minute)
-                val selectedTime = calendar.time
-                val sdf = java.text.SimpleDateFormat(FULL_DATE_FORMAT)
-                val formattedTime = sdf.format(selectedTime)
-                Log.d("TAG", "showTimePickerDialog: $formattedTime")
-            },
-            hour1,
-            minute1,
-            false
-        )
-
-        // Show the TimePickerDialog
-        test.show()
     }
 
     private fun registerObserver(layoutBinding: FragmentUpdateDoctorProfileBinding) {
@@ -301,7 +273,8 @@ class UpdateDoctorProfileFragment :
 
         viewModel.addTime.observe(viewLifecycleOwner) {
             if (layoutBinding.btnAddTiming.id == it.id) {
-                mTimePicker.show()
+//                mTimePicker.show()
+                 showTimePickerDialog()
             } else {
             }
         }
@@ -563,6 +536,35 @@ class UpdateDoctorProfileFragment :
                 }
 
             })
+    }
+
+    private fun showTimePickerDialog() {
+        val currentTime = Calendar.getInstance()
+        val hour1 = currentTime.get(Calendar.HOUR_OF_DAY)
+        val minute1 = currentTime.get(Calendar.MINUTE)
+
+        // Create a TimePickerDialog with the current time
+        mTimePicker = TimePickerDialog(
+            requireContext(), { _, selectedHour, selectedMinute ->
+                calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
+                calendar.set(Calendar.MINUTE, selectedMinute)
+                val selectedTime = calendar.time
+                addTimeList.add(TimeSlotModel(timeSlot = selectedTime, isTimeSlotBook = false, isTimeClick = false))
+                updateAddTimeRecyclerview(addTimeList)
+            },
+            hour1,
+            minute1,
+            true
+        )
+
+        // Show the TimePickerDialog
+        mTimePicker.show()
+    }
+
+
+    private fun updateAddTimeRecyclerview(newAddTimeList: ArrayList<TimeSlotModel>) {
+        addDoctorTimeAdapter = AddDoctorTimingAdapter(newAddTimeList)
+        binding.rvAddTiming.adapter = addDoctorTimeAdapter
     }
 
 
