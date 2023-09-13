@@ -124,7 +124,7 @@
     <string name="label_degree">Degree :</string>
     <string name="view">View</string>
     <string name="type_name">Type Name</string>
-    <string name="appointment">Appointment</string>
+    <string name="appointment">Appointments</string>
     <string name="request">Request</string>
     <string name="doctor_appointment_fragment">Doctor Appointment fragment</string>
     <string name="doctor_request_fragment">Doctor request fragment</string>
@@ -138,6 +138,8 @@
     <string name="online_booking">Online Booking</string>
     <string name="appointment_booking_success">Appointment Book Successfully</string>
     <string name="appointment_detail">Appointment Details</string>
+    <string name="viewAll">ViewAll</string>
+    <string name="contact">Contact :</string>
     <string name="confirm">Confirm</string>
     <string name="reject">Reject</string>
     <string name="approve_appointment_desc">Are you sure you want to approve appointment?</string>

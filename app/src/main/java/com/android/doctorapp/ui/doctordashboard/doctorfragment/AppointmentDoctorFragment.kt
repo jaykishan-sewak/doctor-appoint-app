@@ -7,11 +7,15 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.FragmentAppointmentDoctorBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.models.Header
+import com.android.doctorapp.ui.doctordashboard.adapter.PatientListAdapter
 import javax.inject.Inject
 
 
@@ -21,6 +25,8 @@ class AppointmentDoctorFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel: AppointmentDoctorViewModel by viewModels { viewModelFactory }
+    private lateinit var adapter: PatientListAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,10 +45,19 @@ class AppointmentDoctorFragment :
         }
         setUpWithViewModel(viewModel)
         registerObserver(layoutBinding)
+
         return layoutBinding.root
     }
 
+
     private fun registerObserver(layoutBinding: FragmentAppointmentDoctorBinding) {
+        setAdapter(emptyList())
+        layoutBinding.recyclerView.layoutManager = LinearLayoutManager(requireActivity())
+        layoutBinding.recyclerView.adapter = adapter
+
+        viewModel.finalAppointmentList.observe(viewLifecycleOwner) {
+            adapter.filterList(it)
+        }
 
     }
 
@@ -53,6 +68,19 @@ class AppointmentDoctorFragment :
             .withTitle(R.string.appointment)
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
             .build()
+    }
+
+    private fun setAdapter(items: List<Header>) {
+        adapter = PatientListAdapter(
+            items,
+            object : PatientListAdapter.OnItemClickListener {
+                override fun onItemClick(item: Header, position: Int) {
+//                    val bundle = Bundle()
+//                    bundle.putString(ConstantKey.BundleKeys.USER_ID, item.userId)
+                    findNavController().navigate(R.id.action_doctor_appointment_to_appointment_details)
+                }
+            }
+        )
     }
 
 
