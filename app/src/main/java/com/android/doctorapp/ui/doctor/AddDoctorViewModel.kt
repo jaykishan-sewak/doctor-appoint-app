@@ -86,7 +86,7 @@ class AddDoctorViewModel @Inject constructor(
     val isAvailableDate: MutableLiveData<String?> = MutableLiveData()
     private val isAvailableDateError: MutableLiveData<String?> = MutableLiveData()
 
-    val isTimeShow: MutableLiveData<Boolean> = SingleLiveEvent()
+//    val isTimeShow: MutableLiveData<Boolean> = SingleLiveEvent()
     val availableTime: MutableLiveData<String> = MutableLiveData()
     private val availableTimeError: MutableLiveData<String?> = MutableLiveData()
 
@@ -118,6 +118,10 @@ class AddDoctorViewModel @Inject constructor(
 
     private val weekDayList = ArrayList<WeekOffModel>()
     val weekDayNameList = MutableLiveData<ArrayList<WeekOffModel>>()
+    val strWeekOffList = MutableLiveData<ArrayList<String>>()
+
+    val addTime: MutableLiveData<View> = SingleLiveEvent()
+
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
         this.binding = binding
@@ -316,10 +320,6 @@ class AddDoctorViewModel @Inject constructor(
 
     fun calenderClick(text_dob: View) {
         isCalender.value = text_dob
-    }
-
-    fun timeClick() {
-        isTimeShow.value = true
     }
 
     fun addDoctorData() {
@@ -795,5 +795,10 @@ class AddDoctorViewModel @Inject constructor(
         weekDayNameList.value = weekDayList
 
     }
+
+    fun addDoctorTiming(btn_add_time: View) {
+        addTime.value = btn_add_time
+    }
+
 
 }

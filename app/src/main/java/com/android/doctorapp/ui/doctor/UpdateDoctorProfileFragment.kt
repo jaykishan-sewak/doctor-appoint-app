@@ -82,7 +82,7 @@ class UpdateDoctorProfileFragment :
     var enteredSpecializationText: String = ""
     private val holidayList = ArrayList<Date>()
     private lateinit var weekOffDayAdapter: WeekOffDayAdapter
-    private val weekOffList = ArrayList<WeekOffModel>()
+    private val tempStrWeekOffList = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -159,6 +159,7 @@ class UpdateDoctorProfileFragment :
         mTimePicker = TimePickerDialog(
             requireContext(), { view, hourOfDay, minute ->
                 viewModel.availableTime.value = "$hourOfDay:$minute"
+                Log.d("TAG", "onCreateView: $hourOfDay    -->     $minute")
             }, hour, minute, true
         )
         bindingView = binding {
@@ -218,11 +219,19 @@ class UpdateDoctorProfileFragment :
                 }
             }
         }
-        viewModel.isTimeShow.observe(viewLifecycleOwner) {
-            if (it) {
+
+        viewModel.addTime.observe(viewLifecycleOwner) {
+            if (layoutBinding.btnAddTiming.id == it.id) {
                 mTimePicker.show()
+            } else {
             }
         }
+
+//        viewModel.isTimeShow.observe(viewLifecycleOwner) {
+//            if (it) {
+//                mTimePicker.show()
+//            }
+//        }
 
         viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
             if (it.equals(requireContext().resources.getString(R.string.success))) {
@@ -369,25 +378,10 @@ class UpdateDoctorProfileFragment :
         }
 
         viewModel.weekDayNameList.observe(viewLifecycleOwner) {
-            /*weekOffDayAdapter = WeekOffDayAdapter(it,
-                object : WeekOffDayAdapter.OnItemClickListener {
-                    override fun onItemClick(item: WeekOffModel, position: Int) {
-//                        Log.d("TAG", "onItemClick: ${item.dayName}")
-                        weekOffList.forEachIndexed { index, weekOffModel ->
-                            if (weekOffList[index].dayName == item.dayName) {
-//                                weekOffList[index].isWeekOff = true
-                                Log.d("TAG", "onItemClick: if")
-                            } else {
-                                Log.d("TAG", "onItemClick: else")
-                            }
-                        }
-                    }
-
-                })*/
             updateWeekOffRecyclerview(it)
             layoutBinding.rvWeekOff.adapter = weekOffDayAdapter
-
         }
+
 
     }
 
@@ -455,30 +449,42 @@ class UpdateDoctorProfileFragment :
 
     private fun updateWeekOffRecyclerview(weekOffDayList: ArrayList<WeekOffModel>) {
         weekOffDayAdapter = WeekOffDayAdapter(weekOffDayList,
-                object : WeekOffDayAdapter.OnItemClickListener {
-                    override fun onItemClick(item: WeekOffModel, position: Int) {
-                        /*weekOffDayList.forEachIndexed { index, weekOffModel ->
-                            if (weekOffDayList[index].dayName == item.dayName) {
+            object : WeekOffDayAdapter.OnItemClickListener {
+                override fun onItemClick(item: WeekOffModel, position: Int) {
+                    /*weekOffDayList.forEachIndexed { index, weekOffModel ->
+                        if (weekOffDayList[index].dayName == item.dayName) {
+                            weekOffDayList[index].isWeekOff = true
+                        } else {
+                            if (weekOffDayList[index].isWeekOff) {
                                 weekOffDayList[index].isWeekOff = true
                             } else {
-                                if (weekOffDayList[index].isWeekOff) {
-                                    weekOffDayList[index].isWeekOff = true
-                                } else {
-                                    weekOffDayList[index].isWeekOff = false
-                                }
-                            }
-                        }
-                        weekOffDayAdapter.notifyDataSetChanged()*/
-                        weekOffDayList.forEachIndexed { index, weekOffModel ->
-                            if (weekOffDayList[index].isWeekOff == item.isWeekOff) {
-                                Log.d("TAG", "onItemClick: if   -->   ${weekOffModel.dayName}")
-                            } else {
-                                Log.d("TAG", "onItemClick: else -->   ${weekOffModel.dayName}")
+                                weekOffDayList[index].isWeekOff = false
                             }
                         }
                     }
+                    weekOffDayAdapter.notifyDataSetChanged()*/
+                    weekOffDayList.forEachIndexed { index, weekOffModel ->
+                        if (weekOffDayList[index].dayName == item.dayName) {
+//                            weekOffDayList[index].isWeekOff = !weekOffDayList[index].isWeekOff
+                            if (weekOffDayList[index].isWeekOff) {
+                                weekOffDayList[index].isWeekOff = false
+                                tempStrWeekOffList.remove(weekOffDayList[index].dayName)
+                            } else {
+                                weekOffDayList[index].isWeekOff = true
+                                tempStrWeekOffList.add(weekOffDayList[index].dayName)
+                            }
+                        } else {
 
-                })
+                        }
+
+                    }
+                    weekOffDayAdapter.notifyItemChanged(position)
+                    viewModel.strWeekOffList.value = tempStrWeekOffList
+//                    weekOffList.add(WeekOffModel(dayName = weekOffDayList[index].dayName, isWeekOff = weekOffDayList[index].isWeekOff))
+                }
+
+            })
     }
+    
 
 }

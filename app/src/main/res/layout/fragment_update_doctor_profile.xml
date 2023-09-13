@@ -300,7 +300,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="@{viewModel.isDoctor ? View.VISIBLE : View.GONE}"
-                    app:constraint_referenced_ids="degreeView,tvDegreeLabel,tvSpecLabel,specializationView,chipGroup,autoCompleteTextView,chipGroupSpec,autoCompleteTextViewSpec,text_available_date,text_available_time,txt_doctor_notification,switch_doctor_notification" />
+                    app:constraint_referenced_ids="degreeView,tvDegreeLabel,tvSpecLabel,
+                    specializationView,chipGroup,autoCompleteTextView,chipGroupSpec,autoCompleteTextViewSpec,
+                    btn_add_holiday, rv_week_off, btn_add_timing, rv_add_timing, txt_doctor_notification,switch_doctor_notification" />
 
                 <View
                     android:id="@+id/specializationView"
@@ -344,34 +346,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/autoCompleteTextViewSpec" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/text_available_date"
-                    style="@style/custom_edit_text_bg"
-                    android:afterTextChanged="@{(text) -> viewModel.isValidDate(text)}"
-                    android:drawableRight="@drawable/ic_calendar"
-                    android:hint="@string/available_date"
-                    android:onClick="@{(text_available) -> viewModel.calenderClick(text_available)}"
-                    android:text="@={viewModel.isAvailableDate}"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/specializationView" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/text_available_time"
-                    style="@style/custom_edit_text_bg"
-                    android:afterTextChanged="@{(text) -> viewModel.isValidTime(text)}"
-                    android:drawableRight="@drawable/ic_clock"
-                    android:hint="@string/available_time"
-                    android:onClick="@{() -> viewModel.timeClick()}"
-                    android:text="@={viewModel.availableTime}"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_available_date" />
-
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_add_holiday"
                     android:layout_width="wrap_content"
@@ -380,116 +354,7 @@
                     android:onClick="@{() -> viewModel.addHoliday()}"
                     android:layout_marginTop="@dimen/margin_10"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_available_time" />
-
-<!--&lt;!&ndash;                <Button&ndash;&gt;
-&lt;!&ndash;                    android:id="@+id/test"&ndash;&gt;
-&lt;!&ndash;                    android:layout_width="wrap_content"&ndash;&gt;
-&lt;!&ndash;                    android:layout_height="wrap_content"&ndash;&gt;
-&lt;!&ndash;                    android:onClick="@{() -> viewModel.addWeekOff()}"&ndash;&gt;
-&lt;!&ndash;                    />&ndash;&gt;
-
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:id="@+id/checkbox_monday"
-                    style="@style/doctor_text_view"
-                    android:checked="@{viewModel.mondayChecked}"
-                    android:onCheckedChanged="@{(view, checked) -> }"
-                    app:layout_constraintTop_toBottomOf="@+id/btn_add_holiday"
-                    app:layout_constraintStart_toStartOf="parent"
-                    />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/text_monday"
-                    style="@style/doctor_text_view"
-                    android:text="@string/monday"
-                    app:layout_constraintBottom_toBottomOf="@+id/checkbox_monday"
-                    app:layout_constraintStart_toEndOf="@+id/checkbox_monday"
-                    app:layout_constraintTop_toTopOf="@+id/checkbox_monday" />
-
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:id="@+id/checkbox_tuesday"
-                    style="@style/doctor_text_view"
-                    android:checked="@{viewModel.tuesdayChecked}"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/checkbox_monday" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/text_tuesday"
-                    style="@style/doctor_text_view"
-                    android:text="@string/tuesday"
-                    app:layout_constraintBottom_toBottomOf="@+id/checkbox_tuesday"
-                    app:layout_constraintStart_toEndOf="@+id/checkbox_tuesday"
-                    app:layout_constraintTop_toTopOf="@+id/checkbox_tuesday" />
-
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:id="@+id/checkbox_wednesday"
-                    style="@style/doctor_text_view"
-                    app:layout_constraintStart_toStartOf="@+id/checkbox_tuesday"
-                    app:layout_constraintTop_toBottomOf="@+id/checkbox_tuesday" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/text_wednesday"
-                    style="@style/doctor_text_view"
-                    android:text="@string/wednesday"
-                    app:layout_constraintBottom_toBottomOf="@+id/checkbox_wednesday"
-                    app:layout_constraintStart_toEndOf="@+id/checkbox_wednesday"
-                    app:layout_constraintTop_toTopOf="@+id/checkbox_wednesday" />
-
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:id="@+id/checkbox_thursday"
-                    style="@style/doctor_text_view"
-                    app:layout_constraintStart_toStartOf="@+id/checkbox_wednesday"
-                    app:layout_constraintTop_toBottomOf="@+id/checkbox_wednesday" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/text_thursday"
-                    style="@style/doctor_text_view"
-                    android:text="@string/thursday"
-                    app:layout_constraintBottom_toBottomOf="@+id/checkbox_thursday"
-                    app:layout_constraintStart_toEndOf="@+id/checkbox_thursday"
-                    app:layout_constraintTop_toTopOf="@+id/checkbox_thursday" />
-
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:id="@+id/checkbox_friday"
-                    style="@style/doctor_text_view"
-                    app:layout_constraintStart_toStartOf="@+id/checkbox_thursday"
-                    app:layout_constraintTop_toBottomOf="@+id/checkbox_thursday" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/text_friday"
-                    style="@style/doctor_text_view"
-                    android:text="@string/friday"
-                    app:layout_constraintBottom_toBottomOf="@+id/checkbox_friday"
-                    app:layout_constraintStart_toEndOf="@+id/checkbox_friday"
-                    app:layout_constraintTop_toTopOf="@+id/checkbox_friday" />
-
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:id="@+id/checkbox_saturday"
-                    style="@style/doctor_text_view"
-                    app:layout_constraintStart_toStartOf="@+id/checkbox_friday"
-                    app:layout_constraintTop_toBottomOf="@+id/checkbox_friday" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/text_saturday"
-                    style="@style/doctor_text_view"
-                    android:text="@string/saturday"
-                    app:layout_constraintBottom_toBottomOf="@+id/checkbox_saturday"
-                    app:layout_constraintStart_toEndOf="@+id/checkbox_saturday"
-                    app:layout_constraintTop_toTopOf="@+id/checkbox_saturday" />
-
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:id="@+id/checkbox_sunday"
-                    style="@style/doctor_text_view"
-                    app:layout_constraintStart_toStartOf="@+id/checkbox_saturday"
-                    app:layout_constraintTop_toBottomOf="@+id/checkbox_saturday" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/text_sunday"
-                    style="@style/doctor_text_view"
-                    android:text="@string/sunday"
-                    app:layout_constraintBottom_toBottomOf="@+id/checkbox_sunday"
-                    app:layout_constraintStart_toEndOf="@+id/checkbox_sunday"
-                    app:layout_constraintTop_toTopOf="@+id/checkbox_sunday" />-->
+                    app:layout_constraintTop_toBottomOf="@+id/specializationView" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_week_off"
@@ -498,6 +363,26 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/btn_add_holiday"
+                    />
+<!--                        android:onClick="@{(text_dob) -> viewModel.calenderClick(text_dob)}"-->
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_add_timing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_time"
+                    android:onClick="@{(btn_add_time) -> viewModel.addDoctorTiming(btn_add_time)}"
+                    app:layout_constraintTop_toBottomOf="@+id/rv_week_off"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_add_timing"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_add_timing"
                     />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -517,7 +402,7 @@
                     android:layout_marginTop="@dimen/margin_10"
                     android:checked="@={viewModel.notificationToggleData}"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rv_week_off" />
+                    app:layout_constraintTop_toBottomOf="@+id/rv_add_timing" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnLogin"
