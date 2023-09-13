@@ -163,3 +163,16 @@ fun convertDateToFull(inputDateString: String): Date {
         defaultDate
     }
 }
+
+fun convertFullDateToDate(inputDateString: String): String {
+    return try {
+        val originalDateFormat = SimpleDateFormat(FULL_DATE_FORMAT, Locale.getDefault())
+        val targtrDateFormat = SimpleDateFormat(FORMATTED_DATE, Locale.getDefault())
+        val calendar = Calendar.getInstance()
+        calendar.time = originalDateFormat.parse(inputDateString) ?: Date()
+        targtrDateFormat.format(calendar.time)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
+    }
+}

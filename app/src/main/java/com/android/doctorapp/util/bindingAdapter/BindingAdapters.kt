@@ -26,6 +26,7 @@ import com.android.doctorapp.util.ImageUtils
 import com.android.doctorapp.util.extension.convertDate
 import com.android.doctorapp.util.extension.convertTime
 import com.android.doctorapp.util.constants.ConstantKey.MALE_GENDER
+import com.android.doctorapp.util.extension.convertFullDateToDate
 import com.android.doctorapp.util.extension.hideKeyboard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -227,5 +228,9 @@ fun setString(textView: AppCompatTextView, specialities: List<String>?) {
         android.text.TextUtils.join(",", specialities)
      else
         ""
+}
 
+@BindingAdapter("app:dateMonthStyle")
+fun setDateMonthStyle(textView: AppCompatTextView, originalTimeStr: String) {
+    textView.text = convertFullDateToDate(originalTimeStr)
 }

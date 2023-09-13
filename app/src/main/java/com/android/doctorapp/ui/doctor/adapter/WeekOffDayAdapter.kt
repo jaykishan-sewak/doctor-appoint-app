@@ -1,6 +1,5 @@
 package com.android.doctorapp.ui.doctor.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -12,10 +11,11 @@ import com.android.doctorapp.repository.models.WeekOffModel
 class WeekOffDayAdapter(
     private val daysList: ArrayList<WeekOffModel>,
     private val listener: OnItemClickListener
-    ): RecyclerView.Adapter<WeekOffDayAdapter.ItemViewHolder>() {
+) : RecyclerView.Adapter<WeekOffDayAdapter.ItemViewHolder>() {
 
-    class ItemViewHolder(val view: WeekOffDayRowLayoutBinding) : RecyclerView.ViewHolder(view.root) {
-        fun bind(item: WeekOffModel, listener: OnItemClickListener,  position: Int) {
+    class ItemViewHolder(val view: WeekOffDayRowLayoutBinding) :
+        RecyclerView.ViewHolder(view.root) {
+        fun bind(item: WeekOffModel, listener: OnItemClickListener, position: Int) {
             view.apply {
                 viewModel = item
                 index = position
@@ -28,7 +28,7 @@ class WeekOffDayAdapter(
         val layoutInflater =
             LayoutInflater.from(parent.context)
         val itemView: WeekOffDayRowLayoutBinding =
-                DataBindingUtil.inflate(layoutInflater, R.layout.week_off_day_row_layout, parent, false)
+            DataBindingUtil.inflate(layoutInflater, R.layout.week_off_day_row_layout, parent, false)
         return ItemViewHolder(itemView)
     }
 

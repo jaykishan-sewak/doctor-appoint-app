@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import android.util.Patterns
 import android.view.View
-import android.widget.CheckBox
 import android.widget.RadioGroup
 import androidx.core.view.children
 import androidx.lifecycle.MutableLiveData
@@ -21,7 +20,9 @@ import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.DegreeResponseModel
+import com.android.doctorapp.repository.models.HolidayModel
 import com.android.doctorapp.repository.models.SpecializationResponseModel
+import com.android.doctorapp.repository.models.TimeSlotModel
 import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.repository.models.WeekOffModel
 import com.android.doctorapp.util.SingleLiveEvent
@@ -35,7 +36,6 @@ import com.google.android.material.chip.Chip
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.Date
 import javax.inject.Inject
 
 class AddDoctorViewModel @Inject constructor(
@@ -87,7 +87,6 @@ class AddDoctorViewModel @Inject constructor(
     val isAvailableDate: MutableLiveData<String?> = MutableLiveData()
     private val isAvailableDateError: MutableLiveData<String?> = MutableLiveData()
 
-//    val isTimeShow: MutableLiveData<Boolean> = SingleLiveEvent()
     val availableTime: MutableLiveData<String> = MutableLiveData()
     private val availableTimeError: MutableLiveData<String?> = MutableLiveData()
 
@@ -114,15 +113,15 @@ class AddDoctorViewModel @Inject constructor(
     val tempEmail: MutableLiveData<String?> = MutableLiveData()
     val tempContactNumber: MutableLiveData<String?> = MutableLiveData()
 
-    val holidayClickResponse: MutableLiveData<Boolean> = MutableLiveData(false)
-    val holidayDateList: MutableLiveData<ArrayList<Date>> = MutableLiveData()
 
     private val weekDayList = ArrayList<WeekOffModel>()
     val weekDayNameList = MutableLiveData<ArrayList<WeekOffModel>>()
     val strWeekOffList = MutableLiveData<ArrayList<String>>()
 
-    val addTime: MutableLiveData<View> = SingleLiveEvent()
 
+    val holidayList = MutableLiveData<ArrayList<HolidayModel>>()
+
+    val availableTimeList = MutableLiveData<ArrayList<TimeSlotModel>>()
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
         this.binding = binding
@@ -194,14 +193,13 @@ class AddDoctorViewModel @Inject constructor(
 
     fun validateAllUpdateField() {
         if (isDoctor.value!!) {
-
             isUpdateDataValid.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
                     && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
                     && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
                     && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
                     && !dob.value.isNullOrEmpty() && dobError.value.isNullOrEmpty()
-                    && !isAvailableDate.value.isNullOrEmpty() && isAvailableDateError.value.isNullOrEmpty()
-                    && !availableTime.value.isNullOrEmpty() && availableTimeError.value.isNullOrEmpty()
+                    && availableTimeList.value?.isEmpty() == false && availableTimeError.value.isNullOrEmpty()
+//                    && !availableTime.value.isNullOrEmpty() && availableTimeError.value.isNullOrEmpty()
                     && isPhoneVerify.value == false
                     && isEmailEnable.value == false
                     && binding?.chipGroup?.children?.toList()?.size!! > 0
@@ -436,7 +434,8 @@ class AddDoctorViewModel @Inject constructor(
                             contactNumber.value = ""
                             dob.value = ""
                             isAvailableDate.value = ""
-                            availableTime.value = ""
+//                            availableTime.value = ""
+                            availableTimeList.value = arrayListOf()
                             setShowProgress(false)
                             if (isDoctor.value == true) {
                                 _addDoctorResponse.value =
@@ -780,9 +779,6 @@ class AddDoctorViewModel @Inject constructor(
         }
     }
 
-    fun addHoliday() {
-        holidayClickResponse.value = true
-    }
 
     private fun getWeekDayList() {
         weekDayList.add(WeekOffModel(dayName = "Monday", isWeekOff = false))
@@ -795,10 +791,6 @@ class AddDoctorViewModel @Inject constructor(
 
         weekDayNameList.value = weekDayList
 
-    }
-
-    fun addDoctorTiming(btn_add_time: View) {
-        addTime.value = btn_add_time
     }
 
 

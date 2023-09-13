@@ -4,14 +4,6 @@
 
     <data>
 
-<!--        <variable-->
-<!--            name="viewModel"-->
-<!--            type="com.android.doctorapp.repository.models.WeekOffModel" />-->
-
-<!--        <variable-->
-<!--            name="index"-->
-<!--            type="Integer" />-->
-
         <variable
             name="viewModel"
             type="com.android.doctorapp.repository.models.WeekOffModel" />
@@ -23,7 +15,6 @@
         <variable
             name="index"
             type="Integer" />
-
 
     </data>
 
@@ -38,16 +29,13 @@
             android:layout_height="wrap_content"
             android:checked="@{viewModel.weekOff}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
-
-<!--                    android:onCheckedChanged="@{() -> onItemClickListener.onItemClick(viewModel, index)}"-->
-
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@{viewModel.dayName}"
+            android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="@+id/week_off_checkbox"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/week_off_checkbox"

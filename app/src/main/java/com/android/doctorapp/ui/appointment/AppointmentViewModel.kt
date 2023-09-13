@@ -15,8 +15,6 @@ import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.repository.models.TimeSlotModel
-import com.android.doctorapp.util.constants.ConstantKey.DATE_NAME_FORMAT
-import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.DAY_NAME_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.FULL_DATE_FORMAT
