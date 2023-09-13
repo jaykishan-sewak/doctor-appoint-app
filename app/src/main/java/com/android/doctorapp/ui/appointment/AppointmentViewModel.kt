@@ -26,7 +26,6 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
-import java.util.Locale
 import javax.inject.Inject
 
 
@@ -70,6 +69,12 @@ class AppointmentViewModel @Inject constructor(
     private val _navigationListener: MutableLiveData<Boolean> = MutableLiveData(false)
     val navigationListener = _navigationListener.asLiveData()
 
+    var isShowBothButton = MutableLiveData(false)
+    var cancelClick = MutableLiveData(false)
+    var confirmClick = MutableLiveData(false)
+    var rejectClick = MutableLiveData(false)
+    var reasonValue = MutableLiveData<String>()
+    var appoinmentObj = MutableLiveData<AppointmentModel>()
 
     init {
         getHolidayList()
@@ -378,5 +383,55 @@ class AppointmentViewModel @Inject constructor(
             return "${years - 1}"
         }
         return years.toString()
+    }
+
+    fun onCancelClick() {
+        cancelClick.value = true
+    }
+
+    fun onConfirmClick() {
+        confirmClick.value = true
+    }
+
+    fun onRejectClick() {
+        rejectClick.value = true
+    }
+
+    fun onSubmit() {
+        viewModelScope.launch {
+            session.getString(USER_ID).collectLatest {
+                if (context.isNetworkAvailable()) {
+                    when (val response =
+                        appointmentRepository.updateAppointmentData(
+                            appoinmentObj.value!!.apply {
+                                reason = reasonValue.value!!
+                            },
+                            fireStore
+                        )) {
+                        is ApiSuccessResponse -> {
+                            setShowProgress(false)
+                        }
+
+                        is ApiErrorResponse -> {
+                            context.toast(response.errorMessage)
+                            setShowProgress(false)
+                        }
+
+                        is ApiNoNetworkResponse -> {
+                            context.toast(response.errorMessage)
+                            setShowProgress(false)
+                        }
+
+                        else -> {
+                            context.toast(resourceProvider.getString(R.string.something_went_wrong))
+                            setShowProgress(false)
+                        }
+                    }
+                } else {
+                    context.toast(resourceProvider.getString(R.string.check_internet_connection))
+                }
+
+            }
+        }
     }
 }
