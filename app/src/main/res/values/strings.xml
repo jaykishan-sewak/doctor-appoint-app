@@ -149,4 +149,10 @@
     <string name="saturday">Saturday</string>
     <string name="sunday">Sunday</string>
     <string name="add_time">Add Timing</string>
+    <string name="confirm">Confirm</string>
+    <string name="reject">Reject</string>
+    <string name="approve_appointment_desc">Are you sure you want to approve appointment?</string>
+    <string name="reject_appointment_desc">Are you sure you want to reject appointment?</string>
+    <string name="enter_reason">Enter reason</string>
+
 </resources>

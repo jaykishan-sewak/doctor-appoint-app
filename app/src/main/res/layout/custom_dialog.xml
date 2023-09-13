@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.android.doctorapp.ui.appointment.AppointmentViewModel" />
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_10"
+        android:background="@drawable/rounded_custom_dialog">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etReason"
+            style="@style/custom_edit_text_bg"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_100dp"
+            android:gravity="top|start"
+            android:hint="@string/enter_reason"
+            android:inputType="textMultiLine"
+            android:maxLines="5"
+            android:text="@={viewModel.reasonValue}" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnReasonSubmit"
+            style="@style/user_login_editText"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_50"
+            android:layout_below="@id/etReason"
+            android:layout_marginTop="@dimen/margin_30"
+            android:background="@drawable/button_state_colors"
+            android:onClick="@{()->viewModel.onSubmit()}"
+            android:text="@string/confirm"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+
+
+    </RelativeLayout>
+</layout>

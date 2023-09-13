@@ -2,6 +2,7 @@ package com.android.doctorapp.di
 
 import com.android.doctorapp.di.core.AuthScopes
 import com.android.doctorapp.di.core.CoreComponent
+import com.android.doctorapp.ui.appointment.dialog.CustomDialogFragment
 import com.android.doctorapp.ui.admin.AdminDashboardFragment
 import com.android.doctorapp.ui.appointment.BookAppointmentFragment
 import com.android.doctorapp.ui.authentication.login.LoginFragment
@@ -46,4 +47,6 @@ interface AppComponent {
     fun inject(fragment: RequestDoctorFragment)
 
     fun inject(fragment: AppointmentDetailFragment)
+
+    fun inject(fragment: CustomDialogFragment)
 }
