@@ -83,4 +83,24 @@ class AppointmentRepository @Inject constructor() {
     }
 
 
+    suspend fun updateAppointmentData(
+        requestModel: AppointmentModel,
+        fireStore: FirebaseFirestore
+    ): ApiResponse<AppointmentModel> {
+        return try {
+            val response = fireStore.collection(TABLE_APPOINTMENT)
+                .whereEqualTo(FIELD_USER_ID, requestModel.userId)
+                .get()
+                .await()
+
+            val updateUserResponse = fireStore.collection(TABLE_APPOINTMENT)
+                .document(response.documents[0].id)
+                .set(requestModel)
+                .await()
+
+            ApiResponse.create(response = Response.success(requestModel))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
 }

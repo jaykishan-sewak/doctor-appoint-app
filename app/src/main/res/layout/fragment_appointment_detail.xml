@@ -26,144 +26,185 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_0"
-            app:layout_constraintTop_toBottomOf="@id/toolbarContainer"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_margin="@dimen/margin_16"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_margin="@dimen/margin_16"
-            >
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbarContainer">
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvPatientNameLabel"
                 style="@style/label_text2"
                 android:text="Patient Name"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_percent="0.6"
                 android:textAlignment="textStart"
                 android:textStyle="bold"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.6" />
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvPatientNameValue"
                 style="@style/label_text"
                 android:text="Vikas Pandey"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tvPatientNameLabel"
-                app:layout_constraintBottom_toBottomOf="@id/tvPatientNameLabel"
-                app:layout_constraintWidth_percent="0.4"
                 android:textAlignment="textEnd"
+                app:layout_constraintBottom_toBottomOf="@id/tvPatientNameLabel"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tvPatientNameLabel"
-                />
+                app:layout_constraintTop_toTopOf="@id/tvPatientNameLabel"
+                app:layout_constraintWidth_percent="0.4" />
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvPatientAgeLabel"
                 style="@style/label_text2"
-                android:text="Age"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintWidth_percent="0.6"
-                android:textAlignment="textStart"
-                app:layout_constraintTop_toBottomOf="@id/tvPatientNameLabel"
                 android:layout_marginTop="@dimen/margin_10"
+                android:text="Age"
+                android:textAlignment="textStart"
                 android:textStyle="bold"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvPatientNameLabel"
+                app:layout_constraintWidth_percent="0.6" />
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvPatientAgeValue"
                 style="@style/label_text"
-                android:text="29"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintWidth_percent="0.4"
-                android:textAlignment="textEnd"
-                app:layout_constraintStart_toEndOf="@id/tvPatientAgeLabel"
                 android:layout_marginTop="@dimen/margin_10"
-                app:layout_constraintTop_toTopOf="@id/tvPatientAgeLabel"
+                android:text="29"
+                android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/tvPatientAgeLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tvPatientAgeLabel"
+                app:layout_constraintTop_toTopOf="@id/tvPatientAgeLabel"
+                app:layout_constraintWidth_percent="0.4"
 
                 />
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvPatientAddress"
                 style="@style/label_text2"
-                android:text="Address"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintWidth_percent="0.6"
-                android:textAlignment="textStart"
-                app:layout_constraintTop_toBottomOf="@id/tvPatientAgeLabel"
                 android:layout_marginTop="@dimen/margin_10"
+                android:text="Address"
+                android:textAlignment="textStart"
                 android:textStyle="bold"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvPatientAgeLabel"
+                app:layout_constraintWidth_percent="0.6" />
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvPatientAddressValue"
                 style="@style/label_text"
-                android:text="Meghaninagar"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintWidth_percent="0.4"
-                android:textAlignment="textEnd"
-                app:layout_constraintStart_toEndOf="@id/tvPatientAddress"
                 android:layout_marginTop="@dimen/margin_10"
-                app:layout_constraintTop_toTopOf="@id/tvPatientAddress"
+                android:text="Meghaninagar"
+                android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/tvPatientAddress"
-                />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tvPatientAddress"
+                app:layout_constraintTop_toTopOf="@id/tvPatientAddress"
+                app:layout_constraintWidth_percent="0.4" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvDateLabel"
                 style="@style/label_text2"
-                android:text="Date"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintWidth_percent="0.6"
-                android:textAlignment="textStart"
-                app:layout_constraintTop_toBottomOf="@id/tvPatientAddress"
                 android:layout_marginTop="@dimen/margin_10"
+                android:text="Date"
+                android:textAlignment="textStart"
                 android:textStyle="bold"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvPatientAddress"
+                app:layout_constraintWidth_percent="0.6" />
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvDateValue"
                 style="@style/label_text"
-                android:text="24/01/1994"
-                app:layout_constraintWidth_percent="0.4"
-                android:textAlignment="textEnd"
-                app:layout_constraintStart_toEndOf="@id/tvDateLabel"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="@dimen/margin_10"
-                app:layout_constraintTop_toTopOf="@id/tvDateLabel"
+                android:text="24/01/1994"
+                android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/tvDateLabel"
-                />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tvDateLabel"
+                app:layout_constraintTop_toTopOf="@id/tvDateLabel"
+                app:layout_constraintWidth_percent="0.4" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvTimeLabel"
                 style="@style/label_text2"
-                android:text="Time"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintWidth_percent="0.6"
-                android:textAlignment="textStart"
-                app:layout_constraintTop_toBottomOf="@id/tvDateLabel"
                 android:layout_marginTop="@dimen/margin_10"
+                android:text="Time"
+                android:textAlignment="textStart"
                 android:textStyle="bold"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvDateLabel"
+                app:layout_constraintWidth_percent="0.6" />
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvTimeValue"
                 style="@style/label_text"
-                android:text="10:00 AM"
-                app:layout_constraintWidth_percent="0.4"
-                android:textAlignment="textEnd"
-                app:layout_constraintStart_toEndOf="@id/tvTimeLabel"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="@dimen/margin_10"
-                app:layout_constraintTop_toTopOf="@id/tvTimeLabel"
+                android:text="10:00 AM"
+                android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/tvTimeLabel"
-                />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tvTimeLabel"
+                app:layout_constraintTop_toTopOf="@id/tvTimeLabel"
+                app:layout_constraintWidth_percent="0.4" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/btnGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{viewModel.isShowBothButton ? View.VISIBLE:View.GONE}"
+                app:constraint_referenced_ids="btnConfirm,btnReject" />
+
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_book_appointment"
+                android:id="@+id/btnCancel"
                 style="@style/user_login_editText"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/margin_50"
+                android:layout_marginTop="@dimen/margin_10"
                 android:background="@drawable/button_state_colors"
+                android:onClick="@{()->viewModel.onCancelClick()}"
                 android:text="@string/cancel"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:visibility="@{viewModel.isShowBothButton ? View.GONE:View.VISIBLE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnConfirm"
+                style="@style/user_login_editText"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/margin_50"
+                android:layout_marginTop="@dimen/margin_10"
+                android:background="@drawable/button_state_colors"
+                android:onClick="@{()->viewModel.onConfirmClick()}"
+                android:text="@string/confirm"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/btnReject"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintWidth_percent="0.4" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnReject"
+                style="@style/user_login_editText"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/margin_50"
+                android:layout_marginTop="@dimen/margin_10"
+                android:background="@drawable/button_state_colors"
+                android:onClick="@{()->viewModel.onRejectClick()}"
+                android:text="@string/reject"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="@dimen/margin_10"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toEndOf="@id/btnConfirm"
+                app:layout_constraintWidth_percent="0.4" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
