@@ -9,6 +9,7 @@ import com.android.doctorapp.ui.authentication.register.RegisterViewModel
 import com.android.doctorapp.ui.doctor.AddDoctorViewModel
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.AppointmentDoctorViewModel
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.RequestDoctorViewModel
+import com.android.doctorapp.ui.doctordashboard.doctorfragment.SelectedDateAppointmentsViewModel
 import com.android.doctorapp.ui.home.HomeViewModel
 import com.android.doctorapp.ui.otp.OtpVerificationViewModel
 import com.android.doctorapp.ui.profile.ProfileViewModel
@@ -83,5 +84,10 @@ abstract class AppViewModelModule {
     @IntoMap
     @ViewModelMapKey(RequestDoctorViewModel::class)
     abstract fun bindRequestDoctorViewModel(viewModel: RequestDoctorViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelMapKey(SelectedDateAppointmentsViewModel::class)
+    abstract fun bindSelectedDateAppointmentsViewModel(viewModel: SelectedDateAppointmentsViewModel): ViewModel
 
 }

@@ -18,8 +18,8 @@
         tools:layout="@layout/fragment_appointment_doctor">
 
         <action
-            android:id="@+id/action_doctor_appointment_to_appointment_details"
-            app:destination="@+id/AppointmentDetails" />
+            android:id="@+id/action_doctor_appointment_to_selected_date"
+            app:destination="@+id/navigation_selected_date_appointments" />
     </fragment>
 
     <fragment
@@ -28,10 +28,20 @@
         tools:layout="@layout/fragment_profile">
 
     </fragment>
+
     <fragment
         android:id="@+id/AppointmentDetails"
         android:name="com.android.doctorapp.ui.appointment.AppointmentDetailFragment"
         tools:layout="@layout/fragment_appointment_detail">
 
     </fragment>
+
+    <fragment
+        android:id="@+id/navigation_selected_date_appointments"
+        android:name="com.android.doctorapp.ui.doctordashboard.doctorfragment.SelectedDateAppointmentsFragment"
+        tools:layout="@layout/fragment_selected_date_appointments">
+
+    </fragment>
+
+
 </navigation>
