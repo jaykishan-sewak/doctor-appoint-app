@@ -31,6 +31,7 @@ import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.IS_DOCTOR_OR_
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.STORED_VERIFICATION_Id_KEY
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_CONTACT_NUMBER_KEY
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
+import com.android.doctorapp.util.constants.ConstantKey.FULL_DATE_FORMAT
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.convertDateToFull
 import com.android.doctorapp.util.extension.convertDateToMonth
@@ -84,6 +85,10 @@ class UpdateDoctorProfileFragment :
     private val holidayList = ArrayList<Date>()
     private lateinit var weekOffDayAdapter: WeekOffDayAdapter
     private val tempStrWeekOffList = ArrayList<String>()
+
+    val calendar = Calendar.getInstance()
+    val hourOfDay1 = calendar.get(Calendar.HOUR_OF_DAY)
+    val minute1 = calendar.get(Calendar.MINUTE)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -157,16 +162,59 @@ class UpdateDoctorProfileFragment :
                 )
             }
         }
+        /*mTimePicker = TimePickerDialog(
+            requireContext(), { view, hourOfDay, minute ->
+//                viewModel.availableTime.value = "$hourOfDay:$minute"
+            }, hour, minute, true
+        )*/
+
         mTimePicker = TimePickerDialog(
             requireContext(), { view, hourOfDay, minute ->
-                viewModel.availableTime.value = "$hourOfDay:$minute"
-                Log.d("TAG", "onCreateView: $hourOfDay    -->     $minute")
-            }, hour, minute, true
+//                viewModel.availableTime.value = "$hourOfDay:$minute"
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                calendar.set(Calendar.MINUTE, minute)
+                val selectedTime = calendar.time
+                val sdf = java.text.SimpleDateFormat(FULL_DATE_FORMAT)
+                val formattedTime = sdf.format(selectedTime)
+                Log.d("TAG", "onCreateView: $formattedTime")
+
+            }, hourOfDay1, minute1, true
         )
+
+        /*mTimePicker = TimePickerDialog(
+            requireContext(), { view, hourOfDay, minute ->
+                // Get the selected time from the TimePicker
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                calendar.set(Calendar.MINUTE, minute)
+
+                // Combine the selected time with the current date
+                val selectedTime = calendar.time
+
+                // Now you have a Date object with both date and time
+                // You can use selectedTime as needed
+                // For example, you can format it to a string or do other operations
+                // For formatting to a string, you can use SimpleDateFormat
+                val sdf = java.text.SimpleDateFormat(FULL_DATE_FORMAT)
+                val formattedTime = sdf.format(selectedTime)
+
+                // Print or use the formattedTime
+                println("Selected Time: $formattedTime")
+                Log.d("TAG", "showTimePickerDialog: $formattedTime")
+            },
+            hourOfDay,
+            minute,
+            true
+        )*/
+
         bindingView = binding {
             viewModel = this@UpdateDoctorProfileFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
         }
+
+        binding.text.setOnClickListener {
+            showTimePickerDialog()
+        }
+
 
         binding.rvWeekOff.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -178,6 +226,36 @@ class UpdateDoctorProfileFragment :
         return bindingView.root
     }
 
+    private fun showTimePickerDialog() {
+
+
+        val currentTime = Calendar.getInstance()
+        val hour1 = currentTime.get(Calendar.HOUR_OF_DAY)
+        val minute1 = currentTime.get(Calendar.MINUTE)
+
+        // Create a TimePickerDialog with the current time
+        val test = TimePickerDialog(
+            requireContext(),
+            TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
+                // Handle the selected time here, e.g., display it or use it
+//                val selectedTime = "$selectedHour:$selectedMinute"
+//                    openTimePickerButton.text = "Selected Time: $selectedTime"
+
+                calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
+                calendar.set(Calendar.MINUTE, minute)
+                val selectedTime = calendar.time
+                val sdf = java.text.SimpleDateFormat(FULL_DATE_FORMAT)
+                val formattedTime = sdf.format(selectedTime)
+                Log.d("TAG", "showTimePickerDialog: $formattedTime")
+            },
+            hour1,
+            minute1,
+            false
+        )
+
+        // Show the TimePickerDialog
+        test.show()
+    }
 
     private fun registerObserver(layoutBinding: FragmentUpdateDoctorProfileBinding) {
         viewModel.getModelUserData().observe(viewLifecycleOwner) {
@@ -486,6 +564,6 @@ class UpdateDoctorProfileFragment :
 
             })
     }
-    
+
 
 }
