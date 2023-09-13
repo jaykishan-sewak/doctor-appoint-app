@@ -5,8 +5,16 @@
     <data>
 
         <variable
-            name="header"
+            name="header1"
             type="com.android.doctorapp.repository.models.Header" />
+
+        <variable
+            name="onItemClickListener"
+            type="com.android.doctorapp.ui.doctordashboard.adapter.PatientListAdapter.OnItemClickListener" />
+
+        <variable
+            name="index"
+            type="Integer" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,7 +36,7 @@
             android:id="@+id/appointmentsDate"
             style="@style/doctor_text_view"
             android:layout_marginTop="@dimen/margin_20"
-            android:text="@{header.date}"
+            android:text="@{header1.date}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/headerDivider" />
@@ -39,6 +47,7 @@
             android:layout_height="@dimen/margin_30"
             android:layout_marginTop="@dimen/margin_20"
             android:background="@drawable/rounded_btn"
+            android:onClick="@{()->onItemClickListener.onItemClick(header1,index)}"
             android:text="@string/viewAll"
             android:textAllCaps="false"
             android:textColor="@color/white"

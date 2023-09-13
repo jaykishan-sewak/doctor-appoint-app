@@ -16,6 +16,7 @@ import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.util.Date
 import javax.inject.Inject
 
 class AppointmentDoctorViewModel @Inject constructor(
@@ -28,6 +29,7 @@ class AppointmentDoctorViewModel @Inject constructor(
     private val mainList = mutableListOf<Any>()
     private val appointmentList = MutableLiveData<List<AppointmentModel>>()
     private val sortedAppointmentList = MutableLiveData<List<AppointmentModel>>()
+    private lateinit var filteredList: List<AppointmentModel>
 
 
     init {
@@ -36,7 +38,7 @@ class AppointmentDoctorViewModel @Inject constructor(
 
     private fun addData() {
         var count = 0
-        sortedAppointmentList.value?.forEachIndexed { index, appointmentModel ->
+        filteredList.forEachIndexed { index, appointmentModel ->
 
             if (mainList.isNotEmpty() && mainList.contains(
                     Header(
@@ -114,6 +116,7 @@ class AppointmentDoctorViewModel @Inject constructor(
                             sortedAppointmentList.value = appointmentList.value!!.sortedBy {
                                 it.bookingDateTime
                             }
+                            filteredList = filteredListFun(sortedAppointmentList)
                             addData()
                         }
                     }
@@ -136,5 +139,14 @@ class AppointmentDoctorViewModel @Inject constructor(
         }
     }
 
+    private fun filteredListFun(sortedAppointmentList: MutableLiveData<List<AppointmentModel>>): List<AppointmentModel> {
+        val currentDate = Date()
+        return sortedAppointmentList.value!!.filter { item ->
+            item.bookingDateTime!! >= currentDate
+        }
+
+    }
 
 }
+
+

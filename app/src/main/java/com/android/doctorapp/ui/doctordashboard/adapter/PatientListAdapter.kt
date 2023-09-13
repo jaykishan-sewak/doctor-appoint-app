@@ -12,7 +12,10 @@ import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.Header
 
 
-class PatientListAdapter(private var dataset: List<Any>) :
+class PatientListAdapter(
+    private var dataset: List<Any>,
+    private val listener: OnItemClickListener
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private companion object {
         private const val VIEW_TYPE_USER = 0
@@ -77,7 +80,7 @@ class PatientListAdapter(private var dataset: List<Any>) :
 
             is HeaderViewHolder -> {
                 val header = item as Header
-                holder.bind(header, position)
+                holder.bind(header, listener, position)
             }
         }
     }
@@ -89,6 +92,11 @@ class PatientListAdapter(private var dataset: List<Any>) :
     fun filterList(filterList: List<Any>) {
         dataset = filterList
         notifyItemRangeChanged(0, dataset.size)
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(item: Header, position: Int)
+
     }
 
 }
@@ -104,10 +112,17 @@ private class UserItemViewHolder(private val binding: DoctorAppointmentsItemLayo
 private class HeaderViewHolder(private val binding: DoctorAppointmentsHeaderLayoutBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(header: Header, position: Int) {
+    fun bind(header: Header, listener: PatientListAdapter.OnItemClickListener, position: Int) {
         if (position == 0) {
             binding.headerDivider.visibility = View.GONE
         }
-        binding.header = header
+        binding.apply {
+            header1 = header
+            index = position
+            onItemClickListener = listener
+        }
+
     }
+
 }
+

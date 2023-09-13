@@ -17,6 +17,9 @@
         android:name="com.android.doctorapp.ui.doctordashboard.doctorfragment.AppointmentDoctorFragment"
         tools:layout="@layout/fragment_appointment_doctor">
 
+        <action
+            android:id="@+id/action_doctor_appointment_to_appointment_details"
+            app:destination="@+id/AppointmentDetails" />
     </fragment>
 
     <fragment
