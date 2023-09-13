@@ -11,13 +11,14 @@ import com.android.doctorapp.ui.admin.DoctorDetailsFragment
 import com.android.doctorapp.ui.appointment.AppointmentDetailFragment
 import com.android.doctorapp.ui.profile.AddUserProfileFragment
 import com.android.doctorapp.ui.doctor.UpdateDoctorProfileFragment
-import com.android.doctorapp.ui.doctordashboard.doctorfragment.AppointmentDoctorFragment
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.RequestDoctorFragment
 import com.android.doctorapp.ui.home.HomeFragment
 import com.android.doctorapp.ui.otp.OtpVerificationFragment
 import com.android.doctorapp.ui.profile.ProfileFragment
 import com.android.doctorapp.ui.userdashboard.userfragment.UserAppointmentFragment
 import com.android.doctorapp.ui.userdashboard.userfragment.UserRequestFragment
+import com.android.doctorapp.ui.doctordashboard.doctorfragment.AppointmentDoctorFragment
+
 import dagger.Component
 
 @AuthScopes
