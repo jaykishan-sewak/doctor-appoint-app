@@ -7,7 +7,7 @@ import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_USER_ID
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_APPOINTMENT
-import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_NAME
+import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_USER_DATA
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
@@ -35,7 +35,7 @@ class AppointmentRepository @Inject constructor() {
         fireStore: FirebaseFirestore
     ): ApiResponse<UserDataRequestModel> {
         return try {
-            val response = fireStore.collection(TABLE_NAME)
+            val response = fireStore.collection(TABLE_USER_DATA)
                 .whereEqualTo(FIELD_USER_ID, userId)
                 .get()
                 .await()
@@ -49,9 +49,12 @@ class AppointmentRepository @Inject constructor() {
         }
     }
 
-    suspend fun getUserById(userId: String, fireStore: FirebaseFirestore): ApiResponse<UserDataResponseModel> {
+    suspend fun getUserById(
+        userId: String,
+        fireStore: FirebaseFirestore
+    ): ApiResponse<UserDataResponseModel> {
         return try {
-            val response = fireStore.collection(TABLE_NAME)
+            val response = fireStore.collection(TABLE_USER_DATA)
                 .whereEqualTo(FIELD_USER_ID, userId)
                 .get()
                 .await()

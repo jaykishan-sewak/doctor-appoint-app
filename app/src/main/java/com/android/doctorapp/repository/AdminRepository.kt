@@ -14,7 +14,7 @@ class AdminRepository @Inject constructor() {
 
     suspend fun getDoctorList(firestore: FirebaseFirestore): ApiResponse<List<UserDataResponseModel>> {
         return try {
-            val response = firestore.collection(ConstantKey.DBKeys.TABLE_NAME)
+            val response = firestore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
                 .whereEqualTo(ConstantKey.DBKeys.FIELD_DOCTOR, true).get().await()
 
             val userList = arrayListOf<UserDataResponseModel>()
@@ -37,7 +37,8 @@ class AdminRepository @Inject constructor() {
     ): ApiResponse<Boolean> {
         return try {
             val response =
-                firestore.collection(ConstantKey.DBKeys.TABLE_NAME).document(documentId).delete().await()
+                firestore.collection(ConstantKey.DBKeys.TABLE_USER_DATA).document(documentId)
+                    .delete().await()
             ApiResponse.create(response = Response.success(true))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
@@ -49,7 +50,7 @@ class AdminRepository @Inject constructor() {
         fireStore: FirebaseFirestore
     ): ApiResponse<UserDataResponseModel> {
         return try {
-            val response = fireStore.collection(ConstantKey.DBKeys.TABLE_NAME)
+            val response = fireStore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
                 .whereEqualTo(ConstantKey.DBKeys.FIELD_USER_ID, userId)
                 .get()
                 .await()

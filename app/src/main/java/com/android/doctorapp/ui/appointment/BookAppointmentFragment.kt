@@ -106,7 +106,7 @@ class BookAppointmentFragment :
                 }
             }
         }
-        viewModel.navigationListener.observe(viewLifecycleOwner) {it ->
+        viewModel.navigationListener.observe(viewLifecycleOwner) { it ->
             if (it) {
                 findNavController().popBackStack()
             }

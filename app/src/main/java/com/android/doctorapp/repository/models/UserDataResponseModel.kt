@@ -3,25 +3,24 @@ package com.android.doctorapp.repository.models
 import java.util.Date
 
 data class UserDataResponseModel(
-    var id:String = "",
+    var id: String = "",
     var userId: String = "",
     var isDoctor: Boolean = false,
     var email: String = "",
     var name: String = "",
     var gender: String = "MALE",
     var address: String = "",
-    var contactNumber:String = "",
-    var degree: List<String>? = null,
-    var specialities: List<String>? = null,
-    var availableDays: String = "",
+    var contactNumber: String = "",
+    var degree: ArrayList<String>? = null,
+    var specialities: ArrayList<String>? = null,
     var isEmailVerified: Boolean = false,
     var isPhoneNumberVerified: Boolean = false,
-    var availableTime: String = "",
+    var availableTime: ArrayList<TimeSlotRequestModel>? = null,
     var images: String = "",
     var isAdmin: Boolean = false,
     var isNotificationEnable: Boolean = false,
     var dob: Date? = null,
     var isUserVerified: Boolean = false,
-    var onlineAvailabilityDateTime: String = "",
-    var offlineAvailabilityDateTime: String = "",
+    var holidayList: ArrayList<HolidayModel>? = null,
+    var weekOffList: ArrayList<WeekOffRequestModel>? = null
 )

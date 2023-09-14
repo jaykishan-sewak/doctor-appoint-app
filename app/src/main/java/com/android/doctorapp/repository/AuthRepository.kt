@@ -9,10 +9,11 @@ import com.android.doctorapp.repository.models.LoginResponseModel
 import com.android.doctorapp.repository.models.RegisterRequestModel
 import com.android.doctorapp.repository.models.SpecializationResponseModel
 import com.android.doctorapp.repository.models.UserDataRequestModel
-import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.repository.network.AppApi
 import com.android.doctorapp.util.constants.ConstantKey
+//import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_ID
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_USER_ID
+import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_USER_DATA
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
@@ -170,7 +171,7 @@ class AuthRepository @Inject constructor(
         firestore: FirebaseFirestore
     ): ApiResponse<UserDataRequestModel> {
         return try {
-            firestore.collection("user_data").add(userRequestModel).await()
+            firestore.collection(TABLE_USER_DATA).add(userRequestModel).await()
             ApiResponse.create(response = Response.success(userRequestModel))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
@@ -184,7 +185,7 @@ class AuthRepository @Inject constructor(
     ): ApiResponse<UserDataRequestModel> {
         return try {
             val addDoctorResponse =
-                firestore.collection("user_data").add(doctorRequestModel).await()
+                firestore.collection(TABLE_USER_DATA).add(doctorRequestModel).await()
             ApiResponse.create(response = Response.success(doctorRequestModel))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
@@ -197,12 +198,12 @@ class AuthRepository @Inject constructor(
     ): ApiResponse<UserDataRequestModel> {
         return try {
 
-            val response = fireStore.collection("user_data")
-                .whereEqualTo("userId", doctorRequestModel.userId)
+            val response = fireStore.collection(TABLE_USER_DATA)
+                .whereEqualTo(FIELD_USER_ID, doctorRequestModel.userId)
                 .get()
                 .await()
 
-            val updateUserResponse = fireStore.collection("user_data")
+            val updateUserResponse = fireStore.collection(TABLE_USER_DATA)
                 .document(response.documents[0].id)
                 .set(doctorRequestModel)
                 .await()
@@ -218,8 +219,8 @@ class AuthRepository @Inject constructor(
         fireStore: FirebaseFirestore
     ): ApiResponse<UserDataRequestModel> {
         return try {
-            val response = fireStore.collection("user_data")
-                .whereEqualTo("userId", recordId)
+            val response = fireStore.collection(TABLE_USER_DATA)
+                .whereEqualTo(FIELD_USER_ID, recordId)
                 .get()
                 .await()
 
@@ -328,12 +329,12 @@ class AuthRepository @Inject constructor(
         fireStore: FirebaseFirestore
     ): ApiResponse<UserDataRequestModel> {
         return try {
-            val response = fireStore.collection(ConstantKey.DBKeys.TABLE_NAME)
+            val response = fireStore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
                 .whereEqualTo(FIELD_USER_ID, doctorRequestModel.userId)
                 .get()
                 .await()
 
-            val updateUserResponse = fireStore.collection(ConstantKey.DBKeys.TABLE_NAME)
+            val updateUserResponse = fireStore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
                 .document(response.documents[0].id)
                 .set(doctorRequestModel)
                 .await()
