@@ -23,8 +23,10 @@ import com.android.doctorapp.repository.models.DegreeResponseModel
 import com.android.doctorapp.repository.models.HolidayModel
 import com.android.doctorapp.repository.models.SpecializationResponseModel
 import com.android.doctorapp.repository.models.TimeSlotModel
+import com.android.doctorapp.repository.models.TimeSlotRequestModel
 import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.repository.models.WeekOffModel
+import com.android.doctorapp.repository.models.WeekOffRequestModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
@@ -122,6 +124,8 @@ class AddDoctorViewModel @Inject constructor(
     val holidayList = MutableLiveData<ArrayList<HolidayModel>>()
 
     val availableTimeList = MutableLiveData<ArrayList<TimeSlotModel>>()
+    private val availableTimeList1 = ArrayList<TimeSlotModel>()
+
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
         this.binding = binding
@@ -384,6 +388,20 @@ class AddDoctorViewModel @Inject constructor(
             var recordId: String = ""
             session.getString(USER_ID).collectLatest {
                 val userData: UserDataRequestModel
+
+/*                weekDayList.forEachIndexed { index, weekOffModel ->
+                    Log.d(TAG, "updateUser w: ${weekOffModel.dayName}")
+                }
+                availableTimeList.value?.forEachIndexed { index, timeSlotModel ->
+                    Log.d(TAG, "updateUser t: ${timeSlotModel.timeSlot}")
+                }
+
+                availableTimeList1.add(TimeSlotModel(timeSlot = availableTimeList.))
+
+                holidayList.value?.forEachIndexed { index, holidayModel ->
+                    Log.d(TAG, "updateUser h: ${holidayModel.holidayList}")
+                }
+                return@collectLatest*/
                 if (isDoctor.value == true) {
                     userData = UserDataRequestModel(
                         userId = it.toString(),
@@ -397,14 +415,16 @@ class AddDoctorViewModel @Inject constructor(
                             ?.map { (it as Chip).text.toString() } as ArrayList<String>?,
                         specialities = binding?.chipGroupSpec?.children?.toList()
                             ?.map { (it as Chip).text.toString() } as ArrayList<String>?,
-                        availableDays = "",
                         isEmailVerified = true,
                         isPhoneNumberVerified = true,
-                        availableTime = "",
+                        availableTime = availableTimeList.value?.toList()?.map { newData -> TimeSlotRequestModel(newData.timeSlot, newData.isTimeSlotBook) } as ArrayList<TimeSlotRequestModel>,
                         isAdmin = false,
                         isNotificationEnable = notificationToggleData.value == true,
                         dob = SimpleDateFormat(DATE_MM_FORMAT).parse(dob.value.toString()),
-                        isUserVerified = true
+                        isUserVerified = true,
+                        holidayList = holidayList.value,
+                        weekOffList = strWeekOffList.value?.toList()?.map { (it) } as ArrayList<WeekOffRequestModel>
+
                     )
                 } else {
                     //Here Code for User Update

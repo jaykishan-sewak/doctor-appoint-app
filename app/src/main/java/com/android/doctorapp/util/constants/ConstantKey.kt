@@ -22,7 +22,7 @@ object ConstantKey {
     const val MALE_GENDER = "MALE"
 
     object DBKeys {
-        const val TABLE_NAME = "user_data"
+        const val TABLE_USER_DATA = "user_data"
         const val FIELD_ADMIN = "admin"
         const val FIELD_DOCTOR = "doctor"
         const val TABLE_DEGREE = "degree"

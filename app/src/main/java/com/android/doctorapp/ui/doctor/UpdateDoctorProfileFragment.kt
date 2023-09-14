@@ -218,7 +218,7 @@ class UpdateDoctorProfileFragment :
                     minDate = null
                 ) { holidayDate ->
                     val monthDate = convertDateToMonth(holidayDate)
-                    holidayList.add(HolidayModel(holidayList = convertDateToFull(monthDate)))
+                    holidayList.add(HolidayModel(holidayDate = convertDateToFull(monthDate)))
                     updateHolidayRecyclerview(holidayList)
                 }
             } else if (layoutBinding.btnAddTiming.id == it?.id) {
