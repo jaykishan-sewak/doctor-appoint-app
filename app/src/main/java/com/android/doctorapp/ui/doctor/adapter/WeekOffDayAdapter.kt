@@ -1,22 +1,23 @@
-package com.android.doctorapp.ui.appointment.adapter
+package com.android.doctorapp.ui.doctor.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.doctorapp.R
-import com.android.doctorapp.databinding.DateRowLayoutBinding
-import com.android.doctorapp.repository.models.DateSlotModel
+import com.android.doctorapp.databinding.WeekOffDayRowLayoutBinding
+import com.android.doctorapp.repository.models.WeekOffModel
 
-class AppointmentDateAdapter(
-    private val daysList: ArrayList<DateSlotModel>,
+class WeekOffDayAdapter(
+    private val daysList: ArrayList<WeekOffModel>,
     private val listener: OnItemClickListener
-) : RecyclerView.Adapter<AppointmentDateAdapter.ItemViewHolder>() {
+) : RecyclerView.Adapter<WeekOffDayAdapter.ItemViewHolder>() {
 
-    class ItemViewHolder(val view: DateRowLayoutBinding) : RecyclerView.ViewHolder(view.root) {
-        fun bind(item: DateSlotModel, listener: OnItemClickListener, position: Int) {
+    class ItemViewHolder(val view: WeekOffDayRowLayoutBinding) :
+        RecyclerView.ViewHolder(view.root) {
+        fun bind(item: WeekOffModel, listener: OnItemClickListener, position: Int) {
             view.apply {
-                dateSlotModel = item
+                viewModel = item
                 index = position
                 onItemClickListener = listener
             }
@@ -26,8 +27,8 @@ class AppointmentDateAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val layoutInflater =
             LayoutInflater.from(parent.context)
-        val itemView: DateRowLayoutBinding =
-                DataBindingUtil.inflate(layoutInflater, R.layout.date_row_layout, parent, false)
+        val itemView: WeekOffDayRowLayoutBinding =
+            DataBindingUtil.inflate(layoutInflater, R.layout.week_off_day_row_layout, parent, false)
         return ItemViewHolder(itemView)
     }
 
@@ -41,7 +42,8 @@ class AppointmentDateAdapter(
     }
 
     interface OnItemClickListener {
-        fun onItemClick(item: DateSlotModel, position: Int)
+        fun onItemClick(item: WeekOffModel, position: Int)
     }
+
 
 }

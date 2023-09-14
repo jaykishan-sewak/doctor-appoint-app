@@ -1,6 +1,7 @@
 package com.android.doctorapp.ui.doctor
 
 import android.content.Context
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.RadioGroup
@@ -19,11 +20,18 @@ import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.DegreeResponseModel
+import com.android.doctorapp.repository.models.HolidayModel
 import com.android.doctorapp.repository.models.SpecializationResponseModel
+import com.android.doctorapp.repository.models.TimeSlotModel
+import com.android.doctorapp.repository.models.TimeSlotRequestModel
 import com.android.doctorapp.repository.models.UserDataRequestModel
+import com.android.doctorapp.repository.models.WeekOffModel
+import com.android.doctorapp.repository.models.WeekOffRequestModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.FEMALE_GENDER
+import com.android.doctorapp.util.constants.ConstantKey.MALE_GENDER
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
 import com.android.doctorapp.util.extension.isNetworkAvailable
@@ -83,10 +91,6 @@ class AddDoctorViewModel @Inject constructor(
     val isAvailableDate: MutableLiveData<String?> = MutableLiveData()
     private val isAvailableDateError: MutableLiveData<String?> = MutableLiveData()
 
-    val isTimeShow: MutableLiveData<Boolean> = SingleLiveEvent()
-    val availableTime: MutableLiveData<String> = MutableLiveData()
-    private val availableTimeError: MutableLiveData<String?> = MutableLiveData()
-
     val isPhoneVerify: MutableLiveData<Boolean> = MutableLiveData(true)
     val isPhoneVerifyValue: MutableLiveData<String> =
         MutableLiveData(resourceProvider.getString(R.string.verify))
@@ -110,12 +114,25 @@ class AddDoctorViewModel @Inject constructor(
     val tempEmail: MutableLiveData<String?> = MutableLiveData()
     val tempContactNumber: MutableLiveData<String?> = MutableLiveData()
 
+
+    private val weekDayList = ArrayList<WeekOffModel>()
+    val weekDayNameList = MutableLiveData<ArrayList<WeekOffModel>>()
+    val strWeekOffList = MutableLiveData<ArrayList<String>>()
+
+
+    val holidayList = MutableLiveData<ArrayList<HolidayModel>>()
+
+    val availableTimeList = MutableLiveData<ArrayList<TimeSlotModel>>()
+    private val availableTimeList1 = ArrayList<TimeSlotModel>()
+
+
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
         this.binding = binding
     }
 
     init {
         firebaseUser = firebaseAuth.currentUser!!
+        getWeekDayList()
     }
 
     fun getModelUserData(): MutableLiveData<List<UserDataRequestModel>> {
@@ -171,22 +188,18 @@ class AddDoctorViewModel @Inject constructor(
                     context.toast(resourceProvider.getString(R.string.check_internet_connection))
                 }
             }
-
-
         }
         return data
     }
 
     fun validateAllUpdateField() {
         if (isDoctor.value!!) {
-
             isUpdateDataValid.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
                     && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
                     && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
                     && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
                     && !dob.value.isNullOrEmpty() && dobError.value.isNullOrEmpty()
-                    && !isAvailableDate.value.isNullOrEmpty() && isAvailableDateError.value.isNullOrEmpty()
-                    && !availableTime.value.isNullOrEmpty() && availableTimeError.value.isNullOrEmpty()
+                    && availableTimeList.value?.isEmpty() == false
                     && isPhoneVerify.value == false
                     && isEmailEnable.value == false
                     && binding?.chipGroup?.children?.toList()?.size!! > 0
@@ -277,39 +290,16 @@ class AddDoctorViewModel @Inject constructor(
         validateAllUpdateField()
     }
 
-    fun isValidDate(text: CharSequence?) {
-        if (text?.toString().isNullOrEmpty()) {
-            isAvailableDateError.value = resourceProvider.getString(R.string.valid_date_desc)
-        } else {
-            isAvailableDateError.value = null
-        }
-        validateAllUpdateField()
-    }
-
-
-    fun isValidTime(text: CharSequence?) {
-        if (text?.toString().isNullOrEmpty()) {
-            availableTimeError.value = resourceProvider.getString(R.string.valid_time_desc)
-        } else {
-            availableTimeError.value = null
-        }
-        validateAllUpdateField()
-    }
-
     fun genderSelect(group: RadioGroup, checkedId: Int) {
         if (R.id.radioButtonMale == checkedId) {
-            selectGenderValue.value = "MALE"
+            selectGenderValue.value = MALE_GENDER
         } else {
-            selectGenderValue.value = "FEMALE"
+            selectGenderValue.value = FEMALE_GENDER
         }
     }
 
     fun calenderClick(text_dob: View) {
         isCalender.value = text_dob
-    }
-
-    fun timeClick() {
-        isTimeShow.value = true
     }
 
     fun addDoctorData() {
@@ -375,6 +365,7 @@ class AddDoctorViewModel @Inject constructor(
             var recordId: String = ""
             session.getString(USER_ID).collectLatest {
                 val userData: UserDataRequestModel
+
                 if (isDoctor.value == true) {
                     userData = UserDataRequestModel(
                         userId = it.toString(),
@@ -388,14 +379,17 @@ class AddDoctorViewModel @Inject constructor(
                             ?.map { (it as Chip).text.toString() } as ArrayList<String>?,
                         specialities = binding?.chipGroupSpec?.children?.toList()
                             ?.map { (it as Chip).text.toString() } as ArrayList<String>?,
-                        availableDays = "",
                         isEmailVerified = true,
                         isPhoneNumberVerified = true,
-                        availableTime = "",
+                        availableTime = availableTimeList.value?.toList()
+                            ?.map { newData -> TimeSlotRequestModel(newData.timeSlot, newData.isTimeSlotBook) } as ArrayList<TimeSlotRequestModel>,
                         isAdmin = false,
                         isNotificationEnable = notificationToggleData.value == true,
                         dob = SimpleDateFormat(DATE_MM_FORMAT).parse(dob.value.toString()),
-                        isUserVerified = true
+                        isUserVerified = true,
+                        holidayList = holidayList.value,
+                        weekOffList = strWeekOffList.value?.toList()?.map { (it) } as ArrayList<WeekOffRequestModel>
+
                     )
                 } else {
                     //Here Code for User Update
@@ -425,7 +419,7 @@ class AddDoctorViewModel @Inject constructor(
                             contactNumber.value = ""
                             dob.value = ""
                             isAvailableDate.value = ""
-                            availableTime.value = ""
+                            availableTimeList.value = arrayListOf()
                             setShowProgress(false)
                             if (isDoctor.value == true) {
                                 _addDoctorResponse.value =
@@ -768,4 +762,20 @@ class AddDoctorViewModel @Inject constructor(
             }
         }
     }
+
+
+    private fun getWeekDayList() {
+        weekDayList.add(WeekOffModel(dayName = resourceProvider.getString(R.string.monday), isWeekOff = false))
+        weekDayList.add(WeekOffModel(dayName = resourceProvider.getString(R.string.tuesday), isWeekOff = false))
+        weekDayList.add(WeekOffModel(dayName = resourceProvider.getString(R.string.wednesday), isWeekOff = false))
+        weekDayList.add(WeekOffModel(dayName = resourceProvider.getString(R.string.thursday), isWeekOff = false))
+        weekDayList.add(WeekOffModel(dayName = resourceProvider.getString(R.string.friday), isWeekOff = false))
+        weekDayList.add(WeekOffModel(dayName = resourceProvider.getString(R.string.saturday), isWeekOff = false))
+        weekDayList.add(WeekOffModel(dayName = resourceProvider.getString(R.string.sunday), isWeekOff = false))
+
+        weekDayNameList.value = weekDayList
+
+    }
+
+
 }

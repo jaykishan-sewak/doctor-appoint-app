@@ -15,12 +15,20 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.FragmentUpdateDoctorProfileBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.models.HolidayModel
+import com.android.doctorapp.repository.models.TimeSlotModel
+import com.android.doctorapp.repository.models.WeekOffModel
+import com.android.doctorapp.ui.doctor.adapter.AddDoctorHolidayAdapter
+import com.android.doctorapp.ui.doctor.adapter.AddDoctorTimingAdapter
 import com.android.doctorapp.ui.doctor.adapter.CustomAutoCompleteAdapter
+import com.android.doctorapp.ui.doctor.adapter.WeekOffDayAdapter
 import com.android.doctorapp.ui.doctordashboard.DoctorDashboardActivity
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.IS_DOCTOR_OR_USER_KEY
@@ -28,6 +36,8 @@ import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.STORED_VERIFI
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_CONTACT_NUMBER_KEY
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.extension.alert
+import com.android.doctorapp.util.extension.convertDateToFull
+import com.android.doctorapp.util.extension.convertDateToMonth
 import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.selectDate
 import com.android.doctorapp.util.extension.startActivityFinish
@@ -54,13 +64,9 @@ class UpdateDoctorProfileFragment :
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel by viewModels<AddDoctorViewModel> { viewModelFactory }
     private lateinit var callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
-    private val TAG = UpdateDoctorProfileFragment::class.java.simpleName
     lateinit var storedVerificationId: String
     lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
     lateinit var mTimePicker: TimePickerDialog
-    private val mCurrentTime: Calendar = Calendar.getInstance()
-    private val hour = mCurrentTime.get(Calendar.HOUR_OF_DAY)
-    private val minute = mCurrentTime.get(Calendar.MINUTE)
     val handler = Handler(Looper.getMainLooper())
     var isFromAdmin: Boolean = false
     private val runnable = object : Runnable {
@@ -74,6 +80,13 @@ class UpdateDoctorProfileFragment :
     lateinit var bindingView: FragmentUpdateDoctorProfileBinding
     var enteredDegreeText: String = ""
     var enteredSpecializationText: String = ""
+    private val holidayList = ArrayList<HolidayModel>()
+    private lateinit var weekOffDayAdapter: WeekOffDayAdapter
+    private val tempStrWeekOffList = ArrayList<String>()
+    private val calendar = Calendar.getInstance()
+    private var addTimeList = ArrayList<TimeSlotModel>()
+    private lateinit var addDoctorTimeAdapter: AddDoctorTimingAdapter
+    private lateinit var addDoctorHolidayAdapter: AddDoctorHolidayAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -147,33 +160,27 @@ class UpdateDoctorProfileFragment :
                 )
             }
         }
-        mTimePicker = TimePickerDialog(
-            requireContext(), { view, hourOfDay, minute ->
-                viewModel.availableTime.value = "$hourOfDay:$minute"
-            }, hour, minute, true
-        )
         bindingView = binding {
             viewModel = this@UpdateDoctorProfileFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
         }
 
+        binding.rvWeekOff.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.rvAddTiming.layoutManager =
+            GridLayoutManager(requireContext(), 3)
+        binding.rvHoliday.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+
         viewModel.setBindingData(bindingView)
         viewModel.getDegreeItems()
         viewModel.getSpecializationItems()
+        setUpWithViewModel(viewModel)
+        registerObserver(bindingView)
         return bindingView.root
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setUpWithViewModel(viewModel)
-        registerObserver()
-    }
-
-    private fun registerObserver() {
+    private fun registerObserver(layoutBinding: FragmentUpdateDoctorProfileBinding) {
         viewModel.getModelUserData().observe(viewLifecycleOwner) {
             viewModel.name.value = it[0].name
             viewModel.email.value = it[0].email
@@ -186,7 +193,7 @@ class UpdateDoctorProfileFragment :
         viewModel.isPhoneVerify.observe(viewLifecycleOwner) {
             if (!it) {
                 viewModel.validateAllUpdateField()
-                binding.textContactVerify.setTextColor(
+                layoutBinding.textContactVerify.setTextColor(
                     ContextCompat.getColor(
                         requireContext(),
                         R.color.green
@@ -196,7 +203,7 @@ class UpdateDoctorProfileFragment :
         }
 
         viewModel.isCalender.observe(viewLifecycleOwner) {
-            if (binding.textDateOfBirth.id == it?.id) {
+            if (layoutBinding.textDateOfBirth.id == it?.id) {
                 requireContext().selectDate(maxDate = Date().time, minDate = null) { dobDate ->
                     if (calculateAge(dobDate) > 22) {
                         viewModel.dob.value = dobDate
@@ -205,6 +212,17 @@ class UpdateDoctorProfileFragment :
                         viewModel.isDobGreater22()
                     }
                 }
+            } else if (layoutBinding.btnAddHoliday.id == it?.id) {
+                requireContext().selectDate(
+                    maxDate = null,
+                    minDate = null
+                ) { holidayDate ->
+                    val monthDate = convertDateToMonth(holidayDate)
+                    holidayList.add(HolidayModel(holidayDate = convertDateToFull(monthDate)))
+                    updateHolidayRecyclerview(holidayList)
+                }
+            } else if (layoutBinding.btnAddTiming.id == it?.id) {
+                showTimePickerDialog()
             } else {
                 requireContext().selectDate(
                     maxDate = null,
@@ -212,11 +230,6 @@ class UpdateDoctorProfileFragment :
                 ) { availableDate ->
                     viewModel.isAvailableDate.value = availableDate
                 }
-            }
-        }
-        viewModel.isTimeShow.observe(viewLifecycleOwner) {
-            if (it) {
-                mTimePicker.show()
             }
         }
 
@@ -251,7 +264,7 @@ class UpdateDoctorProfileFragment :
                 viewModel.validateAllUpdateField()
                 viewModel.emailVerifyLabel.postValue(requireContext().resources.getString(R.string.verified))
                 viewModel.isEmailEnable.value = false
-                binding.textEmailVerify.setTextColor(
+                layoutBinding.textEmailVerify.setTextColor(
                     ContextCompat.getColor(
                         requireContext(),
                         R.color.green
@@ -351,6 +364,11 @@ class UpdateDoctorProfileFragment :
                 }
             }
         }
+
+        viewModel.weekDayNameList.observe(viewLifecycleOwner) {
+            updateWeekOffRecyclerview(it)
+            layoutBinding.rvWeekOff.adapter = weekOffDayAdapter
+        }
     }
 
     private fun addSpecializationItem(uppercase: String) {
@@ -415,5 +433,72 @@ class UpdateDoctorProfileFragment :
         }
     }
 
+    private fun updateWeekOffRecyclerview(weekOffDayList: ArrayList<WeekOffModel>) {
+        weekOffDayAdapter = WeekOffDayAdapter(weekOffDayList,
+            object : WeekOffDayAdapter.OnItemClickListener {
+                override fun onItemClick(item: WeekOffModel, position: Int) {
+                    weekOffDayList.forEachIndexed { index, weekOffModel ->
+                        if (weekOffDayList[index].dayName == item.dayName) {
+                            if (weekOffDayList[index].isWeekOff) {
+                                weekOffDayList[index].isWeekOff = false
+                                tempStrWeekOffList.remove(weekOffDayList[index].dayName)
+                            } else {
+                                weekOffDayList[index].isWeekOff = true
+                                tempStrWeekOffList.add(weekOffDayList[index].dayName)
+                            }
+                        } else {
+
+                        }
+
+                    }
+                    weekOffDayAdapter.notifyItemChanged(position)
+                    viewModel.strWeekOffList.value = tempStrWeekOffList
+                }
+
+            })
+    }
+
+    private fun showTimePickerDialog() {
+        val currentTime = Calendar.getInstance()
+        val hour1 = currentTime.get(Calendar.HOUR_OF_DAY)
+        val minute1 = currentTime.get(Calendar.MINUTE)
+
+        // Create a TimePickerDialog with the current time
+        mTimePicker = TimePickerDialog(
+            requireContext(), { _, selectedHour, selectedMinute ->
+                calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
+                calendar.set(Calendar.MINUTE, selectedMinute)
+                val selectedTime = calendar.time
+                addTimeList.add(
+                    TimeSlotModel(
+                        timeSlot = selectedTime,
+                        isTimeSlotBook = false,
+                        isTimeClick = false
+                    )
+                )
+                updateAddTimeRecyclerview(addTimeList)
+            },
+            hour1,
+            minute1,
+            true
+        )
+
+        // Show the TimePickerDialog
+        mTimePicker.show()
+    }
+
+
+    private fun updateAddTimeRecyclerview(newAddTimeList: ArrayList<TimeSlotModel>) {
+        addDoctorTimeAdapter = AddDoctorTimingAdapter(newAddTimeList)
+        viewModel.availableTimeList.value = newAddTimeList
+        binding.rvAddTiming.adapter = addDoctorTimeAdapter
+        viewModel.validateAllUpdateField()
+    }
+
+    private fun updateHolidayRecyclerview(newHolidayList: ArrayList<HolidayModel>) {
+        addDoctorHolidayAdapter = AddDoctorHolidayAdapter(newHolidayList)
+        viewModel.holidayList.value = newHolidayList
+        binding.rvHoliday.adapter = addDoctorHolidayAdapter
+    }
 
 }
