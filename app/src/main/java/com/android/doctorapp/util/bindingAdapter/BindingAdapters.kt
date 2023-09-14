@@ -5,7 +5,6 @@ import android.graphics.Paint
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.webkit.WebView
@@ -23,14 +22,19 @@ import com.android.doctorapp.R
 import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.repository.models.TimeSlotModel
 import com.android.doctorapp.util.ImageUtils
+import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.MALE_GENDER
 import com.android.doctorapp.util.extension.convertDate
 import com.android.doctorapp.util.extension.convertTime
-import com.android.doctorapp.util.constants.ConstantKey.MALE_GENDER
 import com.android.doctorapp.util.extension.hideKeyboard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 @BindingAdapter(
     "android:src",
@@ -185,8 +189,9 @@ fun setGenderImage(imageView: AppCompatImageView, gender: String) {
         if (gender.isNotEmpty() && gender == MALE_GENDER) R.drawable.ic_male_placeholder else R.drawable.ic_female_placeholder
     imageView.setImageResource(drawableRes)
 }
+
 @BindingAdapter("app:appointmentDate")
-fun convertDateFormat(textView: TextView,originalDateStr: String) {
+fun convertDateFormat(textView: TextView, originalDateStr: String) {
     val fullDate = convertDate(originalDateStr)
     val splitDate = fullDate.replace(" ", "\n")
     textView.text = splitDate
@@ -203,6 +208,7 @@ fun setSpecialization(textView: AppCompatTextView, specialities: List<String>?) 
         android.text.TextUtils.join(",", specialities)
     else ""
 }
+
 @BindingAdapter("app:timeStyle")
 fun setTimeButtonStyle(appCompatButton: AppCompatButton, timeSlotModel: TimeSlotModel) {
     if (timeSlotModel.isTimeClick) {
@@ -211,6 +217,7 @@ fun setTimeButtonStyle(appCompatButton: AppCompatButton, timeSlotModel: TimeSlot
         appCompatButton.setTextAppearance(R.style.date_time_unselect)
     }
 }
+
 @BindingAdapter("app:dateStyle")
 fun setDateButtonStyle(appCompatButton: AppCompatButton, dateSlotModel: DateSlotModel) {
     if (dateSlotModel.dateSelect) {
@@ -225,7 +232,26 @@ fun setDateButtonStyle(appCompatButton: AppCompatButton, dateSlotModel: DateSlot
 fun setString(textView: AppCompatTextView, specialities: List<String>?) {
     textView.text = if (specialities?.isNotEmpty() == true)
         android.text.TextUtils.join(",", specialities)
-     else
+    else
         ""
 
+}
+
+@BindingAdapter("app:age")
+fun setAge(textView: AppCompatTextView, dateOfBirth: Date?) {
+    if (dateOfBirth != null) {
+        val dateFormatter = SimpleDateFormat(ConstantKey.FULL_DATE_FORMAT, Locale.getDefault())
+        val dob: Date? = dateFormatter.parse(dateOfBirth.toString())
+        val calendarDob = Calendar.getInstance()
+        if (dob != null) {
+            calendarDob.time = dob
+        }
+        val currentDate = Calendar.getInstance()
+        val years = currentDate.get(Calendar.YEAR) - calendarDob.get(Calendar.YEAR)
+        if (currentDate.get(Calendar.DAY_OF_YEAR) < calendarDob.get(Calendar.DAY_OF_YEAR)) {
+            textView.text = "${years - 1}"
+        }
+        textView.text = years.toString()
+    } else
+        textView.text = ""
 }

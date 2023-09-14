@@ -131,8 +131,8 @@
     <string name="user_appointment_fragment">User Appointment fragment</string>
     <string name="user_request_fragment">User Request fragment</string>
     <string name="doctor_details">Doctor Details</string>
-    <string name="degree_label">Degree: </string>
-    <string name="specialization_label">Specialization: </string>
+    <string name="degree_label">Degree : </string>
+    <string name="specialization_label">Specialization : </string>
     <string name="booking">Booking</string>
     <string name="dialog_appointment_desc">Are you sure you want to Booking Appointment?</string>
     <string name="online_booking">Online Booking</string>
@@ -145,5 +145,7 @@
     <string name="approve_appointment_desc">Are you sure you want to approve appointment?</string>
     <string name="reject_appointment_desc">Are you sure you want to reject appointment?</string>
     <string name="enter_reason">Enter reason</string>
-
+    <string name="name">Name :</string>
+    <string name="age">Age :</string>
+    <string name="address">Address :</string>
 </resources>
