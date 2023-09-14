@@ -131,3 +131,24 @@ fun convertTime(originalTimeStr: String): String {
         ""
     }
 }
+
+
+fun dateFormatter(originalDateStr: Date, format: String): String {
+    return try {
+        val convertDate = SimpleDateFormat(format, Locale.getDefault())
+        return convertDate.format(originalDateStr)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
+    }
+}
+
+//fun stringToDateFormatter(date: String): Date {
+//    return try {
+//        val formatter = SimpleDateFormat(DATE_MM_FORMAT, Locale.getDefault())
+//        return formatter.parse(date)!!
+//    } catch (e: Exception) {
+//        e.printStackTrace()
+//        ""
+//    }
+//}

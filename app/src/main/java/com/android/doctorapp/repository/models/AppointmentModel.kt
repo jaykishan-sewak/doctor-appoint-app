@@ -14,4 +14,4 @@ data class AppointmentModel(
     var age: String = ""
 )
 
-data class Header(val date: String)
+data class Header(val date: Date?)

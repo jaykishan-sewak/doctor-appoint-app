@@ -30,6 +30,7 @@ object ConstantKey {
         const val TABLE_SPECIALIZATION = "specialization"
         const val FIELD_USER_ID = "userId"
         const val TABLE_APPOINTMENT = "appointment"
+        const val FIELD_SELECTED_DATE = "bookingDateTime"
     }
 
     const val FORMATTED_DATE = "dd-mm-yyyy"

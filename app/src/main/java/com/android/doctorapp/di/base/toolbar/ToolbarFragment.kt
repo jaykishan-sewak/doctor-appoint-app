@@ -10,6 +10,7 @@ abstract class ToolbarFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         toolbarManager = ToolbarManager(builder(), view)
         toolbarManager!!.prepareToolbar()
+//        toolbarManager!!.updateTitle(updateToolbarTitle())
     }
 
     protected abstract fun builder(): FragmentToolbar

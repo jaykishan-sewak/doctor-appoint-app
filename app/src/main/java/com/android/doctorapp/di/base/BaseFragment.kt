@@ -69,4 +69,8 @@ abstract class BaseFragment<T : ViewDataBinding> constructor(
         _binding?.unbind()
         _binding = null
     }
+
+    fun updateToolbarTitle(title: String) {
+        toolbarManager?.updateTitle(title)
+    }
 }

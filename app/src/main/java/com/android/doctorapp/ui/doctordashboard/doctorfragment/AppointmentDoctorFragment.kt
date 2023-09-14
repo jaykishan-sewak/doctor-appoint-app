@@ -17,6 +17,7 @@ import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.Header
 import com.android.doctorapp.ui.doctordashboard.adapter.PatientListAdapter
 import com.android.doctorapp.util.constants.ConstantKey
+import com.google.gson.Gson
 import javax.inject.Inject
 
 
@@ -77,8 +78,11 @@ class AppointmentDoctorFragment :
             object : PatientListAdapter.OnItemClickListener {
                 override fun onItemClick(item: Header, position: Int) {
                     val bundle = Bundle()
-                    bundle.putString(ConstantKey.BundleKeys.DATE, item.date)
-                    findNavController().navigate(R.id.action_doctor_appointment_to_selected_date, bundle)
+                    bundle.putString(ConstantKey.BundleKeys.DATE, Gson().toJson(item.date))
+                    findNavController().navigate(
+                        R.id.action_doctor_appointment_to_selected_date,
+                        bundle
+                    )
                 }
             }
         )

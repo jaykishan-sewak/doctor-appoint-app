@@ -15,7 +15,6 @@ import com.android.doctorapp.repository.models.Header
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.Date
 import javax.inject.Inject
 
@@ -42,9 +41,7 @@ class AppointmentDoctorViewModel @Inject constructor(
 
             if (mainList.isNotEmpty() && mainList.contains(
                     Header(
-                        convertDate(
-                            appointmentModel.bookingDateTime.toString()
-                        )
+                        appointmentModel.bookingDateTime
                     )
                 )
             ) {
@@ -66,9 +63,7 @@ class AppointmentDoctorViewModel @Inject constructor(
             } else {
                 mainList.add(
                     Header(
-                        convertDate(
-                            appointmentModel.bookingDateTime.toString()
-                        )
+                        appointmentModel.bookingDateTime
                     )
                 )
                 mainList.add(
@@ -88,20 +83,6 @@ class AppointmentDoctorViewModel @Inject constructor(
 
         }
         finalAppointmentList.value = mainList
-    }
-
-
-    private fun convertDate(inputDateString: String): String {
-        return try {
-            val inputFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy")
-            val outputFormat = SimpleDateFormat("dd-MM-yyyy")
-
-            val date = inputFormat.parse(inputDateString)
-            outputFormat.format(date!!)
-        } catch (e: Exception) {
-            e.fillInStackTrace()
-            ""
-        }
     }
 
     private fun getAppointmentList() {
