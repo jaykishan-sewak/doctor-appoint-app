@@ -1,6 +1,8 @@
 package com.android.doctorapp.ui.doctordashboard.doctorfragment
 
 import android.content.ContentValues.TAG
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -54,10 +56,6 @@ class SelectedDateAppointmentsFragment :
             date =
                 arguments.getString(ConstantKey.BundleKeys.DATE)!!
             viewModel.selectedDate.value = Gson().fromJson(date, Date::class.java)
-            Log.d(TAG, "onCreateView: ${viewModel.selectedDate.value} ")
-//            Thu Sep 14 13:00:00 GMT+05:30 2023
-//            viewModel.itemPosition.value = arguments.getInt(ConstantKey.BundleKeys.ITEM_POSITION)
-//            viewModel.getAppointmentList()
         }
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
@@ -88,7 +86,6 @@ class SelectedDateAppointmentsFragment :
                     val date = formatter.parse(dobDate)
                     Log.d(TAG, "date: $date")
                     viewModel.selectedDate.value = date
-//                     date: Thu Sep 14 00:00:00 GMT+05:30 2023
                     updateToolbarTitle(dateFormatter(date!!, DATE_MM_FORMAT))
                 }
             }
@@ -134,6 +131,12 @@ class SelectedDateAppointmentsFragment :
 //                    val bundle = Bundle()
 //                    bundle.putString(ConstantKey.BundleKeys.DATE, Gson().toJson(item.date))
                     findNavController().navigate(R.id.action_selected_date_to_appointment_details)
+                }
+
+                override fun onClick(contact: String) {
+                    val intent = Intent(Intent.ACTION_DIAL)
+                    intent.data = Uri.parse("tel:$contact")
+                    requireActivity().startActivity(intent)
                 }
             }
         )

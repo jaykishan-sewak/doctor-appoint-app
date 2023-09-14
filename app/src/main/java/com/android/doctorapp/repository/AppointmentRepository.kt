@@ -5,6 +5,7 @@ import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_APPROVED_KEY
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_SELECTED_DATE
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_USER_ID
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_APPOINTMENT
@@ -73,7 +74,10 @@ class AppointmentRepository @Inject constructor() {
 
     suspend fun getAppointmentsList(firestore: FirebaseFirestore): ApiResponse<List<AppointmentModel>> {
         return try {
-            val response = firestore.collection(ConstantKey.DBKeys.TABLE_APPOINTMENT).get().await()
+            val response = firestore.collection(ConstantKey.DBKeys.TABLE_APPOINTMENT)
+                .whereEqualTo(FIELD_APPROVED_KEY, ConstantKey.FIELD_APPROVED)
+                .get().await()
+
 
             val appointmentsList = arrayListOf<AppointmentModel>()
             for (document: DocumentSnapshot in response.documents) {
@@ -97,6 +101,33 @@ class AppointmentRepository @Inject constructor() {
             nextDate.time = date
             nextDate.add(Calendar.DATE, 1)
             val response = firestore.collection(TABLE_APPOINTMENT)
+                .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, date)
+                .whereLessThanOrEqualTo(FIELD_SELECTED_DATE, nextDate.time)
+
+            val mainResponse = response.whereEqualTo(FIELD_APPROVED_KEY, ConstantKey.FIELD_APPROVED).get().await()
+            val appointmentsList = arrayListOf<AppointmentModel>()
+            for (document: DocumentSnapshot in mainResponse.documents) {
+                val user = document.toObject(AppointmentModel::class.java)
+                user?.let {
+                    appointmentsList.add(it)
+                }
+            }
+            ApiResponse.create(response = Response.success(appointmentsList))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+    suspend fun getAppointmentsProgressList(
+        date: Date,
+        firestore: FirebaseFirestore
+    ): ApiResponse<List<AppointmentModel>> {
+        return try {
+            val nextDate = Calendar.getInstance()
+            nextDate.time = date
+            nextDate.add(Calendar.DATE, 1)
+            val response = firestore.collection(TABLE_APPOINTMENT)
+                .whereEqualTo(FIELD_APPROVED_KEY, ConstantKey.FIELD_PROGRESS)
                 .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, date)
                 .whereLessThanOrEqualTo(FIELD_SELECTED_DATE, nextDate.time)
                 .get().await()

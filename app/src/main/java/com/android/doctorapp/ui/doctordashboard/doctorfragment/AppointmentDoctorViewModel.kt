@@ -15,7 +15,7 @@ import com.android.doctorapp.repository.models.Header
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import kotlinx.coroutines.launch
-import java.util.Date
+import java.util.Calendar
 import javax.inject.Inject
 
 class AppointmentDoctorViewModel @Inject constructor(
@@ -121,12 +121,17 @@ class AppointmentDoctorViewModel @Inject constructor(
     }
 
     private fun filteredListFun(sortedAppointmentList: MutableLiveData<List<AppointmentModel>>): List<AppointmentModel> {
-        val currentDate = Date()
+        val currentDate = Calendar.getInstance()
+        currentDate.set(Calendar.HOUR_OF_DAY, 0)
+        currentDate.set(Calendar.MINUTE, 0)
+        currentDate.set(Calendar.SECOND, 0)
+        currentDate.set(Calendar.MILLISECOND, 0)
         return sortedAppointmentList.value!!.filter { item ->
-            item.bookingDateTime!! >= currentDate
+            item.bookingDateTime!! >= currentDate.time
         }
 
     }
+
 
 }
 

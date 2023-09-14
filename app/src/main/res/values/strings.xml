@@ -155,4 +155,6 @@
     <string name="reject_appointment_desc">Are you sure you want to reject appointment?</string>
     <string name="enter_reason">Enter reason</string>
     <string name="select_week_off">Select WeekOff</string>
+    <string name="years_old">Years old</string>
+
 </resources>

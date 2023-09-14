@@ -74,7 +74,7 @@ class PatientListAdapter(
         when (holder) {
             is UserItemViewHolder -> {
                 val userObject = item as AppointmentModel
-                holder.bind(userObject)
+                holder.bind(userObject, listener)
 
             }
 
@@ -96,6 +96,7 @@ class PatientListAdapter(
 
     interface OnItemClickListener {
         fun onItemClick(item: Header, position: Int)
+        fun onClick(contact: String)
 
     }
 
@@ -104,8 +105,9 @@ class PatientListAdapter(
 private class UserItemViewHolder(private val binding: DoctorAppointmentsItemLayoutBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(user: AppointmentModel) {
+    fun bind(user: AppointmentModel, listener: PatientListAdapter.OnItemClickListener) {
         binding.userData = user
+        binding.onClickListener = listener
     }
 }
 

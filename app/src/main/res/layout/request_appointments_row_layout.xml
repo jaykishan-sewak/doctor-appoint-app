@@ -6,13 +6,13 @@
     <data>
 
         <variable
-            name="userData"
+            name="appointmentsData"
             type="com.android.doctorapp.repository.models.AppointmentModel" />
 
 
         <variable
             name="onItemClickListener"
-            type="com.android.doctorapp.ui.doctordashboard.adapter.SelectedDateAdapter.OnItemClickListener" />
+            type="com.android.doctorapp.ui.doctordashboard.adapter.RequestAppointmentsAdapter.OnItemClickListener" />
 
         <variable
             name="index"
@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/ic_person_white"
                 android:drawablePadding="@dimen/margin_10"
-                android:text="@{userData.name}"
+                android:text="@{appointmentsData.name}"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -63,8 +63,8 @@
                 android:clickable="true"
                 android:drawableStart="@drawable/ic_phone_white"
                 android:drawablePadding="@dimen/margin_10"
-                android:onClick="@{()->onItemClickListener.onClick(userData.contactNumber)}"
-                android:text="@{userData.contactNumber}"
+                android:onClick="@{()->onItemClickListener.onClick(appointmentsData.contactNumber)}"
+                android:text="@{appointmentsData.contactNumber}"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -77,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_5"
                 android:layout_marginTop="@dimen/margin_10"
-                android:text="@{userData.age}"
+                android:text="@{appointmentsData.age}"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -101,7 +101,7 @@
                 android:layout_height="@dimen/margin_30"
                 android:layout_marginStart="@dimen/margin_10"
                 android:background="@drawable/rounded_btn"
-                android:onClick="@{()->onItemClickListener.onItemClick(userData,index)}"
+                android:onClick="@{()->onItemClickListener.onItemClick(appointmentsData,index)}"
                 android:text="@string/view"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/tvPatientContact"
