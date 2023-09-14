@@ -199,7 +199,7 @@ class AddDoctorViewModel @Inject constructor(
                     && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
                     && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
                     && !dob.value.isNullOrEmpty() && dobError.value.isNullOrEmpty()
-                    && availableTimeList.value?.isNotEmpty() == false
+                    && availableTimeList.value?.isEmpty() == false
                     && isPhoneVerify.value == false
                     && isEmailEnable.value == false
                     && binding?.chipGroup?.children?.toList()?.size!! > 0
