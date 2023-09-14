@@ -11,7 +11,7 @@ import com.android.doctorapp.repository.models.SpecializationResponseModel
 import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.repository.network.AppApi
 import com.android.doctorapp.util.constants.ConstantKey
-import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_ID
+//import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_ID
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_USER_ID
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_USER_DATA
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -199,7 +199,7 @@ class AuthRepository @Inject constructor(
         return try {
 
             val response = fireStore.collection(TABLE_USER_DATA)
-                .whereEqualTo(USER_ID, doctorRequestModel.userId)
+                .whereEqualTo(FIELD_USER_ID, doctorRequestModel.userId)
                 .get()
                 .await()
 
@@ -220,7 +220,7 @@ class AuthRepository @Inject constructor(
     ): ApiResponse<UserDataRequestModel> {
         return try {
             val response = fireStore.collection(TABLE_USER_DATA)
-                .whereEqualTo(USER_ID, recordId)
+                .whereEqualTo(FIELD_USER_ID, recordId)
                 .get()
                 .await()
 

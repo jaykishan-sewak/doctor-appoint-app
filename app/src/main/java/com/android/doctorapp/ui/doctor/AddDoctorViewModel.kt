@@ -30,6 +30,8 @@ import com.android.doctorapp.repository.models.WeekOffRequestModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.FEMALE_GENDER
+import com.android.doctorapp.util.constants.ConstantKey.MALE_GENDER
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
 import com.android.doctorapp.util.extension.isNetworkAvailable
@@ -88,9 +90,6 @@ class AddDoctorViewModel @Inject constructor(
     val isCalender: MutableLiveData<View> = SingleLiveEvent()
     val isAvailableDate: MutableLiveData<String?> = MutableLiveData()
     private val isAvailableDateError: MutableLiveData<String?> = MutableLiveData()
-
-    val availableTime: MutableLiveData<String> = MutableLiveData()
-    private val availableTimeError: MutableLiveData<String?> = MutableLiveData()
 
     val isPhoneVerify: MutableLiveData<Boolean> = MutableLiveData(true)
     val isPhoneVerifyValue: MutableLiveData<String> =
@@ -189,8 +188,6 @@ class AddDoctorViewModel @Inject constructor(
                     context.toast(resourceProvider.getString(R.string.check_internet_connection))
                 }
             }
-
-
         }
         return data
     }
@@ -202,8 +199,7 @@ class AddDoctorViewModel @Inject constructor(
                     && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
                     && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
                     && !dob.value.isNullOrEmpty() && dobError.value.isNullOrEmpty()
-                    && availableTimeList.value?.isEmpty() == false && availableTimeError.value.isNullOrEmpty()
-//                    && !availableTime.value.isNullOrEmpty() && availableTimeError.value.isNullOrEmpty()
+                    && availableTimeList.value?.isNotEmpty() == false
                     && isPhoneVerify.value == false
                     && isEmailEnable.value == false
                     && binding?.chipGroup?.children?.toList()?.size!! > 0
@@ -294,30 +290,11 @@ class AddDoctorViewModel @Inject constructor(
         validateAllUpdateField()
     }
 
-    fun isValidDate(text: CharSequence?) {
-        if (text?.toString().isNullOrEmpty()) {
-            isAvailableDateError.value = resourceProvider.getString(R.string.valid_date_desc)
-        } else {
-            isAvailableDateError.value = null
-        }
-        validateAllUpdateField()
-    }
-
-
-    fun isValidTime(text: CharSequence?) {
-        if (text?.toString().isNullOrEmpty()) {
-            availableTimeError.value = resourceProvider.getString(R.string.valid_time_desc)
-        } else {
-            availableTimeError.value = null
-        }
-        validateAllUpdateField()
-    }
-
     fun genderSelect(group: RadioGroup, checkedId: Int) {
         if (R.id.radioButtonMale == checkedId) {
-            selectGenderValue.value = "MALE"
+            selectGenderValue.value = MALE_GENDER
         } else {
-            selectGenderValue.value = "FEMALE"
+            selectGenderValue.value = FEMALE_GENDER
         }
     }
 
@@ -389,19 +366,6 @@ class AddDoctorViewModel @Inject constructor(
             session.getString(USER_ID).collectLatest {
                 val userData: UserDataRequestModel
 
-/*                weekDayList.forEachIndexed { index, weekOffModel ->
-                    Log.d(TAG, "updateUser w: ${weekOffModel.dayName}")
-                }
-                availableTimeList.value?.forEachIndexed { index, timeSlotModel ->
-                    Log.d(TAG, "updateUser t: ${timeSlotModel.timeSlot}")
-                }
-
-                availableTimeList1.add(TimeSlotModel(timeSlot = availableTimeList.))
-
-                holidayList.value?.forEachIndexed { index, holidayModel ->
-                    Log.d(TAG, "updateUser h: ${holidayModel.holidayList}")
-                }
-                return@collectLatest*/
                 if (isDoctor.value == true) {
                     userData = UserDataRequestModel(
                         userId = it.toString(),
@@ -417,7 +381,8 @@ class AddDoctorViewModel @Inject constructor(
                             ?.map { (it as Chip).text.toString() } as ArrayList<String>?,
                         isEmailVerified = true,
                         isPhoneNumberVerified = true,
-                        availableTime = availableTimeList.value?.toList()?.map { newData -> TimeSlotRequestModel(newData.timeSlot, newData.isTimeSlotBook) } as ArrayList<TimeSlotRequestModel>,
+                        availableTime = availableTimeList.value?.toList()
+                            ?.map { newData -> TimeSlotRequestModel(newData.timeSlot, newData.isTimeSlotBook) } as ArrayList<TimeSlotRequestModel>,
                         isAdmin = false,
                         isNotificationEnable = notificationToggleData.value == true,
                         dob = SimpleDateFormat(DATE_MM_FORMAT).parse(dob.value.toString()),
@@ -454,7 +419,6 @@ class AddDoctorViewModel @Inject constructor(
                             contactNumber.value = ""
                             dob.value = ""
                             isAvailableDate.value = ""
-//                            availableTime.value = ""
                             availableTimeList.value = arrayListOf()
                             setShowProgress(false)
                             if (isDoctor.value == true) {
@@ -801,13 +765,13 @@ class AddDoctorViewModel @Inject constructor(
 
 
     private fun getWeekDayList() {
-        weekDayList.add(WeekOffModel(dayName = "Monday", isWeekOff = false))
-        weekDayList.add(WeekOffModel(dayName = "Tuesday", isWeekOff = false))
-        weekDayList.add(WeekOffModel(dayName = "Wednesday", isWeekOff = false))
-        weekDayList.add(WeekOffModel(dayName = "Thursday", isWeekOff = false))
-        weekDayList.add(WeekOffModel(dayName = "Friday", isWeekOff = false))
-        weekDayList.add(WeekOffModel(dayName = "Saturday", isWeekOff = false))
-        weekDayList.add(WeekOffModel(dayName = "Sunday", isWeekOff = false))
+        weekDayList.add(WeekOffModel(dayName = resourceProvider.getString(R.string.monday), isWeekOff = false))
+        weekDayList.add(WeekOffModel(dayName = resourceProvider.getString(R.string.tuesday), isWeekOff = false))
+        weekDayList.add(WeekOffModel(dayName = resourceProvider.getString(R.string.wednesday), isWeekOff = false))
+        weekDayList.add(WeekOffModel(dayName = resourceProvider.getString(R.string.thursday), isWeekOff = false))
+        weekDayList.add(WeekOffModel(dayName = resourceProvider.getString(R.string.friday), isWeekOff = false))
+        weekDayList.add(WeekOffModel(dayName = resourceProvider.getString(R.string.saturday), isWeekOff = false))
+        weekDayList.add(WeekOffModel(dayName = resourceProvider.getString(R.string.sunday), isWeekOff = false))
 
         weekDayNameList.value = weekDayList
 
