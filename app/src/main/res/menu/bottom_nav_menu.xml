@@ -2,16 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_appointment"
-        android:icon="@drawable/appointment_selector"
-        android:title="@string/appointment" />
+        android:id="@+id/navigation_search"
+        android:icon="@drawable/baseline_search_24"
+        android:title="@string/search" />
     <item
-        android:id="@+id/navigation_request"
-        android:icon="@drawable/home_selector"
-        android:title="@string/request" />
+        android:id="@+id/navigation_booking"
+        android:icon="@drawable/baseline_settings_24"
+        android:title="@string/my_booking" />
 
     <item
-        android:id="@+id/navigation_profile"
+        android:id="@+id/navigation_user_profile"
         android:icon="@drawable/profile_selector"
         android:title="@string/title_profile" />
 

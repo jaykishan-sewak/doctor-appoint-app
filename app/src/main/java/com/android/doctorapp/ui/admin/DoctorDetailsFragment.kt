@@ -2,6 +2,7 @@ package com.android.doctorapp.ui.admin
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -35,8 +36,24 @@ class DoctorDetailsFragment :
             .withNavigationListener {
                 findNavController().popBackStack()
             }
+            .withMenu(R.menu.doctor_details_menu)
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
+            .withMenuItems(generateMenuItems(), generateMenuClicks())
             .build()
+    }
+
+    private fun generateMenuClicks(): MenuItem.OnMenuItemClickListener {
+        return MenuItem.OnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_edit -> viewModel.moveToUpdateScreen()
+                R.id.action_delete -> viewModel.deleteDoctorData(viewModel.doctorDetails.value!!.id)
+            }
+            false
+        }
+    }
+
+    private fun generateMenuItems(): List<Int> {
+        return listOf(R.id.action_edit, R.id.action_delete)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,7 +89,7 @@ class DoctorDetailsFragment :
     private fun registerObserver() {
         val navController = findNavController()
         navController.previousBackStackEntry?.savedStateHandle?.set(
-            ConstantKey.BundleKeys.ADMIN_FRAGMENT,
+            ADMIN_FRAGMENT,
             false
         )
         viewModel.navigationListener.observe(viewLifecycleOwner) {
@@ -94,7 +111,7 @@ class DoctorDetailsFragment :
                     positiveButton { dialog ->
                         viewModel.deleteDoctor(it)
                         navController.previousBackStackEntry?.savedStateHandle?.set(
-                            ConstantKey.BundleKeys.ADMIN_FRAGMENT,
+                            ADMIN_FRAGMENT,
                             true
                         )
                         navController.popBackStack()
