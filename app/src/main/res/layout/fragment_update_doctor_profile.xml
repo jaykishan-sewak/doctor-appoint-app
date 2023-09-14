@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -25,7 +26,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:scrollbars="none"
@@ -299,7 +300,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="@{viewModel.isDoctor ? View.VISIBLE : View.GONE}"
-                    app:constraint_referenced_ids="degreeView,tvDegreeLabel,tvSpecLabel,specializationView,chipGroup,autoCompleteTextView,chipGroupSpec,autoCompleteTextViewSpec,text_available_date,text_available_time,txt_doctor_notification,switch_doctor_notification" />
+                    app:constraint_referenced_ids="degreeView,tvDegreeLabel,tvSpecLabel,
+                        specializationView,chipGroup,autoCompleteTextView,chipGroupSpec,
+                        autoCompleteTextViewSpec,btn_add_holiday, rv_holiday, text_select_week_off,
+                        rv_week_off, btn_add_timing, rv_add_timing, txt_doctor_notification,
+                        switch_doctor_notification" />
 
                 <View
                     android:id="@+id/specializationView"
@@ -343,33 +348,56 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/autoCompleteTextViewSpec" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/text_available_date"
-                    style="@style/custom_edit_text_bg"
-                    android:afterTextChanged="@{(text) -> viewModel.isValidDate(text)}"
-                    android:drawableRight="@drawable/ic_calendar"
-                    android:hint="@string/available_date"
-                    android:onClick="@{(text_available) -> viewModel.calenderClick(text_available)}"
-                    android:text="@={viewModel.isAvailableDate}"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_add_holiday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:onClick="@{(text_holiday) -> viewModel.calenderClick(text_holiday)}"
+                    android:text="@string/add_holiday"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/specializationView" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/text_available_time"
-                    style="@style/custom_edit_text_bg"
-                    android:afterTextChanged="@{(text) -> viewModel.isValidTime(text)}"
-                    android:drawableRight="@drawable/ic_clock"
-                    android:hint="@string/available_time"
-                    android:onClick="@{() -> viewModel.timeClick()}"
-                    android:text="@={viewModel.availableTime}"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_holiday"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_available_date" />
+                    app:layout_constraintTop_toBottomOf="@+id/btn_add_holiday" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_select_week_off"
+                    style="@style/doctor_text_view"
+                    android:layout_marginTop="@dimen/margin_5"
+                    android:text="@string/select_week_off"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rv_holiday" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_week_off"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_select_week_off" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_add_timing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{(btn_add_time) -> viewModel.calenderClick(btn_add_time)}"
+                    android:text="@string/add_time"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rv_week_off" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_add_timing"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_add_timing" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txt_doctor_notification"
@@ -388,7 +416,7 @@
                     android:layout_marginTop="@dimen/margin_10"
                     android:checked="@={viewModel.notificationToggleData}"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_available_time" />
+                    app:layout_constraintTop_toBottomOf="@+id/rv_add_timing" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnLogin"
@@ -406,7 +434,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/switch_doctor_notification" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

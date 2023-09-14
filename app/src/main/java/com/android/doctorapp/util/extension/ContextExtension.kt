@@ -10,12 +10,17 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.android.doctorapp.BuildConfig
 import com.android.doctorapp.util.constants.ConstantKey.DATE_AND_DAY_NAME_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.DATE_MONTH_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.constants.ConstantKey.FULL_DATE_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.HOUR_MIN_AM_PM_FORMAT
+import java.text.DateFormat
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+
 
 fun Context.toast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
@@ -126,6 +131,46 @@ fun convertTime(originalTimeStr: String): String {
         calendar.time = originalTimeFormat.parse(originalTimeStr) ?: Date()
 
         targetTimeFormat.format(calendar.time)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
+    }
+}
+
+fun convertDateToMonth(inputDateString: String): String {
+    return  try {
+        val originalDateFormat = SimpleDateFormat(FORMATTED_DATE, Locale.getDefault())
+        val targetDateFormat = SimpleDateFormat(DATE_MONTH_FORMAT, Locale.getDefault())
+
+        val calendar = Calendar.getInstance()
+        calendar.time = originalDateFormat.parse(inputDateString) ?: Date()
+        targetDateFormat.format(calendar.time)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
+    }
+}
+
+
+fun convertDateToFull(inputDateString: String): Date {
+    return try {
+        val formatter = SimpleDateFormat(DATE_MONTH_FORMAT, Locale.ENGLISH)
+        val date = formatter.parse(inputDateString)
+        date
+    } catch (ex: ParseException) {
+        ex.printStackTrace()
+        val defaultDate = SimpleDateFormat(FULL_DATE_FORMAT).parse("2000-01-01")
+        defaultDate
+    }
+}
+
+fun convertFullDateToDate(inputDateString: String): String {
+    return try {
+        val originalDateFormat = SimpleDateFormat(FULL_DATE_FORMAT, Locale.getDefault())
+        val targtrDateFormat = SimpleDateFormat(FORMATTED_DATE, Locale.getDefault())
+        val calendar = Calendar.getInstance()
+        calendar.time = originalDateFormat.parse(inputDateString) ?: Date()
+        targtrDateFormat.format(calendar.time)
     } catch (e: Exception) {
         e.printStackTrace()
         ""
