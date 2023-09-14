@@ -388,7 +388,7 @@ class AddDoctorViewModel @Inject constructor(
                         dob = SimpleDateFormat(DATE_MM_FORMAT).parse(dob.value.toString()),
                         isUserVerified = true,
                         holidayList = holidayList.value,
-                        weekOffList = strWeekOffList.value?.toList()?.map { (it) } as ArrayList<WeekOffRequestModel>
+                        weekOffList = strWeekOffList.value?.toList()?.map { (it) } as ArrayList<String>
 
                     )
                 } else {
