@@ -1,6 +1,7 @@
 package com.android.doctorapp.ui.appointment
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -77,9 +78,9 @@ class AppointmentViewModel @Inject constructor(
     var appoinmentObj = MutableLiveData<AppointmentModel>()
 
     init {
-        getHolidayList()
-        getWeekOfDayList()
-        get15DaysList()
+//        getHolidayList()
+//        getWeekOfDayList()
+//        get15DaysList()
     }
 
     private fun getWeekOfDayList() {
@@ -117,7 +118,7 @@ class AppointmentViewModel @Inject constructor(
             calendar.add(Calendar.DAY_OF_YEAR, 1)
             dateList.add(calendar.time)
         }
-        getTimeSlot()
+//        getTimeSlot()
 
         dateList.forEach {
             daysList.add(DateSlotModel(date = it, disable = false))
@@ -307,8 +308,19 @@ class AppointmentViewModel @Inject constructor(
                     appointmentRepository.getDoctorById(userId.value.toString(), fireStore)) {
                     is ApiSuccessResponse -> {
                         doctorName.value = response.body.name
+                        val weekOffDbList = response.body.weekOffList
+                        weekOffDbList?.forEachIndexed { index, s ->
+                            weekOfDayList.add(s)
+                        }
                         doctorSpecialities.value = response.body.specialities.toString()
+                        val timeSlotDbList = response.body.availableTime
+                        timeSlotDbList?.forEachIndexed { index, timeSlotRequestModel ->
+                            timeList.add(TimeSlotModel(timeSlotRequestModel.timeSlot, timeSlotRequestModel.isTimeSlotBook))
+                        }
+                        _timeSlotList.value = timeList
+
                         getUserData()
+                        get15DaysList()
                     }
 
                     is ApiErrorResponse -> {

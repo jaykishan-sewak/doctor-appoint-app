@@ -88,7 +88,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_email_verify"
                     style="@style/verify_margin"
-                    android:enabled="@{viewModel.isEmailEnable}"
+                    android:enabled="@{!viewModel.isEmailVerified}"
                     android:onClick="@{view -> viewModel.onEmailVerifyClick()}"
                     android:text="@={viewModel.emailVerifyLabel}"
                     android:textColor="@color/yellow"
@@ -203,7 +203,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_contact_verify"
                     style="@style/verify_margin"
-                    android:enabled="@{viewModel.isPhoneVerify}"
+                    android:enabled="@{!viewModel.isPhoneVerify}"
                     android:onClick="@{() -> viewModel.contactVerify()}"
                     android:text="@={viewModel.isPhoneVerifyValue}"
                     android:textColor="@color/yellow"
@@ -216,7 +216,7 @@
                     android:id="@+id/textUserContactVerify"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:enabled="@{viewModel.isPhoneVerify}"
+                    android:enabled="@{!viewModel.isPhoneVerify}"
                     android:onClick="@{() -> viewModel.contactVerify()}"
                     android:text="@={viewModel.isPhoneVerifyValue}"
                     android:textColor="@color/yellow"
