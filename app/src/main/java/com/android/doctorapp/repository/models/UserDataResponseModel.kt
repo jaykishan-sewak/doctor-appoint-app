@@ -22,5 +22,5 @@ data class UserDataResponseModel(
     var dob: Date? = null,
     var isUserVerified: Boolean = false,
     var holidayList: ArrayList<HolidayModel>? = null,
-    var weekOffList: ArrayList<WeekOffRequestModel>? = null
+    var weekOffList: ArrayList<String>? = null
 )
