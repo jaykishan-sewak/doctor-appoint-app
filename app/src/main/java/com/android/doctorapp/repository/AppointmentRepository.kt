@@ -101,12 +101,13 @@ class AppointmentRepository @Inject constructor() {
             nextDate.time = date
             nextDate.add(Calendar.DATE, 1)
             val response = firestore.collection(TABLE_APPOINTMENT)
+                .whereEqualTo(FIELD_APPROVED_KEY, ConstantKey.FIELD_APPROVED)
                 .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, date)
                 .whereLessThanOrEqualTo(FIELD_SELECTED_DATE, nextDate.time)
+                .get().await()
 
-            val mainResponse = response.whereEqualTo(FIELD_APPROVED_KEY, ConstantKey.FIELD_APPROVED).get().await()
             val appointmentsList = arrayListOf<AppointmentModel>()
-            for (document: DocumentSnapshot in mainResponse.documents) {
+            for (document: DocumentSnapshot in response.documents) {
                 val user = document.toObject(AppointmentModel::class.java)
                 user?.let {
                     appointmentsList.add(it)
