@@ -19,13 +19,12 @@
             android:layout_marginStart="@dimen/dp_0"
             android:layout_marginEnd="@dimen/dp_0"
             android:background="@android:color/black"
-            app:elevation="@dimen/margin_1"
-            app:itemIconTint="@color/white"
-            app:itemTextColor="@color/white"
+            app:elevation="@dimen/margin_15"
+            app:backgroundTint="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:menu="@menu/bottom_nav_menu" />
+            app:menu="@menu/doctor_dashboard_menu" />
 
         <fragment
             android:id="@+id/nav_host_fragment"

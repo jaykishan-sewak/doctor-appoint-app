@@ -13,6 +13,7 @@ import com.android.doctorapp.databinding.FragmentAddDoctorBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.toast
@@ -57,10 +58,19 @@ class AddDoctorFragment : BaseFragment<FragmentAddDoctorBinding>(R.layout.fragme
     }
 
     private fun registerObserver() {
+        val navController = findNavController()
+        navController.previousBackStackEntry?.savedStateHandle?.set(
+            ConstantKey.BundleKeys.ADMIN_FRAGMENT,
+            false
+        )
         viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
             if (it.equals("Success")) {
                 context?.toast(resources.getString(R.string.doctor_save_successfully))
                 viewModel.navigationListener.observe(viewLifecycleOwner) {
+                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                        ConstantKey.BundleKeys.ADMIN_FRAGMENT,
+                        true
+                    )
                     findNavController().popBackStack()
                 }
             } else {

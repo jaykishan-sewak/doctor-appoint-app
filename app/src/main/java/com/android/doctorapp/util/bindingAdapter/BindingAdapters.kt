@@ -5,7 +5,6 @@ import android.graphics.Paint
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.webkit.WebView
@@ -23,10 +22,11 @@ import com.android.doctorapp.R
 import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.repository.models.TimeSlotModel
 import com.android.doctorapp.util.ImageUtils
+import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.MALE_GENDER
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.extension.convertDate
 import com.android.doctorapp.util.extension.convertTime
-import com.android.doctorapp.util.constants.ConstantKey.MALE_GENDER
 import com.android.doctorapp.util.extension.convertFullDateToDate
 import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.hideKeyboard
@@ -34,7 +34,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 
 @BindingAdapter(
     "android:src",
@@ -246,4 +249,23 @@ fun setHeaderDate(textView: AppCompatTextView, date: Date) {
     val date = dateFormatter(date, DATE_MM_FORMAT)
     textView.text = date.ifEmpty { "" }
 
+}
+
+@BindingAdapter("app:age")
+fun setAge(textView: AppCompatTextView, dateOfBirth: Date?) {
+    if (dateOfBirth != null) {
+        val dateFormatter = SimpleDateFormat(ConstantKey.FULL_DATE_FORMAT, Locale.getDefault())
+        val dob: Date? = dateFormatter.parse(dateOfBirth.toString())
+        val calendarDob = Calendar.getInstance()
+        if (dob != null) {
+            calendarDob.time = dob
+        }
+        val currentDate = Calendar.getInstance()
+        val years = currentDate.get(Calendar.YEAR) - calendarDob.get(Calendar.YEAR)
+        if (currentDate.get(Calendar.DAY_OF_YEAR) < calendarDob.get(Calendar.DAY_OF_YEAR)) {
+            textView.text = "${years - 1}"
+        }
+        textView.text = years.toString()
+    } else
+        textView.text = ""
 }
