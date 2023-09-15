@@ -1,10 +1,8 @@
 package com.android.doctorapp.ui.doctordashboard.doctorfragment
 
-import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -24,7 +22,6 @@ import com.android.doctorapp.ui.doctordashboard.adapter.RequestAppointmentsAdapt
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.selectDate
-import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -80,7 +77,6 @@ class RequestDoctorFragment :
         }
         viewModel.requestAppointmentList.observe(viewLifecycleOwner) {
             adapter.filterList(it)
-            Log.d(ContentValues.TAG, "appointmentList: $it")
         }
 
         viewModel.isRequestCalender.observe(viewLifecycleOwner) {
@@ -88,7 +84,6 @@ class RequestDoctorFragment :
                 requireContext().selectDate(maxDate = null, minDate = Date().time) { dobDate ->
                     val formatter = SimpleDateFormat("dd-MM-yyyy")
                     val date = formatter.parse(dobDate)
-                    Log.d(ContentValues.TAG, "date: $date")
                     viewModel.requestSelectedDate.value = date
                     updateToolbarTitle(dateFormatter(date!!, ConstantKey.DATE_MM_FORMAT))
                 }
@@ -134,6 +129,7 @@ class RequestDoctorFragment :
                 override fun onItemClick(item: AppointmentModel, position: Int) {
                     val bundle = Bundle()
                     bundle.putBoolean(ConstantKey.BundleKeys.REQUEST_FRAGMENT, true)
+                    bundle.putString(ConstantKey.BundleKeys.USER_ID, item.userId)
                     findNavController().navigate(
                         R.id.request_to_appointment_details,
                         bundle

@@ -44,6 +44,7 @@ class AppointmentDetailFragment :
         (requireActivity().application as AppComponentProvider).getAppComponent().inject(this)
     }
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -54,6 +55,7 @@ class AppointmentDetailFragment :
         if (arguments != null) {
             viewModel.isShowBothButton.value =
                 arguments.getBoolean(ConstantKey.BundleKeys.REQUEST_FRAGMENT)
+            viewModel.userId.value = arguments.getString(ConstantKey.BundleKeys.USER_ID).toString()
         }
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
@@ -64,6 +66,10 @@ class AppointmentDetailFragment :
     }
 
     private fun registerObserver() {
+        viewModel.userId.observe(viewLifecycleOwner) {
+            viewModel.getAppointmentDetails(viewModel.userId.value!!)
+            viewModel.getAppointmentUserDetails(viewModel.userId.value!!)
+        }
         viewModel.confirmClick.observe(viewLifecycleOwner) { it ->
             if (it) {
                 context?.alert {
@@ -88,6 +94,7 @@ class AppointmentDetailFragment :
                     }
                     negativeButton(context.resources.getString(R.string.cancel)) { dialog ->
                         dialog.dismiss()
+
                     }
                 }
             }

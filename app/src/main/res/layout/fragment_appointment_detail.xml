@@ -39,7 +39,7 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvPatientNameLabel"
                 style="@style/label_text2"
-                android:text="Patient Name"
+                android:text="@string/name"
                 android:textAlignment="textStart"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -49,7 +49,7 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvPatientNameValue"
                 style="@style/label_text"
-                android:text="Vikas Pandey"
+                android:text="@{viewModel.appointmentResponse.name}"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/tvPatientNameLabel"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -72,7 +72,7 @@
                 android:id="@+id/tvPatientAgeValue"
                 style="@style/label_text"
                 android:layout_marginTop="@dimen/margin_10"
-                android:text="29"
+                android:text="@{viewModel.appointmentResponse.age}"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/tvPatientAgeLabel"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -97,7 +97,7 @@
                 android:id="@+id/tvPatientAddressValue"
                 style="@style/label_text"
                 android:layout_marginTop="@dimen/margin_10"
-                android:text="Meghaninagar"
+                android:text="@{viewModel.userDataResponse != null &amp;&amp; !viewModel.userDataResponse.address.isEmpty() ? viewModel.userDataResponse.address : `-`}"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/tvPatientAddress"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -120,8 +120,8 @@
                 android:id="@+id/tvDateValue"
                 style="@style/label_text"
                 android:layout_marginTop="@dimen/margin_10"
-                android:text="24/01/1994"
                 android:textAlignment="textEnd"
+                app:headerDate="@{viewModel.appointmentResponse.bookingDateTime}"
                 app:layout_constraintBottom_toBottomOf="@id/tvDateLabel"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tvDateLabel"
@@ -143,12 +143,35 @@
                 android:id="@+id/tvTimeValue"
                 style="@style/label_text"
                 android:layout_marginTop="@dimen/margin_10"
-                android:text="10:00 AM"
                 android:textAlignment="textEnd"
+                app:headerTime="@{viewModel.appointmentResponse.bookingDateTime}"
                 app:layout_constraintBottom_toBottomOf="@id/tvTimeLabel"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tvTimeLabel"
                 app:layout_constraintTop_toTopOf="@id/tvTimeLabel"
+                app:layout_constraintWidth_percent="0.4" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvStatusLabel"
+                style="@style/label_text2"
+                android:layout_marginTop="@dimen/margin_10"
+                android:text="Status"
+                android:textAlignment="textStart"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvTimeValue"
+                app:layout_constraintWidth_percent="0.6" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvStatusValue"
+                style="@style/label_text"
+                android:layout_marginTop="@dimen/margin_10"
+                android:text="@{viewModel.appointmentResponse.status}"
+                android:textAlignment="textEnd"
+                app:layout_constraintBottom_toBottomOf="@id/tvStatusLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tvStatusLabel"
+                app:layout_constraintTop_toTopOf="@id/tvStatusLabel"
                 app:layout_constraintWidth_percent="0.4" />
 
             <androidx.constraintlayout.widget.Group

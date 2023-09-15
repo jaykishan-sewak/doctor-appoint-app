@@ -1,10 +1,12 @@
 package com.android.doctorapp.util.bindingAdapter
 
+import android.content.ContentValues.TAG
 import android.graphics.Bitmap
 import android.graphics.Paint
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.webkit.WebView
@@ -25,6 +27,7 @@ import com.android.doctorapp.util.ImageUtils
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.MALE_GENDER
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.HOUR_MIN_AM_PM_FORMAT
 import com.android.doctorapp.util.extension.convertDate
 import com.android.doctorapp.util.extension.convertTime
 import com.android.doctorapp.util.extension.convertFullDateToDate
@@ -245,11 +248,25 @@ fun setDateMonthStyle(textView: AppCompatTextView, originalTimeStr: String) {
 }
 
 @BindingAdapter("app:headerDate")
-fun setHeaderDate(textView: AppCompatTextView, date: Date) {
-    val date = dateFormatter(date, DATE_MM_FORMAT)
-    textView.text = date.ifEmpty { "" }
-
+fun setHeaderDate(textView: AppCompatTextView, date: Date?) {
+    if (date != null) {
+        val date = dateFormatter(date, DATE_MM_FORMAT)
+        Log.d(TAG, "setHeaderDate: $date")
+        textView.text = date.ifEmpty { "" }
+    } else
+        textView.text = ""
 }
+
+@BindingAdapter("app:headerTime")
+fun setHeaderTime(textView: AppCompatTextView, date: Date?) {
+    if (date != null) {
+        val date = dateFormatter(date, HOUR_MIN_AM_PM_FORMAT)
+        Log.d(TAG, "setHeaderDate: $date")
+        textView.text = date.ifEmpty { "" }
+    } else
+        textView.text = ""
+}
+
 
 @BindingAdapter("app:age")
 fun setAge(textView: AppCompatTextView, dateOfBirth: Date?) {

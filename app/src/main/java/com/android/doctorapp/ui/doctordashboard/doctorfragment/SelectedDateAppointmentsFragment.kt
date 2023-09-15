@@ -1,10 +1,8 @@
 package com.android.doctorapp.ui.doctordashboard.doctorfragment
 
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -84,7 +82,6 @@ class SelectedDateAppointmentsFragment :
                 requireContext().selectDate(maxDate = null, minDate = Date().time) { dobDate ->
                     val formatter = SimpleDateFormat("dd-MM-yyyy")
                     val date = formatter.parse(dobDate)
-                    Log.d(TAG, "date: $date")
                     viewModel.selectedDate.value = date
                     updateToolbarTitle(dateFormatter(date!!, DATE_MM_FORMAT))
                 }
@@ -130,6 +127,7 @@ class SelectedDateAppointmentsFragment :
                 override fun onItemClick(item: AppointmentModel, position: Int) {
                     val bundle = Bundle()
                     bundle.putBoolean(ConstantKey.BundleKeys.REQUEST_FRAGMENT, false)
+                    bundle.putString(ConstantKey.BundleKeys.USER_ID, item.userId)
                     findNavController().navigate(
                         R.id.action_selected_date_to_appointment_details,
                         bundle

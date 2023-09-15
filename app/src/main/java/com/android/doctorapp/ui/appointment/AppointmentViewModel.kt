@@ -1,6 +1,8 @@
 package com.android.doctorapp.ui.appointment
 
+import android.content.ContentValues.TAG
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -15,6 +17,7 @@ import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.repository.models.TimeSlotModel
+import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.DAY_NAME_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.FULL_DATE_FORMAT
@@ -66,6 +69,7 @@ class AppointmentViewModel @Inject constructor(
     private lateinit var ageDate: Date
     private val age = MutableLiveData<String>()
 
+
     private val _navigationListener: MutableLiveData<Boolean> = MutableLiveData(false)
     val navigationListener = _navigationListener.asLiveData()
 
@@ -75,6 +79,10 @@ class AppointmentViewModel @Inject constructor(
     var rejectClick = MutableLiveData(false)
     var reasonValue = MutableLiveData<String>()
     var appoinmentObj = MutableLiveData<AppointmentModel>()
+
+    var appointmentResponse: MutableLiveData<AppointmentModel> = MutableLiveData()
+    var userDataResponse: MutableLiveData<UserDataResponseModel> = MutableLiveData()
+
 
     init {
         getHolidayList()
@@ -435,17 +443,53 @@ class AppointmentViewModel @Inject constructor(
         }
     }
 
-    fun getAppointmentDetails() {
+    fun getAppointmentDetails(userId: String) {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 when (val response =
-                    appointmentRepository.updateAppointmentData(
-                        appoinmentObj.value!!.apply {
-                            reason = reasonValue.value!!
-                        },
+                    appointmentRepository.getAppointmentDetails(
+                        userId,
                         fireStore
                     )) {
                     is ApiSuccessResponse -> {
+                        appointmentResponse.postValue(response.body!!)
+                        Log.d(TAG, "getAppointmentDetails: ${response.body}")
+                        setShowProgress(false)
+                    }
+
+                    is ApiErrorResponse -> {
+                        context.toast(response.errorMessage)
+                        setShowProgress(false)
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        context.toast(response.errorMessage)
+                        setShowProgress(false)
+                    }
+
+                    else -> {
+                        context.toast(resourceProvider.getString(R.string.something_went_wrong))
+                        setShowProgress(false)
+                    }
+                }
+            } else {
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
+            }
+
+        }
+    }
+
+    fun getAppointmentUserDetails(userId: String) {
+        viewModelScope.launch {
+            if (context.isNetworkAvailable()) {
+                when (val response =
+                    appointmentRepository.getAppointmentUserDetails(
+                        userId,
+                        fireStore
+                    )) {
+                    is ApiSuccessResponse -> {
+                        userDataResponse.value = response.body!!
+                        Log.d(TAG, "getAppointmentUserDetails: ${response.body}")
                         setShowProgress(false)
                     }
 
