@@ -93,7 +93,6 @@ class AppointmentRepository @Inject constructor() {
     }
 
     suspend fun getAppointmentsSelectedDateList(
-        isApprove: Boolean,
         date: Date,
         firestore: FirebaseFirestore
     ): ApiResponse<List<AppointmentModel>> {
@@ -104,7 +103,7 @@ class AppointmentRepository @Inject constructor() {
             val response = firestore.collection(TABLE_APPOINTMENT)
                 .whereEqualTo(
                     FIELD_APPROVED_KEY,
-                    if (isApprove) ConstantKey.FIELD_PROGRESS else ConstantKey.FIELD_APPROVED
+                    ConstantKey.FIELD_APPROVED
                 )
                 .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, date)
                 .whereLessThanOrEqualTo(FIELD_SELECTED_DATE, nextDate.time)

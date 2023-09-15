@@ -11,8 +11,8 @@
         tools:layout="@layout/fragment_request_doctor">
 
         <action
-            android:id="@+id/action_doctor_appointment_to_selected_date"
-            app:destination="@+id/navigation_selected_date_appointments" />
+            android:id="@+id/request_to_appointment_details"
+            app:destination="@+id/AppointmentDetails" />
     </fragment>
 
     <fragment
