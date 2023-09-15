@@ -19,6 +19,7 @@ import com.android.doctorapp.ui.profile.ProfileFragment
 import com.android.doctorapp.ui.userdashboard.userfragment.UserAppointmentFragment
 import com.android.doctorapp.ui.userdashboard.userfragment.UserRequestFragment
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.AppointmentDoctorFragment
+import com.android.doctorapp.ui.doctordashboard.doctorfragment.SelectedDateAppointmentsFragment
 
 import dagger.Component
 
@@ -49,4 +50,5 @@ interface AppComponent {
     fun inject(fragment: AppointmentDetailFragment)
 
     fun inject(fragment: CustomDialogFragment)
+    fun inject(fragment: SelectedDateAppointmentsFragment)
 }

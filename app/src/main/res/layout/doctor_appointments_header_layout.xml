@@ -36,7 +36,7 @@
             android:id="@+id/appointmentsDate"
             style="@style/doctor_text_view"
             android:layout_marginTop="@dimen/margin_20"
-            android:text="@{header1.date}"
+            app:headerDate="@{header1.date}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/headerDivider" />

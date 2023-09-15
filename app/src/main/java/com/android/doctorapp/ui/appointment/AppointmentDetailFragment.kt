@@ -14,6 +14,7 @@ import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.ui.appointment.dialog.CustomDialogFragment
+import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.negativeButton
 import com.android.doctorapp.util.extension.neutralButton
@@ -49,6 +50,11 @@ class AppointmentDetailFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+        val arguments: Bundle? = arguments
+        if (arguments != null) {
+            viewModel.isShowBothButton.value =
+                arguments.getBoolean(ConstantKey.BundleKeys.REQUEST_FRAGMENT)
+        }
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
             viewModel = this@AppointmentDetailFragment.viewModel

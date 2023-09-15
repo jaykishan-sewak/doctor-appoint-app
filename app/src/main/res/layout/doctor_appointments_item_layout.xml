@@ -5,6 +5,10 @@
     <data>
 
         <variable
+            name="onClickListener"
+            type="com.android.doctorapp.ui.doctordashboard.adapter.PatientListAdapter.OnItemClickListener" />
+
+        <variable
             name="userData"
             type="com.android.doctorapp.repository.models.AppointmentModel" />
 
@@ -40,6 +44,8 @@
                     android:id="@+id/tvPatientName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_person_white"
+                    android:drawablePadding="@dimen/margin_10"
                     android:text="@{userData.name}"
                     android:textColor="@color/black"
                     android:textSize="20sp"
@@ -48,24 +54,19 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvPatientContactLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/contact"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvPatientName" />
-
-                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvPatientContact"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_10"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:clickable="true"
+                    android:drawableStart="@drawable/ic_phone_white"
+                    android:drawablePadding="@dimen/margin_10"
+                    android:focusable="true"
+                    android:onClick="@{()->onClickListener.onClick(userData.contactNumber)}"
                     android:text="@{userData.contactNumber}"
                     android:textColor="@color/black"
                     android:textSize="16sp"
-                    app:layout_constraintStart_toEndOf="@+id/tvPatientContactLabel"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvPatientName" />
 
 
@@ -73,12 +74,25 @@
                     android:id="@+id/tvPatientAge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_5"
+                    android:layout_marginTop="@dimen/margin_10"
                     android:text="@{userData.age}"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvPatientContactLabel" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvPatientContact" />
 
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/ageLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_10"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:text="@string/years_old"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toEndOf="@+id/tvPatientAge"
+                    app:layout_constraintTop_toBottomOf="@+id/tvPatientContact" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
