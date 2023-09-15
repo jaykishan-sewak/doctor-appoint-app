@@ -13,11 +13,15 @@ import com.android.doctorapp.databinding.FragmentAppointmentDetailBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.ui.appointment.dialog.CustomDialogFragment
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.FIELD_APPROVED
+import com.android.doctorapp.util.constants.ConstantKey.FIELD_REJECTED
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.negativeButton
 import com.android.doctorapp.util.extension.neutralButton
+import com.google.gson.Gson
 import javax.inject.Inject
 
 class AppointmentDetailFragment :
@@ -55,7 +59,10 @@ class AppointmentDetailFragment :
         if (arguments != null) {
             viewModel.isShowBothButton.value =
                 arguments.getBoolean(ConstantKey.BundleKeys.REQUEST_FRAGMENT)
-            viewModel.userId.value = arguments.getString(ConstantKey.BundleKeys.USER_ID).toString()
+            val appointmentObj = arguments.getString(ConstantKey.BundleKeys.APPOINTMENT_DATA)
+            viewModel.userId.value = arguments.getString(ConstantKey.BundleKeys.USER_ID)
+            viewModel.appointmentObj.value =
+                Gson().fromJson(appointmentObj, AppointmentModel::class.java)
         }
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
@@ -76,6 +83,7 @@ class AppointmentDetailFragment :
                     setTitle(resources.getString(R.string.confirm))
                     setMessage(resources.getString(R.string.approve_appointment_desc))
                     neutralButton { dialog ->
+                        viewModel.updateAppointmentStatus(FIELD_APPROVED)
                         dialog.dismiss()
                     }
                     negativeButton(context.resources.getString(R.string.cancel)) { dialog ->
@@ -90,6 +98,7 @@ class AppointmentDetailFragment :
                     setTitle(resources.getString(R.string.confirm))
                     setMessage(resources.getString(R.string.reject_appointment_desc))
                     neutralButton { dialog ->
+                        viewModel.updateAppointmentStatus(FIELD_REJECTED)
                         dialog.dismiss()
                     }
                     negativeButton(context.resources.getString(R.string.cancel)) { dialog ->
@@ -101,8 +110,13 @@ class AppointmentDetailFragment :
         }
         viewModel.cancelClick.observe(viewLifecycleOwner) { it ->
             if (it) {
-                CustomDialogFragment().show(requireActivity().supportFragmentManager, "")
+                CustomDialogFragment().newInstance(viewModel.appointmentObj.value)!!
+                    .show(requireActivity().supportFragmentManager, "")
             }
+        }
+        viewModel.navigationListener.observe(viewLifecycleOwner) {
+            if (it)
+                findNavController().popBackStack()
         }
 
     }

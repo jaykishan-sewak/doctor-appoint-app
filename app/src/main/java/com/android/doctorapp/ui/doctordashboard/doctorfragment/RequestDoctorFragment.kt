@@ -20,11 +20,13 @@ import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.ui.doctordashboard.adapter.RequestAppointmentsAdapter
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.selectDate
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 
@@ -49,7 +51,6 @@ class RequestDoctorFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-
         val currentDate = Calendar.getInstance()
         currentDate.set(Calendar.HOUR_OF_DAY, 0)
         currentDate.set(Calendar.MINUTE, 0)
@@ -82,7 +83,7 @@ class RequestDoctorFragment :
         viewModel.isRequestCalender.observe(viewLifecycleOwner) {
             if (it) {
                 requireContext().selectDate(maxDate = null, minDate = Date().time) { dobDate ->
-                    val formatter = SimpleDateFormat("dd-MM-yyyy")
+                    val formatter = SimpleDateFormat(FORMATTED_DATE, Locale.getDefault())
                     val date = formatter.parse(dobDate)
                     viewModel.requestSelectedDate.value = date
                     updateToolbarTitle(dateFormatter(date!!, ConstantKey.DATE_MM_FORMAT))
@@ -129,6 +130,7 @@ class RequestDoctorFragment :
                 override fun onItemClick(item: AppointmentModel, position: Int) {
                     val bundle = Bundle()
                     bundle.putBoolean(ConstantKey.BundleKeys.REQUEST_FRAGMENT, true)
+                    bundle.putString(ConstantKey.BundleKeys.APPOINTMENT_DATA, Gson().toJson(item))
                     bundle.putString(ConstantKey.BundleKeys.USER_ID, item.userId)
                     findNavController().navigate(
                         R.id.request_to_appointment_details,

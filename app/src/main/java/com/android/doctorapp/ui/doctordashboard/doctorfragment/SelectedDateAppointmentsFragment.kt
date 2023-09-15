@@ -21,11 +21,13 @@ import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.ui.doctordashboard.adapter.SelectedDateAdapter
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.selectDate
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 
@@ -80,7 +82,7 @@ class SelectedDateAppointmentsFragment :
         viewModel.isCalender.observe(viewLifecycleOwner) {
             if (it) {
                 requireContext().selectDate(maxDate = null, minDate = Date().time) { dobDate ->
-                    val formatter = SimpleDateFormat("dd-MM-yyyy")
+                    val formatter = SimpleDateFormat(FORMATTED_DATE, Locale.getDefault())
                     val date = formatter.parse(dobDate)
                     viewModel.selectedDate.value = date
                     updateToolbarTitle(dateFormatter(date!!, DATE_MM_FORMAT))
@@ -128,6 +130,7 @@ class SelectedDateAppointmentsFragment :
                     val bundle = Bundle()
                     bundle.putBoolean(ConstantKey.BundleKeys.REQUEST_FRAGMENT, false)
                     bundle.putString(ConstantKey.BundleKeys.USER_ID, item.userId)
+                    bundle.putString(ConstantKey.BundleKeys.APPOINTMENT_DATA, Gson().toJson(item))
                     findNavController().navigate(
                         R.id.action_selected_date_to_appointment_details,
                         bundle
