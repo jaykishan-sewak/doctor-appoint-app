@@ -187,13 +187,3 @@ fun dateFormatter(originalDateStr: Date, format: String): String {
         ""
     }
 }
-
-//fun stringToDateFormatter(date: String): Date {
-//    return try {
-//        val formatter = SimpleDateFormat(DATE_MM_FORMAT, Locale.getDefault())
-//        return formatter.parse(date)!!
-//    } catch (e: Exception) {
-//        e.printStackTrace()
-//        ""
-//    }
-//}

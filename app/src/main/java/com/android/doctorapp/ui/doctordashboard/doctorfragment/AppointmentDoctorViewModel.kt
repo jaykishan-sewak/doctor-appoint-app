@@ -12,10 +12,14 @@ import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.Header
+import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
+import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 import javax.inject.Inject
 
 class AppointmentDoctorViewModel @Inject constructor(
@@ -41,7 +45,9 @@ class AppointmentDoctorViewModel @Inject constructor(
 
             if (mainList.isNotEmpty() && mainList.contains(
                     Header(
-                        appointmentModel.bookingDateTime
+                        SimpleDateFormat(DATE_MM_FORMAT, Locale.getDefault()).parse(
+                            dateFormatter(appointmentModel.bookingDateTime!!,DATE_MM_FORMAT)
+                        )
                     )
                 )
             ) {
@@ -63,7 +69,9 @@ class AppointmentDoctorViewModel @Inject constructor(
             } else {
                 mainList.add(
                     Header(
-                        appointmentModel.bookingDateTime
+                        SimpleDateFormat(DATE_MM_FORMAT, Locale.getDefault()).parse(
+                            dateFormatter(appointmentModel.bookingDateTime!!,DATE_MM_FORMAT)
+                        )
                     )
                 )
                 mainList.add(
