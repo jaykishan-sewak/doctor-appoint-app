@@ -15,6 +15,7 @@ object ConstantKey {
         const val ITEM_POSITION = "itemPosition"
         const val ADMIN_FRAGMENT = "adminFragment"
         const val REQUEST_FRAGMENT = "REQUEST_FRAGMENT"
+        const val APPOINTMENT_DATA = "appointmentData"
     }
 
     const val DOCTOR = "DOCTOR"
@@ -25,6 +26,7 @@ object ConstantKey {
     const val FEMALE_GENDER = "FEMALE"
     const val FIELD_APPROVED = "APPROVED"
     const val FIELD_PROGRESS = "PROGRESS"
+    const val FIELD_REJECTED = "REJECTED"
 
     object DBKeys {
         const val TABLE_USER_DATA = "user_data"
