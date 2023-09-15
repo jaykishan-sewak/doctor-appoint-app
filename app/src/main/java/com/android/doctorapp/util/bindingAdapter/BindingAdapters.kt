@@ -24,9 +24,11 @@ import com.android.doctorapp.repository.models.TimeSlotModel
 import com.android.doctorapp.util.ImageUtils
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.MALE_GENDER
+import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.extension.convertDate
 import com.android.doctorapp.util.extension.convertTime
 import com.android.doctorapp.util.extension.convertFullDateToDate
+import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.hideKeyboard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -240,6 +242,13 @@ fun setString(textView: AppCompatTextView, specialities: List<String>?) {
 @BindingAdapter("app:dateMonthStyle")
 fun setDateMonthStyle(textView: AppCompatTextView, originalTimeStr: String) {
     textView.text = convertFullDateToDate(originalTimeStr)
+}
+
+@BindingAdapter("app:headerDate")
+fun setHeaderDate(textView: AppCompatTextView, date: Date) {
+    val date = dateFormatter(date, DATE_MM_FORMAT)
+    textView.text = date.ifEmpty { "" }
+
 }
 
 @BindingAdapter("app:age")

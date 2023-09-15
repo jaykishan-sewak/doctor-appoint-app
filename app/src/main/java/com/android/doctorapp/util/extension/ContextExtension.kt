@@ -176,3 +176,14 @@ fun convertFullDateToDate(inputDateString: String): String {
         ""
     }
 }
+
+
+fun dateFormatter(originalDateStr: Date, format: String): String {
+    return try {
+        val convertDate = SimpleDateFormat(format, Locale.getDefault())
+        return convertDate.format(originalDateStr)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
+    }
+}

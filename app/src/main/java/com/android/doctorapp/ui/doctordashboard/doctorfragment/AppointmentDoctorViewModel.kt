@@ -12,11 +12,14 @@ import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.Header
+import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
+import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.Calendar
+import java.util.Locale
 import javax.inject.Inject
 
 class AppointmentDoctorViewModel @Inject constructor(
@@ -29,7 +32,6 @@ class AppointmentDoctorViewModel @Inject constructor(
     private val mainList = mutableListOf<Any>()
     private val appointmentList = MutableLiveData<List<AppointmentModel>>()
     private val sortedAppointmentList = MutableLiveData<List<AppointmentModel>>()
-    private lateinit var filteredList: List<AppointmentModel>
 
 
     init {
@@ -38,12 +40,11 @@ class AppointmentDoctorViewModel @Inject constructor(
 
     private fun addData() {
         var count = 0
-        filteredList.forEachIndexed { index, appointmentModel ->
-
+        sortedAppointmentList.value?.forEachIndexed { index, appointmentModel ->
             if (mainList.isNotEmpty() && mainList.contains(
                     Header(
-                        convertDate(
-                            appointmentModel.bookingDateTime.toString()
+                        SimpleDateFormat(DATE_MM_FORMAT, Locale.getDefault()).parse(
+                            dateFormatter(appointmentModel.bookingDateTime!!,DATE_MM_FORMAT)
                         )
                     )
                 )
@@ -66,8 +67,8 @@ class AppointmentDoctorViewModel @Inject constructor(
             } else {
                 mainList.add(
                     Header(
-                        convertDate(
-                            appointmentModel.bookingDateTime.toString()
+                        SimpleDateFormat(DATE_MM_FORMAT, Locale.getDefault()).parse(
+                            dateFormatter(appointmentModel.bookingDateTime!!,DATE_MM_FORMAT)
                         )
                     )
                 )
@@ -90,20 +91,6 @@ class AppointmentDoctorViewModel @Inject constructor(
         finalAppointmentList.value = mainList
     }
 
-
-    private fun convertDate(inputDateString: String): String {
-        return try {
-            val inputFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy")
-            val outputFormat = SimpleDateFormat("dd-MM-yyyy")
-
-            val date = inputFormat.parse(inputDateString)
-            outputFormat.format(date!!)
-        } catch (e: Exception) {
-            e.fillInStackTrace()
-            ""
-        }
-    }
-
     private fun getAppointmentList() {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
@@ -116,7 +103,6 @@ class AppointmentDoctorViewModel @Inject constructor(
                             sortedAppointmentList.value = appointmentList.value!!.sortedBy {
                                 it.bookingDateTime
                             }
-                            filteredList = filteredListFun(sortedAppointmentList)
                             addData()
                         }
                     }
@@ -137,14 +123,6 @@ class AppointmentDoctorViewModel @Inject constructor(
                 context.toast(resourceProvider.getString(R.string.check_internet_connection))
             }
         }
-    }
-
-    private fun filteredListFun(sortedAppointmentList: MutableLiveData<List<AppointmentModel>>): List<AppointmentModel> {
-        val currentDate = Date()
-        return sortedAppointmentList.value!!.filter { item ->
-            item.bookingDateTime!! >= currentDate
-        }
-
     }
 
 }

@@ -130,7 +130,7 @@ class ToolbarManager constructor(
             val fragmentToolbar = container.findViewById(builder.resId) as Toolbar
 
             ViewCompat.setTransitionName(fragmentToolbar, "toolbar_element")
-            if (!TextUtils.isEmpty(container.context.getString(builder.title))) {
+            if (builder.title > -1 && !TextUtils.isEmpty(container.context.getString(builder.title))) {
                 // fragmentToolbar.setTitle(builder.title)
                 // fragmentToolbar.setTitleTextAppearance(container.context,R.style.toolbarTitle)
                 val tv = fragmentToolbar.findViewById<TextView>(R.id.tvTitle)
@@ -204,6 +204,12 @@ class ToolbarManager constructor(
                     item.setOnMenuItemClickListener(builder.menuClicks)
                 }
             }
+            if (!TextUtils.isEmpty(builder.titleString)) {
+                // fragmentToolbar.setTitle(builder.title)
+                // fragmentToolbar.setTitleTextAppearance(container.context,R.style.toolbarTitle)
+                val tv = fragmentToolbar.findViewById<TextView>(R.id.tvTitle)
+                tv.text = builder.titleString
+            }
         }
     }
 }
@@ -221,7 +227,8 @@ class FragmentToolbar(
     @IdRes val ivCenterImage: Int,
     val navigationClickListener: View.OnClickListener?,
     val menuItems: MutableList<Int>,
-    val menuClicks: MenuItem.OnMenuItemClickListener?
+    val menuClicks: MenuItem.OnMenuItemClickListener?,
+    val titleString: String
 ) {
 
     companion object {
@@ -244,6 +251,7 @@ class FragmentToolbar(
         private var menuClicks: MenuItem.OnMenuItemClickListener? = null
         private var navigationClickListener: View.OnClickListener? = null
         private var ivImage: Int = -1
+        private var titleString: String = ""
 
         fun withId(@IdRes resId: Int) = apply { this.resId = resId }
         fun withNavigationIcon(navigationIconId: Drawable?) =
@@ -269,6 +277,7 @@ class FragmentToolbar(
 
         fun withCenterImage(@DrawableRes ivImage: Int) = apply { this.ivImage = ivImage }
 
+        fun withTitleString(title: String) = apply { this.titleString = title }
         fun build() = FragmentToolbar(
             resId,
             title,
@@ -282,7 +291,8 @@ class FragmentToolbar(
             ivImage,
             navigationClickListener,
             menuItems,
-            menuClicks
+            menuClicks,
+            titleString
         )
     }
 }

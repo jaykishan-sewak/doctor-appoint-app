@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="appointmentsData"
+            type="com.android.doctorapp.repository.models.AppointmentModel" />
+
+
+        <variable
+            name="onItemClickListener"
+            type="com.android.doctorapp.ui.doctordashboard.adapter.RequestAppointmentsAdapter.OnItemClickListener" />
+
+        <variable
+            name="index"
+            type="Integer" />
+
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_30"
+        android:layout_marginVertical="@dimen/margin_10"
+        android:backgroundTint="@color/white"
+        android:elevation="@dimen/margin_5"
+        android:paddingHorizontal="@dimen/margin_10"
+        app:cardCornerRadius="@dimen/margin_10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/margin_20"
+            android:paddingVertical="@dimen/margin_10">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvPatientName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_person_white"
+                android:drawablePadding="@dimen/margin_10"
+                android:text="@{appointmentsData.name}"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvPatientContact"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_10"
+                android:clickable="true"
+                android:drawableStart="@drawable/ic_phone_white"
+                android:drawablePadding="@dimen/margin_10"
+                android:onClick="@{()->onItemClickListener.onClick(appointmentsData.contactNumber)}"
+                android:text="@{appointmentsData.contactNumber}"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvPatientName" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvPatientAge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_5"
+                android:layout_marginTop="@dimen/margin_10"
+                android:text="@{appointmentsData.age}"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvPatientContact" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/ageLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_10"
+                android:layout_marginTop="@dimen/margin_10"
+                android:text="@string/years_old"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@id/tvPatientAge"
+                app:layout_constraintTop_toBottomOf="@id/tvPatientContact" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/viewAll"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/margin_30"
+                android:layout_marginStart="@dimen/margin_10"
+                android:background="@drawable/rounded_btn"
+                android:onClick="@{()->onItemClickListener.onItemClick(appointmentsData,index)}"
+                android:text="@string/view"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/tvPatientContact"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvPatientContact" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>

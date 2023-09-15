@@ -160,4 +160,6 @@
     <string name="address">Address :</string>
     <string name="search">Search</string>
     <string name="my_booking">My booking</string>
+    <string name="years_old">Years old</string>
+
 </resources>

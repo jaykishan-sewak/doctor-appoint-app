@@ -1,6 +1,6 @@
 package com.android.doctorapp.ui.doctordashboard.doctorfragment
 
-import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
@@ -20,41 +20,43 @@ import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
 
-class RequestDoctorViewModel @Inject constructor(
+class SelectedDateAppointmentsViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val appointmentRepository: AppointmentRepository,
     private val context: Context,
 ) : BaseViewModel() {
 
-    val requestAppointmentList = MutableLiveData<List<AppointmentModel>>()
-    var requestSelectedDate: MutableLiveData<Date> = SingleLiveEvent()
-    val isRequestCalender: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    fun getRequestAppointmentList() {
+    val appointmentList = MutableLiveData<List<AppointmentModel>>()
+    var selectedDate: MutableLiveData<Date> = SingleLiveEvent()
+    val isCalender: MutableLiveData<Boolean> = MutableLiveData(false)
+
+    fun getAppointmentList() {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
+                appointmentList.value = emptyList()
                 setShowProgress(true)
                 when (val response =
-                    appointmentRepository.getAppointmentsProgressList(
-                        requestSelectedDate.value!!, fireStore
+                    appointmentRepository.getAppointmentsSelectedDateList(
+                        selectedDate.value!!, fireStore
                     )) {
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
-                        requestAppointmentList.value = response.body!!
+                        appointmentList.value = response.body!!
                     }
 
                     is ApiErrorResponse -> {
-                        Log.d(ContentValues.TAG, "Error ")
+                        Log.d(TAG, "Error ")
                         setShowProgress(false)
                     }
 
                     is ApiNoNetworkResponse -> {
-                        Log.d(ContentValues.TAG, "Network ")
+                        Log.d(TAG, "Network ")
                         setShowProgress(false)
                     }
 
                     else -> {
-                        Log.d(ContentValues.TAG, "else ")
+                        Log.d(TAG, "else ")
                         setShowProgress(false)
                     }
                 }
@@ -63,5 +65,6 @@ class RequestDoctorViewModel @Inject constructor(
             }
         }
     }
+
 
 }

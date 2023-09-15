@@ -1,5 +1,7 @@
 package com.android.doctorapp.ui.doctordashboard.doctorfragment
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +18,8 @@ import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.Header
 import com.android.doctorapp.ui.doctordashboard.adapter.PatientListAdapter
+import com.android.doctorapp.util.constants.ConstantKey
+import com.google.gson.Gson
 import javax.inject.Inject
 
 
@@ -75,9 +79,19 @@ class AppointmentDoctorFragment :
             items,
             object : PatientListAdapter.OnItemClickListener {
                 override fun onItemClick(item: Header, position: Int) {
-//                    val bundle = Bundle()
-//                    bundle.putString(ConstantKey.BundleKeys.USER_ID, item.userId)
-                    findNavController().navigate(R.id.action_doctor_appointment_to_appointment_details)
+                    val bundle = Bundle()
+                    bundle.putString(ConstantKey.BundleKeys.DATE, Gson().toJson(item.date))
+                    bundle.putBoolean(ConstantKey.BundleKeys.REQUEST_FRAGMENT, false)
+                    findNavController().navigate(
+                        R.id.action_doctor_appointment_to_selected_date,
+                        bundle
+                    )
+                }
+
+                override fun onClick(contact: String) {
+                    val intent = Intent(Intent.ACTION_DIAL)
+                    intent.data = Uri.parse("tel:$contact")
+                    requireActivity().startActivity(intent)
                 }
             }
         )
