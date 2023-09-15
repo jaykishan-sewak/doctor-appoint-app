@@ -48,6 +48,7 @@ class AppointmentDetailFragment :
         (requireActivity().application as AppComponentProvider).getAppComponent().inject(this)
     }
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -71,6 +72,7 @@ class AppointmentDetailFragment :
     }
 
     private fun registerObserver() {
+        viewModel.getAppointmentDetails()
         viewModel.confirmClick.observe(viewLifecycleOwner) { it ->
             if (it) {
                 context?.alert {
@@ -97,6 +99,7 @@ class AppointmentDetailFragment :
                     }
                     negativeButton(context.resources.getString(R.string.cancel)) { dialog ->
                         dialog.dismiss()
+
                     }
                 }
             }

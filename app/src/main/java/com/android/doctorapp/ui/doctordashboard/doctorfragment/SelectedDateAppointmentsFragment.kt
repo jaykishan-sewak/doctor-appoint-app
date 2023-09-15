@@ -1,10 +1,8 @@
 package com.android.doctorapp.ui.doctordashboard.doctorfragment
 
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
