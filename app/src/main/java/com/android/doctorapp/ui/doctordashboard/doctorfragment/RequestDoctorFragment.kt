@@ -1,10 +1,8 @@
 package com.android.doctorapp.ui.doctordashboard.doctorfragment
 
-import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -54,7 +52,12 @@ class RequestDoctorFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        viewModel.requestSelectedDate.value = Date()
+        val currentDate = Calendar.getInstance()
+        currentDate.set(Calendar.HOUR_OF_DAY, 0)
+        currentDate.set(Calendar.MINUTE, 0)
+        currentDate.set(Calendar.SECOND, 0)
+        currentDate.set(Calendar.MILLISECOND, 0)
+        viewModel.requestSelectedDate.value = currentDate.time
 
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
@@ -128,6 +131,7 @@ class RequestDoctorFragment :
                 override fun onItemClick(item: AppointmentModel, position: Int) {
                     val bundle = Bundle()
                     bundle.putBoolean(ConstantKey.BundleKeys.REQUEST_FRAGMENT, true)
+                    bundle.putString(ConstantKey.BundleKeys.APPOINTMENT_DATA, Gson().toJson(item))
                     findNavController().navigate(
                         R.id.request_to_appointment_details,
                         bundle

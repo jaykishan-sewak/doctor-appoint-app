@@ -131,6 +131,7 @@ class SelectedDateAppointmentsFragment :
                 override fun onItemClick(item: AppointmentModel, position: Int) {
                     val bundle = Bundle()
                     bundle.putBoolean(ConstantKey.BundleKeys.REQUEST_FRAGMENT, false)
+                    bundle.putString(ConstantKey.BundleKeys.APPOINTMENT_DATA, Gson().toJson(item))
                     findNavController().navigate(
                         R.id.action_selected_date_to_appointment_details,
                         bundle

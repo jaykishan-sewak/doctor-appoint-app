@@ -17,6 +17,7 @@ import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.repository.models.TimeSlotModel
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.DAY_NAME_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.FIELD_REJECTED
 import com.android.doctorapp.util.constants.ConstantKey.FULL_DATE_FORMAT
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isNetworkAvailable
@@ -74,7 +75,7 @@ class AppointmentViewModel @Inject constructor(
     var confirmClick = MutableLiveData(false)
     var rejectClick = MutableLiveData(false)
     var reasonValue = MutableLiveData<String>()
-    var appoinmentObj = MutableLiveData<AppointmentModel>()
+    var appointmentObj = MutableLiveData<AppointmentModel>()
 
     init {
         getHolidayList()
@@ -399,39 +400,41 @@ class AppointmentViewModel @Inject constructor(
 
     fun onSubmit() {
         viewModelScope.launch {
-            session.getString(USER_ID).collectLatest {
-                if (context.isNetworkAvailable()) {
-                    when (val response =
-                        appointmentRepository.updateAppointmentData(
-                            appoinmentObj.value!!.apply {
-                                reason = reasonValue.value!!
-                            },
-                            fireStore
-                        )) {
-                        is ApiSuccessResponse -> {
-                            setShowProgress(false)
-                        }
-
-                        is ApiErrorResponse -> {
-                            context.toast(response.errorMessage)
-                            setShowProgress(false)
-                        }
-
-                        is ApiNoNetworkResponse -> {
-                            context.toast(response.errorMessage)
-                            setShowProgress(false)
-                        }
-
-                        else -> {
-                            context.toast(resourceProvider.getString(R.string.something_went_wrong))
-                            setShowProgress(false)
-                        }
+            if (context.isNetworkAvailable()) {
+                when (val response =
+                    appointmentRepository.updateAppointmentData(
+                        appointmentObj.value!!.apply {
+                            reason = reasonValue.value!!
+                            status = FIELD_REJECTED
+                        },
+                        fireStore
+                    )) {
+                    is ApiSuccessResponse -> {
+                        setShowProgress(false)
+                        _navigationListener.value = true
                     }
-                } else {
-                    context.toast(resourceProvider.getString(R.string.check_internet_connection))
-                }
 
+                    is ApiErrorResponse -> {
+                        context.toast(response.errorMessage)
+                        setShowProgress(false)
+                        _navigationListener.value = true
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        context.toast(response.errorMessage)
+                        setShowProgress(false)
+                        _navigationListener.value = true
+                    }
+
+                    else -> {
+                        context.toast(resourceProvider.getString(R.string.something_went_wrong))
+                        setShowProgress(false)
+                    }
+                }
+            } else {
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
             }
+
         }
     }
 
@@ -440,7 +443,7 @@ class AppointmentViewModel @Inject constructor(
             if (context.isNetworkAvailable()) {
                 when (val response =
                     appointmentRepository.updateAppointmentData(
-                        appoinmentObj.value!!.apply {
+                        appointmentObj.value!!.apply {
                             reason = reasonValue.value!!
                         },
                         fireStore
@@ -468,6 +471,42 @@ class AppointmentViewModel @Inject constructor(
                 context.toast(resourceProvider.getString(R.string.check_internet_connection))
             }
 
+        }
+    }
+
+    fun updateAppointmentStatus(appointmentStatus: String) {
+        viewModelScope.launch {
+            if (context.isNetworkAvailable()) {
+                when (val response =
+                    appointmentRepository.updateAppointmentData(
+                        appointmentObj.value!!.apply {
+                            status = appointmentStatus
+                        },
+                        fireStore
+                    )) {
+                    is ApiSuccessResponse -> {
+                        setShowProgress(false)
+                        _navigationListener.value = true
+                    }
+
+                    is ApiErrorResponse -> {
+                        context.toast(response.errorMessage)
+                        setShowProgress(false)
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        context.toast(response.errorMessage)
+                        setShowProgress(false)
+                    }
+
+                    else -> {
+                        context.toast(resourceProvider.getString(R.string.something_went_wrong))
+                        setShowProgress(false)
+                    }
+                }
+            } else {
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
+            }
         }
     }
 }
