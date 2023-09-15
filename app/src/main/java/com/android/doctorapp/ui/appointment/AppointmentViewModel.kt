@@ -345,17 +345,18 @@ class AppointmentViewModel @Inject constructor(
         }
     }
 
-    fun getAppointmentDetails(userId: String) {
+    fun getAppointmentDetails() {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 when (val response =
                     appointmentRepository.getAppointmentDetails(
-                        userId,
+                        appointmentObj.value?.userId!!,
                         fireStore
                     )) {
                     is ApiSuccessResponse -> {
                         appointmentResponse.postValue(response.body!!)
                         Log.d(TAG, "getAppointmentDetails: ${response.body}")
+                        getAppointmentUserDetails()
                         setShowProgress(false)
                     }
 
@@ -381,12 +382,12 @@ class AppointmentViewModel @Inject constructor(
         }
     }
 
-    fun getAppointmentUserDetails(userId: String) {
+    private fun getAppointmentUserDetails() {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 when (val response =
                     appointmentRepository.getAppointmentUserDetails(
-                        userId,
+                        appointmentObj.value?.userId!!,
                         fireStore
                     )) {
                     is ApiSuccessResponse -> {

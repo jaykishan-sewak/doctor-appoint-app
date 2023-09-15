@@ -23,6 +23,7 @@ import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.selectDate
+import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -131,7 +132,6 @@ class RequestDoctorFragment :
                     val bundle = Bundle()
                     bundle.putBoolean(ConstantKey.BundleKeys.REQUEST_FRAGMENT, true)
                     bundle.putString(ConstantKey.BundleKeys.APPOINTMENT_DATA, Gson().toJson(item))
-                    bundle.putString(ConstantKey.BundleKeys.USER_ID, item.userId)
                     findNavController().navigate(
                         R.id.request_to_appointment_details,
                         bundle

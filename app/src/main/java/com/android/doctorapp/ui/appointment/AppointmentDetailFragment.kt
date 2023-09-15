@@ -60,7 +60,6 @@ class AppointmentDetailFragment :
             viewModel.isShowBothButton.value =
                 arguments.getBoolean(ConstantKey.BundleKeys.REQUEST_FRAGMENT)
             val appointmentObj = arguments.getString(ConstantKey.BundleKeys.APPOINTMENT_DATA)
-            viewModel.userId.value = arguments.getString(ConstantKey.BundleKeys.USER_ID)
             viewModel.appointmentObj.value =
                 Gson().fromJson(appointmentObj, AppointmentModel::class.java)
         }
@@ -73,10 +72,7 @@ class AppointmentDetailFragment :
     }
 
     private fun registerObserver() {
-        viewModel.userId.observe(viewLifecycleOwner) {
-            viewModel.getAppointmentDetails(viewModel.userId.value!!)
-            viewModel.getAppointmentUserDetails(viewModel.userId.value!!)
-        }
+        viewModel.getAppointmentDetails()
         viewModel.confirmClick.observe(viewLifecycleOwner) { it ->
             if (it) {
                 context?.alert {
