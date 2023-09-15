@@ -1,7 +1,6 @@
 package com.android.doctorapp.ui.doctor
 
 import android.content.Context
-import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.RadioGroup
@@ -204,18 +203,14 @@ class AddDoctorViewModel @Inject constructor(
 
     fun validateAllUpdateField() {
         if (isDoctor.value!!) {
-            Log.d(
-                TAG,
-                "validateAllUpdateField: ${isPhoneVerify.value}      -->     ${isEmailVerified.value}"
-            )
             isUpdateDataValid.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
                     && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
                     && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
                     && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
                     && !dob.value.isNullOrEmpty() && dobError.value.isNullOrEmpty()
                     && availableTimeList.value?.isEmpty() == false
-                    && isPhoneVerify.value == true
-                    && isEmailVerified.value == true
+                    && isPhoneVerify.value!!
+                    && isEmailVerified.value!!
                     && binding?.chipGroup?.children?.toList()?.size!! > 0
                     && binding?.chipGroupSpec?.children?.toList()?.size!! > 0
                     )
@@ -225,7 +220,7 @@ class AddDoctorViewModel @Inject constructor(
                     && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
                     && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
                     && !dob.value.isNullOrEmpty() && dobError.value.isNullOrEmpty()
-                    && isPhoneVerify.value == true && isEmailVerified.value == true
+                    && isPhoneVerify.value!! && isEmailVerified.value!!
                     )
         }
     }

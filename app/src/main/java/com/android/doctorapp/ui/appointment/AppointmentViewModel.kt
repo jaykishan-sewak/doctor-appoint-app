@@ -21,7 +21,8 @@ import com.android.doctorapp.util.constants.ConstantKey.DAY_NAME_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.FULL_DATE_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.FULL_DAY_NAME_FORMAT
 import com.android.doctorapp.util.extension.asLiveData
-import com.android.doctorapp.util.extension.convertDate1
+import com.android.doctorapp.util.extension.convertToFormatDate
+import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import kotlinx.coroutines.flow.collectLatest
@@ -102,13 +103,17 @@ class AppointmentViewModel @Inject constructor(
 
         daysList.forEachIndexed { index, dateSlotModel ->
             holidayList.forEachIndexed { _, data ->
-                if (convertDate(dateSlotModel.date.toString()) == convertDate(data.toString())) {
+                if (dateFormatter(dateSlotModel.date!!, DATE_MM_FORMAT) == dateFormatter(
+                        data,
+                        DATE_MM_FORMAT
+                    )
+                ) {
                     daysList[index] = DateSlotModel(date = dateSlotModel.date, disable = true)
                     return@forEachIndexed
                 }
             }
             weekOfDayList.forEachIndexed { _, str ->
-                if (convertDayName(dateSlotModel.date.toString()) == convertDate1(
+                if (dateFormatter(dateSlotModel.date!!, DAY_NAME_FORMAT) == convertToFormatDate(
                         str,
                         FULL_DAY_NAME_FORMAT,
                         DAY_NAME_FORMAT
@@ -126,32 +131,6 @@ class AppointmentViewModel @Inject constructor(
     private fun getCurrentDate(): String {
         val currentCal = Calendar.getInstance()
         return dateFormatFull.format(currentCal.time)
-    }
-
-    private fun convertDate(inputDateString: String): String {
-        return try {
-            val inputFormat = SimpleDateFormat(FULL_DATE_FORMAT)
-            val outputFormat = SimpleDateFormat(DATE_MM_FORMAT)
-
-            val date = inputFormat.parse(inputDateString)
-            outputFormat.format(date)
-        } catch (e: Exception) {
-            e.fillInStackTrace()
-            ""
-        }
-    }
-
-    private fun convertDayName(inputDateString: String): String {
-        return try {
-            val inputFormat = SimpleDateFormat(FULL_DATE_FORMAT)
-            val outputFormat = SimpleDateFormat(DAY_NAME_FORMAT)
-
-            val date = inputFormat.parse(inputDateString)
-            outputFormat.format(date)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            ""
-        }
     }
 
     fun validateDateTime() {

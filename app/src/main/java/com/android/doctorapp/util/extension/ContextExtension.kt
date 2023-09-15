@@ -14,7 +14,6 @@ import com.android.doctorapp.util.constants.ConstantKey.DATE_MONTH_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.constants.ConstantKey.FULL_DATE_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.HOUR_MIN_AM_PM_FORMAT
-import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -138,7 +137,7 @@ fun convertTime(originalTimeStr: String): String {
 }
 
 fun convertDateToMonth(inputDateString: String): String {
-    return  try {
+    return try {
         val originalDateFormat = SimpleDateFormat(FORMATTED_DATE, Locale.getDefault())
         val targetDateFormat = SimpleDateFormat(DATE_MONTH_FORMAT, Locale.getDefault())
 
@@ -189,14 +188,18 @@ fun dateFormatter(originalDateStr: Date, format: String): String {
 }
 
 
-fun convertDate1(inputDateString: String, originalDateFormatStr: String, targetDateFormatStr: String): String {
+fun convertToFormatDate(
+    inputDateString: String,
+    originalDateFormatStr: String,
+    targetDateFormatStr: String
+): String {
     return try {
         val originalDateFormat = SimpleDateFormat(originalDateFormatStr, Locale.getDefault())
         val targetDateFormat = SimpleDateFormat(targetDateFormatStr, Locale.getDefault())
         val calendar = Calendar.getInstance()
         calendar.time = originalDateFormat.parse(inputDateString) ?: Date()
         targetDateFormat.format(calendar.time)
-    } catch (e: Exception){
+    } catch (e: Exception) {
         e.printStackTrace()
         ""
     }
