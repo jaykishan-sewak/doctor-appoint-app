@@ -191,7 +191,7 @@ class UpdateDoctorProfileFragment :
         }
 
         viewModel.isPhoneVerify.observe(viewLifecycleOwner) {
-            if (!it) {
+            if (it) {
                 viewModel.validateAllUpdateField()
                 layoutBinding.textContactVerify.setTextColor(
                     ContextCompat.getColor(
@@ -273,6 +273,7 @@ class UpdateDoctorProfileFragment :
                 handler.removeCallbacks(runnable)
             }
         }
+
 
         viewModel.degreeList.observe(viewLifecycleOwner) {
             val adapter =
