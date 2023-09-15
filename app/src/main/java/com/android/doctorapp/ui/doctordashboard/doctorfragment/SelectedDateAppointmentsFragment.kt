@@ -128,9 +128,12 @@ class SelectedDateAppointmentsFragment :
             items,
             object : SelectedDateAdapter.OnItemClickListener {
                 override fun onItemClick(item: AppointmentModel, position: Int) {
-//                    val bundle = Bundle()
-//                    bundle.putString(ConstantKey.BundleKeys.DATE, Gson().toJson(item.date))
-                    findNavController().navigate(R.id.action_selected_date_to_appointment_details)
+                    val bundle = Bundle()
+                    bundle.putBoolean(ConstantKey.BundleKeys.REQUEST_FRAGMENT, false)
+                    findNavController().navigate(
+                        R.id.action_selected_date_to_appointment_details,
+                        bundle
+                    )
                 }
 
                 override fun onClick(contact: String) {

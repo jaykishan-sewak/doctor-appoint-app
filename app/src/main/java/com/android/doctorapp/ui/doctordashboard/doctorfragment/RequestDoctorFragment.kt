@@ -133,6 +133,7 @@ class RequestDoctorFragment :
             object : RequestAppointmentsAdapter.OnItemClickListener {
                 override fun onItemClick(item: AppointmentModel, position: Int) {
                     val bundle = Bundle()
+                    bundle.putBoolean(ConstantKey.BundleKeys.REQUEST_FRAGMENT, true)
                     findNavController().navigate(
                         R.id.request_to_appointment_details,
                         bundle
