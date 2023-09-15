@@ -434,4 +434,40 @@ class AppointmentViewModel @Inject constructor(
             }
         }
     }
+
+    fun getAppointmentDetails() {
+        viewModelScope.launch {
+            if (context.isNetworkAvailable()) {
+                when (val response =
+                    appointmentRepository.updateAppointmentData(
+                        appoinmentObj.value!!.apply {
+                            reason = reasonValue.value!!
+                        },
+                        fireStore
+                    )) {
+                    is ApiSuccessResponse -> {
+                        setShowProgress(false)
+                    }
+
+                    is ApiErrorResponse -> {
+                        context.toast(response.errorMessage)
+                        setShowProgress(false)
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        context.toast(response.errorMessage)
+                        setShowProgress(false)
+                    }
+
+                    else -> {
+                        context.toast(resourceProvider.getString(R.string.something_went_wrong))
+                        setShowProgress(false)
+                    }
+                }
+            } else {
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
+            }
+
+        }
+    }
 }
