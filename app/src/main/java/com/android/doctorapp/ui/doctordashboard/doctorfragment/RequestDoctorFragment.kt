@@ -24,6 +24,7 @@ import com.android.doctorapp.ui.doctordashboard.adapter.RequestAppointmentsAdapt
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.selectDate
+import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -69,15 +70,16 @@ class RequestDoctorFragment :
     }
 
     private fun registerObserver(layoutBinding: FragmentRequestDoctorBinding) {
+        setAdapter(emptyList())
+        layoutBinding.requestDoctorRecyclerView.layoutManager =
+            LinearLayoutManager(requireContext())
+        layoutBinding.requestDoctorRecyclerView.adapter = adapter
         viewModel.requestSelectedDate.observe(viewLifecycleOwner) {
             viewModel.getRequestAppointmentList()
             viewModel.isRequestCalender.value = false
         }
         viewModel.requestAppointmentList.observe(viewLifecycleOwner) {
-            setAdapter(it)
-            layoutBinding.requestDoctorRecyclerView.layoutManager =
-                LinearLayoutManager(requireContext())
-            layoutBinding.requestDoctorRecyclerView.adapter = adapter
+            adapter.filterList(it)
             Log.d(ContentValues.TAG, "appointmentList: $it")
         }
 
@@ -130,9 +132,13 @@ class RequestDoctorFragment :
             items,
             object : RequestAppointmentsAdapter.OnItemClickListener {
                 override fun onItemClick(item: AppointmentModel, position: Int) {
-//                    val bundle = Bundle()
-//                    bundle.putString(ConstantKey.BundleKeys.DATE, Gson().toJson(item.date))
-                    findNavController().navigate(R.id.action_selected_date_to_appointment_details)
+                    val bundle = Bundle()
+                    bundle.putString(ConstantKey.BundleKeys.DATE, Gson().toJson(item.bookingDateTime))
+                    bundle.putBoolean(ConstantKey.BundleKeys.REQUEST_FRAGMENT, true)
+                    findNavController().navigate(
+                        R.id.action_doctor_appointment_to_selected_date,
+                        bundle
+                    )
                 }
 
                 override fun onClick(contact: String) {

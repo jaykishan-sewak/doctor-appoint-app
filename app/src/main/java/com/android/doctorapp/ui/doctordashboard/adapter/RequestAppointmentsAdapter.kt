@@ -23,6 +23,11 @@ class RequestAppointmentsAdapter(
             }
         }
     }
+    fun filterList(filterList: List<AppointmentModel>) {
+        requestAppointmentList = filterList
+//        notifyItemRangeChanged(0, userList.size)
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,

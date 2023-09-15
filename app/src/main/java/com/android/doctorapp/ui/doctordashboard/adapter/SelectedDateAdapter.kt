@@ -23,6 +23,11 @@ class SelectedDateAdapter(
             }
         }
     }
+    fun filterList(filterList: List<AppointmentModel>) {
+        userList = filterList
+//        notifyItemRangeChanged(0, userList.size)
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,

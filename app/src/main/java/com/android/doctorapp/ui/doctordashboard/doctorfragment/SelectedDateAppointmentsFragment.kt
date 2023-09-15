@@ -39,7 +39,7 @@ class SelectedDateAppointmentsFragment :
     private val viewModel: SelectedDateAppointmentsViewModel by viewModels { viewModelFactory }
     var date = ""
     private lateinit var adapter: SelectedDateAdapter
-
+    var isRequestFragement = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (requireActivity().application as AppComponentProvider).getAppComponent().inject(this)
@@ -56,6 +56,7 @@ class SelectedDateAppointmentsFragment :
             date =
                 arguments.getString(ConstantKey.BundleKeys.DATE)!!
             viewModel.selectedDate.value = Gson().fromJson(date, Date::class.java)
+            isRequestFragement = arguments.getBoolean(ConstantKey.BundleKeys.REQUEST_FRAGMENT)
         }
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
@@ -67,16 +68,17 @@ class SelectedDateAppointmentsFragment :
     }
 
     private fun registerObserver(layoutBinding: FragmentSelectedDateAppointmentsBinding) {
+        setAdapter(emptyList())
+        layoutBinding.selectedDateRecyclerView.layoutManager =
+            LinearLayoutManager(requireContext())
+        layoutBinding.selectedDateRecyclerView.adapter = adapter
+
         viewModel.selectedDate.observe(viewLifecycleOwner) {
-            viewModel.getAppointmentList()
+            viewModel.getAppointmentList(isRequestFragement)
             viewModel.isCalender.value = false
         }
         viewModel.appointmentList.observe(viewLifecycleOwner) {
-            setAdapter(it)
-            layoutBinding.selectedDateRecyclerView.layoutManager =
-                LinearLayoutManager(requireContext())
-            layoutBinding.selectedDateRecyclerView.adapter = adapter
-            Log.d(TAG, "appointmentList: $it")
+            adapter.filterList(it)
         }
 
         viewModel.isCalender.observe(viewLifecycleOwner) {

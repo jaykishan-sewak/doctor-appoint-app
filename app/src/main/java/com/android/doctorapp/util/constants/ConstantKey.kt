@@ -14,6 +14,7 @@ object ConstantKey {
         const val DOCTOR_DATA = "doctorData"
         const val ITEM_POSITION = "itemPosition"
         const val ADMIN_FRAGMENT = "adminFragment"
+        const val REQUEST_FRAGMENT = "REQUEST_FRAGMENT"
     }
 
     const val DOCTOR = "DOCTOR"

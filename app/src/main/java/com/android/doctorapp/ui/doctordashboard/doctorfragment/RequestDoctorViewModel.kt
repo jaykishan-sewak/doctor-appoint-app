@@ -40,14 +40,11 @@ class RequestDoctorViewModel @Inject constructor(
                     )) {
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
-                        if (response.body.isNotEmpty()) {
-                            requestAppointmentList.value = response.body!!
-                            Log.d(
-                                ContentValues.TAG,
-                                "getAppointmentList: ${requestAppointmentList.value}"
-                            )
-
-                        }
+                        requestAppointmentList.value = response.body!!
+                        Log.d(
+                            ContentValues.TAG,
+                            "getAppointmentList: ${requestAppointmentList.value}"
+                        )
                     }
 
                     is ApiErrorResponse -> {

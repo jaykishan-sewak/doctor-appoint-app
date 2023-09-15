@@ -31,21 +31,20 @@ class SelectedDateAppointmentsViewModel @Inject constructor(
     var selectedDate: MutableLiveData<Date> = SingleLiveEvent()
     val isCalender: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    fun getAppointmentList() {
+    fun getAppointmentList(isRequestFragment:Boolean) {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
+                appointmentList.value = emptyList()
                 setShowProgress(true)
                 when (val response =
                     appointmentRepository.getAppointmentsSelectedDateList(
+                        isRequestFragment,
                         selectedDate.value!!, fireStore
                     )) {
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
-                        if (response.body.isNotEmpty()) {
-                            appointmentList.value = response.body!!
-                            Log.d(TAG, "getAppointmentList: ${appointmentList.value}")
-
-                        }
+                        appointmentList.value = response.body!!
+                        Log.d(TAG, "getAppointmentList: ${appointmentList.value}")
                     }
 
                     is ApiErrorResponse -> {
