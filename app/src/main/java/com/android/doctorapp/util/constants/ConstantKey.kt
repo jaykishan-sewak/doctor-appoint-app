@@ -23,7 +23,7 @@ object ConstantKey {
     const val FEMALE_GENDER = "FEMALE"
 
     object DBKeys {
-        const val TABLE_USER_DATA = "user_data"
+        const val TABLE_USER_DATA = "user_data1"
         const val FIELD_ADMIN = "admin"
         const val FIELD_DOCTOR = "doctor"
         const val TABLE_DEGREE = "degree"
@@ -39,7 +39,7 @@ object ConstantKey {
     const val HOUR_MIN_AM_PM_FORMAT = "h:mm a"
     const val DATE_MM_FORMAT = "dd-MM-yyyy"
     const val DAY_NAME_FORMAT = "EEE"
-    const val DATE_NAME_FORMAT = "EEE"
+    const val FULL_DAY_NAME_FORMAT = "EEEE"
 
 
 }

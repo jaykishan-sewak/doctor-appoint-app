@@ -65,11 +65,11 @@
             android:id="@+id/text_doctor_specialization"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{viewModel.doctorSpecialities}"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="@+id/text_doctor_name"
             app:layout_constraintStart_toStartOf="@+id/text_doctor_name"
-            app:layout_constraintTop_toBottomOf="@+id/text_doctor_name" />
+            app:layout_constraintTop_toBottomOf="@+id/text_doctor_name"
+            app:string="@{viewModel.doctorDetails != null ? viewModel.doctorDetails.specialities : null}" />
 
         <RatingBar
             android:id="@+id/doctorRatingBar"

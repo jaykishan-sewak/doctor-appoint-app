@@ -2,7 +2,6 @@ package com.android.doctorapp.repository
 
 import com.android.doctorapp.repository.models.ApiResponse
 import com.android.doctorapp.repository.models.AppointmentModel
-import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_USER_ID
@@ -33,13 +32,13 @@ class AppointmentRepository @Inject constructor() {
     suspend fun getDoctorById(
         userId: String,
         fireStore: FirebaseFirestore
-    ): ApiResponse<UserDataRequestModel> {
+    ): ApiResponse<UserDataResponseModel> {
         return try {
             val response = fireStore.collection(TABLE_USER_DATA)
                 .whereEqualTo(FIELD_USER_ID, userId)
                 .get()
                 .await()
-            var dataModel = UserDataRequestModel()
+            var dataModel = UserDataResponseModel()
             for (snapshot in response) {
                 dataModel = snapshot.toObject()
             }
@@ -70,7 +69,7 @@ class AppointmentRepository @Inject constructor() {
 
     suspend fun getAppointmentsList(firestore: FirebaseFirestore): ApiResponse<List<AppointmentModel>> {
         return try {
-            val response = firestore.collection(ConstantKey.DBKeys.TABLE_APPOINTMENT).get().await()
+            val response = firestore.collection(TABLE_APPOINTMENT).get().await()
 
             val appointmentsList = arrayListOf<AppointmentModel>()
             for (document: DocumentSnapshot in response.documents) {

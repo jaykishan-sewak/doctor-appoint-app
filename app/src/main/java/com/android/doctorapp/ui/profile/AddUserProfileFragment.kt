@@ -208,7 +208,7 @@ class AddUserProfileFragment :
         }
 
         viewModel.isPhoneVerify.observe(viewLifecycleOwner) {
-            if (!it) {
+            if (it) {
                 viewModel.validateAllUpdateField()
                 binding.textUserContactVerify.setTextColor(
                     ContextCompat.getColor(
