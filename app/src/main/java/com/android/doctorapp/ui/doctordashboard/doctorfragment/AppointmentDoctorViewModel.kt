@@ -32,7 +32,6 @@ class AppointmentDoctorViewModel @Inject constructor(
     private val mainList = mutableListOf<Any>()
     private val appointmentList = MutableLiveData<List<AppointmentModel>>()
     private val sortedAppointmentList = MutableLiveData<List<AppointmentModel>>()
-    private lateinit var filteredList: List<AppointmentModel>
 
 
     init {
@@ -41,8 +40,7 @@ class AppointmentDoctorViewModel @Inject constructor(
 
     private fun addData() {
         var count = 0
-        filteredList.forEachIndexed { index, appointmentModel ->
-
+        sortedAppointmentList.value?.forEachIndexed { index, appointmentModel ->
             if (mainList.isNotEmpty() && mainList.contains(
                     Header(
                         SimpleDateFormat(DATE_MM_FORMAT, Locale.getDefault()).parse(
@@ -105,7 +103,6 @@ class AppointmentDoctorViewModel @Inject constructor(
                             sortedAppointmentList.value = appointmentList.value!!.sortedBy {
                                 it.bookingDateTime
                             }
-                            filteredList = filteredListFun(sortedAppointmentList)
                             addData()
                         }
                     }
@@ -127,19 +124,6 @@ class AppointmentDoctorViewModel @Inject constructor(
             }
         }
     }
-
-    private fun filteredListFun(sortedAppointmentList: MutableLiveData<List<AppointmentModel>>): List<AppointmentModel> {
-        val currentDate = Calendar.getInstance()
-        currentDate.set(Calendar.HOUR_OF_DAY, 0)
-        currentDate.set(Calendar.MINUTE, 0)
-        currentDate.set(Calendar.SECOND, 0)
-        currentDate.set(Calendar.MILLISECOND, 0)
-        return sortedAppointmentList.value!!.filter { item ->
-            item.bookingDateTime!! >= currentDate.time
-        }
-
-    }
-
 
 }
 

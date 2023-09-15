@@ -43,7 +43,6 @@ class SelectedDateAppointmentsViewModel @Inject constructor(
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
                         appointmentList.value = response.body!!
-                        Log.d(TAG, "getAppointmentList: ${appointmentList.value}")
                     }
 
                     is ApiErrorResponse -> {

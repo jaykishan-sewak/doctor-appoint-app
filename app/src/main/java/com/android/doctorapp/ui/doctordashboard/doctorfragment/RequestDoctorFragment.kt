@@ -22,12 +22,14 @@ import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.ui.doctordashboard.adapter.RequestAppointmentsAdapter
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.selectDate
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 
@@ -52,13 +54,7 @@ class RequestDoctorFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-
-        val currentDate = Calendar.getInstance()
-        currentDate.set(Calendar.HOUR_OF_DAY, 0)
-        currentDate.set(Calendar.MINUTE, 0)
-        currentDate.set(Calendar.SECOND, 0)
-        currentDate.set(Calendar.MILLISECOND, 0)
-        viewModel.requestSelectedDate.value = currentDate.time
+        viewModel.requestSelectedDate.value = Date()
 
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
@@ -80,15 +76,13 @@ class RequestDoctorFragment :
         }
         viewModel.requestAppointmentList.observe(viewLifecycleOwner) {
             adapter.filterList(it)
-            Log.d(ContentValues.TAG, "appointmentList: $it")
         }
 
         viewModel.isRequestCalender.observe(viewLifecycleOwner) {
             if (it) {
                 requireContext().selectDate(maxDate = null, minDate = Date().time) { dobDate ->
-                    val formatter = SimpleDateFormat("dd-MM-yyyy")
+                    val formatter = SimpleDateFormat(FORMATTED_DATE, Locale.getDefault())
                     val date = formatter.parse(dobDate)
-                    Log.d(ContentValues.TAG, "date: $date")
                     viewModel.requestSelectedDate.value = date
                     updateToolbarTitle(dateFormatter(date!!, ConstantKey.DATE_MM_FORMAT))
                 }
