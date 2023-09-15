@@ -120,10 +120,8 @@ class AddDoctorViewModel @Inject constructor(
 
 
     val holidayList = MutableLiveData<ArrayList<HolidayModel>>()
-    val tempHolidayList = ArrayList<Date>()
     val availableTimeList = MutableLiveData<ArrayList<TimeSlotModel>>()
-    private val availableTimeList1 = ArrayList<TimeSlotModel>()
-    private lateinit var firestore: FirebaseFirestore
+
 
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {

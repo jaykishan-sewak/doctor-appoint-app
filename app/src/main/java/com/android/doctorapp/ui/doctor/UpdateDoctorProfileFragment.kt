@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -497,7 +498,14 @@ class UpdateDoctorProfileFragment :
     }
 
     private fun updateHolidayRecyclerview(newHolidayList: ArrayList<HolidayModel>) {
-        addDoctorHolidayAdapter = AddDoctorHolidayAdapter(newHolidayList)
+        addDoctorHolidayAdapter = AddDoctorHolidayAdapter(newHolidayList,
+            object: AddDoctorHolidayAdapter.OnItemClickListener {
+                override fun onItemDelete(item: HolidayModel, position: Int) {
+                    Log.d("TAG", "onItemDelete: ")
+                    newHolidayList.remove(item)
+                }
+
+            })
         viewModel.holidayList.value = newHolidayList
         binding.rvHoliday.adapter = addDoctorHolidayAdapter
     }
