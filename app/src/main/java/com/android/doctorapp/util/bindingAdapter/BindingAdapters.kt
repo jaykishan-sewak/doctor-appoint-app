@@ -190,10 +190,12 @@ fun spannableText(view: TextView, mainText: String?, secondaryText: String?, sec
 }
 
 @BindingAdapter("app:genderImage")
-fun setGenderImage(imageView: AppCompatImageView, gender: String) {
-    val drawableRes =
-        if (gender.isNotEmpty() && gender == MALE_GENDER) R.drawable.ic_male_placeholder else R.drawable.ic_female_placeholder
-    imageView.setImageResource(drawableRes)
+fun setGenderImage(imageView: AppCompatImageView, gender: String?) {
+    if (gender != null) {
+        val drawableRes =
+            if (gender.isNotEmpty() && gender == MALE_GENDER) R.drawable.ic_male_placeholder else R.drawable.ic_female_placeholder
+        imageView.setImageResource(drawableRes)
+    }
 }
 
 @BindingAdapter("app:appointmentDate")
@@ -254,7 +256,7 @@ fun setHeaderDate(textView: AppCompatTextView, date: Date?) {
         Log.d(TAG, "setHeaderDate: $date")
         textView.text = date.ifEmpty { "" }
     } else
-        textView.text = ""
+        textView.text = "-"
 }
 
 @BindingAdapter("app:headerTime")

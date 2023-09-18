@@ -7,7 +7,7 @@
         android:title="@string/search" />
     <item
         android:id="@+id/navigation_booking"
-        android:icon="@drawable/baseline_settings_24"
+        android:icon="@drawable/baseline_bookings"
         android:title="@string/my_booking" />
 
     <item

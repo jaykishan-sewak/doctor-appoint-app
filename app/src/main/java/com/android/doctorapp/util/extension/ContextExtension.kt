@@ -204,3 +204,24 @@ fun convertToFormatDate(
         ""
     }
 }
+
+fun calculateAge(dateOfBirth: String): String {
+    return try {
+        val dateFormatter = SimpleDateFormat(FULL_DATE_FORMAT)
+        val dob: Date = dateFormatter.parse(dateOfBirth)
+        val calendarDob = Calendar.getInstance()
+        calendarDob.time = dob
+        val currentDate = Calendar.getInstance()
+        val years = currentDate.get(Calendar.YEAR) - calendarDob.get(Calendar.YEAR)
+        if (currentDate.get(Calendar.DAY_OF_YEAR) < calendarDob.get(Calendar.DAY_OF_YEAR)) {
+            // Adjust age if birthday hasn't occurred yet this year
+            return "${years - 1}"
+        }
+        return years.toString()
+
+    } catch (e: java.lang.Exception) {
+        e.printStackTrace()
+        ""
+    }
+
+}

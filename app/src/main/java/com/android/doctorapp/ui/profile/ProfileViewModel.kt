@@ -1,19 +1,33 @@
 package com.android.doctorapp.ui.profile
 
+import android.content.Context
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.android.doctorapp.R
+import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.ProfileRepository
+import com.android.doctorapp.repository.local.Session
+import com.android.doctorapp.repository.local.USER_ID
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.ProfileResponseModel
+import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
+import com.android.doctorapp.util.extension.calculateAge
+import com.android.doctorapp.util.extension.isNetworkAvailable
+import com.android.doctorapp.util.extension.toast
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
-    private val profileRepository: ProfileRepository
+    private val resourceProvider: ResourceProvider,
+    private val profileRepository: ProfileRepository,
+    private val context: Context,
+    private val session: Session
 ) : BaseViewModel() {
 
     private val _profileResponse = SingleLiveEvent<ProfileResponseModel?>()
@@ -24,6 +38,14 @@ class ProfileViewModel @Inject constructor(
 
     private val _onProfilePictureClicked = SingleLiveEvent<Unit>()
     val onProfilePictureClicked = _onProfilePictureClicked.asLiveData()
+
+    var userProfileDataResponse: MutableLiveData<UserDataResponseModel> = MutableLiveData()
+    val isEdit: MutableLiveData<Boolean> = MutableLiveData(false)
+
+    val phoneClick: MutableLiveData<String> = MutableLiveData()
+    val emailClick: MutableLiveData<String> = MutableLiveData()
+    val age: MutableLiveData<String> = MutableLiveData()
+
 
     init {
         getUserProfile()
@@ -51,6 +73,45 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun getUserProfileData() {
+        viewModelScope.launch {
+            var recordId: String = ""
+            session.getString(USER_ID).collectLatest {
+                recordId = it.orEmpty()
+                if (context.isNetworkAvailable()) {
+                    setShowProgress(true)
+                    when (val response =
+                        profileRepository.getProfileRecordById(recordId, fireStore)) {
+                        is ApiSuccessResponse -> {
+                            userProfileDataResponse.value = response.body!!
+                            age.value = calculateAge(userProfileDataResponse.value!!.dob.toString())
+                            setShowProgress(false)
+                        }
+
+                        is ApiErrorResponse -> {
+                            context.toast(response.errorMessage)
+                            setShowProgress(false)
+                        }
+
+                        is ApiNoNetworkResponse -> {
+                            context.toast(response.errorMessage)
+                            setShowProgress(false)
+                        }
+
+                        else -> {
+                            context.toast(resourceProvider.getString(R.string.something_went_wrong))
+                            setShowProgress(false)
+                        }
+                    }
+                } else {
+                    context.toast(resourceProvider.getString(R.string.check_internet_connection))
+                }
+            }
+        }
+
+    }
+
+
     fun signOut() {
         viewModelScope.launch {
             profileRepository.clearLoggedInSession()
@@ -66,5 +127,13 @@ class ProfileViewModel @Inject constructor(
         _profileResponse.postValue(_profileResponse.value?.also {
             it.data?.profile = path
         })
+    }
+
+    fun onClickPhoneIcon(contact: String) {
+        phoneClick.postValue(contact)
+    }
+
+    fun onClickEmailIcon(email: String) {
+        emailClick.postValue("")
     }
 }
