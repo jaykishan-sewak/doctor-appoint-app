@@ -122,7 +122,7 @@ class AddDoctorViewModel @Inject constructor(
 
     val addShitTimeSlotList = MutableLiveData<ArrayList<AddShiftTimeModel>>()
 
-    private val _dataResponse = SingleLiveEvent<UserDataRequestModel>()
+    private val _dataResponse = SingleLiveEvent<UserDataRequestModel?>()
     val userResponse = _dataResponse.asLiveData()
 
 
