@@ -166,5 +166,6 @@
     <string name="contact_no">Contact no :</string>
     <string name="email_verified">Email Verified</string>
     <string name="phone_verified">Phone verified</string>
+    <string name="no_data_found">No Data Found</string>
 
 </resources>

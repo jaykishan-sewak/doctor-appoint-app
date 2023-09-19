@@ -60,7 +60,10 @@ class AppointmentDoctorFragment :
         layoutBinding.recyclerView.adapter = adapter
 
         viewModel.finalAppointmentList.observe(viewLifecycleOwner) {
-            adapter.filterList(it)
+            if (it != null && it.isNotEmpty()) {
+                adapter.filterList(it)
+                viewModel.dataFound.value = true
+            }
         }
 
     }

@@ -21,6 +21,7 @@ import com.android.doctorapp.ui.doctor.UpdateDoctorProfileFragment
 import com.android.doctorapp.ui.userdashboard.UserDashboardActivity
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.extension.alert
+import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.selectDate
 import com.android.doctorapp.util.extension.startActivityFinish
@@ -62,6 +63,10 @@ class AddUserProfileFragment :
             .withId(R.id.toolbar)
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             .withTitle(R.string.title_profile)
+            .withNavigationIcon(requireActivity().getDrawable(R.drawable.ic_back_white))
+            .withNavigationListener {
+                findNavController().popBackStack()
+            }
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
             .build()
     }
@@ -199,8 +204,15 @@ class AddUserProfileFragment :
             }
         }
 
-        viewModel.getModelUserData().observe(viewLifecycleOwner) {
-            viewModel.email.value = it[0].email
+        viewModel.userResponse.observe(viewLifecycleOwner) {
+            if (it != null) {
+                viewModel.name.value = it.name
+                viewModel.email.value = it.email
+                viewModel.contactNumber.value = it.contactNumber
+                viewModel.address.value = it.address
+                viewModel.selectGenderValue.value = it.gender
+                viewModel.dob.value = dateFormatter(it.dob!!, ConstantKey.DATE_MM_FORMAT)
+            }
         }
 
         viewModel.clickResponse.observe(viewLifecycleOwner) {
@@ -216,6 +228,7 @@ class AddUserProfileFragment :
                         R.color.green
                     )
                 )
+                binding.etContact.isEnabled = false
             }
         }
 

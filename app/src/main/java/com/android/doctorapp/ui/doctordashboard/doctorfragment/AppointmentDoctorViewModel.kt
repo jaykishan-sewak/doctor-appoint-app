@@ -18,7 +18,6 @@ import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 
@@ -32,6 +31,8 @@ class AppointmentDoctorViewModel @Inject constructor(
     private val mainList = mutableListOf<Any>()
     private val appointmentList = MutableLiveData<List<AppointmentModel>>()
     private val sortedAppointmentList = MutableLiveData<List<AppointmentModel>>()
+
+    val dataFound : MutableLiveData<Boolean> = MutableLiveData(false)
 
 
     init {
@@ -108,14 +109,17 @@ class AppointmentDoctorViewModel @Inject constructor(
                     }
 
                     is ApiErrorResponse -> {
+                        context.toast(response.errorMessage)
                         setShowProgress(false)
                     }
 
                     is ApiNoNetworkResponse -> {
+                        context.toast(response.errorMessage)
                         setShowProgress(false)
                     }
 
                     else -> {
+                        context.toast(context.getString(R.string.something_went_wrong))
                         setShowProgress(false)
                     }
                 }
