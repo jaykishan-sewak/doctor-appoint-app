@@ -1,7 +1,6 @@
 package com.android.doctorapp.ui.doctor
 
 import android.content.Context
-import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.RadioGroup
@@ -24,7 +23,6 @@ import com.android.doctorapp.repository.models.DegreeResponseModel
 import com.android.doctorapp.repository.models.HolidayModel
 import com.android.doctorapp.repository.models.SpecializationResponseModel
 import com.android.doctorapp.repository.models.TimeSlotModel
-import com.android.doctorapp.repository.models.TimeSlotRequestModel
 import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.repository.models.WeekOffModel
 import com.android.doctorapp.util.SingleLiveEvent
@@ -89,7 +87,6 @@ class AddDoctorViewModel @Inject constructor(
 
     val isCalender: MutableLiveData<View> = SingleLiveEvent()
     val isAvailableDate: MutableLiveData<String?> = MutableLiveData()
-    private val isAvailableDateError: MutableLiveData<String?> = MutableLiveData()
 
     val isPhoneVerify: MutableLiveData<Boolean> = MutableLiveData(false)
     val isPhoneVerifyValue: MutableLiveData<String> =
@@ -123,7 +120,6 @@ class AddDoctorViewModel @Inject constructor(
     val holidayList = MutableLiveData<ArrayList<HolidayModel>>()
     val availableTimeList = MutableLiveData<ArrayList<TimeSlotModel>>()
 
-    //    val addShitTimeSlotSize = MutableLiveData<Int>()
     val addShitTimeSlotList = MutableLiveData<ArrayList<AddShiftTimeModel>>()
 
     private val _dataResponse = SingleLiveEvent<UserDataRequestModel>()
@@ -137,7 +133,6 @@ class AddDoctorViewModel @Inject constructor(
     init {
         firebaseUser = firebaseAuth.currentUser!!
         getWeekDayList()
-        getModelUserData()
 
     }
 
@@ -181,7 +176,7 @@ class AddDoctorViewModel @Inject constructor(
                             degreeLiveList.value = response.body.degree?.toList()
                             specializationLiveList.value = response.body.specialities?.toList()
                             data.value = listOf(userObj)
-                            _dataResponse.value = response.body!!
+                            _dataResponse.value = response.body
                             setShowProgress(false)
                         }
 
@@ -209,40 +204,29 @@ class AddDoctorViewModel @Inject constructor(
     }
 
     fun validateAllUpdateField() {
-//        addShitTimeSlotList.value?.filter { abc ->
-////            listOf(abc.startTime, abc.endTime, abc.isTimeSlotBook, abc.isTimeClick).any {it == null
-////            }
-//            abc.startTime != null && abc.endTime != null
-//
-//        }
-
-        Log.d(TAG, "validateAllUpdateField: ${addShitTimeSlotList.value?.filter {abc -> 
-            abc.startTime != null && abc.endTime != null
-        }?.size}")
 
         if (isDoctor.value!!) {
-            isUpdateDataValid.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
-                    && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
-                    && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
-                    && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
-                    && !dob.value.isNullOrEmpty() && dobError.value.isNullOrEmpty()
-                    && addShitTimeSlotList.value?.isEmpty() == false
-                    && isPhoneVerify.value!!
-                    && isEmailVerified.value!!
-                    && binding?.chipGroup?.children?.toList()?.size!! > 0
-                    && binding?.chipGroupSpec?.children?.toList()?.size!! > 0
-                    )
-        /*isUpdateDataValid.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
-                    && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
-                    && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
-                    && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
-                    && !dob.value.isNullOrEmpty() && dobError.value.isNullOrEmpty()
-                    && addShitTimeSlotList.value?.isEmpty() == false
-                    && isPhoneVerify.value!!
-                    && isEmailVerified.value!!
-                    && binding?.chipGroup?.children?.toList()?.size!! > 0
-                    && binding?.chipGroupSpec?.children?.toList()?.size!! > 0
-                    )*/
+
+            if (addShitTimeSlotList.value.isNullOrEmpty()) {
+                isUpdateDataValid.value = false
+            } else {
+                isUpdateDataValid.value =
+                    (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
+                            && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
+
+                            && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
+                            && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
+                            && !dob.value.isNullOrEmpty() && dobError.value.isNullOrEmpty()
+                            && addShitTimeSlotList.value?.filter { shiftTIme ->
+                        shiftTIme.startTime == null || shiftTIme.endTime == null
+                    }.isNullOrEmpty()
+                            && isPhoneVerify.value!!
+                            && isEmailVerified.value!!
+                            && binding?.chipGroup?.children?.toList()?.size!! > 0
+                            && binding?.chipGroupSpec?.children?.toList()?.size!! > 0
+                            )
+            }
+
         } else {
             isUpdateDataValid.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
                     && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
@@ -398,7 +382,6 @@ class AddDoctorViewModel @Inject constructor(
     }
 
     private fun updateUser() {
-
         viewModelScope.launch {
             var recordId: String = ""
             session.getString(USER_ID).collectLatest {
@@ -426,19 +409,12 @@ class AddDoctorViewModel @Inject constructor(
                                     isTimeSlotBook = newData.isTimeSlotBook
                                 )
                             } as ArrayList<AddShiftTimeModel>,
-//                        availableTime = availableTimeList.value?.toList()
-//                            ?.map { newData ->
-//                                TimeSlotRequestModel(
-//                                    newData.timeSlot,
-//                                    newData.isTimeSlotBook
-//                                )
-//                            } as ArrayList<TimeSlotRequestModel>,
                         isAdmin = false,
                         isNotificationEnable = notificationToggleData.value == true,
                         dob = SimpleDateFormat(DATE_MM_FORMAT).parse(dob.value.toString()),
                         isUserVerified = true,
-                        holidayList = holidayList.value?.toList()
-                            ?.map { holidayDate -> holidayDate.holidayDate } as ArrayList<Date>,
+                        holidayList = if (holidayList.value?.isNotEmpty() == true) holidayList.value?.toList()
+                            ?.map { holidayDate -> holidayDate.holidayDate } as ArrayList<Date> else null,
                         weekOffList = strWeekOffList.value
 
                     )
@@ -861,13 +837,6 @@ class AddDoctorViewModel @Inject constructor(
 
         weekDayNameList.value = weekDayList
 
-    }
-
-
-    fun test() {
-        addShitTimeSlotList.value?.forEachIndexed { index, addShiftTimeModel ->
-            Log.d(TAG, "test: ${addShiftTimeModel.startTime}    -->     ${addShiftTimeModel.endTime}")
-        }
     }
 
 }

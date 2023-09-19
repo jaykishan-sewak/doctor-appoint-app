@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,6 +39,7 @@ import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.convertDateToFull
 import com.android.doctorapp.util.extension.convertDateToMonth
+import com.android.doctorapp.util.extension.convertTime
 import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.selectDate
 import com.android.doctorapp.util.extension.startActivityFinish
@@ -85,12 +85,8 @@ class UpdateDoctorProfileFragment :
     private val holidayList = ArrayList<HolidayModel>()
     private lateinit var weekOffDayAdapter: WeekOffDayAdapter
     private val tempStrWeekOffList = ArrayList<String>()
-    private val calendar = Calendar.getInstance()
-    private var addTimeList = ArrayList<TimeSlotModel>()
-    private lateinit var addDoctorTimeingAdapter: AddDoctorTimingAdapter
+    private lateinit var addDoctorTimingAdapter: AddDoctorTimingAdapter
     private lateinit var addDoctorHolidayAdapter: AddDoctorHolidayAdapter
-    private var addShiftTimeList = ArrayList<Int>()
-    private var shiftTimeSize = 0
     private lateinit var addDoctorTimeAdapter: AddDoctorTimeAdapter
     private var tempAddShitList = ArrayList<AddShiftTimeModel>()
 
@@ -183,7 +179,6 @@ class UpdateDoctorProfileFragment :
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.rvAddTiming.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-//            GridLayoutManager(requireContext(), 3)
         binding.rvHoliday.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
@@ -196,6 +191,13 @@ class UpdateDoctorProfileFragment :
     }
 
     private fun registerObserver(layoutBinding: FragmentUpdateDoctorProfileBinding) {
+
+        viewModel.getModelUserData().observe(viewLifecycleOwner) {
+            viewModel.name.value = it[0].name
+            viewModel.email.value = it[0].email
+            viewModel.contactNumber.value = it[0].contactNumber
+        }
+
         viewModel.userResponse.observe(viewLifecycleOwner) {
             viewModel.name.value = it.name
             viewModel.email.value = it.email
@@ -244,6 +246,7 @@ class UpdateDoctorProfileFragment :
                     )
                 )
                 viewModel.addShitTimeSlotList.value = tempAddShitList
+                viewModel.validateAllUpdateField()
             } else {
                 requireContext().selectDate(
                     maxDate = null,
@@ -498,7 +501,14 @@ class UpdateDoctorProfileFragment :
                 calendar.set(Calendar.MINUTE, selectedMinute)
                 val selectedTime = calendar.time
                 if (isStartTime) {
-                    tempAddShitList[position].startTime = selectedTime
+                    val timeContainsOrNot = tempAddShitList.any {
+                        convertTime(it.startTime.toString()) == convertTime(selectedTime.toString())
+                    }
+                    if (timeContainsOrNot) {
+                        context?.toast(getString(R.string.already_selected_time))
+                    } else {
+                        tempAddShitList[position].startTime = selectedTime
+                    }
                     viewModel.validateAllUpdateField()
                 } else {
                     if (calendar.after(startTimeCalendar)) {
@@ -521,9 +531,9 @@ class UpdateDoctorProfileFragment :
     }
 
     private fun updateAddTimeRecyclerview(newAddTimeList: ArrayList<TimeSlotModel>) {
-        addDoctorTimeingAdapter = AddDoctorTimingAdapter(newAddTimeList)
+        addDoctorTimingAdapter = AddDoctorTimingAdapter(newAddTimeList)
         viewModel.availableTimeList.value = newAddTimeList
-        binding.rvAddTiming.adapter = addDoctorTimeingAdapter
+        binding.rvAddTiming.adapter = addDoctorTimingAdapter
         viewModel.validateAllUpdateField()
     }
 
@@ -555,31 +565,13 @@ class UpdateDoctorProfileFragment :
                 override fun removeShiftClick(addShiftTimeModel: AddShiftTimeModel, position: Int) {
                     tempAddShitList.removeAt(position)
                     addDoctorTimeAdapter.notifyDataSetChanged()
+                    viewModel.validateAllUpdateField()
                 }
 
 
             }
         )
         binding.rvAddTiming.adapter = addDoctorTimeAdapter
-
-        /*addDoctorTimeAdapter = AddDoctorTimeAdapter(a,
-            object : AddDoctorTimeAdapter.OnItemClickListener {
-                override fun startTimeClick() {
-                }
-
-                override fun endTimeClick() {
-                }
-
-                override fun removeShiftClick(position: Int) {
-                    shiftTimeSize -= 1
-                    viewModel.addShitTimeSlotSize.value = shiftTimeSize
-                    addDoctorTimeAdapter.notifyItemRemoved(position)
-
-                }
-
-            }
-        )
-        binding.rvAddTiming.adapter = addDoctorTimeAdapter*/
     }
 
 }
