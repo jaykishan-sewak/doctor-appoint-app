@@ -38,7 +38,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/margin_10"
+                android:layout_marginVertical="@dimen/margin_10"
                 android:background="@color/doctor_bg"
                 android:elevation="@dimen/margin_5"
                 app:cardCornerRadius="16dp"
@@ -114,11 +114,11 @@
                         android:layout_marginEnd="@dimen/margin_15"
                         android:textAlignment="textEnd"
                         android:textColor="@color/grey"
+                        app:age="@{viewModel.doctorDetails!=null ? viewModel.doctorDetails.dob : null}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/tvDoctorAgeLabel"
                         app:layout_constraintTop_toTopOf="@id/tvDoctorAgeLabel"
-                        app:layout_constraintWidth_percent="0.5"
-                        app:age="@{viewModel.doctorDetails!=null ? viewModel.doctorDetails.dob : null}" />
+                        app:layout_constraintWidth_percent="0.5" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tvDoctorAddressLabel"
@@ -135,7 +135,7 @@
                         android:id="@+id/tvDoctorAddress"
                         style="@style/label_text2"
                         android:layout_marginEnd="@dimen/margin_15"
-                        android:text="@{viewModel.doctorDetails!=null ? viewModel.doctorDetails.address:``}"
+                        android:text="@{viewModel.doctorDetails.address!=`` ? viewModel.doctorDetails.address:`-`}"
                         android:textAlignment="textEnd"
                         android:textColor="@color/grey"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -193,6 +193,108 @@
                         app:layout_constraintTop_toTopOf="@id/tvDoctorSpec"
                         app:layout_constraintWidth_percent="0.5"
                         app:string="@{viewModel.doctorDetails != null ? viewModel.doctorDetails.specialities : null}" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvDoctorEmail"
+                        style="@style/label_text2"
+                        android:layout_marginStart="@dimen/margin_15"
+                        android:layout_marginTop="@dimen/margin_10"
+                        android:text="@string/email"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvDoctorSpec"
+                        app:layout_constraintWidth_percent="0.4" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvDoctorEmailValue"
+                        style="@style/label_text2"
+                        android:layout_marginTop="@dimen/margin_4"
+                        android:layout_marginEnd="@dimen/margin_15"
+                        android:text="@{viewModel.doctorDetails.email}"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/grey"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/tvDoctorEmail"
+                        app:layout_constraintTop_toTopOf="@id/tvDoctorEmail"
+                        app:layout_constraintWidth_percent="0.5" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvDoctorContact"
+                        style="@style/label_text2"
+                        android:layout_marginStart="@dimen/margin_15"
+                        android:layout_marginTop="@dimen/margin_10"
+                        android:text="@string/contact_no"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvDoctorEmail"
+                        app:layout_constraintWidth_percent="0.4" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvDoctorContactValue"
+                        style="@style/label_text2"
+                        android:layout_width="wrap_content"
+                        android:layout_marginTop="@dimen/margin_4"
+                        android:layout_marginEnd="@dimen/margin_15"
+                        android:drawableStart="@drawable/ic_phone_white"
+                        android:onClick="@{()->viewModel.clickOnCall(viewModel.doctorDetails.contactNumber)}"
+                        android:text="@{viewModel.doctorDetails.contactNumber}"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/grey"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/tvDoctorContact"
+                        app:layout_constraintWidth_percent="0.5" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvDoctorEmailVerified"
+                        style="@style/label_text2"
+                        android:layout_marginStart="@dimen/margin_15"
+                        android:layout_marginTop="@dimen/margin_10"
+                        android:text="@string/email_verified"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvDoctorContact"
+                        app:layout_constraintWidth_percent="0.4" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvDoctorEmailVerifiedValue"
+                        style="@style/label_text2"
+                        android:layout_marginTop="@dimen/margin_4"
+                        android:layout_marginEnd="@dimen/margin_15"
+                        android:text="@{viewModel.doctorDetails.emailVerified ?  `Yes` : `No`}"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/grey"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/tvDoctorEmailVerified"
+                        app:layout_constraintTop_toTopOf="@id/tvDoctorEmailVerified"
+                        app:layout_constraintWidth_percent="0.5" />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvDoctorPhoneVerified"
+                        style="@style/label_text2"
+                        android:layout_marginStart="@dimen/margin_15"
+                        android:layout_marginTop="@dimen/margin_10"
+                        android:text="@string/phone_verified"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvDoctorEmailVerified"
+                        app:layout_constraintWidth_percent="0.4" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvDoctorPhoneVerifiedValue"
+                        style="@style/label_text2"
+                        android:layout_marginTop="@dimen/margin_4"
+                        android:layout_marginEnd="@dimen/margin_15"
+                        android:text="@{viewModel.doctorDetails.phoneNumberVerified ?  `Yes` : `No`}"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/grey"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/tvDoctorPhoneVerified"
+                        app:layout_constraintTop_toTopOf="@id/tvDoctorPhoneVerified"
+                        app:layout_constraintWidth_percent="0.5" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
         </androidx.constraintlayout.widget.ConstraintLayout>

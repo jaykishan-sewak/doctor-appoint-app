@@ -28,7 +28,7 @@ class AppointmentDetailFragment :
     BaseFragment<FragmentAppointmentDetailBinding>(R.layout.fragment_appointment_detail) {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModel: AppointmentViewModel by viewModels { viewModelFactory }
+    val viewModel: AppointmentViewModel by viewModels { viewModelFactory }
 
     override fun builder(): FragmentToolbar {
         return FragmentToolbar.Builder()
@@ -67,6 +67,7 @@ class AppointmentDetailFragment :
             lifecycleOwner = viewLifecycleOwner
             viewModel = this@AppointmentDetailFragment.viewModel
         }
+        setUpWithViewModel(viewModel)
         registerObserver()
         return layoutBinding.root
     }
@@ -78,7 +79,7 @@ class AppointmentDetailFragment :
                 context?.alert {
                     setTitle(resources.getString(R.string.confirm))
                     setMessage(resources.getString(R.string.approve_appointment_desc))
-                    neutralButton { dialog ->
+                    neutralButton(text = getString(R.string.approve)) { dialog ->
                         viewModel.updateAppointmentStatus(FIELD_APPROVED)
                         dialog.dismiss()
                     }
@@ -93,7 +94,7 @@ class AppointmentDetailFragment :
                 context?.alert {
                     setTitle(resources.getString(R.string.confirm))
                     setMessage(resources.getString(R.string.reject_appointment_desc))
-                    neutralButton { dialog ->
+                    neutralButton(text = getString(R.string.reject)) { dialog ->
                         viewModel.updateAppointmentStatus(FIELD_REJECTED)
                         dialog.dismiss()
                     }
@@ -106,8 +107,11 @@ class AppointmentDetailFragment :
         }
         viewModel.cancelClick.observe(viewLifecycleOwner) { it ->
             if (it) {
-                CustomDialogFragment().newInstance(viewModel.appointmentObj.value)!!
-                    .show(requireActivity().supportFragmentManager, "")
+                CustomDialogFragment(requireContext(),object :CustomDialogFragment.OnButtonClickListener{
+                    override fun oClick(text: String) {
+                        viewModel.appointmentRejectApiCall(text)
+                    }
+                }).show()
             }
         }
         viewModel.navigationListener.observe(viewLifecycleOwner) {

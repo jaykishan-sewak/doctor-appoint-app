@@ -81,7 +81,6 @@ class AppointmentViewModel @Inject constructor(
     var cancelClick = MutableLiveData(false)
     var confirmClick = MutableLiveData(false)
     var rejectClick = MutableLiveData(false)
-    var reasonValue = MutableLiveData<String>()
     var appointmentObj = MutableLiveData<AppointmentModel>()
 
     val doctorDetails: MutableLiveData<UserDataResponseModel?> = MutableLiveData()
@@ -305,13 +304,15 @@ class AppointmentViewModel @Inject constructor(
         rejectClick.value = true
     }
 
-    fun onSubmit() {
+
+    fun appointmentRejectApiCall(text: String) {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
+                setShowProgress(true)
                 when (val response =
                     appointmentRepository.updateAppointmentData(
                         appointmentObj.value!!.apply {
-                            reason = reasonValue.value!!
+                            reason = text
                             status = FIELD_REJECTED
                         },
                         fireStore
@@ -421,6 +422,7 @@ class AppointmentViewModel @Inject constructor(
     fun updateAppointmentStatus(appointmentStatus: String) {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
+                setShowProgress(true)
                 when (val response =
                     appointmentRepository.updateAppointmentData(
                         appointmentObj.value!!.apply {

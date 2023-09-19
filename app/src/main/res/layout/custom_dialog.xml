@@ -3,10 +3,6 @@
 
     <data>
 
-        <variable
-            name="viewModel"
-            type="com.android.doctorapp.ui.appointment.AppointmentViewModel" />
-
     </data>
 
     <RelativeLayout
@@ -23,8 +19,7 @@
             android:gravity="top|start"
             android:hint="@string/enter_reason"
             android:inputType="textMultiLine"
-            android:maxLines="5"
-            android:text="@={viewModel.reasonValue}" />
+            android:maxLines="5"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnReasonSubmit"
@@ -34,7 +29,6 @@
             android:layout_below="@id/etReason"
             android:layout_marginTop="@dimen/margin_30"
             android:background="@drawable/button_state_colors"
-            android:onClick="@{()->viewModel.onSubmit()}"
             android:text="@string/confirm"
             android:textAllCaps="false"
             android:textColor="@color/white" />
