@@ -1,7 +1,5 @@
 package com.android.doctorapp.ui.profile
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -18,6 +16,8 @@ import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.util.extension.fetchImageOrShowError
+import com.android.doctorapp.util.extension.openEmailSender
+import com.android.doctorapp.util.extension.openPhoneDialer
 import javax.inject.Inject
 
 class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_profile) {
@@ -94,20 +94,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
             }
         }
         viewModel.phoneClick.observe(viewLifecycleOwner) {
-            if (it != null && it.isNotEmpty()) {
-                val intent = Intent(Intent.ACTION_DIAL)
-                intent.data = Uri.parse("tel: $it")
-                requireActivity().startActivity(intent)
-            }
+            requireActivity().openPhoneDialer(it)
         }
         viewModel.emailClick.observe(viewLifecycleOwner) {
-            if (it != null && it.isNotEmpty()) {
-                val intentEmail = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto: $it"))
-                intentEmail.putExtra(Intent.EXTRA_SUBJECT, "")
-                intentEmail.putExtra(Intent.EXTRA_TEXT, "")
-                startActivity(Intent.createChooser(intentEmail, "Chooser title"))
-            }
-
+            requireActivity().openEmailSender(it)
         }
     }
 

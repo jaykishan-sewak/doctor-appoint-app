@@ -2,6 +2,7 @@ package com.android.doctorapp.util.bindingAdapter
 
 import android.content.ContentValues.TAG
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.Paint
 import android.text.Spannable
 import android.text.SpannableString
@@ -25,12 +26,12 @@ import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.repository.models.TimeSlotModel
 import com.android.doctorapp.util.ImageUtils
 import com.android.doctorapp.util.constants.ConstantKey
-import com.android.doctorapp.util.constants.ConstantKey.MALE_GENDER
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.HOUR_MIN_AM_PM_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.MALE_GENDER
 import com.android.doctorapp.util.extension.convertDate
-import com.android.doctorapp.util.extension.convertTime
 import com.android.doctorapp.util.extension.convertFullDateToDate
+import com.android.doctorapp.util.extension.convertTime
 import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.hideKeyboard
 import kotlinx.coroutines.CoroutineScope
@@ -292,4 +293,11 @@ fun setAge(textView: AppCompatTextView, dateOfBirth: Date?) {
 @BindingAdapter("app:status")
 fun setStatus(textView: AppCompatTextView, text: String) {
     textView.text = "${text[0].uppercase()}${text.substring(1).lowercase()}"
+    if (text.lowercase() == "rejected") {
+        textView.setTextColor(Color.parseColor("#e60000"))
+    } else if (text.lowercase() == "pending") {
+        textView.setTextColor(Color.parseColor("#f1c232"))
+    } else {
+        textView.setTextColor(Color.parseColor("#247A28"))
+    }
 }

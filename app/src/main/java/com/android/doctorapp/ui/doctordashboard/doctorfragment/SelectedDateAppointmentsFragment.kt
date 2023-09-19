@@ -78,7 +78,7 @@ class SelectedDateAppointmentsFragment :
         viewModel.appointmentList.observe(viewLifecycleOwner) {
             if (it != null && it.isNotEmpty()) {
                 adapter.filterList(it)
-                viewModel.dataFound.postValue(true)
+                viewModel.dataFound.value = true
             }
         }
 

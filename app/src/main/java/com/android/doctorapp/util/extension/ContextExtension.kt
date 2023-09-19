@@ -2,8 +2,10 @@ package com.android.doctorapp.util.extension
 
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
@@ -207,8 +209,8 @@ fun convertToFormatDate(
 
 fun calculateAge(dateOfBirth: String): String {
     return try {
-        val dateFormatter = SimpleDateFormat(FULL_DATE_FORMAT)
-        val dob: Date = dateFormatter.parse(dateOfBirth)
+        val dateFormatter = SimpleDateFormat(FULL_DATE_FORMAT, Locale.getDefault())
+        val dob: Date = dateFormatter.parse(dateOfBirth)!!
         val calendarDob = Calendar.getInstance()
         calendarDob.time = dob
         val currentDate = Calendar.getInstance()
@@ -224,4 +226,31 @@ fun calculateAge(dateOfBirth: String): String {
         ""
     }
 
+}
+
+fun Context.openPhoneDialer(phone: String?) {
+    try {
+        if (!phone.isNullOrEmpty()) {
+            val intent = Intent(Intent.ACTION_DIAL)
+            intent.data = Uri.parse("tel: $phone")
+            this.startActivity(intent)
+        }
+    } catch (e: java.lang.Exception) {
+        e.printStackTrace()
+        ""
+    }
+}
+
+fun Context.openEmailSender(email: String?) {
+    try {
+        if (!email.isNullOrEmpty()) {
+            val intentEmail = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto: $email"))
+            intentEmail.putExtra(Intent.EXTRA_SUBJECT, "")
+            intentEmail.putExtra(Intent.EXTRA_TEXT, "")
+            startActivity(Intent.createChooser(intentEmail, "Chooser title"))
+        }
+    } catch (e: java.lang.Exception) {
+        e.printStackTrace()
+        ""
+    }
 }

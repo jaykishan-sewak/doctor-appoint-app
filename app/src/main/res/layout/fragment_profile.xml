@@ -156,9 +156,9 @@
                 android:layout_marginTop="@dimen/margin_10"
                 android:drawableStart="@drawable/ic_age_blue"
                 android:drawablePadding="@dimen/margin_20"
-                android:text="@{viewModel.age}"
                 android:textColor="@color/grey"
                 android:textStyle="bold"
+                app:age="@{viewModel.userProfileDataResponse.dob}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvDOB" />
 

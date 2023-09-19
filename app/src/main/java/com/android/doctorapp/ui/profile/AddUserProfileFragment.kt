@@ -204,7 +204,7 @@ class AddUserProfileFragment :
             }
         }
 
-        viewModel.getDataResponse.observe(viewLifecycleOwner) {
+        viewModel.dataResponse.observe(viewLifecycleOwner) {
             if (it != null) {
                 viewModel.name.value = it.name
                 viewModel.email.value = it.email

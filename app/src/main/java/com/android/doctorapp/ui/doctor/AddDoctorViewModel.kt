@@ -125,8 +125,8 @@ class AddDoctorViewModel @Inject constructor(
     private val availableTimeList1 = ArrayList<TimeSlotModel>()
     private lateinit var firestore: FirebaseFirestore
 
-    val _getDataResponse = SingleLiveEvent<UserDataRequestModel>()
-    val getDataResponse = _getDataResponse.asLiveData()
+    private val _dataResponse = SingleLiveEvent<UserDataRequestModel>()
+    val dataResponse = _dataResponse.asLiveData()
 
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
@@ -180,7 +180,7 @@ class AddDoctorViewModel @Inject constructor(
                             degreeLiveList.value = response.body.degree?.toList()
                             specializationLiveList.value = response.body.specialities?.toList()
                             data.value = listOf(userObj)
-                            _getDataResponse.value = response.body!!
+                            _dataResponse.value = response.body!!
                             setShowProgress(false)
                         }
 

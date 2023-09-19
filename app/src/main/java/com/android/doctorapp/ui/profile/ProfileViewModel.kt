@@ -16,7 +16,6 @@ import com.android.doctorapp.repository.models.ProfileResponseModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
-import com.android.doctorapp.util.extension.calculateAge
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import kotlinx.coroutines.flow.collectLatest
@@ -44,7 +43,6 @@ class ProfileViewModel @Inject constructor(
 
     val phoneClick: MutableLiveData<String> = MutableLiveData()
     val emailClick: MutableLiveData<String> = MutableLiveData()
-    val age: MutableLiveData<String> = MutableLiveData()
 
 
     init {
@@ -84,7 +82,6 @@ class ProfileViewModel @Inject constructor(
                         profileRepository.getProfileRecordById(recordId, fireStore)) {
                         is ApiSuccessResponse -> {
                             userProfileDataResponse.value = response.body!!
-                            age.value = calculateAge(userProfileDataResponse.value!!.dob.toString())
                             setShowProgress(false)
                         }
 

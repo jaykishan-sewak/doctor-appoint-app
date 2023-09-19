@@ -74,7 +74,6 @@ class AppointmentRepository @Inject constructor() {
     suspend fun getAppointmentsList(firestore: FirebaseFirestore): ApiResponse<List<AppointmentModel>> {
         return try {
             val response = firestore.collection(ConstantKey.DBKeys.TABLE_APPOINTMENT)
-                .whereEqualTo(FIELD_APPROVED_KEY, ConstantKey.FIELD_APPROVED)
                 .get().await()
 
 
