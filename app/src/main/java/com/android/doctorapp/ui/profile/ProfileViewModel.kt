@@ -134,6 +134,6 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun onClickEmailIcon(email: String) {
-        emailClick.postValue("")
+        emailClick.postValue(email)
     }
 }

@@ -29,6 +29,7 @@ class RequestDoctorViewModel @Inject constructor(
     val requestAppointmentList = MutableLiveData<List<AppointmentModel>>()
     var requestSelectedDate: MutableLiveData<Date> = SingleLiveEvent()
     val isRequestCalender: MutableLiveData<Boolean> = MutableLiveData(false)
+    val dataFound : MutableLiveData<Boolean> = MutableLiveData(false)
 
     fun getRequestAppointmentList() {
         viewModelScope.launch {

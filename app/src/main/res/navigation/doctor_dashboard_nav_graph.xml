@@ -32,6 +32,10 @@
         android:name="com.android.doctorapp.ui.profile.ProfileFragment"
         tools:layout="@layout/fragment_profile">
 
+        <action
+            android:id="@+id/action_user_profile_to_updateUserProfile"
+            app:destination="@+id/UpdateDoctorProfileFragment"/>
+
     </fragment>
 
     <fragment
@@ -50,6 +54,13 @@
             android:id="@+id/action_selected_date_to_appointment_details"
             app:destination="@+id/AppointmentDetails"
             />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/UpdateDoctorProfileFragment"
+        android:name="com.android.doctorapp.ui.doctor.UpdateDoctorProfileFragment"
+        tools:layout="@layout/fragment_update_doctor_profile">
 
     </fragment>
 

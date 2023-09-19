@@ -78,7 +78,10 @@ class RequestDoctorFragment :
             viewModel.isRequestCalender.value = false
         }
         viewModel.requestAppointmentList.observe(viewLifecycleOwner) {
-            adapter.filterList(it)
+            if (it != null && it.isNotEmpty()) {
+                adapter.filterList(it)
+                viewModel.dataFound.postValue(true)
+            }
         }
 
         viewModel.isRequestCalender.observe(viewLifecycleOwner) {

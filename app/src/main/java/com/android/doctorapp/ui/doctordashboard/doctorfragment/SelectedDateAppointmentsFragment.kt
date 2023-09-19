@@ -76,7 +76,10 @@ class SelectedDateAppointmentsFragment :
             viewModel.isCalender.value = false
         }
         viewModel.appointmentList.observe(viewLifecycleOwner) {
-            adapter.filterList(it)
+            if (it != null && it.isNotEmpty()) {
+                adapter.filterList(it)
+                viewModel.dataFound.postValue(true)
+            }
         }
 
         viewModel.isCalender.observe(viewLifecycleOwner) {
