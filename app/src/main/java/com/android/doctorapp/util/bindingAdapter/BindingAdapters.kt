@@ -25,12 +25,12 @@ import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.repository.models.TimeSlotModel
 import com.android.doctorapp.util.ImageUtils
 import com.android.doctorapp.util.constants.ConstantKey
-import com.android.doctorapp.util.constants.ConstantKey.MALE_GENDER
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.HOUR_MIN_AM_PM_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.MALE_GENDER
 import com.android.doctorapp.util.extension.convertDate
-import com.android.doctorapp.util.extension.convertTime
 import com.android.doctorapp.util.extension.convertFullDateToDate
+import com.android.doctorapp.util.extension.convertTime
 import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.hideKeyboard
 import kotlinx.coroutines.CoroutineScope
@@ -205,7 +205,19 @@ fun convertDateFormat(textView: TextView, originalDateStr: String) {
 
 @BindingAdapter("app:appointmentTime")
 fun convertTimeFormat(textView: TextView, originalTimeStr: String) {
-    textView.text = convertTime(originalTimeStr)
+    when (originalTimeStr) {
+        "Start Time" -> {
+            textView.text = "Start Time"
+        }
+
+        "End Time" -> {
+            textView.text = "End Time"
+        }
+
+        else -> {
+            textView.text = convertTime(originalTimeStr)
+        }
+    }
 }
 
 @BindingAdapter("app:doctorSpecialization")

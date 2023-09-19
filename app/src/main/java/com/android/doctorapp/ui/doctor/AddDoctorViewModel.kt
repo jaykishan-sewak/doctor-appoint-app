@@ -1,6 +1,7 @@
 package com.android.doctorapp.ui.doctor
 
 import android.content.Context
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.RadioGroup
@@ -15,6 +16,7 @@ import com.android.doctorapp.repository.AuthRepository
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.local.USER_ID
 import com.android.doctorapp.repository.local.USER_IS_EMAIL_VERIFIED
+import com.android.doctorapp.repository.models.AddShiftTimeModel
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
@@ -34,7 +36,6 @@ import com.android.doctorapp.util.extension.isEmailAddressValid
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import com.google.android.material.chip.Chip
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -122,6 +123,8 @@ class AddDoctorViewModel @Inject constructor(
     val holidayList = MutableLiveData<ArrayList<HolidayModel>>()
     val availableTimeList = MutableLiveData<ArrayList<TimeSlotModel>>()
 
+    //    val addShitTimeSlotSize = MutableLiveData<Int>()
+    val addShitTimeSlotList = MutableLiveData<ArrayList<AddShiftTimeModel>>()
 
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
@@ -200,18 +203,40 @@ class AddDoctorViewModel @Inject constructor(
     }
 
     fun validateAllUpdateField() {
+//        addShitTimeSlotList.value?.filter { abc ->
+////            listOf(abc.startTime, abc.endTime, abc.isTimeSlotBook, abc.isTimeClick).any {it == null
+////            }
+//            abc.startTime != null && abc.endTime != null
+//
+//        }
+
+        Log.d(TAG, "validateAllUpdateField: ${addShitTimeSlotList.value?.filter {abc -> 
+            abc.startTime != null && abc.endTime != null
+        }?.size}")
+
         if (isDoctor.value!!) {
             isUpdateDataValid.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
                     && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
                     && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
                     && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
                     && !dob.value.isNullOrEmpty() && dobError.value.isNullOrEmpty()
-                    && availableTimeList.value?.isEmpty() == false
+                    && addShitTimeSlotList.value?.isEmpty() == false
                     && isPhoneVerify.value!!
                     && isEmailVerified.value!!
                     && binding?.chipGroup?.children?.toList()?.size!! > 0
                     && binding?.chipGroupSpec?.children?.toList()?.size!! > 0
                     )
+        /*isUpdateDataValid.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
+                    && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
+                    && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
+                    && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
+                    && !dob.value.isNullOrEmpty() && dobError.value.isNullOrEmpty()
+                    && addShitTimeSlotList.value?.isEmpty() == false
+                    && isPhoneVerify.value!!
+                    && isEmailVerified.value!!
+                    && binding?.chipGroup?.children?.toList()?.size!! > 0
+                    && binding?.chipGroupSpec?.children?.toList()?.size!! > 0
+                    )*/
         } else {
             isUpdateDataValid.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
                     && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
@@ -387,13 +412,21 @@ class AddDoctorViewModel @Inject constructor(
                             ?.map { (it as Chip).text.toString() } as ArrayList<String>?,
                         isEmailVerified = true,
                         isPhoneNumberVerified = true,
-                        availableTime = availableTimeList.value?.toList()
+                        availableTime = addShitTimeSlotList.value?.toList()
                             ?.map { newData ->
-                                TimeSlotRequestModel(
-                                    newData.timeSlot,
-                                    newData.isTimeSlotBook
+                                AddShiftTimeModel(
+                                    startTime = newData.startTime,
+                                    endTime = newData.endTime,
+                                    isTimeSlotBook = newData.isTimeSlotBook
                                 )
-                            } as ArrayList<TimeSlotRequestModel>,
+                            } as ArrayList<AddShiftTimeModel>,
+//                        availableTime = availableTimeList.value?.toList()
+//                            ?.map { newData ->
+//                                TimeSlotRequestModel(
+//                                    newData.timeSlot,
+//                                    newData.isTimeSlotBook
+//                                )
+//                            } as ArrayList<TimeSlotRequestModel>,
                         isAdmin = false,
                         isNotificationEnable = notificationToggleData.value == true,
                         dob = SimpleDateFormat(DATE_MM_FORMAT).parse(dob.value.toString()),
@@ -824,5 +857,11 @@ class AddDoctorViewModel @Inject constructor(
 
     }
 
+
+    fun test() {
+        addShitTimeSlotList.value?.forEachIndexed { index, addShiftTimeModel ->
+            Log.d(TAG, "test: ${addShiftTimeModel.startTime}    -->     ${addShiftTimeModel.endTime}")
+        }
+    }
 
 }

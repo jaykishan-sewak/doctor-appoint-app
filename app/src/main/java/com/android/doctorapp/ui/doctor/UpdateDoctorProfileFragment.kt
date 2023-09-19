@@ -16,17 +16,18 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.FragmentUpdateDoctorProfileBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.models.AddShiftTimeModel
 import com.android.doctorapp.repository.models.HolidayModel
 import com.android.doctorapp.repository.models.TimeSlotModel
 import com.android.doctorapp.repository.models.WeekOffModel
 import com.android.doctorapp.ui.doctor.adapter.AddDoctorHolidayAdapter
+import com.android.doctorapp.ui.doctor.adapter.AddDoctorTimeAdapter
 import com.android.doctorapp.ui.doctor.adapter.AddDoctorTimingAdapter
 import com.android.doctorapp.ui.doctor.adapter.CustomAutoCompleteAdapter
 import com.android.doctorapp.ui.doctor.adapter.WeekOffDayAdapter
@@ -86,8 +87,15 @@ class UpdateDoctorProfileFragment :
     private val tempStrWeekOffList = ArrayList<String>()
     private val calendar = Calendar.getInstance()
     private var addTimeList = ArrayList<TimeSlotModel>()
-    private lateinit var addDoctorTimeAdapter: AddDoctorTimingAdapter
+    private lateinit var addDoctorTimeingAdapter: AddDoctorTimingAdapter
     private lateinit var addDoctorHolidayAdapter: AddDoctorHolidayAdapter
+    private var addShiftTimeList = ArrayList<Int>()
+    private var shiftTimeSize = 0
+    private lateinit var addDoctorTimeAdapter: AddDoctorTimeAdapter
+    private var tempAddShitList = ArrayList<AddShiftTimeModel>()
+
+    private lateinit var startTimeCalendar: Calendar
+    private lateinit var endTimeCalendar: Calendar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -161,6 +169,11 @@ class UpdateDoctorProfileFragment :
                 )
             }
         }
+
+        startTimeCalendar = Calendar.getInstance()
+        endTimeCalendar = Calendar.getInstance()
+
+
         bindingView = binding {
             viewModel = this@UpdateDoctorProfileFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
@@ -169,7 +182,8 @@ class UpdateDoctorProfileFragment :
         binding.rvWeekOff.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.rvAddTiming.layoutManager =
-            GridLayoutManager(requireContext(), 3)
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+//            GridLayoutManager(requireContext(), 3)
         binding.rvHoliday.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
@@ -223,7 +237,13 @@ class UpdateDoctorProfileFragment :
                     updateHolidayRecyclerview(holidayList)
                 }
             } else if (layoutBinding.btnAddTiming.id == it?.id) {
-                showTimePickerDialog()
+                tempAddShitList.add(
+                    AddShiftTimeModel(
+                        isTimeSlotBook = false,
+                        isTimeClick = false
+                    )
+                )
+                viewModel.addShitTimeSlotList.value = tempAddShitList
             } else {
                 requireContext().selectDate(
                     maxDate = null,
@@ -371,6 +391,11 @@ class UpdateDoctorProfileFragment :
             updateWeekOffRecyclerview(it)
             layoutBinding.rvWeekOff.adapter = weekOffDayAdapter
         }
+
+        viewModel.addShitTimeSlotList.observe(viewLifecycleOwner) {
+            updateAddShiftTimeAdapter(it)
+        }
+
     }
 
     private fun addSpecializationItem(uppercase: String) {
@@ -460,10 +485,11 @@ class UpdateDoctorProfileFragment :
             })
     }
 
-    private fun showTimePickerDialog() {
+    private fun showTimePickerDialog(isStartTime: Boolean, position: Int) {
         val currentTime = Calendar.getInstance()
         val hour1 = currentTime.get(Calendar.HOUR_OF_DAY)
         val minute1 = currentTime.get(Calendar.MINUTE)
+        val calendar = if (isStartTime) startTimeCalendar else endTimeCalendar
 
         // Create a TimePickerDialog with the current time
         mTimePicker = TimePickerDialog(
@@ -471,14 +497,19 @@ class UpdateDoctorProfileFragment :
                 calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
                 calendar.set(Calendar.MINUTE, selectedMinute)
                 val selectedTime = calendar.time
-                addTimeList.add(
-                    TimeSlotModel(
-                        timeSlot = selectedTime,
-                        isTimeSlotBook = false,
-                        isTimeClick = false
-                    )
-                )
-                updateAddTimeRecyclerview(addTimeList)
+                if (isStartTime) {
+                    tempAddShitList[position].startTime = selectedTime
+                    viewModel.validateAllUpdateField()
+                } else {
+                    if (calendar.after(startTimeCalendar)) {
+                        tempAddShitList[position].endTime = selectedTime
+                        viewModel.validateAllUpdateField()
+                    } else {
+                        endTimeCalendar = startTimeCalendar.clone() as Calendar
+                        context?.toast(getString(R.string.end_time_grater))
+                    }
+                }
+                addDoctorTimeAdapter.notifyDataSetChanged()
             },
             hour1,
             minute1,
@@ -489,25 +520,66 @@ class UpdateDoctorProfileFragment :
         mTimePicker.show()
     }
 
-
     private fun updateAddTimeRecyclerview(newAddTimeList: ArrayList<TimeSlotModel>) {
-        addDoctorTimeAdapter = AddDoctorTimingAdapter(newAddTimeList)
+        addDoctorTimeingAdapter = AddDoctorTimingAdapter(newAddTimeList)
         viewModel.availableTimeList.value = newAddTimeList
-        binding.rvAddTiming.adapter = addDoctorTimeAdapter
+        binding.rvAddTiming.adapter = addDoctorTimeingAdapter
         viewModel.validateAllUpdateField()
     }
 
     private fun updateHolidayRecyclerview(newHolidayList: ArrayList<HolidayModel>) {
         addDoctorHolidayAdapter = AddDoctorHolidayAdapter(newHolidayList,
-            object: AddDoctorHolidayAdapter.OnItemClickListener {
+            object : AddDoctorHolidayAdapter.OnItemClickListener {
                 override fun onItemDelete(item: HolidayModel, position: Int) {
-                    Log.d("TAG", "onItemDelete: ")
                     newHolidayList.remove(item)
+                    addDoctorHolidayAdapter.notifyDataSetChanged()
+
                 }
 
             })
         viewModel.holidayList.value = newHolidayList
         binding.rvHoliday.adapter = addDoctorHolidayAdapter
+    }
+
+    private fun updateAddShiftTimeAdapter(addShitTimeList: ArrayList<AddShiftTimeModel>) {
+        addDoctorTimeAdapter = AddDoctorTimeAdapter(addShitTimeList,
+            object : AddDoctorTimeAdapter.OnItemClickListener {
+                override fun startTimeClick(addShiftTimeModel: AddShiftTimeModel, position: Int) {
+                    showTimePickerDialog(true, position)
+                }
+
+                override fun endTimeClick(addShiftTimeModel: AddShiftTimeModel, position: Int) {
+                    showTimePickerDialog(false, position)
+                }
+
+                override fun removeShiftClick(addShiftTimeModel: AddShiftTimeModel, position: Int) {
+                    tempAddShitList.removeAt(position)
+                    addDoctorTimeAdapter.notifyDataSetChanged()
+                }
+
+
+            }
+        )
+        binding.rvAddTiming.adapter = addDoctorTimeAdapter
+
+        /*addDoctorTimeAdapter = AddDoctorTimeAdapter(a,
+            object : AddDoctorTimeAdapter.OnItemClickListener {
+                override fun startTimeClick() {
+                }
+
+                override fun endTimeClick() {
+                }
+
+                override fun removeShiftClick(position: Int) {
+                    shiftTimeSize -= 1
+                    viewModel.addShitTimeSlotSize.value = shiftTimeSize
+                    addDoctorTimeAdapter.notifyItemRemoved(position)
+
+                }
+
+            }
+        )
+        binding.rvAddTiming.adapter = addDoctorTimeAdapter*/
     }
 
 }
