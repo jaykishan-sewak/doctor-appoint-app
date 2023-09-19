@@ -90,4 +90,5 @@ abstract class AppViewModelModule {
     @ViewModelMapKey(SelectedDateAppointmentsViewModel::class)
     abstract fun bindSelectedDateAppointmentsViewModel(viewModel: SelectedDateAppointmentsViewModel): ViewModel
 
+
 }

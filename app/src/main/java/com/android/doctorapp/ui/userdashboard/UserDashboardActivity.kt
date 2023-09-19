@@ -16,8 +16,15 @@ class UserDashboardActivity :
         binding.lifecycleOwner = this
         navController = findNavController(R.id.userNavHostFragment)
         binding.userNavView.setupWithNavController(navController)
-        binding.userNavView.setOnItemReselectedListener {
-
+        binding.userNavView.setOnItemSelectedListener { item ->
+            val selectedTabId = item.itemId
+            val currentTabId = navController.currentDestination?.id ?: 0
+            if (selectedTabId == currentTabId) {
+                navController.popBackStack(selectedTabId, inclusive = false)
+            } else {
+                navController.navigate(selectedTabId)
+            }
+            true
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.android.doctorapp.ui.doctor
 
 import android.content.Context
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.RadioGroup
