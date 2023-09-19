@@ -126,7 +126,7 @@ class AddDoctorViewModel @Inject constructor(
     private lateinit var firestore: FirebaseFirestore
 
     private val _dataResponse = SingleLiveEvent<UserDataRequestModel>()
-    val dataResponse = _dataResponse.asLiveData()
+    val userResponse = _dataResponse.asLiveData()
 
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {

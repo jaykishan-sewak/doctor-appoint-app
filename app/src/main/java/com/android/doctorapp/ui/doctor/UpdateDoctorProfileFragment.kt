@@ -181,7 +181,7 @@ class UpdateDoctorProfileFragment :
     }
 
     private fun registerObserver(layoutBinding: FragmentUpdateDoctorProfileBinding) {
-        viewModel.dataResponse.observe(viewLifecycleOwner) {
+        viewModel.userResponse.observe(viewLifecycleOwner) {
             viewModel.name.value = it.name
             viewModel.email.value = it.email
             viewModel.contactNumber.value = it.contactNumber
