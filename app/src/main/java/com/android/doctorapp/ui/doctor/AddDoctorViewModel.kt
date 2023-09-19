@@ -1,6 +1,7 @@
 package com.android.doctorapp.ui.doctor
 
 import android.content.Context
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.RadioGroup
@@ -136,8 +137,6 @@ class AddDoctorViewModel @Inject constructor(
     init {
         firebaseUser = firebaseAuth.currentUser!!
         getWeekDayList()
-        getModelUserData()
-
     }
 
     fun getModelUserData(): MutableLiveData<List<UserDataRequestModel>> {
@@ -181,6 +180,7 @@ class AddDoctorViewModel @Inject constructor(
                             specializationLiveList.value = response.body.specialities?.toList()
                             data.value = listOf(userObj)
                             _dataResponse.value = response.body!!
+                            Log.d(TAG, "getModelUserData: ${response.body}")
                             setShowProgress(false)
                         }
 
@@ -407,7 +407,7 @@ class AddDoctorViewModel @Inject constructor(
                         dob = SimpleDateFormat(DATE_MM_FORMAT).parse(dob.value.toString()),
                         isUserVerified = true,
                         holidayList = holidayList.value?.toList()
-                            ?.map { holidayDate -> holidayDate.holidayDate } as ArrayList<Date>,
+                            ?.map { holidayDate -> holidayDate.holidayDate } as ArrayList<Date>?,
                         weekOffList = strWeekOffList.value
 
                     )

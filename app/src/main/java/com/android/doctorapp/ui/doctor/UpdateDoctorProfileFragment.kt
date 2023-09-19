@@ -1,11 +1,13 @@
 package com.android.doctorapp.ui.doctor
 
 import android.app.TimePickerDialog
+import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,6 +40,7 @@ import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.convertDateToFull
 import com.android.doctorapp.util.extension.convertDateToMonth
+import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.selectDate
 import com.android.doctorapp.util.extension.startActivityFinish
@@ -69,6 +72,7 @@ class UpdateDoctorProfileFragment :
     lateinit var mTimePicker: TimePickerDialog
     val handler = Handler(Looper.getMainLooper())
     var isFromAdmin: Boolean = false
+    var isNotFromAdmin: Boolean = false
     private val runnable = object : Runnable {
         override fun run() {
             viewModel.viewModelScope.launch {
@@ -96,10 +100,10 @@ class UpdateDoctorProfileFragment :
     override fun builder(): FragmentToolbar {
         return FragmentToolbar.Builder()
             .withId(R.id.toolbar)
-            .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.purple_500))
+            .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             .withTitle(if (isFromAdmin) R.string.update_doctor else R.string.title_profile)
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
-            .withNavigationIcon(if (isFromAdmin) requireActivity().getDrawable(R.drawable.ic_back_white) else null)
+            .withNavigationIcon(if (isFromAdmin || !isNotFromAdmin) requireActivity().getDrawable(R.drawable.ic_back_white) else null)
             .withNavigationListener {
                 findNavController().popBackStack()
             }
@@ -116,6 +120,7 @@ class UpdateDoctorProfileFragment :
         val arguments: Bundle? = arguments
         if (arguments != null)
             isFromAdmin = arguments.getBoolean(ConstantKey.BundleKeys.ADMIN_FRAGMENT)
+        isNotFromAdmin = isFromAdmin
 
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             override fun onCodeAutoRetrievalTimeOut(str: String) {
@@ -181,10 +186,20 @@ class UpdateDoctorProfileFragment :
     }
 
     private fun registerObserver(layoutBinding: FragmentUpdateDoctorProfileBinding) {
+        viewModel.getModelUserData().observe(viewLifecycleOwner) {
+            viewModel.name.value = it[0].name
+            viewModel.email.value = it[0].email
+            viewModel.contactNumber.value = it[0].contactNumber
+            Log.d(TAG, "registerObserver: ${it[0]}")
+        }
+
         viewModel.userResponse.observe(viewLifecycleOwner) {
             viewModel.name.value = it.name
             viewModel.email.value = it.email
             viewModel.contactNumber.value = it.contactNumber
+            viewModel.address.value = it.address
+            viewModel.selectGenderValue.value = it.gender
+            viewModel.dob.value = dateFormatter(it.dob, ConstantKey.DATE_MM_FORMAT)
         }
         viewModel.clickResponse.observe(viewLifecycleOwner) {
             sendVerificationCode("+91$it")

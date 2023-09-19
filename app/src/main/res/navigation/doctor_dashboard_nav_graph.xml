@@ -12,8 +12,7 @@
 
         <action
             android:id="@+id/request_to_appointment_details"
-            app:destination="@+id/AppointmentDetails"
-            />
+            app:destination="@+id/AppointmentDetails" />
     </fragment>
 
     <fragment
@@ -23,18 +22,17 @@
 
         <action
             android:id="@+id/action_doctor_appointment_to_selected_date"
-            app:destination="@+id/navigation_selected_date_appointments"
-            />
+            app:destination="@+id/navigation_selected_date_appointments" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.android.doctorapp.ui.profile.ProfileFragment"
-        tools:layout="@layout/fragment_profile">
+        android:name="com.android.doctorapp.ui.doctordashboard.doctorfragment.DoctorProfileFragment"
+        tools:layout="@layout/fragment_doctor_profile">
 
         <action
-            android:id="@+id/action_user_profile_to_updateUserProfile"
-            app:destination="@+id/UpdateDoctorProfileFragment"/>
+            android:id="@+id/action_doctor_profile_to_updateDoctorProfile"
+            app:destination="@+id/UpdateDoctorProfileFragment" />
 
     </fragment>
 
@@ -52,8 +50,7 @@
 
         <action
             android:id="@+id/action_selected_date_to_appointment_details"
-            app:destination="@+id/AppointmentDetails"
-            />
+            app:destination="@+id/AppointmentDetails" />
 
     </fragment>
 

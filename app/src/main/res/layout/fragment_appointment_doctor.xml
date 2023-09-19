@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.android.doctorapp.ui.doctordashboard.doctorfragment.AppointmentDoctorViewModel" />
@@ -27,12 +29,12 @@
             android:id="@+id/noDataFound"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/no_data_found"
+            android:text="@string/no_appointments_found"
             android:visibility="@{viewModel.dataFound ? View.GONE : View.VISIBLE}"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"

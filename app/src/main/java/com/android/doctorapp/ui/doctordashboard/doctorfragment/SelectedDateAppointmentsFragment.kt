@@ -79,6 +79,9 @@ class SelectedDateAppointmentsFragment :
             if (it != null && it.isNotEmpty()) {
                 adapter.filterList(it)
                 viewModel.dataFound.value = true
+            } else {
+                adapter.filterList(it)
+                viewModel.dataFound.value = false
             }
         }
 
