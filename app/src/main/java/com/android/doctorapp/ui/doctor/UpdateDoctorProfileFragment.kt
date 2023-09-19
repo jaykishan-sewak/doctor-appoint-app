@@ -72,6 +72,7 @@ class UpdateDoctorProfileFragment :
     lateinit var mTimePicker: TimePickerDialog
     val handler = Handler(Looper.getMainLooper())
     var isFromAdmin: Boolean = false
+    var isNotFromAdmin: Boolean = false
     private val runnable = object : Runnable {
         override fun run() {
             viewModel.viewModelScope.launch {
@@ -99,10 +100,10 @@ class UpdateDoctorProfileFragment :
     override fun builder(): FragmentToolbar {
         return FragmentToolbar.Builder()
             .withId(R.id.toolbar)
-            .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.purple_500))
+            .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             .withTitle(if (isFromAdmin) R.string.update_doctor else R.string.title_profile)
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
-            .withNavigationIcon(if (isFromAdmin) requireActivity().getDrawable(R.drawable.ic_back_white) else null)
+            .withNavigationIcon(if (isFromAdmin || !isNotFromAdmin) requireActivity().getDrawable(R.drawable.ic_back_white) else null)
             .withNavigationListener {
                 findNavController().popBackStack()
             }
@@ -119,6 +120,7 @@ class UpdateDoctorProfileFragment :
         val arguments: Bundle? = arguments
         if (arguments != null)
             isFromAdmin = arguments.getBoolean(ConstantKey.BundleKeys.ADMIN_FRAGMENT)
+        isNotFromAdmin = isFromAdmin
 
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             override fun onCodeAutoRetrievalTimeOut(str: String) {
@@ -467,7 +469,6 @@ class UpdateDoctorProfileFragment :
                     }
                     weekOffDayAdapter.notifyItemChanged(position)
                     viewModel.strWeekOffList.value = tempStrWeekOffList
-                    Log.d(TAG, "onItemClick: $tempStrWeekOffList")
                 }
 
             })
