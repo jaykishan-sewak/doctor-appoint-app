@@ -68,7 +68,8 @@
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvPatientName" />
+                app:layout_constraintTop_toBottomOf="@+id/tvPatientName"
+                android:focusable="true" />
 
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -107,6 +108,18 @@
                 app:layout_constraintBottom_toBottomOf="@+id/tvPatientContact"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tvPatientContact" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/statusLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_5"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="@id/viewAll"
+                app:layout_constraintStart_toStartOf="@id/viewAll"
+                app:layout_constraintTop_toTopOf="@id/ageLabel"
+                app:status="@{userData.status}" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

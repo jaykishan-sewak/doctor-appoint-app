@@ -108,7 +108,7 @@ class AddDoctorViewModel @Inject constructor(
 
     val degreeLiveList = MutableLiveData<List<String>>()
     val specializationLiveList = MutableLiveData<List<String>>()
-    private val selectGenderValue: MutableLiveData<String> =
+    val selectGenderValue: MutableLiveData<String> =
         MutableLiveData(MALE_GENDER)
     val userId: MutableLiveData<String?> = MutableLiveData(null)
     val tempEmail: MutableLiveData<String?> = MutableLiveData()
@@ -126,6 +126,9 @@ class AddDoctorViewModel @Inject constructor(
     //    val addShitTimeSlotSize = MutableLiveData<Int>()
     val addShitTimeSlotList = MutableLiveData<ArrayList<AddShiftTimeModel>>()
 
+    private val _dataResponse = SingleLiveEvent<UserDataRequestModel>()
+    val userResponse = _dataResponse.asLiveData()
+
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
         this.binding = binding
@@ -134,6 +137,8 @@ class AddDoctorViewModel @Inject constructor(
     init {
         firebaseUser = firebaseAuth.currentUser!!
         getWeekDayList()
+        getModelUserData()
+
     }
 
     fun getModelUserData(): MutableLiveData<List<UserDataRequestModel>> {
@@ -176,6 +181,7 @@ class AddDoctorViewModel @Inject constructor(
                             degreeLiveList.value = response.body.degree?.toList()
                             specializationLiveList.value = response.body.specialities?.toList()
                             data.value = listOf(userObj)
+                            _dataResponse.value = response.body!!
                             setShowProgress(false)
                         }
 

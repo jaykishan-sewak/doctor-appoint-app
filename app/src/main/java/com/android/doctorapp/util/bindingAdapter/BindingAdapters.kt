@@ -2,6 +2,7 @@ package com.android.doctorapp.util.bindingAdapter
 
 import android.content.ContentValues.TAG
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.Paint
 import android.text.Spannable
 import android.text.SpannableString
@@ -190,10 +191,12 @@ fun spannableText(view: TextView, mainText: String?, secondaryText: String?, sec
 }
 
 @BindingAdapter("app:genderImage")
-fun setGenderImage(imageView: AppCompatImageView, gender: String) {
-    val drawableRes =
-        if (gender.isNotEmpty() && gender == MALE_GENDER) R.drawable.ic_male_placeholder else R.drawable.ic_female_placeholder
-    imageView.setImageResource(drawableRes)
+fun setGenderImage(imageView: AppCompatImageView, gender: String?) {
+    if (gender != null) {
+        val drawableRes =
+            if (gender.isNotEmpty() && gender == MALE_GENDER) R.drawable.ic_male_placeholder else R.drawable.ic_female_placeholder
+        imageView.setImageResource(drawableRes)
+    }
 }
 
 @BindingAdapter("app:appointmentDate")
@@ -251,7 +254,7 @@ fun setString(textView: AppCompatTextView, specialities: List<String>?) {
     textView.text = if (specialities?.isNotEmpty() == true)
         android.text.TextUtils.join(",", specialities)
     else
-        ""
+        "-"
 }
 
 @BindingAdapter("app:dateMonthStyle")
@@ -266,7 +269,7 @@ fun setHeaderDate(textView: AppCompatTextView, date: Date?) {
         Log.d(TAG, "setHeaderDate: $date")
         textView.text = date.ifEmpty { "" }
     } else
-        textView.text = ""
+        textView.text = "-"
 }
 
 @BindingAdapter("app:headerTime")
@@ -296,5 +299,17 @@ fun setAge(textView: AppCompatTextView, dateOfBirth: Date?) {
         }
         textView.text = years.toString()
     } else
-        textView.text = ""
+        textView.text = "-"
+}
+
+@BindingAdapter("app:status")
+fun setStatus(textView: AppCompatTextView, text: String) {
+    textView.text = "${text[0].uppercase()}${text.substring(1).lowercase()}"
+    if (text.lowercase() == "rejected") {
+        textView.setTextColor(Color.parseColor("#e60000"))
+    } else if (text.lowercase() == "pending") {
+        textView.setTextColor(Color.parseColor("#f1c232"))
+    } else {
+        textView.setTextColor(Color.parseColor("#247A28"))
+    }
 }

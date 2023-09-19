@@ -25,7 +25,7 @@ object ConstantKey {
     const val MALE_GENDER = "MALE"
     const val FEMALE_GENDER = "FEMALE"
     const val FIELD_APPROVED = "APPROVED"
-    const val FIELD_PROGRESS = "PROGRESS"
+    const val FIELD_PENDING = "PENDING"
     const val FIELD_REJECTED = "REJECTED"
 
     object DBKeys {

@@ -3,7 +3,13 @@ package com.android.doctorapp.repository
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.models.ApiResponse
 import com.android.doctorapp.repository.models.ProfileResponseModel
+import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.repository.network.AppApi
+import com.android.doctorapp.util.constants.ConstantKey
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
+import kotlinx.coroutines.tasks.await
+import retrofit2.Response
 import javax.inject.Inject
 
 class ProfileRepository @Inject constructor(
@@ -15,6 +21,26 @@ class ProfileRepository @Inject constructor(
         return try {
             val response = appApi.getProfile()
             ApiResponse.create(response = response)
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+    suspend fun getProfileRecordById(
+        recordId: String,
+        fireStore: FirebaseFirestore
+    ): ApiResponse<UserDataResponseModel> {
+        return try {
+            val response = fireStore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
+                .whereEqualTo(ConstantKey.DBKeys.FIELD_USER_ID, recordId)
+                .get()
+                .await()
+
+            var dataModel = UserDataResponseModel()
+            for (snapshot in response) {
+                dataModel = snapshot.toObject()
+            }
+            ApiResponse.create(response = Response.success(dataModel))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
         }

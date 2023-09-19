@@ -74,7 +74,6 @@ class AppointmentRepository @Inject constructor() {
     suspend fun getAppointmentsList(firestore: FirebaseFirestore): ApiResponse<List<AppointmentModel>> {
         return try {
             val response = firestore.collection(ConstantKey.DBKeys.TABLE_APPOINTMENT)
-                .whereEqualTo(FIELD_APPROVED_KEY, ConstantKey.FIELD_APPROVED)
                 .get().await()
 
 
@@ -130,7 +129,7 @@ class AppointmentRepository @Inject constructor() {
             nextDate.time = date
             nextDate.add(Calendar.DATE, 1)
             val response = firestore.collection(TABLE_APPOINTMENT)
-                .whereEqualTo(FIELD_APPROVED_KEY, ConstantKey.FIELD_PROGRESS)
+                .whereEqualTo(FIELD_APPROVED_KEY, ConstantKey.FIELD_PENDING)
                 .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, date)
                 .whereLessThanOrEqualTo(FIELD_SELECTED_DATE, nextDate.time)
                 .get().await()
