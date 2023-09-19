@@ -38,6 +38,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 class AddDoctorViewModel @Inject constructor(
@@ -411,7 +412,7 @@ class AddDoctorViewModel @Inject constructor(
                             } as ArrayList<AddShiftTimeModel>,
                         isAdmin = false,
                         isNotificationEnable = notificationToggleData.value == true,
-                        dob = SimpleDateFormat(DATE_MM_FORMAT).parse(dob.value.toString()),
+                        dob = SimpleDateFormat(DATE_MM_FORMAT, Locale.getDefault()).parse(dob.value.toString()),
                         isUserVerified = true,
                         holidayList = if (holidayList.value?.isNotEmpty() == true) holidayList.value?.toList()
                             ?.map { holidayDate -> holidayDate.holidayDate } as ArrayList<Date> else null,
@@ -431,7 +432,7 @@ class AddDoctorViewModel @Inject constructor(
                         isEmailVerified = true,
                         isPhoneNumberVerified = true,
                         isAdmin = false,
-                        dob = SimpleDateFormat(DATE_MM_FORMAT).parse(dob.value.toString()),
+                        dob = SimpleDateFormat(DATE_MM_FORMAT,Locale.getDefault()).parse(dob.value.toString()),
                         isUserVerified = true
                     )
 
