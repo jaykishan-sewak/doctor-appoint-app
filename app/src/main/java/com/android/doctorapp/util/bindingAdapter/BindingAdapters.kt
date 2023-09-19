@@ -241,7 +241,7 @@ fun setString(textView: AppCompatTextView, specialities: List<String>?) {
     textView.text = if (specialities?.isNotEmpty() == true)
         android.text.TextUtils.join(",", specialities)
     else
-        ""
+        "-"
 }
 
 @BindingAdapter("app:dateMonthStyle")
@@ -286,5 +286,10 @@ fun setAge(textView: AppCompatTextView, dateOfBirth: Date?) {
         }
         textView.text = years.toString()
     } else
-        textView.text = ""
+        textView.text = "-"
+}
+
+@BindingAdapter("app:status")
+fun setStatus(textView: AppCompatTextView, text: String) {
+    textView.text = "${text[0].uppercase()}${text.substring(1).lowercase()}"
 }

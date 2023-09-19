@@ -1,5 +1,7 @@
 package com.android.doctorapp.ui.admin
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -122,6 +124,13 @@ class DoctorDetailsFragment :
                     }
                 }
 
+            }
+        }
+        viewModel.callClick.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) {
+                val intent = Intent(Intent.ACTION_DIAL)
+                intent.data = Uri.parse("tel:$it")
+                requireActivity().startActivity(intent)
             }
         }
     }

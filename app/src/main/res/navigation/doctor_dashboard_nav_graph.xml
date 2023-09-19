@@ -13,8 +13,7 @@
         <action
             android:id="@+id/request_to_appointment_details"
             app:destination="@+id/AppointmentDetails"
-            app:popUpTo="@id/navigation_request"
-            app:popUpToInclusive="false" />
+            />
     </fragment>
 
     <fragment
@@ -25,8 +24,7 @@
         <action
             android:id="@+id/action_doctor_appointment_to_selected_date"
             app:destination="@+id/navigation_selected_date_appointments"
-            app:popUpTo="@id/navigation_appointment"
-            app:popUpToInclusive="false" />
+            />
     </fragment>
 
     <fragment
@@ -51,8 +49,7 @@
         <action
             android:id="@+id/action_selected_date_to_appointment_details"
             app:destination="@+id/AppointmentDetails"
-            app:popUpTo="@id/navigation_selected_date_appointments"
-            app:popUpToInclusive="true" />
+            />
 
     </fragment>
 
