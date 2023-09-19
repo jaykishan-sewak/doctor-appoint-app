@@ -1,11 +1,13 @@
 package com.android.doctorapp.ui.doctor
 
 import android.app.TimePickerDialog
+import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,6 +40,7 @@ import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.convertDateToFull
 import com.android.doctorapp.util.extension.convertDateToMonth
+import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.selectDate
 import com.android.doctorapp.util.extension.startActivityFinish
@@ -181,10 +184,20 @@ class UpdateDoctorProfileFragment :
     }
 
     private fun registerObserver(layoutBinding: FragmentUpdateDoctorProfileBinding) {
+        viewModel.getModelUserData().observe(viewLifecycleOwner) {
+            viewModel.name.value = it[0].name
+            viewModel.email.value = it[0].email
+            viewModel.contactNumber.value = it[0].contactNumber
+            Log.d(TAG, "registerObserver: ${it[0]}")
+        }
+
         viewModel.userResponse.observe(viewLifecycleOwner) {
             viewModel.name.value = it.name
             viewModel.email.value = it.email
             viewModel.contactNumber.value = it.contactNumber
+            viewModel.address.value = it.address
+            viewModel.selectGenderValue.value = it.gender
+            viewModel.dob.value = dateFormatter(it.dob, ConstantKey.DATE_MM_FORMAT)
         }
         viewModel.clickResponse.observe(viewLifecycleOwner) {
             sendVerificationCode("+91$it")
@@ -454,6 +467,7 @@ class UpdateDoctorProfileFragment :
                     }
                     weekOffDayAdapter.notifyItemChanged(position)
                     viewModel.strWeekOffList.value = tempStrWeekOffList
+                    Log.d(TAG, "onItemClick: $tempStrWeekOffList")
                 }
 
             })

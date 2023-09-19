@@ -1,6 +1,8 @@
 package com.android.doctorapp.ui.profile
 
+import android.content.ContentValues.TAG
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -15,7 +17,9 @@ import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.ProfileResponseModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.SingleLiveEvent
+import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.extension.asLiveData
+import com.android.doctorapp.util.extension.dateListFormatter
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import kotlinx.coroutines.flow.collectLatest
@@ -40,9 +44,11 @@ class ProfileViewModel @Inject constructor(
 
     var userProfileDataResponse: MutableLiveData<UserDataResponseModel> = MutableLiveData()
     val isEdit: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isDoctorEdit: MutableLiveData<Boolean> = MutableLiveData(false)
 
     val phoneClick: MutableLiveData<String> = MutableLiveData()
     val emailClick: MutableLiveData<String> = MutableLiveData()
+    val dateList: MutableLiveData<List<String>> = MutableLiveData()
 
 
     init {
@@ -82,6 +88,11 @@ class ProfileViewModel @Inject constructor(
                         profileRepository.getProfileRecordById(recordId, fireStore)) {
                         is ApiSuccessResponse -> {
                             userProfileDataResponse.value = response.body!!
+                            dateList.value = dateListFormatter(
+                                response.body.holidayList,
+                                ConstantKey.DATE_MM_FORMAT
+                            )
+                            Log.d(TAG, "DateList: ${response.body}")
                             setShowProgress(false)
                         }
 

@@ -1,6 +1,8 @@
-package com.android.doctorapp.ui.profile
+package com.android.doctorapp.ui.doctordashboard.doctorfragment
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -11,23 +13,40 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.android.doctorapp.R
-import com.android.doctorapp.databinding.FragmentProfileBinding
+import com.android.doctorapp.databinding.FragmentDoctorProfileBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.ui.profile.ProfileViewModel
 import com.android.doctorapp.util.extension.fetchImageOrShowError
 import com.android.doctorapp.util.extension.openEmailSender
 import com.android.doctorapp.util.extension.openPhoneDialer
 import javax.inject.Inject
 
-class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_profile) {
+
+class DoctorProfileFragment :
+    BaseFragment<FragmentDoctorProfileBinding>(R.layout.fragment_doctor_profile) {
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel by viewModels<ProfileViewModel> { viewModelFactory }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (requireActivity().application as AppComponentProvider).getAppComponent().inject(this)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        // Inflate the layout for this fragment
+        super.onCreateView(inflater, container, savedInstanceState)
+        return binding {
+            viewModel = this@DoctorProfileFragment.viewModel
+            lifecycleOwner = viewLifecycleOwner
+        }.root
     }
 
     override fun builder(): FragmentToolbar {
@@ -45,7 +64,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
         return MenuItem.OnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_edit -> {
-                    viewModel.isEdit.value = true
+                    viewModel.isDoctorEdit.value = true
                 }
             }
             false
@@ -56,18 +75,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
         return listOf(R.id.action_edit)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        super.onCreateView(inflater, container, savedInstanceState)
-        return binding {
-            viewModel = this@ProfileFragment.viewModel
-            lifecycleOwner = viewLifecycleOwner
-        }.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpWithViewModel(viewModel)
@@ -75,22 +82,12 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
     }
 
     private fun registerObservers() {
-        viewModel.isEdit.value = false
-//        viewModel.apply {
-//            navigateToLogin.observe(viewLifecycleOwner, {
-//                if (it) startActivityFinish<AuthenticationActivity> { }
-//            })
-//
-//            onProfilePictureClicked.observe(viewLifecycleOwner, {
-//                showImagePicker(startForProfileImageResult)
-//            })
-//        }
-
         viewModel.getUserProfileData()
-        viewModel.isEdit.observe(viewLifecycleOwner) {
+        Log.d(TAG, "registerObservers: DoctorFragment")
+        viewModel.isDoctorEdit.observe(viewLifecycleOwner) {
             if (it) {
                 findNavController().navigate(
-                    R.id.action_user_profile_to_updateUserProfile
+                    R.id.action_doctor_profile_to_updateDoctorProfile
                 )
             }
         }
@@ -108,4 +105,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
                 viewModel.setImage(it)
             }
         }
+
+
 }

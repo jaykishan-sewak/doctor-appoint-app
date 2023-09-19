@@ -3,23 +3,23 @@ package com.android.doctorapp.di
 import com.android.doctorapp.di.core.AuthScopes
 import com.android.doctorapp.di.core.CoreComponent
 import com.android.doctorapp.ui.admin.AdminDashboardFragment
+import com.android.doctorapp.ui.admin.DoctorDetailsFragment
+import com.android.doctorapp.ui.appointment.AppointmentDetailFragment
 import com.android.doctorapp.ui.appointment.BookAppointmentFragment
 import com.android.doctorapp.ui.authentication.login.LoginFragment
 import com.android.doctorapp.ui.authentication.register.RegisterFragment
 import com.android.doctorapp.ui.doctor.AddDoctorFragment
-import com.android.doctorapp.ui.admin.DoctorDetailsFragment
-import com.android.doctorapp.ui.appointment.AppointmentDetailFragment
-import com.android.doctorapp.ui.profile.AddUserProfileFragment
 import com.android.doctorapp.ui.doctor.UpdateDoctorProfileFragment
+import com.android.doctorapp.ui.doctordashboard.doctorfragment.AppointmentDoctorFragment
+import com.android.doctorapp.ui.doctordashboard.doctorfragment.DoctorProfileFragment
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.RequestDoctorFragment
+import com.android.doctorapp.ui.doctordashboard.doctorfragment.SelectedDateAppointmentsFragment
 import com.android.doctorapp.ui.home.HomeFragment
 import com.android.doctorapp.ui.otp.OtpVerificationFragment
+import com.android.doctorapp.ui.profile.AddUserProfileFragment
 import com.android.doctorapp.ui.profile.ProfileFragment
 import com.android.doctorapp.ui.userdashboard.userfragment.UserAppointmentFragment
 import com.android.doctorapp.ui.userdashboard.userfragment.UserRequestFragment
-import com.android.doctorapp.ui.doctordashboard.doctorfragment.AppointmentDoctorFragment
-import com.android.doctorapp.ui.doctordashboard.doctorfragment.SelectedDateAppointmentsFragment
-
 import dagger.Component
 
 @AuthScopes
@@ -49,4 +49,5 @@ interface AppComponent {
     fun inject(fragment: AppointmentDetailFragment)
 
     fun inject(fragment: SelectedDateAppointmentsFragment)
+    fun inject(fragment: DoctorProfileFragment)
 }

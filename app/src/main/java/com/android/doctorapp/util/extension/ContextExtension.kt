@@ -179,13 +179,35 @@ fun convertFullDateToDate(inputDateString: String): String {
 }
 
 
-fun dateFormatter(originalDateStr: Date, format: String): String {
+fun dateFormatter(originalDateStr: Date?, format: String): String {
     return try {
-        val convertDate = SimpleDateFormat(format, Locale.getDefault())
-        return convertDate.format(originalDateStr)
+        if (originalDateStr != null) {
+            val convertDate = SimpleDateFormat(format, Locale.getDefault())
+            return convertDate.format(originalDateStr)
+        } else
+            return ""
+
     } catch (e: Exception) {
         e.printStackTrace()
         ""
+    }
+}
+
+fun dateListFormatter(originalDateStr: List<Date>?, format: String): List<String> {
+    return try {
+        var list = arrayListOf<String>()
+        if (originalDateStr != null) {
+            originalDateStr.forEach {
+                val convertDate = SimpleDateFormat(format, Locale.getDefault())
+                list.add(convertDate.format(it))
+            }
+            return list
+        } else
+            return list
+
+    } catch (e: Exception) {
+        e.printStackTrace()
+        emptyList()
     }
 }
 
