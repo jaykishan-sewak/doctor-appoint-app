@@ -161,5 +161,10 @@
     <string name="search">Search</string>
     <string name="my_booking">My booking</string>
     <string name="years_old">Years old</string>
+    <string name="approve">Approve</string>
+    <string name="email">Email :</string>
+    <string name="contact_no">Contact no :</string>
+    <string name="email_verified">Email Verified</string>
+    <string name="phone_verified">Phone verified</string>
 
 </resources>

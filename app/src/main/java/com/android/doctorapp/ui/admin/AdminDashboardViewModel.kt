@@ -38,6 +38,7 @@ class AdminDashboardViewModel @Inject constructor(
     val userId: MutableLiveData<String> = MutableLiveData("")
     val itemPosition: MutableLiveData<Int> = MutableLiveData()
     val deleteId: MutableLiveData<String> = MutableLiveData("")
+    val callClick = MutableLiveData("")
 
     init {
         getItems()
@@ -148,5 +149,9 @@ class AdminDashboardViewModel @Inject constructor(
 
     fun deleteDoctorData(id: String) {
         deleteId.value = id
+    }
+
+    fun clickOnCall(text: String) {
+        callClick.value = text
     }
 }
