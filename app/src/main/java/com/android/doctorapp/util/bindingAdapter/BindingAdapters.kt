@@ -208,7 +208,19 @@ fun convertDateFormat(textView: TextView, originalDateStr: String) {
 
 @BindingAdapter("app:appointmentTime")
 fun convertTimeFormat(textView: TextView, originalTimeStr: String) {
-    textView.text = convertTime(originalTimeStr)
+    when (originalTimeStr) {
+        "Start Time" -> {
+            textView.text = "Start Time"
+        }
+
+        "End Time" -> {
+            textView.text = "End Time"
+        }
+
+        else -> {
+            textView.text = convertTime(originalTimeStr)
+        }
+    }
 }
 
 @BindingAdapter("app:doctorSpecialization")

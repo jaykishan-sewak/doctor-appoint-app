@@ -1,10 +1,8 @@
 package com.android.doctorapp.ui.profile
 
-import android.content.ContentValues
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -205,18 +203,17 @@ class AddUserProfileFragment :
                 handler.removeCallbacks(runnable)
             }
         }
-        viewModel.getModelUserData().observe(viewLifecycleOwner) {
-            viewModel.email.value = it[0].email
-            Log.d(ContentValues.TAG, "registerObserver: ${it[0]}")
+        viewModel.getUserData().observe(viewLifecycleOwner) {
+            viewModel.email.value = it.email
         }
 
         viewModel.userResponse.observe(viewLifecycleOwner) {
-            viewModel.name.value = it.name
-            viewModel.email.value = it.email
-            viewModel.contactNumber.value = it.contactNumber
-            viewModel.address.value = it.address
-            viewModel.selectGenderValue.value = it.gender
-            viewModel.dob.value = dateFormatter(it.dob, ConstantKey.DATE_MM_FORMAT)
+            viewModel.name.value = it?.name
+            viewModel.email.value = it?.email
+            viewModel.contactNumber.value = it?.contactNumber
+            viewModel.address.value = it?.address
+            viewModel.selectGenderValue.value = it?.gender
+            viewModel.dob.value = dateFormatter(it?.dob, ConstantKey.DATE_MM_FORMAT)
         }
 
         viewModel.clickResponse.observe(viewLifecycleOwner) {

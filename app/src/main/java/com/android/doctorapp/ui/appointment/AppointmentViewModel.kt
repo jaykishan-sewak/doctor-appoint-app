@@ -356,7 +356,6 @@ class AppointmentViewModel @Inject constructor(
                     )) {
                     is ApiSuccessResponse -> {
                         appointmentResponse.postValue(response.body!!)
-                        Log.d(TAG, "getAppointmentDetails: ${response.body}")
                         getAppointmentUserDetails()
                         setShowProgress(false)
                     }
@@ -393,7 +392,6 @@ class AppointmentViewModel @Inject constructor(
                     )) {
                     is ApiSuccessResponse -> {
                         userDataResponse.value = response.body!!
-                        Log.d(TAG, "getAppointmentUserDetails: ${response.body}")
                         setShowProgress(false)
                     }
 

@@ -45,17 +45,14 @@ class RequestDoctorViewModel @Inject constructor(
                     }
 
                     is ApiErrorResponse -> {
-                        Log.d(ContentValues.TAG, "Error ")
                         setShowProgress(false)
                     }
 
                     is ApiNoNetworkResponse -> {
-                        Log.d(ContentValues.TAG, "Network ")
                         setShowProgress(false)
                     }
 
                     else -> {
-                        Log.d(ContentValues.TAG, "else ")
                         setShowProgress(false)
                     }
                 }

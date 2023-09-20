@@ -16,6 +16,7 @@ import com.android.doctorapp.repository.AuthRepository
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.local.USER_ID
 import com.android.doctorapp.repository.local.USER_IS_EMAIL_VERIFIED
+import com.android.doctorapp.repository.models.AddShiftTimeModel
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
@@ -23,8 +24,8 @@ import com.android.doctorapp.repository.models.DegreeResponseModel
 import com.android.doctorapp.repository.models.HolidayModel
 import com.android.doctorapp.repository.models.SpecializationResponseModel
 import com.android.doctorapp.repository.models.TimeSlotModel
-import com.android.doctorapp.repository.models.TimeSlotRequestModel
 import com.android.doctorapp.repository.models.UserDataRequestModel
+import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.repository.models.WeekOffModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
@@ -35,11 +36,11 @@ import com.android.doctorapp.util.extension.isEmailAddressValid
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import com.google.android.material.chip.Chip
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 class AddDoctorViewModel @Inject constructor(
@@ -79,7 +80,7 @@ class AddDoctorViewModel @Inject constructor(
     private val specializationItems = SingleLiveEvent<SpecializationResponseModel?>()
     val specializationList = specializationItems.asLiveData()
 
-    val data = MutableLiveData<List<UserDataRequestModel>>()
+    private val data = MutableLiveData<UserDataResponseModel>()
 
     val address: MutableLiveData<String> = MutableLiveData()
     val addressError: MutableLiveData<String?> = MutableLiveData()
@@ -89,7 +90,6 @@ class AddDoctorViewModel @Inject constructor(
 
     val isCalender: MutableLiveData<View> = SingleLiveEvent()
     val isAvailableDate: MutableLiveData<String?> = MutableLiveData()
-    private val isAvailableDateError: MutableLiveData<String?> = MutableLiveData()
 
     val isPhoneVerify: MutableLiveData<Boolean> = MutableLiveData(false)
     val isPhoneVerifyValue: MutableLiveData<String> =
@@ -121,12 +121,11 @@ class AddDoctorViewModel @Inject constructor(
 
 
     val holidayList = MutableLiveData<ArrayList<HolidayModel>>()
-    val tempHolidayList = ArrayList<Date>()
     val availableTimeList = MutableLiveData<ArrayList<TimeSlotModel>>()
-    private val availableTimeList1 = ArrayList<TimeSlotModel>()
-    private lateinit var firestore: FirebaseFirestore
 
-    private val _dataResponse = SingleLiveEvent<UserDataRequestModel>()
+    val addShitTimeSlotList = MutableLiveData<ArrayList<AddShiftTimeModel>>()
+
+    private val _dataResponse = SingleLiveEvent<UserDataRequestModel?>()
     val userResponse = _dataResponse.asLiveData()
 
 
@@ -137,26 +136,26 @@ class AddDoctorViewModel @Inject constructor(
     init {
         firebaseUser = firebaseAuth.currentUser!!
         getWeekDayList()
+
     }
 
-    fun getModelUserData(): MutableLiveData<List<UserDataRequestModel>> {
+    fun getUserData(): MutableLiveData<UserDataResponseModel> {
         viewModelScope.launch {
-            var recordId: String = ""
+            var recordId = ""
             session.getString(USER_ID).collectLatest {
                 recordId = it.orEmpty()
-                var userObj: UserDataRequestModel
+                var userObj: UserDataResponseModel
                 if (context.isNetworkAvailable()) {
-                    setShowProgress(true)
+                     setShowProgress(true)
                     when (val response = authRepository.getRecordById(recordId, fireStore)) {
                         is ApiSuccessResponse -> {
-                            userObj = UserDataRequestModel(
+                            userObj = UserDataResponseModel(
                                 name = response.body.name,
                                 email = response.body.email,
                                 contactNumber = response.body.contactNumber,
                                 isNotificationEnable = response.body.isNotificationEnable
                             )
                             isDoctor.value = response.body.isDoctor
-
                             isPhoneVerify.value = response.body.isPhoneNumberVerified
                             if (!response.body.isPhoneNumberVerified) {
                                 if (firebaseAuth.currentUser?.phoneNumber.isNullOrEmpty()) {
@@ -173,14 +172,12 @@ class AddDoctorViewModel @Inject constructor(
                                 isPhoneVerifyValue.value =
                                     resourceProvider.getString(R.string.verified)
                                 isEmailVerified.value = response.body.isEmailVerified
-
                             }
                             notificationToggleData.value = response.body.isNotificationEnable
                             degreeLiveList.value = response.body.degree?.toList()
                             specializationLiveList.value = response.body.specialities?.toList()
-                            data.value = listOf(userObj)
-                            _dataResponse.value = response.body!!
-                            Log.d(TAG, "getModelUserData: ${response.body}")
+                            data.value = userObj
+                            _dataResponse.value = response.body
                             setShowProgress(false)
                         }
 
@@ -200,7 +197,7 @@ class AddDoctorViewModel @Inject constructor(
                         }
                     }
                 } else {
-                    context.toast(resourceProvider.getString(R.string.check_internet_connection))
+                     context.toast(resourceProvider.getString(R.string.check_internet_connection))
                 }
             }
         }
@@ -208,18 +205,29 @@ class AddDoctorViewModel @Inject constructor(
     }
 
     fun validateAllUpdateField() {
+
         if (isDoctor.value!!) {
-            isUpdateDataValid.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
-                    && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
-                    && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
-                    && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
-                    && !dob.value.isNullOrEmpty() && dobError.value.isNullOrEmpty()
-                    && availableTimeList.value?.isEmpty() == false
-                    && isPhoneVerify.value!!
-                    && isEmailVerified.value!!
-                    && binding?.chipGroup?.children?.toList()?.size!! > 0
-                    && binding?.chipGroupSpec?.children?.toList()?.size!! > 0
-                    )
+
+            if (addShitTimeSlotList.value.isNullOrEmpty()) {
+                isUpdateDataValid.value = false
+            } else {
+                isUpdateDataValid.value =
+                    (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
+                            && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
+
+                            && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
+                            && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
+                            && !dob.value.isNullOrEmpty() && dobError.value.isNullOrEmpty()
+                            && addShitTimeSlotList.value?.filter { shiftTIme ->
+                        shiftTIme.startTime == null || shiftTIme.endTime == null
+                    }.isNullOrEmpty()
+                            && isPhoneVerify.value!!
+                            && isEmailVerified.value!!
+                            && binding?.chipGroup?.children?.toList()?.size!! > 0
+                            && binding?.chipGroupSpec?.children?.toList()?.size!! > 0
+                            )
+            }
+
         } else {
             isUpdateDataValid.value = (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
                     && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
@@ -375,7 +383,6 @@ class AddDoctorViewModel @Inject constructor(
     }
 
     private fun updateUser() {
-
         viewModelScope.launch {
             var recordId: String = ""
             session.getString(USER_ID).collectLatest {
@@ -395,19 +402,20 @@ class AddDoctorViewModel @Inject constructor(
                             ?.map { (it as Chip).text.toString() } as ArrayList<String>?,
                         isEmailVerified = true,
                         isPhoneNumberVerified = true,
-                        availableTime = availableTimeList.value?.toList()
+                        availableTime = addShitTimeSlotList.value?.toList()
                             ?.map { newData ->
-                                TimeSlotRequestModel(
-                                    newData.timeSlot,
-                                    newData.isTimeSlotBook
+                                AddShiftTimeModel(
+                                    startTime = newData.startTime,
+                                    endTime = newData.endTime,
+                                    isTimeSlotBook = newData.isTimeSlotBook
                                 )
-                            } as ArrayList<TimeSlotRequestModel>,
+                            } as ArrayList<AddShiftTimeModel>,
                         isAdmin = false,
                         isNotificationEnable = notificationToggleData.value == true,
-                        dob = SimpleDateFormat(DATE_MM_FORMAT).parse(dob.value.toString()),
+                        dob = SimpleDateFormat(DATE_MM_FORMAT, Locale.getDefault()).parse(dob.value.toString()),
                         isUserVerified = true,
-                        holidayList = holidayList.value?.toList()
-                            ?.map { holidayDate -> holidayDate.holidayDate } as ArrayList<Date>?,
+                        holidayList = if (holidayList.value?.isNotEmpty() == true) holidayList.value?.toList()
+                            ?.map { holidayDate -> holidayDate.holidayDate } as ArrayList<Date> else null,
                         weekOffList = strWeekOffList.value
 
                     )
@@ -424,7 +432,7 @@ class AddDoctorViewModel @Inject constructor(
                         isEmailVerified = true,
                         isPhoneNumberVerified = true,
                         isAdmin = false,
-                        dob = SimpleDateFormat(DATE_MM_FORMAT).parse(dob.value.toString()),
+                        dob = SimpleDateFormat(DATE_MM_FORMAT,Locale.getDefault()).parse(dob.value.toString()),
                         isUserVerified = true
                     )
 
@@ -831,6 +839,5 @@ class AddDoctorViewModel @Inject constructor(
         weekDayNameList.value = weekDayList
 
     }
-
 
 }
