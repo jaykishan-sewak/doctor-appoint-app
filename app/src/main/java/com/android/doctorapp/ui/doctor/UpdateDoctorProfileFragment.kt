@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,7 +39,6 @@ import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.convertDateToFull
 import com.android.doctorapp.util.extension.convertDateToMonth
-import com.android.doctorapp.util.extension.convertTime
 import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.selectDate
@@ -248,8 +246,6 @@ class UpdateDoctorProfileFragment :
                     minDate = null
                 ) { holidayDate ->
                     val monthDate = convertDateToMonth(holidayDate)
-                    Log.d("TAG", "registerObserver 1 : $holidayDate")
-                    Log.d("TAG", "registerObserver 2 : ${convertDateToMonth(holidayDate)}")
                     holidayList.add(HolidayModel(holidayDate = convertDateToFull(monthDate)))
                     updateHolidayRecyclerview(holidayList)
                 }
@@ -515,9 +511,21 @@ class UpdateDoctorProfileFragment :
                 calendar.set(Calendar.MINUTE, selectedMinute)
                 val selectedTime = calendar.time
                 if (isStartTime) {
+
+
                     val timeContainsOrNot = tempAddShitList.any {
-                        convertTime(it.startTime.toString()) == convertTime(selectedTime.toString())
+                        if (it.startTime != null) {
+                            dateFormatter(
+                                it.startTime,
+                                ConstantKey.HOUR_MIN_AM_PM_FORMAT
+                            ) == dateFormatter(
+                                selectedTime,
+                                ConstantKey.HOUR_MIN_AM_PM_FORMAT
+                            )
+                        } else
+                            false
                     }
+
                     if (timeContainsOrNot) {
                         context?.toast(getString(R.string.already_selected_time))
                     } else {

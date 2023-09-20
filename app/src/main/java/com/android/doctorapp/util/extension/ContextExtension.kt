@@ -155,7 +155,7 @@ fun convertDateToMonth(inputDateString: String): String {
 
 fun convertDateToFull(inputDateString: String): Date {
     return try {
-        val formatter = SimpleDateFormat(DATE_MONTH_FORMAT, Locale.ENGLISH)
+        val formatter = SimpleDateFormat(DATE_MONTH_FORMAT, Locale.getDefault())
         val date = formatter.parse(inputDateString)
         date
     } catch (ex: ParseException) {
@@ -168,12 +168,14 @@ fun convertDateToFull(inputDateString: String): Date {
 fun convertFullDateToDate(inputDateString: String): String {
     return try {
         val originalDateFormat = SimpleDateFormat(FULL_DATE_FORMAT, Locale.getDefault())
-        val targtrDateFormat = SimpleDateFormat(FORMATTED_DATE, Locale.getDefault())
+        val targetDateFormat = SimpleDateFormat(FORMATTED_DATE, Locale.getDefault())
         val calendar = Calendar.getInstance()
         calendar.time = originalDateFormat.parse(inputDateString) ?: Date()
-        targtrDateFormat.format(calendar.time)
+        Log.d("TAG", "convertFullDateToDate: ${calendar.time}   -->     $inputDateString")
+        targetDateFormat.format(calendar.time)
     } catch (e: Exception) {
         e.printStackTrace()
+        Log.d("TAG", "convertFullDateToDate catch : ${e.message}")
         ""
     }
 }

@@ -41,7 +41,7 @@
             android:layout_marginTop="@dimen/margin_10"
             android:background="@drawable/blue_border_drawable"
             android:onClick="@{() -> onItemClickListener.startTimeClick(addShitTimeModel, index)}"
-            app:appointmentTime="@{addShitTimeModel.startTime != null ? addShitTimeModel.startTime.toString() : @string/start_time}"
+            app:appointmentTime="@{addShitTimeModel.startTime != null ? addShitTimeModel.startTime.toString : @string/start_time}"
             app:layout_constraintEnd_toStartOf="@+id/btn_end_time"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"

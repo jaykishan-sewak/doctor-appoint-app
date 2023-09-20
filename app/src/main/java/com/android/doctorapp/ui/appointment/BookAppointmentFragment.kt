@@ -1,7 +1,6 @@
 package com.android.doctorapp.ui.appointment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +17,6 @@ import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.AddShiftTimeModel
 import com.android.doctorapp.repository.models.DateSlotModel
-import com.android.doctorapp.repository.models.TimeSlotModel
 import com.android.doctorapp.ui.appointment.adapter.AppointmentDateAdapter
 import com.android.doctorapp.ui.appointment.adapter.AppointmentTimeAdapter
 import com.android.doctorapp.util.constants.ConstantKey
@@ -51,7 +49,8 @@ class BookAppointmentFragment :
         super.onCreateView(inflater, container, savedInstanceState)
         val arguments: Bundle? = arguments
         if (arguments != null) {
-            viewModel.doctorId.value = arguments.getString(ConstantKey.BundleKeys.USER_ID).toString()
+            viewModel.doctorId.value =
+                arguments.getString(ConstantKey.BundleKeys.USER_ID).toString()
         }
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner

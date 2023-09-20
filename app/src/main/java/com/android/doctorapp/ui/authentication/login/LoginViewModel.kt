@@ -45,7 +45,7 @@ class LoginViewModel @Inject constructor(
 
     var googleSignInClient: GoogleSignInClient
 
-    val email: MutableLiveData<String> = MutableLiveData("@mailinator.com")
+    val email: MutableLiveData<String> = MutableLiveData("user1@mailinator.com")
     val emailError: MutableLiveData<String?> = MutableLiveData()
 
     val password: MutableLiveData<String> = MutableLiveData("Admin@123")
@@ -236,7 +236,7 @@ class LoginViewModel @Inject constructor(
                 )) {
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
-                        signInAccountTask.postValue(response.body!!)
+                        signInAccountTask.postValue(response.body)
                     }
 
                     is ApiErrorResponse -> {
@@ -265,7 +265,7 @@ class LoginViewModel @Inject constructor(
             )) {
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
-                    googleSignInAccount.postValue(response.body!!)
+                    googleSignInAccount.postValue(response.body)
                 }
 
                 is ApiErrorResponse -> {
@@ -291,7 +291,7 @@ class LoginViewModel @Inject constructor(
             )) {
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
-                    authCredential.postValue(response.body!!)
+                    authCredential.postValue(response.body)
                 }
 
                 is ApiErrorResponse -> {

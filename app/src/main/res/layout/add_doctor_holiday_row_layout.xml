@@ -32,7 +32,7 @@
             android:gravity="center"
             android:padding="@dimen/margin_5"
             android:textColor="@color/black"
-            app:dateMonthStyle="@{holidayModel.holidayDate.toString()}"
+            app:dateMonthStyle="@{holidayModel.holidayDate}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/image_view_delete_holiday"
             app:layout_constraintStart_toStartOf="parent"

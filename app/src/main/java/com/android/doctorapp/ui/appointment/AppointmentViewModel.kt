@@ -1,6 +1,7 @@
 package com.android.doctorapp.ui.appointment
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -9,14 +10,12 @@ import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AppointmentRepository
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.local.USER_ID
-import com.android.doctorapp.repository.models.AddShiftResponseModel
 import com.android.doctorapp.repository.models.AddShiftTimeModel
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.DateSlotModel
-import com.android.doctorapp.repository.models.TimeSlotModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.DAY_NAME_FORMAT
@@ -201,8 +200,12 @@ class AppointmentViewModel @Inject constructor(
                             holidayList.add(holidayModel)
                         }
                         doctorSpecialities.value = response.body.specialities.toString()
-//                        val timeSlotDbList = response.body.availableTime
-                        response.body.availableTime?.forEachIndexed { index, addShiftResponseModel ->
+
+                        val tempList = response.body.availableTime?.sortedBy {
+                            it.startTime
+                        }
+
+                        tempList?.forEachIndexed { index, addShiftResponseModel ->
                             timeList.add(
                                 AddShiftTimeModel(
                                     startTime = addShiftResponseModel.startTime,
@@ -211,6 +214,7 @@ class AppointmentViewModel @Inject constructor(
                                 )
                             )
                         }
+
                         doctorDetails.value = response.body
 
                         _timeSlotList.value = timeList
@@ -357,7 +361,7 @@ class AppointmentViewModel @Inject constructor(
                         fireStore
                     )) {
                     is ApiSuccessResponse -> {
-                        appointmentResponse.postValue(response.body!!)
+                        appointmentResponse.postValue(response.body)
                         getAppointmentUserDetails()
                         setShowProgress(false)
                     }
@@ -393,7 +397,7 @@ class AppointmentViewModel @Inject constructor(
                         fireStore
                     )) {
                     is ApiSuccessResponse -> {
-                        userDataResponse.value = response.body!!
+                        userDataResponse.value = response.body
                         setShowProgress(false)
                     }
 
