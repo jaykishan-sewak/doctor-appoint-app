@@ -25,6 +25,7 @@ import com.android.doctorapp.repository.models.HolidayModel
 import com.android.doctorapp.repository.models.SpecializationResponseModel
 import com.android.doctorapp.repository.models.TimeSlotModel
 import com.android.doctorapp.repository.models.UserDataRequestModel
+import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.repository.models.WeekOffModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
@@ -79,7 +80,7 @@ class AddDoctorViewModel @Inject constructor(
     private val specializationItems = SingleLiveEvent<SpecializationResponseModel?>()
     val specializationList = specializationItems.asLiveData()
 
-    val data = MutableLiveData<List<UserDataRequestModel>>()
+    private val data = MutableLiveData<UserDataResponseModel>()
 
     val address: MutableLiveData<String> = MutableLiveData()
     val addressError: MutableLiveData<String?> = MutableLiveData()
@@ -138,24 +139,23 @@ class AddDoctorViewModel @Inject constructor(
 
     }
 
-    fun getModelUserData(): MutableLiveData<List<UserDataRequestModel>> {
+    fun getUserData(): MutableLiveData<UserDataResponseModel> {
         viewModelScope.launch {
-            var recordId: String = ""
+            var recordId = ""
             session.getString(USER_ID).collectLatest {
                 recordId = it.orEmpty()
-                var userObj: UserDataRequestModel
+                var userObj: UserDataResponseModel
                 if (context.isNetworkAvailable()) {
-                    setShowProgress(true)
+                     setShowProgress(true)
                     when (val response = authRepository.getRecordById(recordId, fireStore)) {
                         is ApiSuccessResponse -> {
-                            userObj = UserDataRequestModel(
+                            userObj = UserDataResponseModel(
                                 name = response.body.name,
                                 email = response.body.email,
                                 contactNumber = response.body.contactNumber,
                                 isNotificationEnable = response.body.isNotificationEnable
                             )
                             isDoctor.value = response.body.isDoctor
-
                             isPhoneVerify.value = response.body.isPhoneNumberVerified
                             if (!response.body.isPhoneNumberVerified) {
                                 if (firebaseAuth.currentUser?.phoneNumber.isNullOrEmpty()) {
@@ -172,12 +172,11 @@ class AddDoctorViewModel @Inject constructor(
                                 isPhoneVerifyValue.value =
                                     resourceProvider.getString(R.string.verified)
                                 isEmailVerified.value = response.body.isEmailVerified
-
                             }
                             notificationToggleData.value = response.body.isNotificationEnable
                             degreeLiveList.value = response.body.degree?.toList()
                             specializationLiveList.value = response.body.specialities?.toList()
-                            data.value = listOf(userObj)
+                            data.value = userObj
                             _dataResponse.value = response.body
                             setShowProgress(false)
                         }
@@ -198,7 +197,7 @@ class AddDoctorViewModel @Inject constructor(
                         }
                     }
                 } else {
-                    context.toast(resourceProvider.getString(R.string.check_internet_connection))
+                     context.toast(resourceProvider.getString(R.string.check_internet_connection))
                 }
             }
         }
