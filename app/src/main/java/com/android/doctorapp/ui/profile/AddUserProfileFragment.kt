@@ -208,7 +208,7 @@ class AddUserProfileFragment :
         }
 
         viewModel.userResponse.observe(viewLifecycleOwner) {
-            if (it.name.isNotEmpty()) {
+            if (it?.name?.isNotEmpty()!!) {
                 viewModel.name.value = it.name
                 viewModel.email.value = it.email
                 viewModel.contactNumber.value = it.contactNumber

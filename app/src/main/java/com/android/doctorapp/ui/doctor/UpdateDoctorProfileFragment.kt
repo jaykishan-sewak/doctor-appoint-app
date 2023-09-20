@@ -202,7 +202,7 @@ class UpdateDoctorProfileFragment :
         }
 
         viewModel.userResponse.observe(viewLifecycleOwner) {
-            if (it.address.isNotEmpty()) {
+            if (it?.address?.isNotEmpty()!!) {
                 viewModel.name.value = it.name
                 viewModel.email.value = it.email
                 viewModel.contactNumber.value = it.contactNumber
