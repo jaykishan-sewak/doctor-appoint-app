@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="addShitTimeModel"
+            type="com.android.doctorapp.repository.models.AddShiftTimeModel" />
+
+        <variable
+            name="onItemClickListener"
+            type="com.android.doctorapp.ui.doctor.adapter.AddDoctorTimeAdapter.OnItemClickListener" />
+
+        <variable
+            name="index"
+            type="Integer" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_5">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_add_shift_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AddShitTimeModel"
+            android:textColor="@color/black"
+            android:textSize="17dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_start_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_15"
+            android:layout_marginTop="@dimen/margin_10"
+            android:background="@drawable/blue_border_drawable"
+            android:onClick="@{() -> onItemClickListener.startTimeClick(addShitTimeModel, index)}"
+            app:appointmentTime="@{addShitTimeModel.startTime != null ? addShitTimeModel.startTime.toString() : @string/start_time}"
+            app:layout_constraintEnd_toStartOf="@+id/btn_end_time"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_add_shift_title" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_end_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_15"
+            android:background="@drawable/blue_border_drawable"
+            android:onClick="@{() -> onItemClickListener.endTimeClick(addShitTimeModel, index)}"
+            app:appointmentTime="@{addShitTimeModel.endTime != null ? addShitTimeModel.endTime.toString() : @string/end_time}"
+            app:layout_constraintEnd_toStartOf="@+id/image_shift_delete"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/btn_start_time"
+            app:layout_constraintTop_toTopOf="@+id/btn_start_time" />
+
+        <ImageView
+            android:id="@+id/image_shift_delete"
+            android:layout_width="@dimen/margin_30"
+            android:layout_height="@dimen/margin_30"
+            android:layout_marginEnd="@dimen/margin_10"
+            android:background="@drawable/baseline_delete_outline_24"
+            android:backgroundTint="@color/black"
+            android:onClick="@{() -> onItemClickListener.removeShiftClick(addShitTimeModel, index)}"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_start_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btn_start_time" />
+
+        <View
+            android:id="@+id/add_time_divider"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/margin_1"
+            android:layout_marginTop="@dimen/margin_10"
+            android:background="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_start_time" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

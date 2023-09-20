@@ -168,4 +168,10 @@
     <string name="phone_verified">Phone verified</string>
     <string name="no_appointments_found">No Appointments Found</string>
 
+    <string name="no_data_found">No Data Found</string>
+    <string name="start_time">Start Time</string>
+    <string name="end_time">End Time</string>
+    <string name="end_time_grater">End time must be greater than start time</string>
+    <string name="already_selected_time">Already Time is Selected</string>
+
 </resources>
