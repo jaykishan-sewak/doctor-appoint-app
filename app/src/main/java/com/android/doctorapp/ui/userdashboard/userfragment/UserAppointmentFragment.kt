@@ -64,9 +64,14 @@ class UserAppointmentFragment :
         layoutBinding.recyclerView.adapter = adapter
 
         viewModel.doctorList.observe(viewLifecycleOwner) { it1 ->
-            adapter.filterList(it1)
+            if (it1 != null && it1.isNotEmpty()) {
+                adapter.filterList(it1)
+                viewModel.dataFound.value = false
+            } else {
+                viewModel.dataFound.value = true
+                adapter.filterList(emptyList())
+            }
         }
-
 
     }
 
@@ -78,7 +83,10 @@ class UserAppointmentFragment :
                 override fun onItemClick(item: UserDataResponseModel, position: Int) {
                     val bundle = Bundle()
                     bundle.putString(ConstantKey.BundleKeys.USER_ID, item.userId)
-                    findNavController().navigate(R.id.action_user_appointment_to_bookAppointment, bundle)
+                    findNavController().navigate(
+                        R.id.action_user_appointment_to_bookAppointment,
+                        bundle
+                    )
                 }
             }
         )
