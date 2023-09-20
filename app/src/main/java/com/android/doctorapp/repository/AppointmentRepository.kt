@@ -168,6 +168,21 @@ class AppointmentRepository @Inject constructor() {
         }
     }
 
+    suspend fun updateAppointmentDataById(
+        requestModel: AppointmentModel,
+        fireStore: FirebaseFirestore
+    ): ApiResponse<AppointmentModel> {
+        return try {
+            val response =
+                fireStore.collection(ConstantKey.DBKeys.TABLE_APPOINTMENT).document(requestModel.id)
+                    .set(requestModel).await()
+
+            ApiResponse.create(response = Response.success(requestModel))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
     suspend fun getAppointmentDetails(
         userId: String,
         fireStore: FirebaseFirestore
@@ -205,4 +220,29 @@ class AppointmentRepository @Inject constructor() {
             ApiResponse.create(e.fillInStackTrace())
         }
     }
+
+    suspend fun getBookAppointmentDetailsList(
+        userId: String,
+        fireStore: FirebaseFirestore
+    ): ApiResponse<List<AppointmentModel>> {
+        return try {
+            val response = fireStore.collection(TABLE_APPOINTMENT)
+                .whereEqualTo(FIELD_USER_ID, userId)
+                .get()
+                .await()
+            var bookedAppointmentList = arrayListOf<AppointmentModel>()
+
+            for (document: DocumentSnapshot in response.documents) {
+                val user = document.toObject(AppointmentModel::class.java)
+                user?.let {
+                    it.id = document.id
+                    bookedAppointmentList.add(it)
+                }
+            }
+            ApiResponse.create(response = Response.success(bookedAppointmentList))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
 }
