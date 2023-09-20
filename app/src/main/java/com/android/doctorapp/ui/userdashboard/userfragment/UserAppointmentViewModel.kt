@@ -25,6 +25,7 @@ class UserAppointmentViewModel @Inject constructor(
 
     private val items = MutableLiveData<List<UserDataResponseModel>>()
     val doctorList = items.asLiveData()
+    val dataFound: MutableLiveData<Boolean> = MutableLiveData(false)
 
     private val tempData = MutableLiveData<List<UserDataResponseModel>>()
 
@@ -42,10 +43,7 @@ class UserAppointmentViewModel @Inject constructor(
                 text.uppercase()
             ))
         }
-        if (filterList!!.isNotEmpty())
-            items.value = filterList!!
-
-
+        items.value = filterList!!
     }
 
     fun getItems() {
