@@ -202,12 +202,18 @@ class UpdateDoctorProfileFragment :
         }
 
         viewModel.userResponse.observe(viewLifecycleOwner) {
-            viewModel.name.value = it?.name
-            viewModel.email.value = it?.email
-            viewModel.contactNumber.value = it?.contactNumber
-            viewModel.address.value = it?.address
-            viewModel.selectGenderValue.value = it?.gender
-            viewModel.dob.value = dateFormatter(it?.dob, ConstantKey.DATE_MM_FORMAT)
+            if (it?.address?.isNotEmpty()!!) {
+                viewModel.name.value = it.name
+                viewModel.email.value = it.email
+                viewModel.contactNumber.value = it.contactNumber
+                viewModel.address.value = it.address
+                viewModel.selectGenderValue.value = it.gender
+                viewModel.dob.value = dateFormatter(it.dob, ConstantKey.DATE_MM_FORMAT)
+            } else {
+                viewModel.name.value = it.name
+                viewModel.email.value = it.email
+                viewModel.contactNumber.value = it.contactNumber
+            }
         }
         viewModel.clickResponse.observe(viewLifecycleOwner) {
             sendVerificationCode("+91$it")
