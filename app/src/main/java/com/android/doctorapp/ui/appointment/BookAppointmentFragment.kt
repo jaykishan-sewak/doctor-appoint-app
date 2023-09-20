@@ -1,6 +1,7 @@
 package com.android.doctorapp.ui.appointment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import com.android.doctorapp.databinding.FragmentBookAppointmentBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.models.AddShiftTimeModel
 import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.repository.models.TimeSlotModel
 import com.android.doctorapp.ui.appointment.adapter.AppointmentDateAdapter
@@ -49,7 +51,7 @@ class BookAppointmentFragment :
         super.onCreateView(inflater, container, savedInstanceState)
         val arguments: Bundle? = arguments
         if (arguments != null) {
-            viewModel.userId.value = arguments.getString(ConstantKey.BundleKeys.USER_ID).toString()
+            viewModel.doctorId.value = arguments.getString(ConstantKey.BundleKeys.USER_ID).toString()
         }
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
@@ -133,21 +135,21 @@ class BookAppointmentFragment :
             })
     }
 
-    private fun updateTimeRecyclerview(timeList: ArrayList<TimeSlotModel>) {
+    private fun updateTimeRecyclerview(timeList: ArrayList<AddShiftTimeModel>) {
         appointmentTimeAdapter = AppointmentTimeAdapter(timeList,
             object : AppointmentTimeAdapter.OnItemClickListener {
-                override fun onItemClick(item: TimeSlotModel, position: Int) {
+                override fun onItemClick(item: AddShiftTimeModel, position: Int) {
                     timeList.forEachIndexed { index, timeSlotModel ->
-                        if (timeSlotModel.timeSlot == item.timeSlot) {
+                        if (timeSlotModel.startTime == item.startTime) {
                             timeList[index].isTimeClick = true
-                            selectedTime = item.timeSlot!!
+                            selectedTime = item.startTime!!
                             appointmentTimeAdapter.notifyItemChanged(index)
                         } else {
                             timeList[index].isTimeClick = false
                             appointmentTimeAdapter.notifyItemChanged(index)
+                            appointmentTimeAdapter.notifyItemChanged(index)
                         }
                     }
-                    appointmentTimeAdapter.notifyDataSetChanged()
                     viewModel.isTimeSelected.value = true
                     viewModel.validateDateTime()
                 }

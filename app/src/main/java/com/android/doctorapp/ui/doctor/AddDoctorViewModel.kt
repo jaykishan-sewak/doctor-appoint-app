@@ -16,6 +16,7 @@ import com.android.doctorapp.repository.AuthRepository
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.local.USER_ID
 import com.android.doctorapp.repository.local.USER_IS_EMAIL_VERIFIED
+import com.android.doctorapp.repository.models.AddShiftRequestModel
 import com.android.doctorapp.repository.models.AddShiftTimeModel
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
@@ -404,12 +405,12 @@ class AddDoctorViewModel @Inject constructor(
                         isPhoneNumberVerified = true,
                         availableTime = addShitTimeSlotList.value?.toList()
                             ?.map { newData ->
-                                AddShiftTimeModel(
+                                AddShiftRequestModel(
                                     startTime = newData.startTime,
                                     endTime = newData.endTime,
                                     isTimeSlotBook = newData.isTimeSlotBook
                                 )
-                            } as ArrayList<AddShiftTimeModel>,
+                            } as ArrayList<AddShiftRequestModel>,
                         isAdmin = false,
                         isNotificationEnable = notificationToggleData.value == true,
                         dob = SimpleDateFormat(DATE_MM_FORMAT, Locale.getDefault()).parse(dob.value.toString()),

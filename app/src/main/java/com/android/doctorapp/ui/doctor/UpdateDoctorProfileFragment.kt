@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -247,6 +248,8 @@ class UpdateDoctorProfileFragment :
                     minDate = null
                 ) { holidayDate ->
                     val monthDate = convertDateToMonth(holidayDate)
+                    Log.d("TAG", "registerObserver 1 : $holidayDate")
+                    Log.d("TAG", "registerObserver 2 : ${convertDateToMonth(holidayDate)}")
                     holidayList.add(HolidayModel(holidayDate = convertDateToFull(monthDate)))
                     updateHolidayRecyclerview(holidayList)
                 }
@@ -254,7 +257,6 @@ class UpdateDoctorProfileFragment :
                 tempAddShitList.add(
                     AddShiftTimeModel(
                         isTimeSlotBook = false,
-                        isTimeClick = false
                     )
                 )
                 viewModel.addShitTimeSlotList.value = tempAddShitList

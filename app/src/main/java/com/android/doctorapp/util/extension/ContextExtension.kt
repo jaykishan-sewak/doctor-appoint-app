@@ -160,7 +160,7 @@ fun convertDateToFull(inputDateString: String): Date {
         date
     } catch (ex: ParseException) {
         ex.printStackTrace()
-        val defaultDate = SimpleDateFormat(FULL_DATE_FORMAT).parse("2000-01-01")
+        val defaultDate = SimpleDateFormat(FULL_DATE_FORMAT).parse("01-Sep-2000")
         defaultDate
     }
 }

@@ -22,6 +22,7 @@ import androidx.databinding.BindingAdapter
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.android.doctorapp.R
+import com.android.doctorapp.repository.models.AddShiftTimeModel
 import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.repository.models.TimeSlotModel
 import com.android.doctorapp.util.ImageUtils
@@ -231,7 +232,7 @@ fun setSpecialization(textView: AppCompatTextView, specialities: List<String>?) 
 }
 
 @BindingAdapter("app:timeStyle")
-fun setTimeButtonStyle(appCompatButton: AppCompatButton, timeSlotModel: TimeSlotModel) {
+fun setTimeButtonStyle(appCompatButton: AppCompatButton, timeSlotModel: AddShiftTimeModel) {
     if (timeSlotModel.isTimeClick) {
         appCompatButton.setTextAppearance(R.style.date_time_select)
     } else {

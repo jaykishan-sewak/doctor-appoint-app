@@ -1,8 +1,6 @@
 package com.android.doctorapp.ui.appointment
 
-import android.content.ContentValues.TAG
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -11,6 +9,8 @@ import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AppointmentRepository
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.local.USER_ID
+import com.android.doctorapp.repository.models.AddShiftResponseModel
+import com.android.doctorapp.repository.models.AddShiftTimeModel
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
@@ -49,9 +49,9 @@ class AppointmentViewModel @Inject constructor(
     val daysDateList = _daysDateList.asLiveData()
     private val daysList = ArrayList<DateSlotModel>()
 
-    private val _timeSlotList = MutableLiveData<ArrayList<TimeSlotModel>>()
+    private val _timeSlotList = MutableLiveData<ArrayList<AddShiftTimeModel>>()
     val timeSlotList = _timeSlotList.asLiveData()
-    private val timeList = ArrayList<TimeSlotModel>()
+    private val timeList = ArrayList<AddShiftTimeModel>()
 
     private val _holidayDateList = MutableLiveData<ArrayList<Date>>()
     private val holidayList = ArrayList<Date>()
@@ -65,7 +65,7 @@ class AppointmentViewModel @Inject constructor(
     val isBookAppointmentClick: MutableLiveData<Boolean> = MutableLiveData(false)
     val onlineBookingToggleData: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    val userId: MutableLiveData<String> = MutableLiveData("")
+    val doctorId: MutableLiveData<String> = MutableLiveData("")
     val doctorName: MutableLiveData<String> = MutableLiveData()
     val doctorSpecialities: MutableLiveData<String> = MutableLiveData()
     private val userName = MutableLiveData<String>()
@@ -157,7 +157,8 @@ class AppointmentViewModel @Inject constructor(
                     name = userName.value.toString(),
                     age = age.value.toString(),
                     contactNumber = contactNumber.value.toString(),
-                    userId = it.toString()
+                    userId = it.toString(),
+                    doctorId = doctorId.value.toString()
                 )
                 when (val response =
                     appointmentRepository.addBookingAppointment(appointmentModel, fireStore)) {
@@ -189,7 +190,7 @@ class AppointmentViewModel @Inject constructor(
             if (context.isNetworkAvailable()) {
                 setShowProgress(true)
                 when (val response =
-                    appointmentRepository.getDoctorById(userId.value.toString(), fireStore)) {
+                    appointmentRepository.getDoctorById(doctorId.value.toString(), fireStore)) {
                     is ApiSuccessResponse -> {
                         doctorName.value = response.body.name
                         val weekOffDbList = response.body.weekOffList
@@ -200,12 +201,13 @@ class AppointmentViewModel @Inject constructor(
                             holidayList.add(holidayModel)
                         }
                         doctorSpecialities.value = response.body.specialities.toString()
-                        val timeSlotDbList = response.body.availableTime
-                        timeSlotDbList?.forEachIndexed { index, timeSlotRequestModel ->
+//                        val timeSlotDbList = response.body.availableTime
+                        response.body.availableTime?.forEachIndexed { index, addShiftResponseModel ->
                             timeList.add(
-                                TimeSlotModel(
-                                    timeSlotRequestModel.timeSlot,
-                                    timeSlotRequestModel.isTimeSlotBook
+                                AddShiftTimeModel(
+                                    startTime = addShiftResponseModel.startTime,
+                                    endTime = addShiftResponseModel.endTime,
+                                    isTimeSlotBook = addShiftResponseModel.isTimeSlotBook
                                 )
                             )
                         }
