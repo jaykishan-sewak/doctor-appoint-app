@@ -144,4 +144,11 @@ class ProfileViewModel @Inject constructor(
     fun onClickEmailIcon(email: String) {
         emailClick.postValue(email)
     }
+    fun clickOnSymptom() {
+        context.toast("Symptoms")
+    }
+    fun clickOnFeedback() {
+        context.toast("Feedback")
+    }
+
 }
