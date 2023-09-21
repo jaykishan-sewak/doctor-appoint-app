@@ -1,6 +1,5 @@
 package com.android.doctorapp.ui.userdashboard.userfragment
 
-import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
@@ -35,7 +34,7 @@ class UserRequestViewModel @Inject constructor(
     val userAppointmentData = MutableLiveData<List<AppointmentModel>>()
     val isDoctorRequestCalendar: MutableLiveData<Boolean> = MutableLiveData(false)
     var requestSelectedDate: MutableLiveData<Date> = SingleLiveEvent()
-    val dataFound : MutableLiveData<Boolean> = MutableLiveData(false)
+    val dataFound: MutableLiveData<Boolean> = MutableLiveData(false)
 
     fun getRequestAppointmentList() {
         viewModelScope.launch {
@@ -46,16 +45,19 @@ class UserRequestViewModel @Inject constructor(
                     setShowProgress(true)
                     when (val response =
                         appointmentRepository.getBookAppointmentDetailsList(
-                            recordId, fireStore
+                            requestSelectedDate.value!!,
+                            recordId,
+                            fireStore
                         )) {
                         is ApiSuccessResponse -> {
                             setShowProgress(false)
                             userAppointmentData.value = response.body!!
-                            Log.d( "List------", Gson().toJson(response.body))
+                            Log.d("List------", Gson().toJson(response.body))
                         }
 
                         is ApiErrorResponse -> {
                             context.toast(response.errorMessage)
+                            Log.d(TAG, "getRequestAppointmentList: ${response.errorMessage}")
                             setShowProgress(false)
                         }
 

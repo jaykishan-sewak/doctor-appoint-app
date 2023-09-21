@@ -12,7 +12,8 @@ data class AppointmentModel(
     var name: String = "",
     var contactNumber: String = "",
     var age: String = "",
-    var doctorId: String = ""
+    var doctorId: String = "",
+    var doctorDetails: UserDataResponseModel? = null
 )
 
 data class Header(val date: Date?)

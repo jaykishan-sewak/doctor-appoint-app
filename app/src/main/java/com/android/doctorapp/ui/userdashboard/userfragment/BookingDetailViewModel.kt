@@ -1,8 +1,6 @@
 package com.android.doctorapp.ui.userdashboard.userfragment
 
-import android.content.ContentValues.TAG
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -17,6 +15,7 @@ import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.extension.asLiveData
+import com.android.doctorapp.util.extension.currentDate
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import kotlinx.coroutines.launch
@@ -36,7 +35,7 @@ class BookingDetailViewModel @Inject constructor(
     private val _navigationListener: MutableLiveData<Boolean> = MutableLiveData(false)
     val navigationListener = _navigationListener.asLiveData()
 
-     fun getAppointmentDoctorDetails() {
+    fun getAppointmentDoctorDetails() {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 when (val response =
@@ -69,6 +68,11 @@ class BookingDetailViewModel @Inject constructor(
             }
 
         }
+    }
+
+    fun checkAppointmentDate(): Boolean {
+        val currentDate = currentDate()
+        return appointmentObj.value?.bookingDateTime!! > currentDate
     }
 
     fun appointmentRejectApiCall(text: String) {

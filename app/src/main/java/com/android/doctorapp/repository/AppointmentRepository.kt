@@ -222,20 +222,35 @@ class AppointmentRepository @Inject constructor() {
     }
 
     suspend fun getBookAppointmentDetailsList(
+        selectedDate: Date,
         userId: String,
         fireStore: FirebaseFirestore
     ): ApiResponse<List<AppointmentModel>> {
         return try {
+            val nextDate = Calendar.getInstance()
+            nextDate.time = selectedDate
+            nextDate.add(Calendar.DATE, 1)
             val response = fireStore.collection(TABLE_APPOINTMENT)
                 .whereEqualTo(FIELD_USER_ID, userId)
+                .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, selectedDate)
+                .whereLessThanOrEqualTo(FIELD_SELECTED_DATE, nextDate.time)
                 .get()
                 .await()
-            var bookedAppointmentList = arrayListOf<AppointmentModel>()
+            val bookedAppointmentList = arrayListOf<AppointmentModel>()
 
             for (document: DocumentSnapshot in response.documents) {
                 val user = document.toObject(AppointmentModel::class.java)
                 user?.let {
                     it.id = document.id
+                    val doctorDetails = fireStore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
+                        .whereEqualTo(ConstantKey.DBKeys.FIELD_USER_ID, it.doctorId)
+                        .get()
+                        .await()
+                    var dataModel = UserDataResponseModel()
+                    for (snapshot in doctorDetails) {
+                        dataModel = snapshot.toObject()
+                    }
+                    it.doctorDetails = dataModel
                     bookedAppointmentList.add(it)
                 }
             }
