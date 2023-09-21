@@ -253,8 +253,7 @@ class UpdateDoctorProfileFragment :
             } else if (layoutBinding.btnAddTiming.id == it?.id) {
                 tempAddShitList.add(
                     AddShiftTimeModel(
-                        isTimeSlotBook = false,
-                        isTimeClick = false
+                        isTimeSlotBook = false
                     )
                 )
                 viewModel.addShitTimeSlotList.value = tempAddShitList

@@ -164,8 +164,8 @@
     <string name="approve">Approve</string>
     <string name="email">Email :</string>
     <string name="contact_no">Contact no :</string>
-    <string name="email_verified">Email Verified</string>
-    <string name="phone_verified">Phone verified</string>
+    <string name="email_verified">Email Verified :</string>
+    <string name="phone_verified">Phone verified :</string>
     <string name="no_appointments_found">No Appointments Found</string>
 
     <string name="no_data_found">No Data Found</string>
@@ -174,7 +174,11 @@
     <string name="end_time_grater">End time must be greater than start time</string>
     <string name="already_selected_time">Already Time is Selected</string>
     <string name="no_doctor_found">No Doctor found</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="status">Status</string>
     <string name="symptoms">Symptoms</string>
     <string name="feedback">Feedback</string>
+    <string name="no_booking_found">No booking Found</string>
 
 </resources>

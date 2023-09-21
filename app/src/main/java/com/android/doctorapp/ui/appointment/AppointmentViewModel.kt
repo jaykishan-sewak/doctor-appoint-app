@@ -1,8 +1,6 @@
 package com.android.doctorapp.ui.appointment
 
-import android.content.ContentValues.TAG
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -25,6 +23,7 @@ import com.android.doctorapp.util.constants.ConstantKey.FULL_DATE_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.FULL_DAY_NAME_FORMAT
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.convertToFormatDate
+import com.android.doctorapp.util.extension.currentDate
 import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
@@ -452,5 +451,10 @@ class AppointmentViewModel @Inject constructor(
                 context.toast(resourceProvider.getString(R.string.check_internet_connection))
             }
         }
+    }
+
+    fun checkAppointmentDate(): Boolean {
+        val currentDate = currentDate()
+        return appointmentObj.value?.bookingDateTime!! > currentDate
     }
 }

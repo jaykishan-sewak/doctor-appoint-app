@@ -168,6 +168,21 @@ class AppointmentRepository @Inject constructor() {
         }
     }
 
+    suspend fun updateAppointmentDataById(
+        requestModel: AppointmentModel,
+        fireStore: FirebaseFirestore
+    ): ApiResponse<AppointmentModel> {
+        return try {
+            val response =
+                fireStore.collection(ConstantKey.DBKeys.TABLE_APPOINTMENT).document(requestModel.id)
+                    .set(requestModel).await()
+
+            ApiResponse.create(response = Response.success(requestModel))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
     suspend fun getAppointmentDetails(
         userId: String,
         fireStore: FirebaseFirestore
@@ -205,4 +220,44 @@ class AppointmentRepository @Inject constructor() {
             ApiResponse.create(e.fillInStackTrace())
         }
     }
+
+    suspend fun getBookAppointmentDetailsList(
+        selectedDate: Date,
+        userId: String,
+        fireStore: FirebaseFirestore
+    ): ApiResponse<List<AppointmentModel>> {
+        return try {
+            val nextDate = Calendar.getInstance()
+            nextDate.time = selectedDate
+            nextDate.add(Calendar.DATE, 1)
+            val response = fireStore.collection(TABLE_APPOINTMENT)
+                .whereEqualTo(FIELD_USER_ID, userId)
+                .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, selectedDate)
+                .whereLessThanOrEqualTo(FIELD_SELECTED_DATE, nextDate.time)
+                .get()
+                .await()
+            val bookedAppointmentList = arrayListOf<AppointmentModel>()
+
+            for (document: DocumentSnapshot in response.documents) {
+                val user = document.toObject(AppointmentModel::class.java)
+                user?.let {
+                    it.id = document.id
+                    val doctorDetails = fireStore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
+                        .whereEqualTo(ConstantKey.DBKeys.FIELD_USER_ID, it.doctorId)
+                        .get()
+                        .await()
+                    var dataModel = UserDataResponseModel()
+                    for (snapshot in doctorDetails) {
+                        dataModel = snapshot.toObject()
+                    }
+                    it.doctorDetails = dataModel
+                    bookedAppointmentList.add(it)
+                }
+            }
+            ApiResponse.create(response = Response.success(bookedAppointmentList))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
 }

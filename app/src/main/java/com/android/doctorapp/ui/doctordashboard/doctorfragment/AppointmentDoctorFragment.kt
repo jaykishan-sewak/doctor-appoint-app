@@ -63,6 +63,8 @@ class AppointmentDoctorFragment :
             if (it != null && it.isNotEmpty()) {
                 adapter.filterList(it)
                 viewModel.dataFound.value = true
+            } else {
+                viewModel.dataFound.value = false
             }
         }
 
