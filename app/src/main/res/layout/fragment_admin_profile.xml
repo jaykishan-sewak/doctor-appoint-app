@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.android.doctorapp.ui.admin.AdminDashboardViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true">
+
+        <include
+            android:id="@+id/toolbarContainer"
+            layout="@layout/custom_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvLogoutView"
+                style="@style/label_text"
+                android:layout_height="@dimen/dp_48"
+                android:layout_marginTop="@dimen/margin_20"
+                android:layout_marginHorizontal="@dimen/margin_5"
+                android:background="@drawable/rounded_view_bg"
+                android:elevation="@dimen/margin_5"
+                android:layout_width="wrap_content"
+                android:gravity="center_vertical"
+                android:onClick="@{view -> viewModel.signOut()}"
+                android:paddingHorizontal="@dimen/margin_10"
+                android:text="@string/sign_out"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/toolbarContainer"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

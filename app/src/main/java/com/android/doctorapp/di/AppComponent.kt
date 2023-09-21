@@ -3,6 +3,7 @@ package com.android.doctorapp.di
 import com.android.doctorapp.di.core.AuthScopes
 import com.android.doctorapp.di.core.CoreComponent
 import com.android.doctorapp.ui.admin.AdminDashboardFragment
+import com.android.doctorapp.ui.admin.AdminProfileFragment
 import com.android.doctorapp.ui.admin.DoctorDetailsFragment
 import com.android.doctorapp.ui.appointment.AppointmentDetailFragment
 import com.android.doctorapp.ui.appointment.BookAppointmentFragment
@@ -52,4 +53,5 @@ interface AppComponent {
     fun inject(fragment: SelectedDateAppointmentsFragment)
     fun inject(fragment: DoctorProfileFragment)
     fun inject(fragment: BookingDetailFragment)
+    fun inject(fragment: AdminProfileFragment)
 }
