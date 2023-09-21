@@ -177,5 +177,7 @@
     <string name="date">Date</string>
     <string name="time">Time</string>
     <string name="status">Status</string>
+    <string name="symptoms">Symptoms</string>
+    <string name="feedback">Feedback</string>
 
 </resources>
