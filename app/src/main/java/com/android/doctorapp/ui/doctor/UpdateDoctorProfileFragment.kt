@@ -209,6 +209,7 @@ class UpdateDoctorProfileFragment :
                 viewModel.address.value = it.address
                 viewModel.selectGenderValue.value = it.gender
                 viewModel.dob.value = dateFormatter(it.dob, ConstantKey.DATE_MM_FORMAT)
+                viewModel.isProfileNavigation.value = true
             } else {
                 viewModel.name.value = it.name
                 viewModel.email.value = it.email
@@ -269,17 +270,21 @@ class UpdateDoctorProfileFragment :
         }
 
         viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
-            if (it.equals(requireContext().resources.getString(R.string.success))) {
-                context?.toast(resources.getString(R.string.doctor_update_successfully))
-                if (isFromAdmin) {
-                    findNavController().popBackStack()
-                } else
-                    startActivityFinish<DoctorDashboardActivity> { }
-            } else {
-                context?.alert {
-                    setTitle(getString(R.string.doctor_not_save))
-                    setMessage(it)
-                    neutralButton { }
+            if (viewModel.isProfileNavigation.value!!)
+                findNavController().popBackStack()
+            else {
+                if (it.equals(requireContext().resources.getString(R.string.success))) {
+                    context?.toast(resources.getString(R.string.doctor_update_successfully))
+                    if (isFromAdmin) {
+                        findNavController().popBackStack()
+                    } else
+                        startActivityFinish<DoctorDashboardActivity> { }
+                } else {
+                    context?.alert {
+                        setTitle(getString(R.string.doctor_not_save))
+                        setMessage(it)
+                        neutralButton { }
+                    }
                 }
             }
         }

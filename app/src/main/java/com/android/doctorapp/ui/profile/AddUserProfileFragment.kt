@@ -20,6 +20,7 @@ import com.android.doctorapp.ui.doctor.AddDoctorViewModel
 import com.android.doctorapp.ui.doctor.UpdateDoctorProfileFragment
 import com.android.doctorapp.ui.userdashboard.UserDashboardActivity
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.FEMALE_GENDER
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.neutralButton
@@ -147,17 +148,21 @@ class AddUserProfileFragment :
     private fun checkLiveData() {
 
         viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
-            if (it.equals(ConstantKey.SUCCESS)) {
-                context?.toast(resources.getString(R.string.user_save_successfully))
-                startActivityFinish<UserDashboardActivity>()
-
+            if (viewModel.isProfileNavigation.value!!) {
+                findNavController().popBackStack()
             } else {
-                context?.alert {
-                    setTitle(getString(R.string.user_not_save))
-                    setMessage(it)
-                    neutralButton { dialog ->
-                        dialog.dismiss()
+                if (it.equals(ConstantKey.SUCCESS)) {
+                    context?.toast(resources.getString(R.string.user_save_successfully))
+                    startActivityFinish<UserDashboardActivity>()
 
+                } else {
+                    context?.alert {
+                        setTitle(getString(R.string.user_not_save))
+                        setMessage(it)
+                        neutralButton { dialog ->
+                            dialog.dismiss()
+
+                        }
                     }
                 }
             }
@@ -213,8 +218,12 @@ class AddUserProfileFragment :
                 viewModel.email.value = it.email
                 viewModel.contactNumber.value = it.contactNumber
                 viewModel.address.value = it.address
-                viewModel.selectGenderValue.value = it.gender
+                if (it.gender == FEMALE_GENDER)
+                    viewModel.gender.value = R.id.radioButtonFemale
+                else
+                    viewModel.gender.value = R.id.radioButtonMale
                 viewModel.dob.value = dateFormatter(it.dob, ConstantKey.DATE_MM_FORMAT)
+                viewModel.isProfileNavigation.value = true
             } else
                 viewModel.email.value = it.email
         }
