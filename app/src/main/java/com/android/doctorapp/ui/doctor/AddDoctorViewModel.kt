@@ -1,7 +1,6 @@
 package com.android.doctorapp.ui.doctor
 
 import android.content.Context
-import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.RadioGroup
@@ -128,7 +127,7 @@ class AddDoctorViewModel @Inject constructor(
     private val _dataResponse = SingleLiveEvent<UserDataRequestModel?>()
     val userResponse = _dataResponse.asLiveData()
 
-    val check: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isProfileNavigation: MutableLiveData<Boolean> = MutableLiveData(false)
 
     var gender: MutableLiveData<Int> = MutableLiveData()
 
@@ -318,15 +317,10 @@ class AddDoctorViewModel @Inject constructor(
     }
 
     fun genderSelect(group: RadioGroup, checkedId: Int) {
-//        if (selectGenderValue.value == FEMALE_GENDER) {
-//            binding!!.radioButtonFemale.isChecked = true
-//        }
         if (R.id.radioButtonMale == checkedId) {
             selectGenderValue.value = MALE_GENDER
-            Log.d(TAG, "genderSelect: $checkedId")
         } else {
             selectGenderValue.value = FEMALE_GENDER
-            Log.d(TAG, "genderSelect: $checkedId")
         }
     }
 

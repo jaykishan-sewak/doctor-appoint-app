@@ -3,7 +3,6 @@ package com.android.doctorapp.ui.profile
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +20,7 @@ import com.android.doctorapp.ui.doctor.AddDoctorViewModel
 import com.android.doctorapp.ui.doctor.UpdateDoctorProfileFragment
 import com.android.doctorapp.ui.userdashboard.UserDashboardActivity
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.FEMALE_GENDER
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.neutralButton
@@ -148,7 +148,7 @@ class AddUserProfileFragment :
     private fun checkLiveData() {
 
         viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
-            if (viewModel.check.value!!) {
+            if (viewModel.isProfileNavigation.value!!) {
                 findNavController().popBackStack()
             } else {
                 if (it.equals(ConstantKey.SUCCESS)) {
@@ -218,14 +218,12 @@ class AddUserProfileFragment :
                 viewModel.email.value = it.email
                 viewModel.contactNumber.value = it.contactNumber
                 viewModel.address.value = it.address
-                if (it.gender == "FEMALE")
+                if (it.gender == FEMALE_GENDER)
                     viewModel.gender.value = R.id.radioButtonFemale
                 else
                     viewModel.gender.value = R.id.radioButtonMale
-
-                Log.d(TAG, "checkLiveData: ${it.gender}")
                 viewModel.dob.value = dateFormatter(it.dob, ConstantKey.DATE_MM_FORMAT)
-                viewModel.check.value = true
+                viewModel.isProfileNavigation.value = true
             } else
                 viewModel.email.value = it.email
         }
