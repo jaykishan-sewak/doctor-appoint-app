@@ -3,6 +3,7 @@ package com.android.doctorapp.ui.profile
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -147,17 +148,21 @@ class AddUserProfileFragment :
     private fun checkLiveData() {
 
         viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
-            if (it.equals(ConstantKey.SUCCESS)) {
-                context?.toast(resources.getString(R.string.user_save_successfully))
-                startActivityFinish<UserDashboardActivity>()
-
+            if (viewModel.check.value!!) {
+                findNavController().popBackStack()
             } else {
-                context?.alert {
-                    setTitle(getString(R.string.user_not_save))
-                    setMessage(it)
-                    neutralButton { dialog ->
-                        dialog.dismiss()
+                if (it.equals(ConstantKey.SUCCESS)) {
+                    context?.toast(resources.getString(R.string.user_save_successfully))
+                    startActivityFinish<UserDashboardActivity>()
 
+                } else {
+                    context?.alert {
+                        setTitle(getString(R.string.user_not_save))
+                        setMessage(it)
+                        neutralButton { dialog ->
+                            dialog.dismiss()
+
+                        }
                     }
                 }
             }
@@ -213,8 +218,14 @@ class AddUserProfileFragment :
                 viewModel.email.value = it.email
                 viewModel.contactNumber.value = it.contactNumber
                 viewModel.address.value = it.address
-                viewModel.selectGenderValue.value = it.gender
+                if (it.gender == "FEMALE")
+                    viewModel.gender.value = R.id.radioButtonFemale
+                else
+                    viewModel.gender.value = R.id.radioButtonMale
+
+                Log.d(TAG, "checkLiveData: ${it.gender}")
                 viewModel.dob.value = dateFormatter(it.dob, ConstantKey.DATE_MM_FORMAT)
+                viewModel.check.value = true
             } else
                 viewModel.email.value = it.email
         }

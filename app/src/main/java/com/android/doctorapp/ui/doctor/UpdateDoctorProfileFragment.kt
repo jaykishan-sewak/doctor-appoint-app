@@ -1,11 +1,13 @@
 package com.android.doctorapp.ui.doctor
 
 import android.app.TimePickerDialog
+import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -208,7 +210,9 @@ class UpdateDoctorProfileFragment :
                 viewModel.contactNumber.value = it.contactNumber
                 viewModel.address.value = it.address
                 viewModel.selectGenderValue.value = it.gender
+                Log.d(TAG, "genderValue: ${it.gender}")
                 viewModel.dob.value = dateFormatter(it.dob, ConstantKey.DATE_MM_FORMAT)
+                viewModel.check.value = true
             } else {
                 viewModel.name.value = it.name
                 viewModel.email.value = it.email
@@ -269,17 +273,21 @@ class UpdateDoctorProfileFragment :
         }
 
         viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
-            if (it.equals(requireContext().resources.getString(R.string.success))) {
-                context?.toast(resources.getString(R.string.doctor_update_successfully))
-                if (isFromAdmin) {
-                    findNavController().popBackStack()
-                } else
-                    startActivityFinish<DoctorDashboardActivity> { }
-            } else {
-                context?.alert {
-                    setTitle(getString(R.string.doctor_not_save))
-                    setMessage(it)
-                    neutralButton { }
+            if (viewModel.check.value!!)
+                findNavController().popBackStack()
+            else {
+                if (it.equals(requireContext().resources.getString(R.string.success))) {
+                    context?.toast(resources.getString(R.string.doctor_update_successfully))
+                    if (isFromAdmin) {
+                        findNavController().popBackStack()
+                    } else
+                        startActivityFinish<DoctorDashboardActivity> { }
+                } else {
+                    context?.alert {
+                        setTitle(getString(R.string.doctor_not_save))
+                        setMessage(it)
+                        neutralButton { }
+                    }
                 }
             }
         }

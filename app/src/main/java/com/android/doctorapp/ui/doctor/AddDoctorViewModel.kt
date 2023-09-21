@@ -128,6 +128,10 @@ class AddDoctorViewModel @Inject constructor(
     private val _dataResponse = SingleLiveEvent<UserDataRequestModel?>()
     val userResponse = _dataResponse.asLiveData()
 
+    val check: MutableLiveData<Boolean> = MutableLiveData(false)
+
+    var gender: MutableLiveData<Int> = MutableLiveData()
+
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
         this.binding = binding
@@ -146,7 +150,7 @@ class AddDoctorViewModel @Inject constructor(
                 recordId = it.orEmpty()
                 var userObj: UserDataResponseModel
                 if (context.isNetworkAvailable()) {
-                     setShowProgress(true)
+                    setShowProgress(true)
                     when (val response = authRepository.getRecordById(recordId, fireStore)) {
                         is ApiSuccessResponse -> {
                             userObj = UserDataResponseModel(
@@ -197,7 +201,7 @@ class AddDoctorViewModel @Inject constructor(
                         }
                     }
                 } else {
-                     context.toast(resourceProvider.getString(R.string.check_internet_connection))
+                    context.toast(resourceProvider.getString(R.string.check_internet_connection))
                 }
             }
         }
@@ -314,12 +318,18 @@ class AddDoctorViewModel @Inject constructor(
     }
 
     fun genderSelect(group: RadioGroup, checkedId: Int) {
+//        if (selectGenderValue.value == FEMALE_GENDER) {
+//            binding!!.radioButtonFemale.isChecked = true
+//        }
         if (R.id.radioButtonMale == checkedId) {
             selectGenderValue.value = MALE_GENDER
+            Log.d(TAG, "genderSelect: $checkedId")
         } else {
             selectGenderValue.value = FEMALE_GENDER
+            Log.d(TAG, "genderSelect: $checkedId")
         }
     }
+
 
     fun calenderClick(text_dob: View) {
         isCalender.value = text_dob
@@ -412,7 +422,10 @@ class AddDoctorViewModel @Inject constructor(
                             } as ArrayList<AddShiftTimeModel>,
                         isAdmin = false,
                         isNotificationEnable = notificationToggleData.value == true,
-                        dob = SimpleDateFormat(DATE_MM_FORMAT, Locale.getDefault()).parse(dob.value.toString()),
+                        dob = SimpleDateFormat(
+                            DATE_MM_FORMAT,
+                            Locale.getDefault()
+                        ).parse(dob.value.toString()),
                         isUserVerified = true,
                         holidayList = if (holidayList.value?.isNotEmpty() == true) holidayList.value?.toList()
                             ?.map { holidayDate -> holidayDate.holidayDate } as ArrayList<Date> else null,
@@ -432,7 +445,10 @@ class AddDoctorViewModel @Inject constructor(
                         isEmailVerified = true,
                         isPhoneNumberVerified = true,
                         isAdmin = false,
-                        dob = SimpleDateFormat(DATE_MM_FORMAT,Locale.getDefault()).parse(dob.value.toString()),
+                        dob = SimpleDateFormat(
+                            DATE_MM_FORMAT,
+                            Locale.getDefault()
+                        ).parse(dob.value.toString()),
                         isUserVerified = true
                     )
 
