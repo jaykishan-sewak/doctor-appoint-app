@@ -1,7 +1,6 @@
 package com.android.doctorapp.ui.admin
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -18,7 +17,6 @@ import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
-import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -39,6 +37,8 @@ class AdminDashboardViewModel @Inject constructor(
     val itemPosition: MutableLiveData<Int> = MutableLiveData()
     val deleteId: MutableLiveData<String> = MutableLiveData("")
     val callClick = MutableLiveData("")
+    private val _navigateToLogin = SingleLiveEvent<Boolean>()
+    val navigateToLogin = _navigateToLogin.asLiveData()
 
     init {
         getItems()
@@ -153,5 +153,13 @@ class AdminDashboardViewModel @Inject constructor(
 
     fun clickOnCall(text: String) {
         callClick.value = text
+    }
+
+    fun signOut() {
+        viewModelScope.launch {
+            adminRepository.clearLoggedInSession()
+        }
+        _navigateToLogin.value = true
+
     }
 }

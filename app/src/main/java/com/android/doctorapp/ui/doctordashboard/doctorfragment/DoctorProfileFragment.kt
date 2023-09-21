@@ -15,10 +15,12 @@ import com.android.doctorapp.databinding.FragmentDoctorProfileBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.ui.authentication.AuthenticationActivity
 import com.android.doctorapp.ui.profile.ProfileViewModel
 import com.android.doctorapp.util.extension.fetchImageOrShowError
 import com.android.doctorapp.util.extension.openEmailSender
 import com.android.doctorapp.util.extension.openPhoneDialer
+import com.android.doctorapp.util.extension.startActivityFinish
 import javax.inject.Inject
 
 
@@ -94,6 +96,10 @@ class DoctorProfileFragment :
         }
         viewModel.emailClick.observe(viewLifecycleOwner) {
             requireActivity().openEmailSender(it)
+        }
+        viewModel.navigateToLogin.observe(viewLifecycleOwner) {
+            if (it)
+                startActivityFinish<AuthenticationActivity>()
         }
     }
 
