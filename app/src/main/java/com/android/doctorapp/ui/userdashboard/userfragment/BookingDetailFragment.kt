@@ -54,7 +54,7 @@ class BookingDetailFragment :
     }
 
     private fun registerObserver() {
-        viewModel.getAppointmentDoctorDetails()
+
         viewModel.cancelClick.observe(viewLifecycleOwner) {
             if (it) {
                 CustomDialogFragment(requireContext(),

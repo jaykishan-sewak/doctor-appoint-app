@@ -18,7 +18,6 @@ import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
@@ -104,10 +103,10 @@ class AppointmentDoctorViewModel @Inject constructor(
                         setShowProgress(false)
                         if (response.body.isNotEmpty()) {
                             appointmentList.value = response.body!!
-                            sortedAppointmentList.value = appointmentList.value!!.sortedBy {
-                                it.bookingDateTime
-                            }
-                            sortedAppointmentList.value = filteredListFun(sortedAppointmentList)
+                            sortedAppointmentList.value =
+                                appointmentList.value!!.sortedByDescending {
+                                    it.bookingDateTime
+                                }
                             addData()
                         }
                     }
@@ -133,13 +132,6 @@ class AppointmentDoctorViewModel @Inject constructor(
         }
     }
 
-    private fun filteredListFun(sortedAppointmentList: MutableLiveData<List<AppointmentModel>>): List<AppointmentModel> {
-        val currentDate = Date()
-        return sortedAppointmentList.value!!.filter { item ->
-            item.bookingDateTime!! >= currentDate
-        }
-
-    }
 }
 
 

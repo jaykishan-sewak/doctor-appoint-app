@@ -179,5 +179,6 @@
     <string name="status">Status</string>
     <string name="symptoms">Symptoms</string>
     <string name="feedback">Feedback</string>
+    <string name="no_booking_found">No booking Found</string>
 
 </resources>

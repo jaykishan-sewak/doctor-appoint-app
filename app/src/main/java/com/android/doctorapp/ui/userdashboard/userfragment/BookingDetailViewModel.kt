@@ -12,7 +12,6 @@ import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.AppointmentModel
-import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.currentDate
@@ -29,46 +28,11 @@ class BookingDetailViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     var appointmentObj = MutableLiveData<AppointmentModel>()
-    var doctorDataResponse: MutableLiveData<UserDataResponseModel> = MutableLiveData()
     var cancelClick = MutableLiveData(false)
 
     private val _navigationListener: MutableLiveData<Boolean> = MutableLiveData(false)
     val navigationListener = _navigationListener.asLiveData()
 
-    fun getAppointmentDoctorDetails() {
-        viewModelScope.launch {
-            if (context.isNetworkAvailable()) {
-                when (val response =
-                    appointmentRepository.getAppointmentUserDetails(
-                        appointmentObj.value?.doctorId!!,
-                        fireStore
-                    )) {
-                    is ApiSuccessResponse -> {
-                        doctorDataResponse.postValue(response.body!!)
-                        setShowProgress(false)
-                    }
-
-                    is ApiErrorResponse -> {
-                        context.toast(response.errorMessage)
-                        setShowProgress(false)
-                    }
-
-                    is ApiNoNetworkResponse -> {
-                        context.toast(response.errorMessage)
-                        setShowProgress(false)
-                    }
-
-                    else -> {
-                        context.toast(resourceProvider.getString(R.string.something_went_wrong))
-                        setShowProgress(false)
-                    }
-                }
-            } else {
-                context.toast(resourceProvider.getString(R.string.check_internet_connection))
-            }
-
-        }
-    }
 
     fun checkAppointmentDate(): Boolean {
         val currentDate = currentDate()

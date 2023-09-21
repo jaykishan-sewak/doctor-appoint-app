@@ -1,7 +1,5 @@
 package com.android.doctorapp.ui.userdashboard.userfragment
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -22,6 +20,7 @@ import com.android.doctorapp.ui.userdashboard.userfragment.adapter.BookingAppoin
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.extension.currentDate
 import com.android.doctorapp.util.extension.dateFormatter
+import com.android.doctorapp.util.extension.openPhoneDialer
 import com.android.doctorapp.util.extension.selectDate
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
@@ -69,7 +68,7 @@ class UserRequestFragment :
             viewModel.isDoctorRequestCalendar.value = false
         }
         viewModel.userAppointmentData.observe(viewLifecycleOwner) {
-            if (it != null) {
+            if (it != null && it.isNotEmpty()) {
                 adapter.filterList(it)
                 viewModel.dataFound.value = true
             } else {
@@ -140,9 +139,7 @@ class UserRequestFragment :
                 }
 
                 override fun onClick(contact: String) {
-                    val intent = Intent(Intent.ACTION_DIAL)
-                    intent.data = Uri.parse("tel:$contact")
-                    requireActivity().startActivity(intent)
+                    requireActivity().openPhoneDialer(contact)
                 }
             }
         )
