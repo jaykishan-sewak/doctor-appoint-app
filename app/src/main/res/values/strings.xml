@@ -164,8 +164,8 @@
     <string name="approve">Approve</string>
     <string name="email">Email :</string>
     <string name="contact_no">Contact no :</string>
-    <string name="email_verified">Email Verified</string>
-    <string name="phone_verified">Phone verified</string>
+    <string name="email_verified">Email Verified :</string>
+    <string name="phone_verified">Phone verified :</string>
     <string name="no_appointments_found">No Appointments Found</string>
 
     <string name="no_data_found">No Data Found</string>
