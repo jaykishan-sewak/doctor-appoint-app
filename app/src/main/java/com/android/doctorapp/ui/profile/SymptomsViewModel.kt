@@ -51,7 +51,7 @@ class SymptomsViewModel @Inject constructor(
     private val consultDoctorNameError: MutableLiveData<String?> = MutableLiveData()
     private val lastVisitDateError: MutableLiveData<String?> = MutableLiveData()
     private val lastVisitTimeError: MutableLiveData<String?> = MutableLiveData()
-    var doctorObj: MutableLiveData<UserDataResponseModel> = MutableLiveData()
+    var doctorObj: MutableLiveData<UserDataResponseModel>? = MutableLiveData()
 
     var doctorList = MutableLiveData<List<UserDataResponseModel>>()
 
@@ -83,7 +83,7 @@ class SymptomsViewModel @Inject constructor(
                     lastVisitDay = convertDateToFull(lastVisitDate.value.toString()),
                     lastPrescription = lastVisitTime.value.toString(),
                     sufferingDay = numberOfDays.value.toString(),
-                    doctorId = doctorObj.value!!.userId,
+                    doctorId = doctorObj?.value?.userId,
                     symptomDetails = symptomDetails.value.toString(),
                 )
                 setShowProgress(true)

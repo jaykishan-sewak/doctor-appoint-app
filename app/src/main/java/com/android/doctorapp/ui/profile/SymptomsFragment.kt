@@ -74,7 +74,7 @@ class SymptomsFragment : BaseFragment<FragmentSymptomsBinding>(R.layout.fragment
             )
             binding.autoCompleteTextViewDoctorName.setAdapter(adapter)
             binding.autoCompleteTextViewDoctorName.setOnItemClickListener { adapterView, view, i, l ->
-                viewModel.doctorObj.postValue(viewModel.doctorList.value!![i])
+                viewModel.doctorObj?.postValue(viewModel.doctorList.value!![i])
             }
 
         }

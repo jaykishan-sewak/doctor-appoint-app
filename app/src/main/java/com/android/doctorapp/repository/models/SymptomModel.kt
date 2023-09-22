@@ -9,7 +9,7 @@ data class SymptomModel(
     var lastVisitDay: Date? = null,
     var lastPrescription: String = "",
     var sufferingDay: String = "",
-    var doctorId: String = "",
+    var doctorId: String ?= "",
     var symptomDetails: String = ""
 ) {
 }
