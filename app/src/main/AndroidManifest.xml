@@ -20,7 +20,7 @@
             android:name=".ui.userdashboard.UserDashboardActivity"
             android:exported="false"
             android:theme="@style/Theme.InfusionTemplate.NoActionBar"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.splash.SplashScreenActivity"
             android:exported="true"

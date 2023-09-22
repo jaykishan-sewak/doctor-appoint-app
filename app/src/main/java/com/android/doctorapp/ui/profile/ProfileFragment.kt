@@ -100,6 +100,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
         viewModel.emailClick.observe(viewLifecycleOwner) {
             requireActivity().openEmailSender(it)
         }
+
+        viewModel.navigateToSymptoms.observe(viewLifecycleOwner) {
+            findNavController().navigate(R.id.action_user_profile_to_symptoms)
+        }
     }
 
     private val startForProfileImageResult =

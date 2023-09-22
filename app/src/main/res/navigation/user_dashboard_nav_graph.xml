@@ -35,6 +35,11 @@
             android:id="@+id/action_user_profile_to_updateUserProfile"
             app:destination="@+id/AddUserProfileFragment"/>
 
+        <action
+            android:id="@+id/action_user_profile_to_symptoms"
+            app:destination="@+id/Symptoms"/>
+
+
     </fragment>
 
     <fragment
@@ -57,5 +62,13 @@
         tools:layout="@layout/fragment_booking_detail">
 
     </fragment>
+
+    <fragment
+        android:id="@+id/Symptoms"
+        android:name="com.android.doctorapp.ui.profile.SymptomsFragment"
+        tools:layout="@layout/fragment_symptoms">
+
+    </fragment>
+
 
 </navigation>
