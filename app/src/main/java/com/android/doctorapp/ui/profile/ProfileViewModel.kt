@@ -49,6 +49,8 @@ class ProfileViewModel @Inject constructor(
     val phoneClick: MutableLiveData<String> = MutableLiveData()
     val emailClick: MutableLiveData<String> = MutableLiveData()
     val dateList: MutableLiveData<List<String>> = MutableLiveData()
+    private val _navigationListener = SingleLiveEvent<Int>()
+    val navigationListener = _navigationListener.asLiveData()
 
     private val _navigateToSymptoms = SingleLiveEvent<Boolean>()
     val navigateToSymptoms = _navigateToSymptoms.asLiveData()
@@ -147,12 +149,14 @@ class ProfileViewModel @Inject constructor(
     fun onClickEmailIcon(email: String) {
         emailClick.postValue(email)
     }
+
     fun clickOnSymptom() {
         context.toast("Symptoms")
         _navigateToSymptoms.postValue(true)
     }
+
     fun clickOnFeedback() {
-        context.toast("Feedback")
+        _navigationListener.value = R.id.action_user_profile_to_feedBack
     }
 
 }

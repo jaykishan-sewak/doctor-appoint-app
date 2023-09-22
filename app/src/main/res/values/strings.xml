@@ -24,7 +24,7 @@
     <string name="forgot_your_password">Forgot your password?</string>
     <string name="hint_password">Password</string>
     <string name="hint_username">Username</string>
-    <string name="sign_out">Sign Out</string>
+    <string name="sign_out">Log Out</string>
     <string name="signup">SignUp</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
@@ -180,6 +180,7 @@
     <string name="symptoms">Symptoms</string>
     <string name="feedback">Feedback</string>
     <string name="no_booking_found">No booking Found</string>
+    <string name="user_doctor_list">User Doctor List</string>
     <string name="symptom_details">Symptom Details</string>
     <string name="number_of_days">Number of Days</string>
 

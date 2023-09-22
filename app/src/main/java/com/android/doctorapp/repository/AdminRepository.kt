@@ -1,5 +1,6 @@
 package com.android.doctorapp.repository
 
+import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.models.ApiResponse
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey
@@ -10,7 +11,9 @@ import kotlinx.coroutines.tasks.await
 import retrofit2.Response
 import javax.inject.Inject
 
-class AdminRepository @Inject constructor() {
+class AdminRepository @Inject constructor(
+    private val session: Session
+) {
 
     suspend fun getDoctorList(firestore: FirebaseFirestore): ApiResponse<List<UserDataResponseModel>> {
         return try {
@@ -65,4 +68,6 @@ class AdminRepository @Inject constructor() {
             ApiResponse.create(e.fillInStackTrace())
         }
     }
+
+    suspend fun clearLoggedInSession() = session.clearLoggedInSession()
 }
