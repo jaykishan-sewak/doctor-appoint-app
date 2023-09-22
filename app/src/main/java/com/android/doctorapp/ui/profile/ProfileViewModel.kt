@@ -52,9 +52,6 @@ class ProfileViewModel @Inject constructor(
     private val _navigationListener = SingleLiveEvent<Int>()
     val navigationListener = _navigationListener.asLiveData()
 
-    private val _navigateToSymptoms = SingleLiveEvent<Boolean>()
-    val navigateToSymptoms = _navigateToSymptoms.asLiveData()
-
 
     init {
         getUserProfile()
@@ -151,8 +148,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun clickOnSymptom() {
-        context.toast("Symptoms")
-        _navigateToSymptoms.postValue(true)
+        _navigationListener.postValue(R.id.action_user_profile_to_symptoms)
     }
 
     fun clickOnFeedback() {

@@ -5,7 +5,7 @@
 
     <data>
 
-        <import type="android.view.View"/>
+        <import type="android.view.View" />
 
         <variable
             name="viewModel"
@@ -21,7 +21,7 @@
         <include
             android:id="@+id/toolbarContainer"
             layout="@layout/custom_toolbar"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -29,193 +29,182 @@
 
         <ScrollView
             android:layout_width="@dimen/dp_0"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/dp_0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbarContainer">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="@dimen/margin_32"
-            android:paddingVertical="@dimen/margin_16">
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/fieldSymptomsDetails"
-                style="@style/user_login_tlEditText"
-                android:layout_width="0dp"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_10"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:paddingHorizontal="@dimen/margin_32"
+                android:paddingVertical="@dimen/margin_40">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etSymptomsDetails"
-                    style="@style/user_login_editText"
-                    android:hint="@string/symptom_details"
-                    android:imeOptions="actionNext"
-                    android:singleLine="false"
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/fieldSymptomsDetails"
+                    style="@style/user_login_tlEditText"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10"
+                    app:error="@{viewModel.symptomDetailsError}"
+                    app:errorEnabled="@{viewModel.symptomDetailsError!= null ? true : false}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etSymptomsDetails"
+                        style="@style/user_login_editText"
+                        android:afterTextChanged="@{(text) -> viewModel.isValidSymptomDetails(text)}"
+                        android:hint="@string/symptom_details"
+                        android:imeOptions="actionNext"
+                        android:singleLine="false"
+                        android:text="@={viewModel.symptomDetails}" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/fieldNumberOfDays"
-                style="@style/user_login_tlEditText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_10"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fieldSymptomsDetails">
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_address"
-                    style="@style/user_login_editText"
-                    android:hint="@string/number_of_days"
-                    android:imeOptions="actionNext"
-                    android:singleLine="false"
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/fieldNumberOfDays"
+                    style="@style/user_login_tlEditText"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10"
+                    app:error="@{viewModel.numberOfDaysError}"
+                    app:errorEnabled="@{viewModel.numberOfDaysError!= null ? true : false}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/fieldSymptomsDetails">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etSufferingDays"
+                        style="@style/user_login_editText"
+                        android:afterTextChanged="@{(text) -> viewModel.isValidNumberOfDays(text)}"
+                        android:hint="@string/number_of_days"
+                        android:imeOptions="actionNext"
+                        android:inputType="number"
+                        android:text="@={viewModel.numberOfDays}" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvConsultQuestion"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_30"
-                android:text="Have you consult any doctor ?"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fieldNumberOfDays" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <RadioGroup
-                android:id="@+id/radio_consult"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/margin_50"
-                android:onCheckedChanged="@{(group, checkedId) -> viewModel.consultOrNOt(group, checkedId)}"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvConsultQuestion">
-
-                <androidx.appcompat.widget.AppCompatRadioButton
-                    android:id="@+id/radioButtonYes"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvConsultQuestion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/yes"
-                    android:value="@string/yes" />
+                    android:layout_marginTop="@dimen/margin_30"
+                    android:text="@string/have_you_consult_any_doctor"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/fieldNumberOfDays" />
 
-                <androidx.appcompat.widget.AppCompatRadioButton
-                    android:id="@+id/radioButtonNo"
+                <RadioGroup
+                    android:id="@+id/radio_consult"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="@dimen/margin_50"
+                    android:onCheckedChanged="@{(group, checkedId) -> viewModel.consultOrNOt(group, checkedId)}"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvConsultQuestion">
+
+                    <androidx.appcompat.widget.AppCompatRadioButton
+                        android:id="@+id/radioButtonYes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/yes"
+                        android:value="@string/yes" />
+
+                    <androidx.appcompat.widget.AppCompatRadioButton
+                        android:id="@+id/radioButtonNo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_10"
+                        android:checked="true"
+                        android:text="@string/no"
+                        android:value="@string/no" />
+
+                </RadioGroup>
+
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/autoCompleteTextViewDoctorName"
+                    style="@style/user_login_editText"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="55dp"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:background="@drawable/rounded_bg"
+                    android:completionThreshold="3"
+                    android:hint="@string/enter_doctor_name"
+                    android:text="@={viewModel.consultDoctorName}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/radio_consult" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/lastVisitDate"
+                    style="@style/user_login_tlEditText"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/lastPrescription">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etLastVisitDate"
+                        style="@style/user_login_editText"
+                        android:clickable="false"
+                        android:drawableEnd="@drawable/ic_calendar_blue"
+                        android:focusable="false"
+                        android:hint="@string/last_visit_date"
+                        android:onClick="@{(text_dob) -> viewModel.calenderClick(text_dob)}"
+                        android:text="@{viewModel.lastVisitDate}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/lastPrescription"
+                    style="@style/user_login_tlEditText"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/autoCompleteTextViewDoctorName">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etLastPrescription"
+                        style="@style/user_login_editText"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:hint="@string/last_prescription"
+                        android:text="@={viewModel.lastVisitTime}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/gpItems"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:layout_marginStart="@dimen/margin_10"
-                    android:text="@string/no"
-                    android:value="@string/no" />
+                    android:visibility="@{viewModel.selectYesOrNo ? View.VISIBLE : View.GONE}"
+                    app:constraint_referenced_ids="autoCompleteTextViewDoctorName, lastVisitDate,lastPrescription" />
 
-            </RadioGroup>
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/consultDoctorName"
-                style="@style/user_login_tlEditText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_10"
-                app:layout_constraintEnd_toEndOf="@+id/tvConsultQuestion"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/radio_consult">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etconsultDoctorName"
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnLogin"
                     style="@style/user_login_editText"
-                    android:hint="Doctor Name"
-                    android:imeOptions="actionNext"
-                    android:singleLine="false"
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
+                    android:layout_height="@dimen/margin_50"
+                    android:layout_marginTop="@dimen/margin_60"
+                    android:background="@drawable/button_state_colors"
+                    android:onClick="@{view -> viewModel.onSubmit()}"
+                    android:text="@string/submit"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/lastVisitDate" />
 
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/lastVisitDate"
-                style="@style/user_login_tlEditText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_10"
-                app:layout_constraintEnd_toEndOf="@+id/tvConsultQuestion"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/consultDoctorName">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etLastVisitDate"
-                    style="@style/user_login_editText"
-                    android:clickable="true"
-                    android:drawableEnd="@drawable/ic_calendar_blue"
-                    android:focusable="true"
-                    android:onClick="@{(text_dob) -> viewModel.calenderClick(text_dob)}"
-                    android:hint="Last Visit Date"
-                    android:imeOptions="actionNext"
-                    android:singleLine="false"
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/lastPrescriptionTime"
-                style="@style/user_login_tlEditText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_10"
-                app:layout_constraintEnd_toEndOf="@+id/tvConsultQuestion"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lastVisitDate">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etLastPrescriptionTime"
-                    style="@style/user_login_editText"
-                    android:clickable="true"
-                    android:drawableEnd="@drawable/ic_calendar_blue"
-                    android:focusable="true"
-                    android:hint="Last Prescription time"
-                    android:imeOptions="actionNext"
-                    android:singleLine="false"
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/gpItems"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="@{viewModel.selectYesOrNo ? View.VISIBLE : View.GONE}"
-                app:constraint_referenced_ids="consultDoctorName, lastVisitDate,lastPrescriptionTime" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnLogin"
-                style="@style/user_login_editText"
-                android:layout_height="@dimen/margin_50"
-                android:layout_marginTop="@dimen/margin_60"
-                android:background="@drawable/button_state_colors"
-                android:text="@string/submit"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                app:layout_constraintTop_toBottomOf="@+id/lastPrescriptionTime"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>

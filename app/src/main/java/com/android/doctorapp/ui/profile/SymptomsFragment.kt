@@ -1,32 +1,28 @@
 package com.android.doctorapp.ui.profile
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.FragmentSymptomsBinding
-import com.android.doctorapp.databinding.FragmentUpdateDoctorProfileBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
-import com.android.doctorapp.ui.userdashboard.UserDashboardActivity
 import com.android.doctorapp.util.extension.selectDate
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.Date
 import javax.inject.Inject
 
 
-class SymptomsFragment : BaseFragment<FragmentSymptomsBinding> (R.layout.fragment_symptoms) {
+class SymptomsFragment : BaseFragment<FragmentSymptomsBinding>(R.layout.fragment_symptoms) {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel by viewModels<SymptomsViewModel> { viewModelFactory }
-
     lateinit var bindingView: FragmentSymptomsBinding
 
 
@@ -45,8 +41,9 @@ class SymptomsFragment : BaseFragment<FragmentSymptomsBinding> (R.layout.fragmen
             viewModel = this@SymptomsFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
         }
+        viewModel.getDoctorList()
         setUpWithViewModel(viewModel)
-        registerObserver(bindingView)
+        registerObservers()
         return bindingView.root
 
     }
@@ -56,19 +53,36 @@ class SymptomsFragment : BaseFragment<FragmentSymptomsBinding> (R.layout.fragmen
 
     }
 
-    private fun registerObservers(layoutBinding: FragmentSymptomsBinding) {
+    private fun registerObservers() {
         viewModel.isCalender.observe(viewLifecycleOwner) {
-            if (layoutBinding.textDateOfBirth.id == it?.id) {
+            if (binding.etLastVisitDate.id == it?.id) {
                 requireContext().selectDate(maxDate = Date().time, minDate = null) { dobDate ->
-                    if (calculateAge(dobDate) > 22) {
-                        viewModel.dob.value = dobDate
-                        viewModel.dobError.value = null
-                    } else {
-                        viewModel.isDobGreater22()
-                    }
+                    viewModel.lastVisitDate.value = dobDate
                 }
             }
         }
+
+        viewModel.doctorList.observe(viewLifecycleOwner) {
+            val doctorName = arrayListOf<String>()
+            it.forEach {
+                doctorName.add(it.name)
+            }
+            var adapter = ArrayAdapter<String>(
+                requireContext(),
+                android.R.layout.simple_dropdown_item_1line,
+                doctorName
+            )
+            binding.autoCompleteTextViewDoctorName.setAdapter(adapter)
+            binding.autoCompleteTextViewDoctorName.setOnItemClickListener { adapterView, view, i, l ->
+                viewModel.doctorObj.postValue(viewModel.doctorList.value!![i])
+            }
+
+        }
+
+        viewModel.navigationListener.observe(viewLifecycleOwner) {
+            findNavController().navigate(it)
+        }
+    }
 
 
     override fun builder(): FragmentToolbar {
@@ -78,7 +92,7 @@ class SymptomsFragment : BaseFragment<FragmentSymptomsBinding> (R.layout.fragmen
             .withTitle(R.string.symptoms)
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
             .withNavigationIcon(requireActivity().getDrawable(R.drawable.ic_back_white))
-            .withNavigationListener{
+            .withNavigationListener {
                 findNavController().popBackStack()
             }
             .build()

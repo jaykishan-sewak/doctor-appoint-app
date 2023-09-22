@@ -41,6 +41,7 @@ object ConstantKey {
         const val FIELD_SELECTED_DATE = "bookingDateTime"
         const val FIELD_APPROVED_KEY = "status"
         const val FIELD_DOCTOR_ID = "doctorId"
+        const val TABLE_SYMPTOM = "symptom"
 
     }
 
@@ -52,7 +53,7 @@ object ConstantKey {
     const val DATE_MM_FORMAT = "dd-MM-yyyy"
     const val DAY_NAME_FORMAT = "EEE"
     const val DATE_NAME_FORMAT = "EEE"
-    const val DATE_FORMAT= "EEE MMM dd HH:mm:ss 'GMT'Z yyyy"
+    const val DATE_FORMAT = "EEE MMM dd HH:mm:ss 'GMT'Z yyyy"
     const val FULL_DAY_NAME_FORMAT = "EEEE"
     const val USER_TYPE_ADMIN = "ADMIN"
     const val USER_TYPE_USER = "USER"
