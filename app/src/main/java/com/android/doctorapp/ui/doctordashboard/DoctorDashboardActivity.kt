@@ -1,7 +1,9 @@
 package com.android.doctorapp.ui.doctordashboard
 
 import android.os.Bundle
-import android.util.Log
+import android.view.View
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.android.doctorapp.R
@@ -19,7 +21,7 @@ class DoctorDashboardActivity :
         binding.lifecycleOwner = this
         navController = findNavController(R.id.nav_host_fragment)
         binding.navView.setupWithNavController(navController)
-        binding.navView.setOnItemSelectedListener {item->
+        binding.navView.setOnItemSelectedListener { item ->
             val selectedTabId = item.itemId
             val currentTabId = navController.currentDestination?.id ?: 0
             if (selectedTabId == currentTabId) {
@@ -28,6 +30,15 @@ class DoctorDashboardActivity :
                 navController.navigate(selectedTabId)
             }
             true
+        }
+        navController.addOnDestinationChangedListener { controller: NavController?, destination: NavDestination, arguments: Bundle? ->
+            if (destination.id == R.id.navigation_appointment
+                || destination.id == R.id.navigation_request
+                || destination.id == R.id.navigation_profile
+            )
+                binding.navView.visibility = View.VISIBLE
+            else
+                binding.navView.visibility = View.GONE
         }
     }
 }
