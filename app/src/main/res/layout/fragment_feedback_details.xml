@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModal"
+            type="com.android.doctorapp.ui.feedback.FeedbackViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true">
+
+        <include
+            android:id="@+id/toolbarContainer"
+            layout="@layout/custom_toolbar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ScrollView
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
+            android:fillViewport="true"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbarContainer">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_16">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="@dimen/dp_120"
+                    android:layout_height="@dimen/dp_120"
+                    android:layout_marginTop="@dimen/margin_30"
+                    android:src="@drawable/baseline_feedback_24"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvFeedbackTitle"
+                    style="@style/label_text"
+                    android:text="@string/feedback"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/imageView" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvFeedbackDesc"
+                    style="@style/label_text"
+                    android:text="@string/feedback_desc"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvFeedbackTitle" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvRate"
+                    style="@style/label_text"
+                    android:layout_marginTop="@dimen/margin_15"
+                    android:text="@string/rate_your_experience"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvFeedbackDesc" />
+
+                <androidx.appcompat.widget.AppCompatRatingBar
+                    android:id="@+id/doctorRatingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_5"
+                    android:numStars="5"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:rating="@{viewModal.rating}"
+                    android:onRatingChanged="@{(view,rating,binding)-> viewModal.onRatingChanged(rating)}"
+                    app:layout_constraintTop_toBottomOf="@id/tvRate" />
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="@dimen/margin_5"
+                    android:layout_marginTop="@dimen/margin_20"
+                    android:background="@color/divider"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/doctorRatingBar" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvMsg"
+                    style="@style/label_text"
+                    android:layout_marginTop="@dimen/margin_15"
+                    android:text="@string/anything_else_you_want_to_add"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/divider" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etFeedBackMsg"
+                    style="@style/custom_edit_text_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_100dp"
+                    android:gravity="top|start"
+                    android:hint="@string/feedback_hint"
+                    android:inputType="textMultiLine"
+                    android:maxLines="5"
+                    android:text="@={viewModal.feedbackMsg}"
+                    android:padding="@dimen/margin_10"
+                    app:layout_constraintTop_toBottomOf="@id/tvMsg" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnFeedback"
+                    style="@style/user_login_editText"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/margin_50"
+                    android:background="@drawable/button_state_colors"
+                    android:text="@string/send_feedback"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:onClick="@{()->viewModal.submitFeedback()}"
+                    app:layout_constraintTop_toBottomOf="@id/etFeedBackMsg"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginVertical="@dimen/margin_20"
+                    app:layout_constraintStart_toStartOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
