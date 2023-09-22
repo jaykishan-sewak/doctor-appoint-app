@@ -15,6 +15,7 @@ import com.android.doctorapp.ui.doctordashboard.doctorfragment.AppointmentDoctor
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.DoctorProfileFragment
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.RequestDoctorFragment
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.SelectedDateAppointmentsFragment
+import com.android.doctorapp.ui.feedback.FeedbackDetailFragment
 import com.android.doctorapp.ui.feedback.FeedbackFragment
 import com.android.doctorapp.ui.home.HomeFragment
 import com.android.doctorapp.ui.otp.OtpVerificationFragment
@@ -57,4 +58,5 @@ interface AppComponent {
     fun inject(fragment: AdminProfileFragment)
 
     fun inject(fragment: FeedbackFragment)
+    fun inject(fragment: FeedbackDetailFragment)
 }
