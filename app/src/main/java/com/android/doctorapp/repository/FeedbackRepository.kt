@@ -3,6 +3,7 @@ package com.android.doctorapp.repository
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.models.ApiResponse
 import com.android.doctorapp.repository.models.AppointmentModel
+import com.android.doctorapp.repository.models.FeedbackRequestModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.FIELD_APPROVED
@@ -44,6 +45,19 @@ class FeedbackRepository @Inject constructor(
 
             }
             ApiResponse.create(response = Response.success(dataList))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+    suspend fun addFeedbackData(
+        requestModel: FeedbackRequestModel,
+        firestore: FirebaseFirestore
+    ): ApiResponse<String> {
+        return try {
+            val data =
+                firestore.collection(ConstantKey.DBKeys.TABLE_FEEDBACK).add(requestModel).await()
+            ApiResponse.create(response = Response.success(data.id))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
         }

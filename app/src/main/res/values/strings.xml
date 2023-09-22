@@ -193,5 +193,10 @@
     <string name="last_prescription">Last Prescription</string>
     <string name="last_visit_date">Last Visit Date</string>
 
+    <string name="feedback_desc">your feedback is important for us.</string>
+    <string name="rate_your_experience">Rate Your Experience</string>
+    <string name="anything_else_you_want_to_add">Anything else you want to add?</string>
+    <string name="feedback_hint">Tell us more about your overall experience</string>
+    <string name="send_feedback">Send feedback</string>
 
 </resources>
