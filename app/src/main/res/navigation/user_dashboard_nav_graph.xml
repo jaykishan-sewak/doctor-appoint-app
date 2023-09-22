@@ -34,6 +34,9 @@
         <action
             android:id="@+id/action_user_profile_to_updateUserProfile"
             app:destination="@+id/AddUserProfileFragment"/>
+        <action
+            android:id="@+id/action_user_profile_to_feedBack"
+            app:destination="@+id/Feedback"/>
 
     </fragment>
 
@@ -56,6 +59,12 @@
         android:name="com.android.doctorapp.ui.userdashboard.userfragment.BookingDetailFragment"
         tools:layout="@layout/fragment_booking_detail">
 
+    </fragment>
+
+    <fragment
+        android:id="@+id/Feedback"
+        android:name="com.android.doctorapp.ui.feedback.FeedbackFragment"
+        tools:layout="@layout/fragment_feedback">
     </fragment>
 
 </navigation>

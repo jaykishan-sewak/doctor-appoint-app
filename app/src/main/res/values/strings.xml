@@ -180,5 +180,6 @@
     <string name="symptoms">Symptoms</string>
     <string name="feedback">Feedback</string>
     <string name="no_booking_found">No booking Found</string>
+    <string name="user_doctor_list">User Doctor List</string>
 
 </resources>
