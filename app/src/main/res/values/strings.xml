@@ -203,5 +203,7 @@
     <string name="date_label">Date :</string>
     <string name="time_label">Time :</string>
     <string name="status_label">Status :</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
 
 </resources>

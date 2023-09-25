@@ -13,6 +13,7 @@ import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.FIELD_REJECTED
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.currentDate
 import com.android.doctorapp.util.extension.isNetworkAvailable
@@ -36,7 +37,7 @@ class BookingDetailViewModel @Inject constructor(
 
     fun checkAppointmentDate(): Boolean {
         val currentDate = currentDate()
-        return appointmentObj.value?.bookingDateTime!! > currentDate
+        return appointmentObj.value?.bookingDateTime!! > currentDate && appointmentObj.value?.status != FIELD_REJECTED
     }
 
     fun appointmentRejectApiCall(text: String) {

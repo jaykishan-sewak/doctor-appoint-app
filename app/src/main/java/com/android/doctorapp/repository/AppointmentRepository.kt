@@ -185,9 +185,10 @@ class AppointmentRepository @Inject constructor() {
         fireStore: FirebaseFirestore
     ): ApiResponse<AppointmentModel> {
         return try {
+            val requestData = requestModel.copy(doctorDetails = null)
             val response =
                 fireStore.collection(ConstantKey.DBKeys.TABLE_APPOINTMENT).document(requestModel.id)
-                    .set(requestModel).await()
+                    .set(requestData).await()
 
             ApiResponse.create(response = Response.success(requestModel))
         } catch (e: Exception) {
