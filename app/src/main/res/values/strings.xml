@@ -174,5 +174,5 @@
     <string name="end_time_grater">End time must be greater than start time</string>
     <string name="already_selected_time">Already Time is Selected</string>
     <string name="no_doctor_found">No Doctor found</string>
-
+    <string name="already_added_in_holiday">Already Added date in Holiday</string>
 </resources>
