@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.AppointmentTimeRowLayoutBinding
 import com.android.doctorapp.repository.models.AddShiftTimeModel
-import com.android.doctorapp.repository.models.TimeSlotModel
 
 class AppointmentTimeAdapter(
     private val timeList: ArrayList<AddShiftTimeModel>,

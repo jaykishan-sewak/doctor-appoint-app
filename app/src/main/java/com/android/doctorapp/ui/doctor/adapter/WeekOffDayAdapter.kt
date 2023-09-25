@@ -9,7 +9,7 @@ import com.android.doctorapp.databinding.WeekOffDayRowLayoutBinding
 import com.android.doctorapp.repository.models.WeekOffModel
 
 class WeekOffDayAdapter(
-    private val daysList: ArrayList<WeekOffModel>,
+    private var daysList: ArrayList<WeekOffModel>,
     private val listener: OnItemClickListener
 ) : RecyclerView.Adapter<WeekOffDayAdapter.ItemViewHolder>() {
 
@@ -43,6 +43,11 @@ class WeekOffDayAdapter(
 
     interface OnItemClickListener {
         fun onItemClick(item: WeekOffModel, position: Int)
+    }
+
+    fun updateWeekOffList(filterList: ArrayList<WeekOffModel>) {
+        daysList = filterList
+        notifyItemRangeChanged(0, daysList.size)
     }
 
 

@@ -35,7 +35,6 @@ import com.android.doctorapp.util.extension.isEmailAddressValid
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import com.google.android.material.chip.Chip
-import com.google.gson.Gson
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -117,13 +116,10 @@ class AddDoctorViewModel @Inject constructor(
 
     private val weekDayList = ArrayList<WeekOffModel>()
     val weekDayNameList = MutableLiveData<ArrayList<WeekOffModel>>()
-    val strWeekOffList = MutableLiveData<ArrayList<String>>()
-
 
     val holidayList = MutableLiveData<ArrayList<HolidayModel>>()
-//    val holidayList1 = MutableLiveData<ArrayList<HolidayModel>>()
 
-    val addShitTimeSlotList = MutableLiveData<ArrayList<AddShiftTimeModel>>()
+    val addShiftTimeSlotList = MutableLiveData<ArrayList<AddShiftTimeModel>>()
 
     private val _dataResponse = SingleLiveEvent<UserDataRequestModel?>()
     val userResponse = _dataResponse.asLiveData()
@@ -180,20 +176,23 @@ class AddDoctorViewModel @Inject constructor(
                             notificationToggleData.value = response.body.isNotificationEnable
                             degreeLiveList.value = response.body.degree?.toList()
                             specializationLiveList.value = response.body.specialities?.toList()
-                            holidayList.value = if (response.body.holidayList?.isNotEmpty() == true)response.body.holidayList?.map { holidayDate ->
-                                HolidayModel(
-                                    holidayDate = holidayDate
-                                )
-                            } as ArrayList<HolidayModel> else null
-
-                            addShitTimeSlotList.value =
-                                response.body.availableTime?.map { shiftModel ->
-                                    AddShiftTimeModel(
-                                        startTime = shiftModel.startTime,
-                                        endTime = shiftModel.endTime,
-                                        isTimeSlotBook = shiftModel.isTimeSlotBook
+                            holidayList.value =
+                                if (response.body.holidayList?.isNotEmpty() == true) response.body.holidayList?.map { holidayDate ->
+                                    HolidayModel(
+                                        holidayDate = holidayDate
                                     )
-                                } as ArrayList<AddShiftTimeModel>
+                                } as ArrayList<HolidayModel> else null
+
+
+                            addShiftTimeSlotList.value =
+                                if (response.body.availableTime?.isNotEmpty() == true)
+                                    response.body.availableTime?.map { shiftModel ->
+                                        AddShiftTimeModel(
+                                            startTime = shiftModel.startTime,
+                                            endTime = shiftModel.endTime,
+                                            isTimeSlotBook = shiftModel.isTimeSlotBook
+                                        )
+                                    } as ArrayList<AddShiftTimeModel> else null
 
                             getDBWeekDayList(response.body.weekOffList)
 
@@ -229,7 +228,7 @@ class AddDoctorViewModel @Inject constructor(
 
         if (isDoctor.value!!) {
 
-            if (addShitTimeSlotList.value.isNullOrEmpty()) {
+            if (addShiftTimeSlotList.value.isNullOrEmpty()) {
                 isUpdateDataValid.value = false
             } else {
                 isUpdateDataValid.value =
@@ -239,7 +238,7 @@ class AddDoctorViewModel @Inject constructor(
                             && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
                             && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
                             && !dob.value.isNullOrEmpty() && dobError.value.isNullOrEmpty()
-                            && addShitTimeSlotList.value?.filter { shiftTIme ->
+                            && addShiftTimeSlotList.value?.filter { shiftTIme ->
                         shiftTIme.startTime == null || shiftTIme.endTime == null
                     }.isNullOrEmpty()
                             && isPhoneVerify.value!!
@@ -424,7 +423,7 @@ class AddDoctorViewModel @Inject constructor(
                             ?.map { (it as Chip).text.toString() } as ArrayList<String>?,
                         isEmailVerified = true,
                         isPhoneNumberVerified = true,
-                        availableTime = addShitTimeSlotList.value?.toList()
+                        availableTime = addShiftTimeSlotList.value?.toList()
                             ?.map { newData ->
                                 AddShiftRequestModel(
                                     startTime = newData.startTime,
@@ -441,10 +440,10 @@ class AddDoctorViewModel @Inject constructor(
                         isUserVerified = true,
                         holidayList = if (holidayList.value?.isNotEmpty() == true) holidayList.value?.toList()
                             ?.map { holidayDate -> holidayDate.holidayDate } as ArrayList<Date> else null,
-                        weekOffList = strWeekOffList.value
-//                        weekOffList = if (weekDayNameList.value?.isNotEmpty() == true) weekDayNameList.value?.toList()
-//                            ?.map { weekoff -> weekoff.dayName } as ArrayList<String> else null
-
+                        weekOffList = if (weekDayNameList.value?.isNotEmpty() == true) weekDayNameList.value?.toList()
+                            ?.filter { it.isWeekOff == true }
+                            ?.map { weekOffModel -> weekOffModel.dayName }
+                                as ArrayList<String> else null
                     )
                 } else {
                     //Here Code for User Update
@@ -875,6 +874,7 @@ class AddDoctorViewModel @Inject constructor(
 
                 }
             }
+        } else {
         }
         weekDayNameList.value = weekDayList
     }

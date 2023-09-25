@@ -45,7 +45,7 @@ class AddDoctorHolidayAdapter(
 
     }
 
-    fun filterList(filterList: ArrayList<HolidayModel>) {
+    fun updateHolidayList(filterList: ArrayList<HolidayModel>) {
         addHolidayList = filterList
         notifyItemRangeChanged(0, addHolidayList.size)
     }
