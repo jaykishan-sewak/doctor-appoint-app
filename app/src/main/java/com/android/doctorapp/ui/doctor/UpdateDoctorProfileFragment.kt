@@ -638,9 +638,11 @@ class UpdateDoctorProfileFragment :
                 }
 
                 override fun removeShiftClick(addShiftTimeModel: AddShiftTimeModel, position: Int) {
-                    tempShiftTimeList.removeAt(position)
-                    addDoctorTimeAdapter.notifyDataSetChanged()
+//                    tempShiftTimeList.removeAt(position)
+                    tempShiftTimeList.remove(addShiftTimeModel)
                     viewModel.validateAllUpdateField()
+                    addDoctorTimeAdapter.notifyDataSetChanged()
+
                 }
 
 

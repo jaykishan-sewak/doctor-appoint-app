@@ -16,7 +16,6 @@ import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.repository.models.SymptomModel
-import com.android.doctorapp.repository.models.TimeSlotModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.DAY_NAME_FORMAT
@@ -478,7 +477,7 @@ class AppointmentViewModel @Inject constructor(
                         fireStore
                     )) {
                     is ApiSuccessResponse -> {
-                        symptomResponse.value = response.body!!
+                        symptomResponse.value = response.body
                         setShowProgress(false)
                     }
 
