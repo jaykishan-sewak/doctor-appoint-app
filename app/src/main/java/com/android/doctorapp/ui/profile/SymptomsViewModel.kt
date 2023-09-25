@@ -21,6 +21,7 @@ import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.convertDateToFull
+import com.android.doctorapp.util.extension.hideKeyboard
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import com.google.gson.Gson
@@ -61,10 +62,12 @@ class SymptomsViewModel @Inject constructor(
 
     fun consultOrNOt(group: RadioGroup, checkedId: Int) {
         selectYesOrNo.value = R.id.radioButtonNo != checkedId
+        isUpdateDataValid.value = !selectYesOrNo.value!!
     }
 
     fun calenderClick(textLastVisitDate: View) {
         isCalender.value = textLastVisitDate
+        textLastVisitDate.hideKeyboard()
     }
 
     fun onSubmit() {

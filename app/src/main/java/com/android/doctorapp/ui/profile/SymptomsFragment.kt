@@ -58,6 +58,7 @@ class SymptomsFragment : BaseFragment<FragmentSymptomsBinding>(R.layout.fragment
             if (binding.etLastVisitDate.id == it?.id) {
                 requireContext().selectDate(maxDate = Date().time, minDate = null) { dobDate ->
                     viewModel.lastVisitDate.value = dobDate
+                    viewModel.isUpdateDataValid.value = true
                 }
             }
         }

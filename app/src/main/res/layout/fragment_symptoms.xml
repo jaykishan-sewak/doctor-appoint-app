@@ -197,6 +197,7 @@
                     android:background="@drawable/button_state_colors"
                     android:onClick="@{view -> viewModel.onSubmit()}"
                     android:text="@string/submit"
+                    android:enabled="@{viewModel.isUpdateDataValid}"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     app:layout_constraintBottom_toBottomOf="parent"
