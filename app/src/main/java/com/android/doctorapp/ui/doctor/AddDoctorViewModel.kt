@@ -1,7 +1,6 @@
 package com.android.doctorapp.ui.doctor
 
 import android.content.Context
-import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.RadioGroup
@@ -128,6 +127,10 @@ class AddDoctorViewModel @Inject constructor(
 
     private val _dataResponse = SingleLiveEvent<UserDataRequestModel?>()
     val userResponse = _dataResponse.asLiveData()
+
+    val isProfileNavigation: MutableLiveData<Boolean> = MutableLiveData(false)
+
+    var gender: MutableLiveData<Int> = MutableLiveData()
 
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
@@ -338,6 +341,7 @@ class AddDoctorViewModel @Inject constructor(
             selectGenderValue.value = FEMALE_GENDER
         }
     }
+
 
     fun calenderClick(text_dob: View) {
         isCalender.value = text_dob

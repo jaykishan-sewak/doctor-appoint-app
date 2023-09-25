@@ -11,6 +11,7 @@ import com.android.doctorapp.repository.AuthRepository
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.local.USER_ID
 import com.android.doctorapp.repository.local.USER_IS_EMAIL_VERIFIED
+import com.android.doctorapp.repository.local.USER_TYPE
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
@@ -18,6 +19,9 @@ import com.android.doctorapp.repository.models.LoginResponseModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.constants.ConstantKey.DOCTOR
 import com.android.doctorapp.util.constants.ConstantKey.USER
+import com.android.doctorapp.util.constants.ConstantKey.USER_TYPE_ADMIN
+import com.android.doctorapp.util.constants.ConstantKey.USER_TYPE_DOCTOR
+import com.android.doctorapp.util.constants.ConstantKey.USER_TYPE_USER
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
 import com.android.doctorapp.util.extension.isNetworkAvailable
@@ -160,16 +164,19 @@ class LoginViewModel @Inject constructor(
                 session.putBoolean(USER_IS_EMAIL_VERIFIED, false)
                 if (response.body.isAdmin) {
                     adminChecked.value = true
+                    session.putString(USER_TYPE, USER_TYPE_ADMIN)
                 } else if (response.body.isDoctor) {
 
                     if (response.body.isUserVerified) {
                         doctorChecked.value = true
+                        session.putString(USER_TYPE, USER_TYPE_DOCTOR)
                     } else {
                         isUserVerified.postValue(DOCTOR)
                     }
                 } else {
                     if (response.body.isUserVerified) {
                         userChecked.value = true
+                        session.putString(USER_TYPE, USER_TYPE_USER)
                     } else {
                         isUserVerified.postValue(USER)
                     }

@@ -10,9 +10,11 @@ import com.android.doctorapp.ui.doctor.AddDoctorViewModel
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.AppointmentDoctorViewModel
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.RequestDoctorViewModel
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.SelectedDateAppointmentsViewModel
+import com.android.doctorapp.ui.feedback.FeedbackViewModel
 import com.android.doctorapp.ui.home.HomeViewModel
 import com.android.doctorapp.ui.otp.OtpVerificationViewModel
 import com.android.doctorapp.ui.profile.ProfileViewModel
+import com.android.doctorapp.ui.userdashboard.userfragment.BookingDetailViewModel
 import com.android.doctorapp.ui.userdashboard.userfragment.UserAppointmentViewModel
 import com.android.doctorapp.ui.userdashboard.userfragment.UserRequestViewModel
 import dagger.Binds
@@ -90,5 +92,13 @@ abstract class AppViewModelModule {
     @ViewModelMapKey(SelectedDateAppointmentsViewModel::class)
     abstract fun bindSelectedDateAppointmentsViewModel(viewModel: SelectedDateAppointmentsViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelMapKey(BookingDetailViewModel::class)
+    abstract fun bindBookingDetailViewModel(viewModel: BookingDetailViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelMapKey(FeedbackViewModel::class)
+    abstract fun bindFeedbackViewModel(viewModel: FeedbackViewModel): ViewModel
 }

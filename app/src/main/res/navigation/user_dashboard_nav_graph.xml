@@ -10,6 +10,10 @@
         android:name="com.android.doctorapp.ui.userdashboard.userfragment.UserRequestFragment"
         tools:layout="@layout/fragment_user_request">
 
+        <action
+            android:id="@+id/action_user_booking_to_bookingDetail"
+            app:destination="@+id/BookingDetail" />
+
     </fragment>
 
     <fragment
@@ -29,7 +33,10 @@
 
         <action
             android:id="@+id/action_user_profile_to_updateUserProfile"
-            app:destination="@+id/AddUserProfileFragment"/>
+            app:destination="@+id/AddUserProfileFragment" />
+        <action
+            android:id="@+id/action_user_profile_to_feedBack"
+            app:destination="@+id/Feedback" />
 
     </fragment>
 
@@ -44,6 +51,28 @@
         android:id="@+id/AddUserProfileFragment"
         android:name="com.android.doctorapp.ui.profile.AddUserProfileFragment"
         tools:layout="@layout/fragment_update_doctor_profile">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/BookingDetail"
+        android:name="com.android.doctorapp.ui.userdashboard.userfragment.BookingDetailFragment"
+        tools:layout="@layout/fragment_booking_detail">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/Feedback"
+        android:name="com.android.doctorapp.ui.feedback.FeedbackFragment"
+        tools:layout="@layout/fragment_feedback">
+        <action
+            android:id="@+id/action_feedback_to_feedBack_details"
+            app:destination="@+id/FeedbackDetails" />
+    </fragment>
+    <fragment
+        android:id="@+id/FeedbackDetails"
+        android:name="com.android.doctorapp.ui.feedback.FeedbackDetailFragment"
+        tools:layout="@layout/fragment_feedback_details">
 
     </fragment>
 

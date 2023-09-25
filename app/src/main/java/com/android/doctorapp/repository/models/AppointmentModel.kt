@@ -3,7 +3,7 @@ package com.android.doctorapp.repository.models
 import java.util.Date
 
 data class AppointmentModel(
-
+    var id: String = "",
     var bookingDateTime: Date? = null,
     var isOnline: Boolean = false,
     var reason: String = "",
@@ -12,7 +12,8 @@ data class AppointmentModel(
     var name: String = "",
     var contactNumber: String = "",
     var age: String = "",
-    var doctorId: String = ""
+    var doctorId: String = "",
+    var doctorDetails: UserDataResponseModel? = null
 )
 
 data class Header(val date: Date?)

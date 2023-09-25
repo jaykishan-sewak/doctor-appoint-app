@@ -3,6 +3,7 @@ package com.android.doctorapp.di
 import com.android.doctorapp.di.core.AuthScopes
 import com.android.doctorapp.di.core.CoreComponent
 import com.android.doctorapp.ui.admin.AdminDashboardFragment
+import com.android.doctorapp.ui.admin.AdminProfileFragment
 import com.android.doctorapp.ui.admin.DoctorDetailsFragment
 import com.android.doctorapp.ui.appointment.AppointmentDetailFragment
 import com.android.doctorapp.ui.appointment.BookAppointmentFragment
@@ -14,10 +15,13 @@ import com.android.doctorapp.ui.doctordashboard.doctorfragment.AppointmentDoctor
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.DoctorProfileFragment
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.RequestDoctorFragment
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.SelectedDateAppointmentsFragment
+import com.android.doctorapp.ui.feedback.FeedbackDetailFragment
+import com.android.doctorapp.ui.feedback.FeedbackFragment
 import com.android.doctorapp.ui.home.HomeFragment
 import com.android.doctorapp.ui.otp.OtpVerificationFragment
 import com.android.doctorapp.ui.profile.AddUserProfileFragment
 import com.android.doctorapp.ui.profile.ProfileFragment
+import com.android.doctorapp.ui.userdashboard.userfragment.BookingDetailFragment
 import com.android.doctorapp.ui.userdashboard.userfragment.UserAppointmentFragment
 import com.android.doctorapp.ui.userdashboard.userfragment.UserRequestFragment
 import dagger.Component
@@ -50,4 +54,9 @@ interface AppComponent {
 
     fun inject(fragment: SelectedDateAppointmentsFragment)
     fun inject(fragment: DoctorProfileFragment)
+    fun inject(fragment: BookingDetailFragment)
+    fun inject(fragment: AdminProfileFragment)
+
+    fun inject(fragment: FeedbackFragment)
+    fun inject(fragment: FeedbackDetailFragment)
 }

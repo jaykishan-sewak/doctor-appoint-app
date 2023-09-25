@@ -15,9 +15,11 @@ import com.android.doctorapp.databinding.FragmentProfileBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.ui.authentication.AuthenticationActivity
 import com.android.doctorapp.util.extension.fetchImageOrShowError
 import com.android.doctorapp.util.extension.openEmailSender
 import com.android.doctorapp.util.extension.openPhoneDialer
+import com.android.doctorapp.util.extension.startActivityFinish
 import javax.inject.Inject
 
 class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_profile) {
@@ -76,15 +78,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
 
     private fun registerObservers() {
         viewModel.isEdit.value = false
-//        viewModel.apply {
-//            navigateToLogin.observe(viewLifecycleOwner, {
-//                if (it) startActivityFinish<AuthenticationActivity> { }
-//            })
-//
-//            onProfilePictureClicked.observe(viewLifecycleOwner, {
-//                showImagePicker(startForProfileImageResult)
-//            })
-//        }
 
         viewModel.getUserProfileData()
         viewModel.isEdit.observe(viewLifecycleOwner) {
@@ -99,6 +92,13 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
         }
         viewModel.emailClick.observe(viewLifecycleOwner) {
             requireActivity().openEmailSender(it)
+        }
+        viewModel.navigateToLogin.observe(viewLifecycleOwner) {
+            if (it)
+                startActivityFinish<AuthenticationActivity>()
+        }
+        viewModel.navigationListener.observe(viewLifecycleOwner) {
+            findNavController().navigate(it)
         }
     }
 

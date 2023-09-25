@@ -11,6 +11,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.android.doctorapp.BuildConfig
+import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DATE_AND_DAY_NAME_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MONTH_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
@@ -276,5 +277,21 @@ fun Context.openEmailSender(email: String?) {
     } catch (e: java.lang.Exception) {
         e.printStackTrace()
         ""
+    }
+}
+
+fun currentDate(): Date {
+    return try {
+        val currentDate = Calendar.getInstance()
+        currentDate.set(Calendar.HOUR_OF_DAY, 0)
+        currentDate.set(Calendar.MINUTE, 0)
+        currentDate.set(Calendar.SECOND, 0)
+        currentDate.set(Calendar.MILLISECOND, 0)
+        currentDate.time
+    } catch (ex: ParseException) {
+        ex.printStackTrace()
+        val defaultDate =
+            SimpleDateFormat(ConstantKey.DATE_MM_FORMAT, Locale.getDefault()).parse("2000-01-01")
+        defaultDate!!
     }
 }

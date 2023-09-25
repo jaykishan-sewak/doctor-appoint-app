@@ -16,6 +16,10 @@ object ConstantKey {
         const val ADMIN_FRAGMENT = "adminFragment"
         const val REQUEST_FRAGMENT = "REQUEST_FRAGMENT"
         const val APPOINTMENT_DATA = "appointmentData"
+        const val BOOKING_FRAGMENT = "BOOKING_FRAGMENT"
+        const val BOOKING_APPOINTMENT_DATA = "bookingAppointmentData"
+        const val DOCTOR_ID = "doctorId"
+
     }
 
     const val DOCTOR = "DOCTOR"
@@ -38,6 +42,9 @@ object ConstantKey {
         const val TABLE_APPOINTMENT = "appointment"
         const val FIELD_SELECTED_DATE = "bookingDateTime"
         const val FIELD_APPROVED_KEY = "status"
+        const val FIELD_DOCTOR_ID = "doctorId"
+        const val TABLE_FEEDBACK = "feedback"
+
 
     }
 
@@ -51,6 +58,8 @@ object ConstantKey {
     const val DATE_NAME_FORMAT = "EEE"
     const val DATE_FORMAT= "EEE MMM dd HH:mm:ss 'GMT'Z yyyy"
     const val FULL_DAY_NAME_FORMAT = "EEEE"
-
+    const val USER_TYPE_ADMIN = "ADMIN"
+    const val USER_TYPE_USER = "USER"
+    const val USER_TYPE_DOCTOR = "DOCTOR"
 
 }

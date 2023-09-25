@@ -24,7 +24,7 @@
     <string name="forgot_your_password">Forgot your password?</string>
     <string name="hint_password">Password</string>
     <string name="hint_username">Username</string>
-    <string name="sign_out">Sign Out</string>
+    <string name="sign_out">Log Out</string>
     <string name="signup">SignUp</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
@@ -164,8 +164,8 @@
     <string name="approve">Approve</string>
     <string name="email">Email :</string>
     <string name="contact_no">Contact no :</string>
-    <string name="email_verified">Email Verified</string>
-    <string name="phone_verified">Phone verified</string>
+    <string name="email_verified">Email Verified :</string>
+    <string name="phone_verified">Phone verified :</string>
     <string name="no_appointments_found">No Appointments Found</string>
 
     <string name="no_data_found">No Data Found</string>
@@ -174,5 +174,18 @@
     <string name="end_time_grater">End time must be greater than start time</string>
     <string name="already_selected_time">Already Time is Selected</string>
     <string name="no_doctor_found">No Doctor found</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="status">Status</string>
+    <string name="symptoms">Symptoms</string>
+    <string name="feedback">Feedback</string>
+    <string name="no_booking_found">No booking Found</string>
+    <string name="user_doctor_list">User Doctor List</string>
+    <string name="feedback_desc">your feedback is important for us.</string>
+    <string name="rate_your_experience">Rate Your Experience</string>
+    <string name="anything_else_you_want_to_add">Anything else you want to add?</string>
+    <string name="feedback_hint">Tell us more about your overall experience</string>
+    <string name="send_feedback">Send feedback</string>
+
     <string name="already_added_in_holiday">Already Added date in Holiday</string>
 </resources>

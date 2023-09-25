@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="bookingData"
+            type="com.android.doctorapp.repository.models.AppointmentModel" />
+
+
+        <variable
+            name="onItemClickListener"
+            type="com.android.doctorapp.ui.userdashboard.userfragment.adapter.BookingAppointmentsAdapter.OnItemClickListener" />
+
+        <variable
+            name="index"
+            type="Integer" />
+
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_30"
+        android:layout_marginVertical="@dimen/margin_10"
+        android:backgroundTint="@color/white"
+        android:elevation="@dimen/margin_5"
+        android:paddingHorizontal="@dimen/margin_10"
+        app:cardCornerRadius="@dimen/margin_10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/margin_20"
+            android:paddingVertical="@dimen/margin_10">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvDoctorName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_person_white"
+                android:drawablePadding="@dimen/margin_10"
+                android:text="@{bookingData.doctorDetails.name}"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvDoctorContact"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_10"
+                android:clickable="true"
+                android:drawableStart="@drawable/ic_phone_white"
+                android:drawablePadding="@dimen/margin_10"
+                android:onClick="@{()->onItemClickListener.onClick(bookingData.contactNumber)}"
+                android:text="@{bookingData.doctorDetails.contactNumber}"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvDoctorName"
+                android:focusable="true" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/doctorAddressLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_5"
+                android:layout_marginTop="@dimen/margin_10"
+                android:text="@string/address"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvDoctorContact" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvDoctorAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_10"
+                android:layout_marginTop="@dimen/margin_10"
+                android:text="@{bookingData.doctorDetails.address}"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@id/doctorAddressLabel"
+                app:layout_constraintTop_toBottomOf="@id/tvDoctorContact" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/statusLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_5"
+                android:textAlignment="center"
+                android:textColor="@color/pending"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="@id/viewAll"
+                app:layout_constraintStart_toStartOf="@id/viewAll"
+                app:layout_constraintTop_toTopOf="@id/tvDoctorAddress"
+                app:status="@{bookingData.status}" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/viewAll"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/margin_30"
+                android:layout_marginStart="@dimen/margin_10"
+                android:background="@drawable/rounded_btn"
+                android:onClick="@{()->onItemClickListener.onItemClick(bookingData,index)}"
+                android:text="@string/view"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/tvDoctorContact"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvDoctorContact" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>
