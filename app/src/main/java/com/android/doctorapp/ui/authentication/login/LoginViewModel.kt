@@ -52,7 +52,7 @@ class LoginViewModel @Inject constructor(
     val email: MutableLiveData<String> = MutableLiveData("doc1@mailinator.com")
     val emailError: MutableLiveData<String?> = MutableLiveData()
 
-    val password: MutableLiveData<String> = MutableLiveData("Admin@123")
+    val password: MutableLiveData<String> = MutableLiveData()
     val passwordError: MutableLiveData<String?> = MutableLiveData()
 
     val isDataValid: MutableLiveData<Boolean> = MutableLiveData(false)

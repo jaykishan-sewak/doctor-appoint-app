@@ -181,6 +181,18 @@
     <string name="feedback">Feedback</string>
     <string name="no_booking_found">No booking Found</string>
     <string name="user_doctor_list">User Doctor List</string>
+    <string name="symptom_details">Symptom Details</string>
+    <string name="number_of_days">Number of Days suffering from</string>
+    <string name="valid_doctor_name_desc">Doctor Name must have at least 3three characters</string>
+    <string name="valid_doctor_name_start_with_char">Doctor Name should starts with character</string>
+    <string name="valid_symptom_desc">Symptom Details must have at least 3three characters</string>
+    <string name="valid_symptom_start_with_char">Symptom details should starts with character</string>
+    <string name="valid_number_of_days_desc">Please enter number of days form suffering</string>
+    <string name="have_you_consult_any_doctor">Have you consult any doctor ?</string>
+    <string name="enter_doctor_name">Enter Doctor Name</string>
+    <string name="last_prescription">Last Prescription</string>
+    <string name="last_visit_date">Last Visit Date</string>
+
     <string name="feedback_desc">your feedback is important for us.</string>
     <string name="rate_your_experience">Rate Your Experience</string>
     <string name="anything_else_you_want_to_add">Anything else you want to add?</string>

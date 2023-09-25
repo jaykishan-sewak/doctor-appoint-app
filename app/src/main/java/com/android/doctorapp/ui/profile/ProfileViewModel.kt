@@ -148,7 +148,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun clickOnSymptom() {
-        context.toast("Symptoms")
+        _navigationListener.postValue(R.id.action_user_profile_to_symptoms)
     }
 
     fun clickOnFeedback() {

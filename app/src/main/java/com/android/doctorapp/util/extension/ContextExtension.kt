@@ -158,7 +158,7 @@ fun convertDateToFull(inputDateString: String): Date {
     return try {
         val formatter = SimpleDateFormat(DATE_MONTH_FORMAT, Locale.getDefault())
         val date = formatter.parse(inputDateString)
-        date
+        date as Date
     } catch (ex: ParseException) {
         ex.printStackTrace()
         val defaultDate = SimpleDateFormat(FULL_DATE_FORMAT).parse("01-Sep-2000")
