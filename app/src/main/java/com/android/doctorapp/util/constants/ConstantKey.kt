@@ -43,6 +43,7 @@ object ConstantKey {
         const val FIELD_SELECTED_DATE = "bookingDateTime"
         const val FIELD_APPROVED_KEY = "status"
         const val FIELD_DOCTOR_ID = "doctorId"
+        const val TABLE_SYMPTOM = "symptom"
         const val TABLE_FEEDBACK = "feedback"
 
 

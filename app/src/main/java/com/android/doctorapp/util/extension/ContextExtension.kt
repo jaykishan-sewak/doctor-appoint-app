@@ -156,12 +156,12 @@ fun convertDateToMonth(inputDateString: String): String {
 
 fun convertDateToFull(inputDateString: String): Date {
     return try {
-        val formatter = SimpleDateFormat(DATE_MONTH_FORMAT, Locale.ENGLISH)
+        val formatter = SimpleDateFormat(FORMATTED_DATE, Locale.ENGLISH)
         val date = formatter.parse(inputDateString)
-        date
+        date as Date
     } catch (ex: ParseException) {
         ex.printStackTrace()
-        val defaultDate = SimpleDateFormat(FULL_DATE_FORMAT).parse("2000-01-01")
+        val defaultDate = SimpleDateFormat(FORMATTED_DATE).parse("01-01-2000")
         defaultDate
     }
 }

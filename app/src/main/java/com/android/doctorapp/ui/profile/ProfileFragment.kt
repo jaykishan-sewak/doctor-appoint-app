@@ -100,6 +100,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
         viewModel.navigationListener.observe(viewLifecycleOwner) {
             findNavController().navigate(it)
         }
+
     }
 
     private val startForProfileImageResult =
