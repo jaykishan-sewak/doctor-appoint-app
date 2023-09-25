@@ -2,12 +2,15 @@ package com.android.doctorapp.repository
 
 import com.android.doctorapp.repository.models.ApiResponse
 import com.android.doctorapp.repository.models.AppointmentModel
+import com.android.doctorapp.repository.models.FeedbackResponseModel
+import com.android.doctorapp.repository.models.SymptomModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_APPROVED_KEY
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_SELECTED_DATE
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_USER_ID
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_APPOINTMENT
+import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_SYMPTOM
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_USER_DATA
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -45,6 +48,15 @@ class AppointmentRepository @Inject constructor() {
             var dataModel = UserDataResponseModel()
             for (snapshot in response) {
                 dataModel = snapshot.toObject()
+                val feedbackData = fireStore.collection(ConstantKey.DBKeys.TABLE_FEEDBACK)
+                    .whereEqualTo(ConstantKey.DBKeys.FIELD_DOCTOR_ID, dataModel.userId)
+                    .get()
+                    .await()
+                var feedback = FeedbackResponseModel()
+                for (snapshot in feedbackData) {
+                    feedback = snapshot.toObject()
+                }
+                dataModel.rating = feedback.rating
             }
             ApiResponse.create(response = Response.success(dataModel))
         } catch (e: Exception) {
@@ -259,5 +271,25 @@ class AppointmentRepository @Inject constructor() {
             ApiResponse.create(e.fillInStackTrace())
         }
     }
+
+    suspend fun getUserSymptomDetails(
+        userId: String,
+        fireStore: FirebaseFirestore
+    ): ApiResponse<SymptomModel> {
+        return try {
+            val response = fireStore.collection(TABLE_SYMPTOM)
+                .whereEqualTo(FIELD_USER_ID, userId)
+                .get()
+                .await()
+            var dataModel = SymptomModel()
+            for (snapshot in response) {
+                dataModel = snapshot.toObject()
+            }
+            ApiResponse.create(response = Response.success(dataModel))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
 
 }

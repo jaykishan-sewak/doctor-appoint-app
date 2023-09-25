@@ -2,6 +2,7 @@ package com.android.doctorapp.repository
 
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.models.ApiResponse
+import com.android.doctorapp.repository.models.FeedbackResponseModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey
 import com.google.firebase.firestore.DocumentSnapshot
@@ -25,6 +26,15 @@ class AdminRepository @Inject constructor(
                 val user = document.toObject(UserDataResponseModel::class.java)
                 user?.let {
                     it.id = document.id
+                    val feedbackData = firestore.collection(ConstantKey.DBKeys.TABLE_FEEDBACK)
+                        .whereEqualTo(ConstantKey.DBKeys.FIELD_DOCTOR_ID, it.userId)
+                        .get()
+                        .await()
+                    var feedback = FeedbackResponseModel()
+                    for (snapshot in feedbackData) {
+                        feedback = snapshot.toObject()
+                    }
+                    it.rating = feedback.rating
                     userList.add(it)
                 }
             }
