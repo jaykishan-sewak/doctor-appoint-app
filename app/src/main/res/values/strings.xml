@@ -203,6 +203,8 @@
     <string name="date_label">Date :</string>
     <string name="time_label">Time :</string>
     <string name="status_label">Status :</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
 
     <string name="already_added_in_holiday">Already Added date in Holiday</string>
 </resources>
