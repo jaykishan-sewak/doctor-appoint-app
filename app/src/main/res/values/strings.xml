@@ -198,6 +198,11 @@
     <string name="anything_else_you_want_to_add">Anything else you want to add?</string>
     <string name="feedback_hint">Tell us more about your overall experience</string>
     <string name="send_feedback">Send feedback</string>
+    <string name="symptoms_label">Symptoms :</string>
+    <string name="suffering_days">Suffering Days :</string>
+    <string name="date_label">Date :</string>
+    <string name="time_label">Time :</string>
+    <string name="status_label">Status :</string>
 
     <string name="already_added_in_holiday">Already Added date in Holiday</string>
 </resources>

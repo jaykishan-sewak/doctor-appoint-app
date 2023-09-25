@@ -15,6 +15,8 @@ import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.DateSlotModel
+import com.android.doctorapp.repository.models.SymptomModel
+import com.android.doctorapp.repository.models.TimeSlotModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.DAY_NAME_FORMAT
@@ -85,6 +87,7 @@ class AppointmentViewModel @Inject constructor(
     val doctorDetails: MutableLiveData<UserDataResponseModel?> = MutableLiveData()
     var appointmentResponse: MutableLiveData<AppointmentModel> = MutableLiveData()
     var userDataResponse: MutableLiveData<UserDataResponseModel> = MutableLiveData()
+    var symptomResponse: MutableLiveData<SymptomModel> = MutableLiveData()
 
     private fun get15DaysList() {
         val currentDate: String = getCurrentDate().toString()
@@ -363,6 +366,7 @@ class AppointmentViewModel @Inject constructor(
                     is ApiSuccessResponse -> {
                         appointmentResponse.postValue(response.body)
                         getAppointmentUserDetails()
+                        getUserSymptomDetails()
                         setShowProgress(false)
                     }
 
@@ -463,5 +467,40 @@ class AppointmentViewModel @Inject constructor(
     fun checkAppointmentDate(): Boolean {
         val currentDate = currentDate()
         return appointmentObj.value?.bookingDateTime!! > currentDate
+    }
+
+    private fun getUserSymptomDetails() {
+        viewModelScope.launch {
+            if (context.isNetworkAvailable()) {
+                when (val response =
+                    appointmentRepository.getUserSymptomDetails(
+                        appointmentObj.value?.userId!!,
+                        fireStore
+                    )) {
+                    is ApiSuccessResponse -> {
+                        symptomResponse.value = response.body!!
+                        setShowProgress(false)
+                    }
+
+                    is ApiErrorResponse -> {
+                        context.toast(response.errorMessage)
+                        setShowProgress(false)
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        context.toast(response.errorMessage)
+                        setShowProgress(false)
+                    }
+
+                    else -> {
+                        context.toast(resourceProvider.getString(R.string.something_went_wrong))
+                        setShowProgress(false)
+                    }
+                }
+            } else {
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
+            }
+
+        }
     }
 }

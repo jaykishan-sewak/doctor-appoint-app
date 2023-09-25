@@ -1,5 +1,6 @@
 package com.android.doctorapp.repository.models
 
+import android.media.Rating
 import java.util.Date
 
 data class UserDataResponseModel(
@@ -22,5 +23,6 @@ data class UserDataResponseModel(
     var dob: Date? = null,
     var isUserVerified: Boolean = false,
     var holidayList: ArrayList<Date>? = null,
-    var weekOffList: ArrayList<String>? = null
+    var weekOffList: ArrayList<String>? = null,
+    var rating: Float? = null
 )
