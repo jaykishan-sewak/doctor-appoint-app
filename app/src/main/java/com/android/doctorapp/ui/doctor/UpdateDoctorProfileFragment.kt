@@ -1,5 +1,6 @@
 package com.android.doctorapp.ui.doctor
 
+import android.Manifest
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.os.Handler
@@ -43,11 +44,14 @@ import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.selectDate
 import com.android.doctorapp.util.extension.startActivityFinish
 import com.android.doctorapp.util.extension.toast
+import com.android.doctorapp.util.permission.RuntimePermission.Companion.askPermission
 import com.google.android.material.chip.Chip
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -191,6 +195,7 @@ class UpdateDoctorProfileFragment :
         return bindingView.root
     }
 
+
     private fun registerObserver(layoutBinding: FragmentUpdateDoctorProfileBinding) {
 
         updateHolidayRecyclerview(arrayListOf())
@@ -213,6 +218,7 @@ class UpdateDoctorProfileFragment :
                 viewModel.selectGenderValue.value = it.gender
                 viewModel.dob.value = dateFormatter(it.dob, ConstantKey.DATE_MM_FORMAT)
                 viewModel.isProfileNavigation.value = true
+                viewModel.fees.value = it.doctorFees.toString()
             } else {
                 viewModel.name.value = it.name
                 viewModel.email.value = it.email
@@ -275,8 +281,9 @@ class UpdateDoctorProfileFragment :
             } else if (layoutBinding.btnAddTiming.id == it?.id) {
                 tempShiftTimeList.add(AddShiftTimeModel(isTimeSlotBook = false))
                 viewModel.addShiftTimeSlotList.value = tempShiftTimeList
-                viewModel.validateAllUpdateField()
-
+//                findNavController().navigate()
+            } else if (layoutBinding.textAddress.id == it?.id) {
+                context?.toast("Test")
             } else {
                 requireContext().selectDate(
                     maxDate = null,

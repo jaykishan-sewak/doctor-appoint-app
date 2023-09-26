@@ -192,7 +192,6 @@
     <string name="enter_doctor_name">Enter Doctor Name</string>
     <string name="last_prescription">Last Prescription</string>
     <string name="last_visit_date">Last Visit Date</string>
-
     <string name="feedback_desc">your feedback is important for us.</string>
     <string name="rate_your_experience">Rate Your Experience</string>
     <string name="anything_else_you_want_to_add">Anything else you want to add?</string>
@@ -205,6 +204,7 @@
     <string name="status_label">Status :</string>
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
-
     <string name="already_added_in_holiday">Already Added date in Holiday</string>
+    <string name="hint_doctor_fees">Fees</string>
+    <string name="valid_fees_desc">Fees Must be Required</string>
 </resources>

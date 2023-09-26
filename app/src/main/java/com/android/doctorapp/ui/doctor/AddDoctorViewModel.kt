@@ -128,6 +128,9 @@ class AddDoctorViewModel @Inject constructor(
 
     var gender: MutableLiveData<Int> = MutableLiveData()
 
+    val fees: MutableLiveData<String> = MutableLiveData()
+    val feesError: MutableLiveData<String?> = MutableLiveData()
+
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
         this.binding = binding
@@ -245,6 +248,7 @@ class AddDoctorViewModel @Inject constructor(
                             && isEmailVerified.value!!
                             && binding?.chipGroup?.children?.toList()?.size!! > 0
                             && binding?.chipGroupSpec?.children?.toList()?.size!! > 0
+                            && !fees.value.isNullOrEmpty() && feesError.value.isNullOrEmpty()
                             )
             }
 
@@ -417,6 +421,7 @@ class AddDoctorViewModel @Inject constructor(
                         gender = selectGenderValue.value.toString(),
                         address = address.value.toString(),
                         contactNumber = contactNumber.value.toString(),
+                        doctorFees = fees.value?.toInt(),
                         degree = binding?.chipGroup?.children?.toList()
                             ?.map { (it as Chip).text.toString() } as ArrayList<String>?,
                         specialities = binding?.chipGroupSpec?.children?.toList()
@@ -876,6 +881,15 @@ class AddDoctorViewModel @Inject constructor(
             }
         }
         weekDayNameList.value = weekDayList
+    }
+
+     fun isValidFees(text: CharSequence?) {
+        if (text?.toString().isNullOrEmpty()) {
+            feesError.value = resourceProvider.getString(R.string.valid_fees_desc)
+        } else {
+            feesError.value = null
+        }
+        validateAllUpdateField()
     }
 
 

@@ -10,6 +10,7 @@ data class UserDataRequestModel(
     var gender: String = "MALE",
     var address: String = "",
     var contactNumber: String = "",
+    var doctorFees: Int? = null,
     var degree: ArrayList<String>? = null,
     var specialities: ArrayList<String>? = null,
     var isEmailVerified: Boolean = false,

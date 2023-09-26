@@ -12,6 +12,7 @@ data class UserDataResponseModel(
     var gender: String = "MALE",
     var address: String = "",
     var contactNumber: String = "",
+    var doctorFees: Int = 0,
     var degree: ArrayList<String>? = null,
     var specialities: ArrayList<String>? = null,
     var isEmailVerified: Boolean = false,
