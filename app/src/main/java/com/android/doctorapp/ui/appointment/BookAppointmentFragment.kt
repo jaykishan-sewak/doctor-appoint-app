@@ -21,12 +21,13 @@ import com.android.doctorapp.ui.appointment.adapter.AppointmentDateAdapter
 import com.android.doctorapp.ui.appointment.adapter.AppointmentTimeAdapter
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.BOOKING_DATE_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE_MONTH_YEAR
+import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_HOUR_MINUTE_SECOND
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.negativeButton
 import com.android.doctorapp.util.extension.neutralButton
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import javax.inject.Inject
 
@@ -108,8 +109,7 @@ class BookAppointmentFragment :
                         dialog.dismiss()
                         try {
                             dateFormat = SimpleDateFormat(BOOKING_DATE_FORMAT)
-                            val combinedStr = "$dateStr $timeStr"
-                            selectedDateTime = dateFormat.parse(combinedStr)
+                            selectedDateTime = dateFormat.parse("$dateStr $timeStr")!!
                             viewModel.addBookingAppointmentData(selectedDateTime)
                         } catch (e: Exception) {
                         }
@@ -128,34 +128,13 @@ class BookAppointmentFragment :
         }
     }
 
-    private fun setDateAndTime(
-        year: Int,
-        month: Int,
-        dayOfMonth: Int,
-        hourOfDay: Int,
-        minute: Int,
-        second: Int
-    ): Date {
-        val calendar = Calendar.getInstance()
-        calendar.set(Calendar.YEAR, year)
-        calendar.set(Calendar.MONTH, month - 1) // Months are 0-based (January is 0)
-        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-        calendar.set(Calendar.MINUTE, minute)
-        calendar.set(Calendar.SECOND, second)
-
-        return calendar.time
-    }
-
-
     private fun updateDateRecyclerview(dateList: ArrayList<DateSlotModel>) {
         appointmentDateAdapter = AppointmentDateAdapter(dateList,
             object : AppointmentDateAdapter.OnItemClickListener {
                 override fun onItemClick(item: DateSlotModel, position: Int) {
                     dateList.forEachIndexed { index, dateSlotModel ->
                         if (dateSlotModel.date == item.date) {
-//                            selectedDate1 = dateFormatter(item.date, "EEE MMM dd yyyy")
-                            dateStr = dateFormatter(item.date, "EEE MMM dd yyyy")
+                            dateStr = dateFormatter(item.date, FORMATTED_DATE_MONTH_YEAR)
                             dateList[index].dateSelect = true
                             appointmentDateAdapter.notifyItemChanged(index)
                         } else {
@@ -176,10 +155,8 @@ class BookAppointmentFragment :
                 override fun onItemClick(item: AddShiftTimeModel, position: Int) {
                     timeList.forEachIndexed { index, timeSlotModel ->
                         if (timeSlotModel.startTime == item.startTime) {
-//                            selectedTime1 = dateFormatter(item.startTime, "HH:mm:ss")
-                            timeStr = dateFormatter(item.startTime, "HH:mm:ss")
+                            timeStr = dateFormatter(item.startTime, FORMATTED_HOUR_MINUTE_SECOND)
                             timeList[index].isTimeClick = true
-//                            selectedTime = item.startTime!!
                             appointmentTimeAdapter.notifyItemChanged(index)
                         } else {
                             timeList[index].isTimeClick = false
