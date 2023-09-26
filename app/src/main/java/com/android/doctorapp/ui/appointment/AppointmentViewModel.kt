@@ -85,8 +85,8 @@ class AppointmentViewModel @Inject constructor(
 
     val doctorDetails: MutableLiveData<UserDataResponseModel?> = MutableLiveData()
     var appointmentResponse: MutableLiveData<AppointmentModel?> = MutableLiveData()
-    var userDataResponse: MutableLiveData<UserDataResponseModel> = MutableLiveData()
-    var symptomResponse: MutableLiveData<SymptomModel> = MutableLiveData()
+    var userDataResponse: MutableLiveData<UserDataResponseModel?> = MutableLiveData()
+    var symptomResponse: MutableLiveData<SymptomModel?> = MutableLiveData()
 
     private fun get15DaysList() {
         val currentDate: String = getCurrentDate().toString()
