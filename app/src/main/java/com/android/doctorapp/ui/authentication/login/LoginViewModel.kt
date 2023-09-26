@@ -63,9 +63,9 @@ class LoginViewModel @Inject constructor(
     val isGoogleClick: MutableLiveData<Boolean> = MutableLiveData(false)
     private val googleResponse: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    val signInAccountTask: MutableLiveData<Task<GoogleSignInAccount>> = MutableLiveData()
-    val googleSignInAccount: MutableLiveData<GoogleSignInAccount> = MutableLiveData()
-    val authCredential: MutableLiveData<AuthCredential> = MutableLiveData()
+    val signInAccountTask: MutableLiveData<Task<GoogleSignInAccount>?> = MutableLiveData()
+    val googleSignInAccount: MutableLiveData<GoogleSignInAccount?> = MutableLiveData()
+    val authCredential: MutableLiveData<AuthCredential?> = MutableLiveData()
 
     val isUserVerified: MutableLiveData<String> = SingleLiveEvent()
 
