@@ -360,7 +360,7 @@ class AppointmentViewModel @Inject constructor(
             if (context.isNetworkAvailable()) {
                 when (val response =
                     appointmentRepository.getAppointmentDetails(
-                        appointmentObj.value?.userId!!,
+                        appointmentObj.value?.id!!,
                         fireStore
                     )) {
                     is ApiSuccessResponse -> {
