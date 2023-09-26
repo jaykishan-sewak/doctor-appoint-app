@@ -20,9 +20,13 @@ import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.ui.appointment.adapter.AppointmentDateAdapter
 import com.android.doctorapp.ui.appointment.adapter.AppointmentTimeAdapter
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.BOOKING_DATE_FORMAT
 import com.android.doctorapp.util.extension.alert
+import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.negativeButton
 import com.android.doctorapp.util.extension.neutralButton
+import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import javax.inject.Inject
 
@@ -34,7 +38,11 @@ class BookAppointmentFragment :
     private val viewModel: AppointmentViewModel by viewModels { viewModelFactory }
     private lateinit var appointmentTimeAdapter: AppointmentTimeAdapter
     private lateinit var appointmentDateAdapter: AppointmentDateAdapter
-    private lateinit var selectedTime: Date
+    private lateinit var dateFormat: SimpleDateFormat
+    private lateinit var selectedDateTime: Date
+    private lateinit var dateStr: String
+    private lateinit var timeStr: String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,7 +106,13 @@ class BookAppointmentFragment :
                     setMessage(resources.getString(R.string.dialog_appointment_desc))
                     neutralButton { dialog ->
                         dialog.dismiss()
-                        viewModel.addBookingAppointmentData(selectedTime)
+                        try {
+                            dateFormat = SimpleDateFormat(BOOKING_DATE_FORMAT)
+                            val combinedStr = "$dateStr $timeStr"
+                            selectedDateTime = dateFormat.parse(combinedStr)
+                            viewModel.addBookingAppointmentData(selectedDateTime)
+                        } catch (e: Exception) {
+                        }
                     }
                     negativeButton(context.resources.getString(R.string.cancel)) { dialog ->
                         dialog.dismiss()
@@ -114,12 +128,34 @@ class BookAppointmentFragment :
         }
     }
 
+    private fun setDateAndTime(
+        year: Int,
+        month: Int,
+        dayOfMonth: Int,
+        hourOfDay: Int,
+        minute: Int,
+        second: Int
+    ): Date {
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.YEAR, year)
+        calendar.set(Calendar.MONTH, month - 1) // Months are 0-based (January is 0)
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+        calendar.set(Calendar.MINUTE, minute)
+        calendar.set(Calendar.SECOND, second)
+
+        return calendar.time
+    }
+
+
     private fun updateDateRecyclerview(dateList: ArrayList<DateSlotModel>) {
         appointmentDateAdapter = AppointmentDateAdapter(dateList,
             object : AppointmentDateAdapter.OnItemClickListener {
                 override fun onItemClick(item: DateSlotModel, position: Int) {
                     dateList.forEachIndexed { index, dateSlotModel ->
                         if (dateSlotModel.date == item.date) {
+//                            selectedDate1 = dateFormatter(item.date, "EEE MMM dd yyyy")
+                            dateStr = dateFormatter(item.date, "EEE MMM dd yyyy")
                             dateList[index].dateSelect = true
                             appointmentDateAdapter.notifyItemChanged(index)
                         } else {
@@ -140,8 +176,10 @@ class BookAppointmentFragment :
                 override fun onItemClick(item: AddShiftTimeModel, position: Int) {
                     timeList.forEachIndexed { index, timeSlotModel ->
                         if (timeSlotModel.startTime == item.startTime) {
+//                            selectedTime1 = dateFormatter(item.startTime, "HH:mm:ss")
+                            timeStr = dateFormatter(item.startTime, "HH:mm:ss")
                             timeList[index].isTimeClick = true
-                            selectedTime = item.startTime!!
+//                            selectedTime = item.startTime!!
                             appointmentTimeAdapter.notifyItemChanged(index)
                         } else {
                             timeList[index].isTimeClick = false
