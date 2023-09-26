@@ -20,9 +20,14 @@ import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.ui.appointment.adapter.AppointmentDateAdapter
 import com.android.doctorapp.ui.appointment.adapter.AppointmentTimeAdapter
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.BOOKING_DATE_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE_MONTH_YEAR
+import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_HOUR_MINUTE_SECOND
 import com.android.doctorapp.util.extension.alert
+import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.negativeButton
 import com.android.doctorapp.util.extension.neutralButton
+import java.text.SimpleDateFormat
 import java.util.Date
 import javax.inject.Inject
 
@@ -34,7 +39,11 @@ class BookAppointmentFragment :
     private val viewModel: AppointmentViewModel by viewModels { viewModelFactory }
     private lateinit var appointmentTimeAdapter: AppointmentTimeAdapter
     private lateinit var appointmentDateAdapter: AppointmentDateAdapter
-    private lateinit var selectedTime: Date
+    private lateinit var dateFormat: SimpleDateFormat
+    private lateinit var selectedDateTime: Date
+    private lateinit var dateStr: String
+    private lateinit var timeStr: String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,7 +107,12 @@ class BookAppointmentFragment :
                     setMessage(resources.getString(R.string.dialog_appointment_desc))
                     neutralButton { dialog ->
                         dialog.dismiss()
-                        viewModel.addBookingAppointmentData(selectedTime)
+                        try {
+                            dateFormat = SimpleDateFormat(BOOKING_DATE_FORMAT)
+                            selectedDateTime = dateFormat.parse("$dateStr $timeStr")!!
+                            viewModel.addBookingAppointmentData(selectedDateTime)
+                        } catch (e: Exception) {
+                        }
                     }
                     negativeButton(context.resources.getString(R.string.cancel)) { dialog ->
                         dialog.dismiss()
@@ -120,6 +134,7 @@ class BookAppointmentFragment :
                 override fun onItemClick(item: DateSlotModel, position: Int) {
                     dateList.forEachIndexed { index, dateSlotModel ->
                         if (dateSlotModel.date == item.date) {
+                            dateStr = dateFormatter(item.date, FORMATTED_DATE_MONTH_YEAR)
                             dateList[index].dateSelect = true
                             appointmentDateAdapter.notifyItemChanged(index)
                         } else {
@@ -140,8 +155,8 @@ class BookAppointmentFragment :
                 override fun onItemClick(item: AddShiftTimeModel, position: Int) {
                     timeList.forEachIndexed { index, timeSlotModel ->
                         if (timeSlotModel.startTime == item.startTime) {
+                            timeStr = dateFormatter(item.startTime, FORMATTED_HOUR_MINUTE_SECOND)
                             timeList[index].isTimeClick = true
-                            selectedTime = item.startTime!!
                             appointmentTimeAdapter.notifyItemChanged(index)
                         } else {
                             timeList[index].isTimeClick = false

@@ -19,6 +19,7 @@ import com.android.doctorapp.repository.models.SymptomModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.DAY_NAME_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.FIELD_PENDING
 import com.android.doctorapp.util.constants.ConstantKey.FIELD_REJECTED
 import com.android.doctorapp.util.constants.ConstantKey.FULL_DATE_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.FULL_DAY_NAME_FORMAT
@@ -154,7 +155,7 @@ class AppointmentViewModel @Inject constructor(
                 val appointmentModel = AppointmentModel(
                     bookingDateTime = selectedTime,
                     isOnline = onlineBookingToggleData.value == true,
-                    status = "PROGRESS",
+                    status = FIELD_PENDING,
                     name = userName.value.toString(),
                     age = age.value.toString(),
                     contactNumber = contactNumber.value.toString(),
