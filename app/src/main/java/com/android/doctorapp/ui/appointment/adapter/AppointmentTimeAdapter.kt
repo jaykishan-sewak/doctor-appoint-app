@@ -6,16 +6,16 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.AppointmentTimeRowLayoutBinding
-import com.android.doctorapp.repository.models.TimeSlotModel
+import com.android.doctorapp.repository.models.AddShiftTimeModel
 
 class AppointmentTimeAdapter(
-    private val timeList: ArrayList<TimeSlotModel>,
+    private val timeList: ArrayList<AddShiftTimeModel>,
     private val listener: OnItemClickListener
 ) : RecyclerView.Adapter<AppointmentTimeAdapter.ItemViewHolder>() {
 
     class ItemViewHolder(val view: AppointmentTimeRowLayoutBinding) :
         RecyclerView.ViewHolder(view.root) {
-        fun bind(item: TimeSlotModel, listener: OnItemClickListener, position: Int) {
+        fun bind(item: AddShiftTimeModel, listener: OnItemClickListener, position: Int) {
             view.apply {
                 timeModel = item
                 index = position
@@ -47,7 +47,7 @@ class AppointmentTimeAdapter(
     }
 
     interface OnItemClickListener {
-        fun onItemClick(item: TimeSlotModel, position: Int)
+        fun onItemClick(item: AddShiftTimeModel, position: Int)
     }
 
 }

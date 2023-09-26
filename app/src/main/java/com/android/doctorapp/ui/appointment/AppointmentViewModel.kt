@@ -9,13 +9,13 @@ import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AppointmentRepository
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.local.USER_ID
+import com.android.doctorapp.repository.models.AddShiftTimeModel
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.repository.models.SymptomModel
-import com.android.doctorapp.repository.models.TimeSlotModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.DAY_NAME_FORMAT
@@ -49,9 +49,9 @@ class AppointmentViewModel @Inject constructor(
     val daysDateList = _daysDateList.asLiveData()
     private val daysList = ArrayList<DateSlotModel>()
 
-    private val _timeSlotList = MutableLiveData<ArrayList<TimeSlotModel>>()
+    private val _timeSlotList = MutableLiveData<ArrayList<AddShiftTimeModel>>()
     val timeSlotList = _timeSlotList.asLiveData()
-    private val timeList = ArrayList<TimeSlotModel>()
+    private val timeList = ArrayList<AddShiftTimeModel>()
 
     private val _holidayDateList = MutableLiveData<ArrayList<Date>>()
     private val holidayList = ArrayList<Date>()
@@ -65,7 +65,7 @@ class AppointmentViewModel @Inject constructor(
     val isBookAppointmentClick: MutableLiveData<Boolean> = MutableLiveData(false)
     val onlineBookingToggleData: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    val userId: MutableLiveData<String> = MutableLiveData("")
+    val doctorId: MutableLiveData<String> = MutableLiveData("")
     val doctorName: MutableLiveData<String> = MutableLiveData()
     val doctorSpecialities: MutableLiveData<String> = MutableLiveData()
     private val userName = MutableLiveData<String>()
@@ -84,9 +84,9 @@ class AppointmentViewModel @Inject constructor(
     var appointmentObj = MutableLiveData<AppointmentModel>()
 
     val doctorDetails: MutableLiveData<UserDataResponseModel?> = MutableLiveData()
-    var appointmentResponse: MutableLiveData<AppointmentModel> = MutableLiveData()
-    var userDataResponse: MutableLiveData<UserDataResponseModel> = MutableLiveData()
-    var symptomResponse: MutableLiveData<SymptomModel> = MutableLiveData()
+    var appointmentResponse: MutableLiveData<AppointmentModel?> = MutableLiveData()
+    var userDataResponse: MutableLiveData<UserDataResponseModel?> = MutableLiveData()
+    var symptomResponse: MutableLiveData<SymptomModel?> = MutableLiveData()
 
     private fun get15DaysList() {
         val currentDate: String = getCurrentDate().toString()
@@ -158,7 +158,8 @@ class AppointmentViewModel @Inject constructor(
                     name = userName.value.toString(),
                     age = age.value.toString(),
                     contactNumber = contactNumber.value.toString(),
-                    userId = it.toString()
+                    userId = it.toString(),
+                    doctorId = doctorId.value.toString()
                 )
                 when (val response =
                     appointmentRepository.addBookingAppointment(appointmentModel, fireStore)) {
@@ -190,7 +191,7 @@ class AppointmentViewModel @Inject constructor(
             if (context.isNetworkAvailable()) {
                 setShowProgress(true)
                 when (val response =
-                    appointmentRepository.getDoctorById(userId.value.toString(), fireStore)) {
+                    appointmentRepository.getDoctorById(doctorId.value.toString(), fireStore)) {
                     is ApiSuccessResponse -> {
                         doctorName.value = response.body.name
                         val weekOffDbList = response.body.weekOffList
@@ -201,15 +202,21 @@ class AppointmentViewModel @Inject constructor(
                             holidayList.add(holidayModel)
                         }
                         doctorSpecialities.value = response.body.specialities.toString()
-                        val timeSlotDbList = response.body.availableTime
-                        timeSlotDbList?.forEachIndexed { index, timeSlotRequestModel ->
+
+                        val tempList = response.body.availableTime?.sortedBy {
+                            it.startTime
+                        }
+
+                        tempList?.forEachIndexed { index, addShiftResponseModel ->
                             timeList.add(
-                                TimeSlotModel(
-                                    timeSlotRequestModel.timeSlot,
-                                    timeSlotRequestModel.isTimeSlotBook
+                                AddShiftTimeModel(
+                                    startTime = addShiftResponseModel.startTime,
+                                    endTime = addShiftResponseModel.endTime,
+                                    isTimeSlotBook = addShiftResponseModel.isTimeSlotBook
                                 )
                             )
                         }
+
                         doctorDetails.value = response.body
 
                         _timeSlotList.value = timeList
@@ -356,7 +363,7 @@ class AppointmentViewModel @Inject constructor(
                         fireStore
                     )) {
                     is ApiSuccessResponse -> {
-                        appointmentResponse.postValue(response.body!!)
+                        appointmentResponse.postValue(response.body)
                         getAppointmentUserDetails()
                         getUserSymptomDetails()
                         setShowProgress(false)
@@ -393,7 +400,7 @@ class AppointmentViewModel @Inject constructor(
                         fireStore
                     )) {
                     is ApiSuccessResponse -> {
-                        userDataResponse.value = response.body!!
+                        userDataResponse.value = response.body
                         setShowProgress(false)
                     }
 
@@ -470,7 +477,7 @@ class AppointmentViewModel @Inject constructor(
                         fireStore
                     )) {
                     is ApiSuccessResponse -> {
-                        symptomResponse.value = response.body!!
+                        symptomResponse.value = response.body
                         setShowProgress(false)
                     }
 

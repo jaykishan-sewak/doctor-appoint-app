@@ -16,7 +16,7 @@ data class UserDataResponseModel(
     var specialities: ArrayList<String>? = null,
     var isEmailVerified: Boolean = false,
     var isPhoneNumberVerified: Boolean = false,
-    var availableTime: ArrayList<TimeSlotRequestModel>? = null,
+    var availableTime: ArrayList<AddShiftResponseModel>? = null,
     var images: String = "",
     var isAdmin: Boolean = false,
     var isNotificationEnable: Boolean = false,

@@ -22,15 +22,15 @@ import androidx.databinding.BindingAdapter
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.android.doctorapp.R
+import com.android.doctorapp.repository.models.AddShiftTimeModel
 import com.android.doctorapp.repository.models.DateSlotModel
-import com.android.doctorapp.repository.models.TimeSlotModel
 import com.android.doctorapp.util.ImageUtils
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.constants.ConstantKey.HOUR_MIN_AM_PM_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.MALE_GENDER
 import com.android.doctorapp.util.extension.convertDate
-import com.android.doctorapp.util.extension.convertFullDateToDate
 import com.android.doctorapp.util.extension.convertTime
 import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.hideKeyboard
@@ -231,7 +231,7 @@ fun setSpecialization(textView: AppCompatTextView, specialities: List<String>?) 
 }
 
 @BindingAdapter("app:timeStyle")
-fun setTimeButtonStyle(appCompatButton: AppCompatButton, timeSlotModel: TimeSlotModel) {
+fun setTimeButtonStyle(appCompatButton: AppCompatButton, timeSlotModel: AddShiftTimeModel) {
     if (timeSlotModel.isTimeClick) {
         appCompatButton.setTextAppearance(R.style.date_time_select)
     } else {
@@ -258,8 +258,8 @@ fun setString(textView: AppCompatTextView, specialities: List<String>?) {
 }
 
 @BindingAdapter("app:dateMonthStyle")
-fun setDateMonthStyle(textView: AppCompatTextView, originalTimeStr: String) {
-    textView.text = convertFullDateToDate(originalTimeStr)
+fun setDateMonthStyle(textView: AppCompatTextView, originalTimeStr: Date) {
+    textView.text = dateFormatter(originalTimeStr, FORMATTED_DATE)
 }
 
 @BindingAdapter("app:headerDate")
@@ -301,7 +301,7 @@ fun setAge(textView: AppCompatTextView, dateOfBirth: Date?) {
             textView.text = years.toString()
         } catch (e: Exception) {
             textView.text = "-"
-            Log.d("test---",e.message.toString())
+            Log.d("test---", e.message.toString())
         }
     } else
         textView.text = "-"

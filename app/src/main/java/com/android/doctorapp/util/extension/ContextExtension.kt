@@ -126,9 +126,15 @@ fun convertDate(originalDateStr: String): String {
 
 fun convertTime(originalTimeStr: String): String {
     return try {
-        val originalTimeFormat = SimpleDateFormat(FULL_DATE_FORMAT, Locale.getDefault())
-        val targetTimeFormat = SimpleDateFormat(HOUR_MIN_AM_PM_FORMAT, Locale.getDefault())
-
+        val originalTimeFormat: SimpleDateFormat
+        val targetTimeFormat: SimpleDateFormat
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            originalTimeFormat = SimpleDateFormat(FULL_DATE_FORMAT, Locale.ENGLISH)
+            targetTimeFormat = SimpleDateFormat(HOUR_MIN_AM_PM_FORMAT, Locale.ENGLISH)
+        } else {
+            originalTimeFormat = SimpleDateFormat(FULL_DATE_FORMAT, Locale.getDefault())
+            targetTimeFormat = SimpleDateFormat(HOUR_MIN_AM_PM_FORMAT, Locale.getDefault())
+        }
         val calendar = Calendar.getInstance()
         calendar.time = originalTimeFormat.parse(originalTimeStr) ?: Date()
 
@@ -156,12 +162,12 @@ fun convertDateToMonth(inputDateString: String): String {
 
 fun convertDateToFull(inputDateString: String): Date {
     return try {
-        val formatter = SimpleDateFormat(FORMATTED_DATE, Locale.ENGLISH)
+        val formatter = SimpleDateFormat(DATE_MONTH_FORMAT, Locale.getDefault())
         val date = formatter.parse(inputDateString)
         date as Date
     } catch (ex: ParseException) {
         ex.printStackTrace()
-        val defaultDate = SimpleDateFormat(FORMATTED_DATE).parse("01-01-2000")
+        val defaultDate = SimpleDateFormat(FULL_DATE_FORMAT).parse("01-Sep-2000")
         defaultDate
     }
 }
@@ -169,12 +175,14 @@ fun convertDateToFull(inputDateString: String): Date {
 fun convertFullDateToDate(inputDateString: String): String {
     return try {
         val originalDateFormat = SimpleDateFormat(FULL_DATE_FORMAT, Locale.getDefault())
-        val targtrDateFormat = SimpleDateFormat(FORMATTED_DATE, Locale.getDefault())
+        val targetDateFormat = SimpleDateFormat(FORMATTED_DATE, Locale.getDefault())
         val calendar = Calendar.getInstance()
         calendar.time = originalDateFormat.parse(inputDateString) ?: Date()
-        targtrDateFormat.format(calendar.time)
+        Log.d("TAG", "convertFullDateToDate: ${calendar.time}   -->     $inputDateString")
+        targetDateFormat.format(calendar.time)
     } catch (e: Exception) {
         e.printStackTrace()
+        Log.d("TAG", "convertFullDateToDate catch : ${e.message}")
         ""
     }
 }

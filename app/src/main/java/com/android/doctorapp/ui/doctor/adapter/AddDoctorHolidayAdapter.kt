@@ -9,7 +9,7 @@ import com.android.doctorapp.databinding.AddDoctorHolidayRowLayoutBinding
 import com.android.doctorapp.repository.models.HolidayModel
 
 class AddDoctorHolidayAdapter(
-    private val addHolidayList: ArrayList<HolidayModel>,
+    private var addHolidayList: List<HolidayModel>,
     private val listener: OnItemClickListener
 ) : RecyclerView.Adapter<AddDoctorHolidayAdapter.ItemViewHolder>() {
 
@@ -44,6 +44,12 @@ class AddDoctorHolidayAdapter(
         holder.bind(objects, listener, position)
 
     }
+
+    fun updateHolidayList(filterList: ArrayList<HolidayModel>) {
+        addHolidayList = filterList
+        notifyItemRangeChanged(0, addHolidayList.size)
+    }
+
 
     interface OnItemClickListener {
         fun onItemDelete(item: HolidayModel, position: Int)

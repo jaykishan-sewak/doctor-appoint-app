@@ -1,6 +1,5 @@
 package com.android.doctorapp.ui.doctor.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -10,12 +9,12 @@ import com.android.doctorapp.databinding.AddTimeShiftRowLayoutBinding
 import com.android.doctorapp.repository.models.AddShiftTimeModel
 
 class AddDoctorTimeAdapter(
-    private val shiftTimeList: ArrayList<AddShiftTimeModel>,
-//    private val shiftTimeSize: Int,
+    private var shiftTimeList: ArrayList<AddShiftTimeModel>,
     private val listener: OnItemClickListener
-): RecyclerView.Adapter<AddDoctorTimeAdapter.ItemViewHolder>() {
+) : RecyclerView.Adapter<AddDoctorTimeAdapter.ItemViewHolder>() {
 
-    class ItemViewHolder(val view: AddTimeShiftRowLayoutBinding): RecyclerView.ViewHolder(view.root) {
+    class ItemViewHolder(val view: AddTimeShiftRowLayoutBinding) :
+        RecyclerView.ViewHolder(view.root) {
         fun bind(item: AddShiftTimeModel, listener: OnItemClickListener, position: Int) {
             view.apply {
                 addShitTimeModel = item
@@ -51,6 +50,11 @@ class AddDoctorTimeAdapter(
         fun endTimeClick(addShiftTimeModel: AddShiftTimeModel, position: Int)
 
         fun removeShiftClick(addShiftTimeModel: AddShiftTimeModel, position: Int)
+    }
+
+    fun updateShiftTimeList(filterList: ArrayList<AddShiftTimeModel>) {
+        shiftTimeList = filterList
+        notifyItemRangeChanged(0, shiftTimeList.size)
     }
 
 }

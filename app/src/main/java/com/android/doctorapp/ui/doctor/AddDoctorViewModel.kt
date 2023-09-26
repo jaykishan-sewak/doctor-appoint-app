@@ -15,6 +15,7 @@ import com.android.doctorapp.repository.AuthRepository
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.local.USER_ID
 import com.android.doctorapp.repository.local.USER_IS_EMAIL_VERIFIED
+import com.android.doctorapp.repository.models.AddShiftRequestModel
 import com.android.doctorapp.repository.models.AddShiftTimeModel
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
@@ -22,7 +23,6 @@ import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.DegreeResponseModel
 import com.android.doctorapp.repository.models.HolidayModel
 import com.android.doctorapp.repository.models.SpecializationResponseModel
-import com.android.doctorapp.repository.models.TimeSlotModel
 import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.repository.models.WeekOffModel
@@ -116,13 +116,10 @@ class AddDoctorViewModel @Inject constructor(
 
     private val weekDayList = ArrayList<WeekOffModel>()
     val weekDayNameList = MutableLiveData<ArrayList<WeekOffModel>>()
-    val strWeekOffList = MutableLiveData<ArrayList<String>>()
-
 
     val holidayList = MutableLiveData<ArrayList<HolidayModel>>()
-    val availableTimeList = MutableLiveData<ArrayList<TimeSlotModel>>()
 
-    val addShitTimeSlotList = MutableLiveData<ArrayList<AddShiftTimeModel>>()
+    val addShiftTimeSlotList = MutableLiveData<ArrayList<AddShiftTimeModel>>()
 
     private val _dataResponse = SingleLiveEvent<UserDataRequestModel?>()
     val userResponse = _dataResponse.asLiveData()
@@ -179,6 +176,26 @@ class AddDoctorViewModel @Inject constructor(
                             notificationToggleData.value = response.body.isNotificationEnable
                             degreeLiveList.value = response.body.degree?.toList()
                             specializationLiveList.value = response.body.specialities?.toList()
+                            holidayList.value =
+                                if (response.body.holidayList?.isNotEmpty() == true) response.body.holidayList?.map { holidayDate ->
+                                    HolidayModel(
+                                        holidayDate = holidayDate
+                                    )
+                                } as ArrayList<HolidayModel> else null
+
+
+                            addShiftTimeSlotList.value =
+                                if (response.body.availableTime?.isNotEmpty() == true)
+                                    response.body.availableTime?.map { shiftModel ->
+                                        AddShiftTimeModel(
+                                            startTime = shiftModel.startTime,
+                                            endTime = shiftModel.endTime,
+                                            isTimeSlotBook = shiftModel.isTimeSlotBook
+                                        )
+                                    } as ArrayList<AddShiftTimeModel> else null
+
+                            getDBWeekDayList(response.body.weekOffList)
+
                             data.value = userObj
                             _dataResponse.value = response.body
                             setShowProgress(false)
@@ -211,7 +228,7 @@ class AddDoctorViewModel @Inject constructor(
 
         if (isDoctor.value!!) {
 
-            if (addShitTimeSlotList.value.isNullOrEmpty()) {
+            if (addShiftTimeSlotList.value.isNullOrEmpty()) {
                 isUpdateDataValid.value = false
             } else {
                 isUpdateDataValid.value =
@@ -221,7 +238,7 @@ class AddDoctorViewModel @Inject constructor(
                             && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
                             && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
                             && !dob.value.isNullOrEmpty() && dobError.value.isNullOrEmpty()
-                            && addShitTimeSlotList.value?.filter { shiftTIme ->
+                            && addShiftTimeSlotList.value?.filter { shiftTIme ->
                         shiftTIme.startTime == null || shiftTIme.endTime == null
                     }.isNullOrEmpty()
                             && isPhoneVerify.value!!
@@ -406,14 +423,14 @@ class AddDoctorViewModel @Inject constructor(
                             ?.map { (it as Chip).text.toString() } as ArrayList<String>?,
                         isEmailVerified = true,
                         isPhoneNumberVerified = true,
-                        availableTime = addShitTimeSlotList.value?.toList()
+                        availableTime = addShiftTimeSlotList.value?.toList()
                             ?.map { newData ->
-                                AddShiftTimeModel(
+                                AddShiftRequestModel(
                                     startTime = newData.startTime,
                                     endTime = newData.endTime,
                                     isTimeSlotBook = newData.isTimeSlotBook
                                 )
-                            } as ArrayList<AddShiftTimeModel>,
+                            } as ArrayList<AddShiftRequestModel>,
                         isAdmin = false,
                         isNotificationEnable = notificationToggleData.value == true,
                         dob = SimpleDateFormat(
@@ -423,8 +440,10 @@ class AddDoctorViewModel @Inject constructor(
                         isUserVerified = true,
                         holidayList = if (holidayList.value?.isNotEmpty() == true) holidayList.value?.toList()
                             ?.map { holidayDate -> holidayDate.holidayDate } as ArrayList<Date> else null,
-                        weekOffList = strWeekOffList.value
-
+                        weekOffList = if (weekDayNameList.value?.isNotEmpty() == true) weekDayNameList.value?.toList()
+                            ?.filter { it.isWeekOff == true }
+                            ?.map { weekOffModel -> weekOffModel.dayName }
+                                as ArrayList<String> else null
                     )
                 } else {
                     //Here Code for User Update
@@ -457,7 +476,6 @@ class AddDoctorViewModel @Inject constructor(
                             contactNumber.value = ""
                             dob.value = ""
                             isAvailableDate.value = ""
-                            availableTimeList.value = arrayListOf()
                             setShowProgress(false)
                             if (isDoctor.value == true) {
                                 _addDoctorResponse.value =
@@ -845,9 +863,20 @@ class AddDoctorViewModel @Inject constructor(
                 isWeekOff = false
             )
         )
-
-        weekDayNameList.value = weekDayList
-
     }
+
+    private fun getDBWeekDayList(weekOffList: java.util.ArrayList<String>?) {
+        if (weekOffList?.isNotEmpty() == true) {
+            weekDayList.forEachIndexed { index, weekOffModel ->
+                weekOffList.forEachIndexed { i, s ->
+                    if (weekOffModel.dayName == s)
+                        weekDayList[index].isWeekOff = true
+
+                }
+            }
+        }
+        weekDayNameList.value = weekDayList
+    }
+
 
 }

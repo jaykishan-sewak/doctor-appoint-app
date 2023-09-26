@@ -23,11 +23,9 @@ import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.AddShiftTimeModel
 import com.android.doctorapp.repository.models.HolidayModel
-import com.android.doctorapp.repository.models.TimeSlotModel
 import com.android.doctorapp.repository.models.WeekOffModel
 import com.android.doctorapp.ui.doctor.adapter.AddDoctorHolidayAdapter
 import com.android.doctorapp.ui.doctor.adapter.AddDoctorTimeAdapter
-import com.android.doctorapp.ui.doctor.adapter.AddDoctorTimingAdapter
 import com.android.doctorapp.ui.doctor.adapter.CustomAutoCompleteAdapter
 import com.android.doctorapp.ui.doctor.adapter.WeekOffDayAdapter
 import com.android.doctorapp.ui.doctordashboard.DoctorDashboardActivity
@@ -35,11 +33,11 @@ import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.IS_DOCTOR_OR_USER_KEY
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.STORED_VERIFICATION_Id_KEY
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_CONTACT_NUMBER_KEY
+import com.android.doctorapp.util.constants.ConstantKey.DATE_MONTH_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.convertDateToFull
 import com.android.doctorapp.util.extension.convertDateToMonth
-import com.android.doctorapp.util.extension.convertTime
 import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.selectDate
@@ -84,16 +82,16 @@ class UpdateDoctorProfileFragment :
     lateinit var bindingView: FragmentUpdateDoctorProfileBinding
     var enteredDegreeText: String = ""
     var enteredSpecializationText: String = ""
-    private val holidayList = ArrayList<HolidayModel>()
     private lateinit var weekOffDayAdapter: WeekOffDayAdapter
-    private val tempStrWeekOffList = ArrayList<String>()
-    private lateinit var addDoctorTimingAdapter: AddDoctorTimingAdapter
     private lateinit var addDoctorHolidayAdapter: AddDoctorHolidayAdapter
     private lateinit var addDoctorTimeAdapter: AddDoctorTimeAdapter
-    private var tempAddShitList = ArrayList<AddShiftTimeModel>()
 
     private lateinit var startTimeCalendar: Calendar
     private lateinit var endTimeCalendar: Calendar
+
+    private var tempHolidayList = ArrayList<HolidayModel>()
+    private var tempWeekOffList = ArrayList<WeekOffModel>()
+    private var tempShiftTimeList = ArrayList<AddShiftTimeModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -195,6 +193,11 @@ class UpdateDoctorProfileFragment :
 
     private fun registerObserver(layoutBinding: FragmentUpdateDoctorProfileBinding) {
 
+        updateHolidayRecyclerview(arrayListOf())
+        updateWeekOffRecyclerview(arrayListOf())
+        updateAddShiftTimeAdapter(arrayListOf())
+
+
         viewModel.getUserData().observe(viewLifecycleOwner) {
             viewModel.name.value = it.name
             viewModel.email.value = it.email
@@ -248,17 +251,32 @@ class UpdateDoctorProfileFragment :
                     minDate = null
                 ) { holidayDate ->
                     val monthDate = convertDateToMonth(holidayDate)
-                    holidayList.add(HolidayModel(holidayDate = convertDateToFull(monthDate)))
-                    updateHolidayRecyclerview(holidayList)
+                    if (tempHolidayList.isNullOrEmpty()) {
+                        tempHolidayList.add(HolidayModel(holidayDate = convertDateToFull(monthDate)))
+                    } else {
+                        val isAlreadyHoliday = tempHolidayList.any {
+                            monthDate == dateFormatter(it.holidayDate, DATE_MONTH_FORMAT)
+                        }
+                        if (isAlreadyHoliday) {
+                            context?.toast(getString(R.string.already_added_in_holiday))
+                        } else {
+                            tempHolidayList.add(
+                                HolidayModel(
+                                    holidayDate = convertDateToFull(
+                                        monthDate
+                                    )
+                                )
+                            )
+                        }
+                    }
+                    viewModel.holidayList.value = tempHolidayList
+
                 }
             } else if (layoutBinding.btnAddTiming.id == it?.id) {
-                tempAddShitList.add(
-                    AddShiftTimeModel(
-                        isTimeSlotBook = false
-                    )
-                )
-                viewModel.addShitTimeSlotList.value = tempAddShitList
+                tempShiftTimeList.add(AddShiftTimeModel(isTimeSlotBook = false))
+                viewModel.addShiftTimeSlotList.value = tempShiftTimeList
                 viewModel.validateAllUpdateField()
+
             } else {
                 requireContext().selectDate(
                     maxDate = null,
@@ -407,12 +425,23 @@ class UpdateDoctorProfileFragment :
         }
 
         viewModel.weekDayNameList.observe(viewLifecycleOwner) {
-            updateWeekOffRecyclerview(it)
+            tempWeekOffList = it
+            weekOffDayAdapter.updateWeekOffList(it)
             layoutBinding.rvWeekOff.adapter = weekOffDayAdapter
         }
 
-        viewModel.addShitTimeSlotList.observe(viewLifecycleOwner) {
-            updateAddShiftTimeAdapter(it)
+        viewModel.addShiftTimeSlotList.observe(viewLifecycleOwner) {
+            if (it != null && it.isNotEmpty()) {
+                tempShiftTimeList = viewModel.addShiftTimeSlotList.value!!
+                addDoctorTimeAdapter.updateShiftTimeList(it)
+            }
+        }
+
+        viewModel.holidayList.observe(viewLifecycleOwner) {
+            if (it != null && it.isNotEmpty()) {
+                tempHolidayList = viewModel.holidayList.value!!
+                addDoctorHolidayAdapter.updateHolidayList(it)
+            }
         }
 
     }
@@ -483,25 +512,17 @@ class UpdateDoctorProfileFragment :
         weekOffDayAdapter = WeekOffDayAdapter(weekOffDayList,
             object : WeekOffDayAdapter.OnItemClickListener {
                 override fun onItemClick(item: WeekOffModel, position: Int) {
-                    weekOffDayList.forEachIndexed { index, weekOffModel ->
-                        if (weekOffDayList[index].dayName == item.dayName) {
-                            if (weekOffDayList[index].isWeekOff) {
-                                weekOffDayList[index].isWeekOff = false
-                                tempStrWeekOffList.remove(weekOffDayList[index].dayName)
-                            } else {
-                                weekOffDayList[index].isWeekOff = true
-                                tempStrWeekOffList.add(weekOffDayList[index].dayName)
-                            }
-                        } else {
-
+                    tempWeekOffList.forEachIndexed { index, weekOffModel ->
+                        if (tempWeekOffList[index].dayName == item.dayName) {
+                            tempWeekOffList[index].isWeekOff = !tempWeekOffList[index].isWeekOff
                         }
-
+                        weekOffDayAdapter.updateWeekOffList(tempWeekOffList)
+                        viewModel.weekDayNameList.value = tempWeekOffList
                     }
-                    weekOffDayAdapter.notifyItemChanged(position)
-                    viewModel.strWeekOffList.value = tempStrWeekOffList
                 }
 
             })
+
     }
 
     private fun showTimePickerDialog(isStartTime: Boolean, position: Int) {
@@ -517,18 +538,30 @@ class UpdateDoctorProfileFragment :
                 calendar.set(Calendar.MINUTE, selectedMinute)
                 val selectedTime = calendar.time
                 if (isStartTime) {
-                    val timeContainsOrNot = tempAddShitList.any {
-                        convertTime(it.startTime.toString()) == convertTime(selectedTime.toString())
+
+
+                    val timeContainsOrNot = tempShiftTimeList.any {
+                        if (it.startTime != null) {
+                            dateFormatter(
+                                it.startTime,
+                                ConstantKey.HOUR_MIN_AM_PM_FORMAT
+                            ) == dateFormatter(
+                                selectedTime,
+                                ConstantKey.HOUR_MIN_AM_PM_FORMAT
+                            )
+                        } else
+                            false
                     }
+
                     if (timeContainsOrNot) {
                         context?.toast(getString(R.string.already_selected_time))
                     } else {
-                        tempAddShitList[position].startTime = selectedTime
+                        tempShiftTimeList[position].startTime = selectedTime
                     }
                     viewModel.validateAllUpdateField()
                 } else {
                     if (calendar.after(startTimeCalendar)) {
-                        tempAddShitList[position].endTime = selectedTime
+                        tempShiftTimeList[position].endTime = selectedTime
                         viewModel.validateAllUpdateField()
                     } else {
                         endTimeCalendar = startTimeCalendar.clone() as Calendar
@@ -546,24 +579,16 @@ class UpdateDoctorProfileFragment :
         mTimePicker.show()
     }
 
-    private fun updateAddTimeRecyclerview(newAddTimeList: ArrayList<TimeSlotModel>) {
-        addDoctorTimingAdapter = AddDoctorTimingAdapter(newAddTimeList)
-        viewModel.availableTimeList.value = newAddTimeList
-        binding.rvAddTiming.adapter = addDoctorTimingAdapter
-        viewModel.validateAllUpdateField()
-    }
-
     private fun updateHolidayRecyclerview(newHolidayList: ArrayList<HolidayModel>) {
         addDoctorHolidayAdapter = AddDoctorHolidayAdapter(newHolidayList,
             object : AddDoctorHolidayAdapter.OnItemClickListener {
                 override fun onItemDelete(item: HolidayModel, position: Int) {
-                    newHolidayList.remove(item)
+                    tempHolidayList.remove(item)
                     addDoctorHolidayAdapter.notifyDataSetChanged()
 
                 }
-
             })
-        viewModel.holidayList.value = newHolidayList
+        viewModel.holidayList.value = tempHolidayList
         binding.rvHoliday.adapter = addDoctorHolidayAdapter
     }
 
@@ -579,15 +604,13 @@ class UpdateDoctorProfileFragment :
                 }
 
                 override fun removeShiftClick(addShiftTimeModel: AddShiftTimeModel, position: Int) {
-                    tempAddShitList.removeAt(position)
-                    addDoctorTimeAdapter.notifyDataSetChanged()
+                    tempShiftTimeList.remove(addShiftTimeModel)
                     viewModel.validateAllUpdateField()
+                    addDoctorTimeAdapter.notifyDataSetChanged()
+
                 }
-
-
             }
         )
         binding.rvAddTiming.adapter = addDoctorTimeAdapter
     }
-
 }
