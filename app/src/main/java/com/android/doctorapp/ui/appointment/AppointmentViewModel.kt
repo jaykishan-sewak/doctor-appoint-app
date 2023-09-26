@@ -84,7 +84,7 @@ class AppointmentViewModel @Inject constructor(
     var appointmentObj = MutableLiveData<AppointmentModel>()
 
     val doctorDetails: MutableLiveData<UserDataResponseModel?> = MutableLiveData()
-    var appointmentResponse: MutableLiveData<AppointmentModel> = MutableLiveData()
+    var appointmentResponse: MutableLiveData<AppointmentModel?> = MutableLiveData()
     var userDataResponse: MutableLiveData<UserDataResponseModel> = MutableLiveData()
     var symptomResponse: MutableLiveData<SymptomModel> = MutableLiveData()
 
