@@ -120,7 +120,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
 
 
         viewModel.signInAccountTask.observe(viewLifecycleOwner) {
-            if (it.isSuccessful) {
+            if (it?.isSuccessful == true) {
                 val msg = getString(R.string.sign_with_google_successful)
                 context?.toast(msg)
                 viewModel.callGoogleSignInAccountAPI(it)
@@ -133,7 +133,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
             }
         }
         viewModel.authCredential.observe(viewLifecycleOwner) {
-            viewModel.callGoogleAPI(it)
+            viewModel.callGoogleAPI(it!!)
         }
 
         viewModel.navigationListener.observe(viewLifecycleOwner) {
