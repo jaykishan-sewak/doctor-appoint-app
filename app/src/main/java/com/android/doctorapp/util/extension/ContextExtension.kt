@@ -126,9 +126,15 @@ fun convertDate(originalDateStr: String): String {
 
 fun convertTime(originalTimeStr: String): String {
     return try {
-        val originalTimeFormat = SimpleDateFormat(FULL_DATE_FORMAT, Locale.ENGLISH)
-        val targetTimeFormat = SimpleDateFormat(HOUR_MIN_AM_PM_FORMAT, Locale.ENGLISH)
-
+        val originalTimeFormat: SimpleDateFormat
+        val targetTimeFormat: SimpleDateFormat
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            originalTimeFormat = SimpleDateFormat(FULL_DATE_FORMAT, Locale.ENGLISH)
+            targetTimeFormat = SimpleDateFormat(HOUR_MIN_AM_PM_FORMAT, Locale.ENGLISH)
+        } else {
+            originalTimeFormat = SimpleDateFormat(FULL_DATE_FORMAT, Locale.getDefault())
+            targetTimeFormat = SimpleDateFormat(HOUR_MIN_AM_PM_FORMAT, Locale.getDefault())
+        }
         val calendar = Calendar.getInstance()
         calendar.time = originalTimeFormat.parse(originalTimeStr) ?: Date()
 

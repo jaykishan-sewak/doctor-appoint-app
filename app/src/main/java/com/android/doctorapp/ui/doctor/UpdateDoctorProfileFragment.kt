@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -86,7 +85,6 @@ class UpdateDoctorProfileFragment :
     private lateinit var weekOffDayAdapter: WeekOffDayAdapter
     private lateinit var addDoctorHolidayAdapter: AddDoctorHolidayAdapter
     private lateinit var addDoctorTimeAdapter: AddDoctorTimeAdapter
-//    private var tempAddShitList = ArrayList<AddShiftTimeModel>()
 
     private lateinit var startTimeCalendar: Calendar
     private lateinit var endTimeCalendar: Calendar
@@ -275,10 +273,6 @@ class UpdateDoctorProfileFragment :
 
                 }
             } else if (layoutBinding.btnAddTiming.id == it?.id) {
-
-                if (viewModel.addShiftTimeSlotList.value?.isNotEmpty() == true) {
-                    tempShiftTimeList = viewModel.addShiftTimeSlotList.value!!
-                }
                 tempShiftTimeList.add(AddShiftTimeModel(isTimeSlotBook = false))
                 viewModel.addShiftTimeSlotList.value = tempShiftTimeList
                 viewModel.validateAllUpdateField()
@@ -431,15 +425,14 @@ class UpdateDoctorProfileFragment :
         }
 
         viewModel.weekDayNameList.observe(viewLifecycleOwner) {
-//            updateWeekOffRecyclerview(it)
             tempWeekOffList = it
             weekOffDayAdapter.updateWeekOffList(it)
             layoutBinding.rvWeekOff.adapter = weekOffDayAdapter
         }
 
         viewModel.addShiftTimeSlotList.observe(viewLifecycleOwner) {
-//            updateAddShiftTimeAdapter(it)
             if (it != null && it.isNotEmpty()) {
+                tempShiftTimeList = viewModel.addShiftTimeSlotList.value!!
                 addDoctorTimeAdapter.updateShiftTimeList(it)
             }
         }
@@ -563,10 +556,6 @@ class UpdateDoctorProfileFragment :
                     if (timeContainsOrNot) {
                         context?.toast(getString(R.string.already_selected_time))
                     } else {
-                        Log.d(
-                            "TAG",
-                            "showTimePickerDialog: ${tempShiftTimeList[position].startTime}"
-                        )
                         tempShiftTimeList[position].startTime = selectedTime
                     }
                     viewModel.validateAllUpdateField()
@@ -615,14 +604,11 @@ class UpdateDoctorProfileFragment :
                 }
 
                 override fun removeShiftClick(addShiftTimeModel: AddShiftTimeModel, position: Int) {
-//                    tempShiftTimeList.removeAt(position)
                     tempShiftTimeList.remove(addShiftTimeModel)
                     viewModel.validateAllUpdateField()
                     addDoctorTimeAdapter.notifyDataSetChanged()
 
                 }
-
-
             }
         )
         binding.rvAddTiming.adapter = addDoctorTimeAdapter
