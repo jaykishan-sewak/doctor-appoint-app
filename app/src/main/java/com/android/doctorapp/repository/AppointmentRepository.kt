@@ -7,6 +7,7 @@ import com.android.doctorapp.repository.models.SymptomModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_APPROVED_KEY
+import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_DOCTOR_ID
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_SELECTED_DATE
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_USER_ID
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_APPOINTMENT
@@ -83,9 +84,10 @@ class AppointmentRepository @Inject constructor() {
         }
     }
 
-    suspend fun getAppointmentsList(firestore: FirebaseFirestore): ApiResponse<List<AppointmentModel>> {
+    suspend fun getAppointmentsList(userId: String, firestore: FirebaseFirestore): ApiResponse<List<AppointmentModel>> {
         return try {
             val response = firestore.collection(ConstantKey.DBKeys.TABLE_APPOINTMENT)
+                .whereEqualTo(FIELD_DOCTOR_ID, userId)
                 .get().await()
 
 

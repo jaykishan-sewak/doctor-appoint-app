@@ -1,12 +1,16 @@
 package com.android.doctorapp.ui.doctordashboard.doctorfragment
 
+import android.content.ContentValues.TAG
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
 import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AppointmentRepository
+import com.android.doctorapp.repository.local.Session
+import com.android.doctorapp.repository.local.USER_ID
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
@@ -16,6 +20,7 @@ import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -24,7 +29,8 @@ import javax.inject.Inject
 class AppointmentDoctorViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val appointmentRepository: AppointmentRepository,
-    private val context: Context,
+    private val session: Session,
+    private val context: Context
 ) : BaseViewModel() {
 
     val finalAppointmentList = MutableLiveData<List<Any>>()
@@ -97,33 +103,37 @@ class AppointmentDoctorViewModel @Inject constructor(
     private fun getAppointmentList() {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
-                setShowProgress(true)
-                when (val response = appointmentRepository.getAppointmentsList(fireStore)) {
-                    is ApiSuccessResponse -> {
-                        setShowProgress(false)
-                        if (response.body.isNotEmpty()) {
-                            appointmentList.value = response.body!!
-                            sortedAppointmentList.value =
-                                appointmentList.value!!.sortedByDescending {
-                                    it.bookingDateTime
-                                }
-                            addData()
+                session.getString(USER_ID).collectLatest {
+                    Log.d(TAG, "getAppointmentList: $it")
+                    setShowProgress(true)
+                    when (val response =
+                        appointmentRepository.getAppointmentsList(it!!, fireStore)) {
+                        is ApiSuccessResponse -> {
+                            setShowProgress(false)
+                            if (response.body.isNotEmpty()) {
+                                appointmentList.value = response.body!!
+                                sortedAppointmentList.value =
+                                    appointmentList.value!!.sortedByDescending {
+                                        it.bookingDateTime
+                                    }
+                                addData()
+                            }
                         }
-                    }
 
-                    is ApiErrorResponse -> {
-                        context.toast(response.errorMessage)
-                        setShowProgress(false)
-                    }
+                        is ApiErrorResponse -> {
+                            context.toast(response.errorMessage)
+                            setShowProgress(false)
+                        }
 
-                    is ApiNoNetworkResponse -> {
-                        context.toast(response.errorMessage)
-                        setShowProgress(false)
-                    }
+                        is ApiNoNetworkResponse -> {
+                            context.toast(response.errorMessage)
+                            setShowProgress(false)
+                        }
 
-                    else -> {
-                        context.toast(context.getString(R.string.something_went_wrong))
-                        setShowProgress(false)
+                        else -> {
+                            context.toast(context.getString(R.string.something_went_wrong))
+                            setShowProgress(false)
+                        }
                     }
                 }
             } else {

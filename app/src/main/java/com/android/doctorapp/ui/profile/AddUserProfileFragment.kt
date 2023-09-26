@@ -16,6 +16,7 @@ import com.android.doctorapp.databinding.FragmentUpdateDoctorProfileBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.ui.bottomsheet.BottomSheetDialog
 import com.android.doctorapp.ui.doctor.AddDoctorViewModel
 import com.android.doctorapp.ui.doctor.UpdateDoctorProfileFragment
 import com.android.doctorapp.ui.userdashboard.UserDashboardActivity
@@ -43,6 +44,9 @@ class AddUserProfileFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel by viewModels<AddDoctorViewModel> { viewModelFactory }
+    lateinit var bindingView: FragmentUpdateDoctorProfileBinding
+    lateinit var bottomSheetFragment: BottomSheetDialog
+
     val handler = Handler(Looper.getMainLooper())
     private val runnable = object : Runnable {
         override fun run() {
@@ -126,17 +130,24 @@ class AddUserProfileFragment :
 
 
         // Inflate the layout for this fragment
-        return binding {
+        bindingView = binding {
             viewModel = this@AddUserProfileFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
-        }.root
+        }
 
+        bindingView.icUpdateDoctor.setOnClickListener {
+            bottomSheetFragment = BottomSheetDialog()
+            bottomSheetFragment.show(requireActivity().supportFragmentManager, "BSDialogFragment")
+        }
+        setUpWithViewModel(viewModel)
+        checkLiveData(bindingView)
+
+        return bindingView.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpWithViewModel(viewModel)
-        checkLiveData()
+
     }
 
     override fun onDestroy() {
@@ -145,7 +156,7 @@ class AddUserProfileFragment :
         handler.removeCallbacks(runnable)
     }
 
-    private fun checkLiveData() {
+    private fun checkLiveData(layoutBinding: FragmentUpdateDoctorProfileBinding) {
 
         viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
             if (viewModel.isProfileNavigation.value!!) {
