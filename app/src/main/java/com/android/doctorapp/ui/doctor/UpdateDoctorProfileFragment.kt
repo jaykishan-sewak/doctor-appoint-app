@@ -516,35 +516,12 @@ class UpdateDoctorProfileFragment :
     }
 
     private fun updateWeekOffRecyclerview(weekOffDayList: ArrayList<WeekOffModel>) {
-        /*weekOffDayAdapter = WeekOffDayAdapter(weekOffDayList,
-            object : WeekOffDayAdapter.OnItemClickListener {
-                override fun onItemClick(item: WeekOffModel, position: Int) {
-                    weekOffDayList.forEachIndexed { index, weekOffModel ->
-                        if (weekOffDayList[index].dayName == item.dayName) {
-                            if (weekOffDayList[index].isWeekOff) {
-                                weekOffDayList[index].isWeekOff = false
-                                tempStrWeekOffList.remove(weekOffDayList[index].dayName)
-                            } else {
-                                weekOffDayList[index].isWeekOff = true
-                                tempStrWeekOffList.add(weekOffDayList[index].dayName)
-                            }
-                        } else {
-                        }
-                    }
-                    weekOffDayAdapter.notifyItemChanged(position)
-                    viewModel.strWeekOffList.value = tempStrWeekOffList
-                }
-
-            })*/
-
-
         weekOffDayAdapter = WeekOffDayAdapter(weekOffDayList,
             object : WeekOffDayAdapter.OnItemClickListener {
                 override fun onItemClick(item: WeekOffModel, position: Int) {
                     tempWeekOffList.forEachIndexed { index, weekOffModel ->
                         if (tempWeekOffList[index].dayName == item.dayName) {
                             tempWeekOffList[index].isWeekOff = !tempWeekOffList[index].isWeekOff
-                        } else {
                         }
                         weekOffDayAdapter.updateWeekOffList(tempWeekOffList)
                         viewModel.weekDayNameList.value = tempWeekOffList

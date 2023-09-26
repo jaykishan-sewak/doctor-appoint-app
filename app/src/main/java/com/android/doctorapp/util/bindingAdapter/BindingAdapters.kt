@@ -259,7 +259,6 @@ fun setString(textView: AppCompatTextView, specialities: List<String>?) {
 
 @BindingAdapter("app:dateMonthStyle")
 fun setDateMonthStyle(textView: AppCompatTextView, originalTimeStr: Date) {
-//    textView.text = convertFullDateToDate(originalTimeStr)
     textView.text = dateFormatter(originalTimeStr, FORMATTED_DATE)
 }
 

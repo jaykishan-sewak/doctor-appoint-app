@@ -874,7 +874,6 @@ class AddDoctorViewModel @Inject constructor(
 
                 }
             }
-        } else {
         }
         weekDayNameList.value = weekDayList
     }
