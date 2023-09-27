@@ -41,18 +41,6 @@
                 android:paddingTop="@dimen/margin_20"
                 android:paddingBottom="@dimen/parentVerticalMargin_50">
 
-<!--                <androidx.appcompat.widget.AppCompatImageView-->
-<!--                    android:id="@+id/ic_update_doctor"-->
-<!--                    android:layout_width="@dimen/profile_image_dimension"-->
-<!--                    android:layout_height="@dimen/profile_image_dimension"-->
-<!--                    android:layout_marginStart="@dimen/margin_8"-->
-<!--                    android:layout_marginTop="@dimen/margin_32"-->
-<!--                    android:layout_marginEnd="@dimen/margin_8"-->
-<!--                    android:background="@drawable/ic_illustration_login"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toTopOf="parent" />-->
-
                 <androidx.cardview.widget.CardView
                     android:id="@+id/ic_update_doctor"
                     android:layout_width="@dimen/profile_image_dimension"
