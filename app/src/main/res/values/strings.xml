@@ -207,4 +207,7 @@
     <string name="already_added_in_holiday">Already Added date in Holiday</string>
     <string name="hint_doctor_fees">Fees</string>
     <string name="valid_fees_desc">Fees Must be Required</string>
+    <string name="location_permission">Location Permission Declined</string>
+    <string name="failed_to_get_current_location">Failed on getting current location</string>
+
 </resources>

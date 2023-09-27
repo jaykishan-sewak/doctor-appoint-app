@@ -124,9 +124,9 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_address"
                     style="@style/custom_edit_text_bg"
+                    android:onClick="@{(text_address) -> viewModel.calenderClick(text_address)}"
                     android:paddingEnd="@dimen/margin_55"
                     android:text="@={viewModel.address}"
-                    android:onClick="@{(text_address) -> viewModel.calenderClick(text_address)}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_email" />
@@ -286,6 +286,10 @@
                         android:textColor="@color/black"
                         android:textSize="14sp" />
 
+                    <!--
+                    working but in single way binding
+                        android:text="@{viewModel.fees != null ? viewModel.fees : ``}"
+                    -->
                 </com.google.android.material.textfield.TextInputLayout>
 
 

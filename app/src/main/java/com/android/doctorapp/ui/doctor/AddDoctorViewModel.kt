@@ -1,6 +1,7 @@
 package com.android.doctorapp.ui.doctor
 
 import android.content.Context
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.RadioGroup
@@ -81,7 +82,7 @@ class AddDoctorViewModel @Inject constructor(
 
     private val data = MutableLiveData<UserDataResponseModel>()
 
-    val address: MutableLiveData<String> = MutableLiveData()
+    val address: MutableLiveData<String> = MutableLiveData("test")
     val addressError: MutableLiveData<String?> = MutableLiveData()
 
     val dob: MutableLiveData<String> = MutableLiveData()
@@ -237,7 +238,6 @@ class AddDoctorViewModel @Inject constructor(
                 isUpdateDataValid.value =
                     (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
                             && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
-
                             && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
                             && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
                             && !dob.value.isNullOrEmpty() && dobError.value.isNullOrEmpty()
