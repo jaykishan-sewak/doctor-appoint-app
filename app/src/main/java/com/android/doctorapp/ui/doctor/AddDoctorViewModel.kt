@@ -365,10 +365,10 @@ class AddDoctorViewModel @Inject constructor(
 
     fun onUpdateClick() {
         if (context.isNetworkAvailable()) {
-            if(imageUri.value != null)
+            if (imageUri.value != null)
                 uploadImage(imageUri.value!!)
             else
-            updateUser("")
+                this.updateUser("")
         } else {
             context.toast(resourceProvider.getString(R.string.check_internet_connection))
         }
