@@ -9,6 +9,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 
 open class BaseViewModel() : ViewModel() {
 
@@ -24,8 +25,8 @@ open class BaseViewModel() : ViewModel() {
     var fireStore: FirebaseFirestore = FirebaseFirestore.getInstance()
     lateinit var firebaseUser: FirebaseUser
     var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
-
     lateinit var  googleSignInOptions : GoogleSignInOptions
+    val storage = FirebaseStorage.getInstance()
 
     fun googleInitialization(context:Context){
         googleSignInOptions= GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

@@ -1,9 +1,11 @@
 package com.android.doctorapp.ui.doctor
 
 import android.content.Context
+import android.net.Uri
 import android.util.Patterns
 import android.view.View
 import android.widget.RadioGroup
+import androidx.core.net.toUri
 import androidx.core.view.children
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -127,6 +129,9 @@ class AddDoctorViewModel @Inject constructor(
     val isProfileNavigation: MutableLiveData<Boolean> = MutableLiveData(false)
 
     var gender: MutableLiveData<Int> = MutableLiveData()
+    val isCameraClick: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isGalleryClick: MutableLiveData<Boolean> = MutableLiveData(false)
+    val imageUri = MutableLiveData<Uri>()
 
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
@@ -144,7 +149,7 @@ class AddDoctorViewModel @Inject constructor(
             var recordId = ""
             session.getString(USER_ID).collectLatest {
                 recordId = it.orEmpty()
-                var userObj: UserDataResponseModel
+                val userObj: UserDataResponseModel
                 if (context.isNetworkAvailable()) {
                     setShowProgress(true)
                     when (val response = authRepository.getRecordById(recordId, fireStore)) {
@@ -198,6 +203,7 @@ class AddDoctorViewModel @Inject constructor(
 
                             data.value = userObj
                             _dataResponse.value = response.body
+                            imageUri.value = response.body.images?.toUri()
                             setShowProgress(false)
                         }
 
@@ -359,12 +365,14 @@ class AddDoctorViewModel @Inject constructor(
 
     fun onUpdateClick() {
         if (context.isNetworkAvailable()) {
-            updateUser()
+            if (imageUri.value != null)
+                uploadImage(imageUri.value!!)
+            else
+                this.updateUser("")
         } else {
             context.toast(resourceProvider.getString(R.string.check_internet_connection))
         }
     }
-
 
     private fun addUserToAuthentication() {
         firebaseUser = firebaseAuth.currentUser!!
@@ -403,7 +411,7 @@ class AddDoctorViewModel @Inject constructor(
         }
     }
 
-    private fun updateUser() {
+    private fun updateUser(imageUrl: String) {
         viewModelScope.launch {
             var recordId: String = ""
             session.getString(USER_ID).collectLatest {
@@ -443,7 +451,9 @@ class AddDoctorViewModel @Inject constructor(
                         weekOffList = if (weekDayNameList.value?.isNotEmpty() == true) weekDayNameList.value?.toList()
                             ?.filter { it.isWeekOff == true }
                             ?.map { weekOffModel -> weekOffModel.dayName }
-                                as ArrayList<String> else null
+                                as ArrayList<String> else null,
+                        images = imageUrl
+
                     )
                 } else {
                     //Here Code for User Update
@@ -462,7 +472,9 @@ class AddDoctorViewModel @Inject constructor(
                             DATE_MM_FORMAT,
                             Locale.getDefault()
                         ).parse(dob.value.toString()),
-                        isUserVerified = true
+                        isUserVerified = true,
+                        images = imageUrl
+
                     )
 
                 }
@@ -878,5 +890,40 @@ class AddDoctorViewModel @Inject constructor(
         weekDayNameList.value = weekDayList
     }
 
+    fun clickOnCamera() {
+        isCameraClick.value = true
+    }
 
+    fun clickOnGallery() {
+        isGalleryClick.value = true
+    }
+
+    private fun uploadImage(image: Uri) {
+        viewModelScope.launch {
+            if (context.isNetworkAvailable()) {
+                setShowProgress(true)
+                when (val response = authRepository.uploadImage(image, storage)) {
+                    is ApiSuccessResponse -> {
+                        setShowProgress(false)
+                        if (response.body.isNotEmpty())
+                            updateUser(response.body)
+                    }
+
+                    is ApiErrorResponse -> {
+                        setShowProgress(false)
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        setShowProgress(false)
+                    }
+
+                    else -> {
+                        setShowProgress(false)
+                    }
+                }
+            } else
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
+
+        }
+    }
 }
