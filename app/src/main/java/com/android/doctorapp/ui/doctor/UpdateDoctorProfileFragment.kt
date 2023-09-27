@@ -1,6 +1,7 @@
 package com.android.doctorapp.ui.doctor
 
 import android.app.TimePickerDialog
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -186,7 +187,12 @@ class UpdateDoctorProfileFragment :
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         binding.icUpdateDoctor.setOnClickListener {
-            bottomSheetFragment = BottomSheetDialog()
+            bottomSheetFragment = BottomSheetDialog(object : BottomSheetDialog.DialogListener {
+                override fun getImageUri(uri: Uri) {
+                    viewModel.imageUri.value = uri
+                }
+
+            })
             bottomSheetFragment.show(requireActivity().supportFragmentManager, "BSDialogFragment")
         }
         viewModel.setBindingData(bindingView)
@@ -452,7 +458,6 @@ class UpdateDoctorProfileFragment :
                 addDoctorHolidayAdapter.updateHolidayList(it)
             }
         }
-
     }
 
     private fun addSpecializationItem(uppercase: String) {

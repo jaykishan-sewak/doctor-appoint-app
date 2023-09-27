@@ -4,6 +4,7 @@ import android.content.ContentValues.TAG
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Paint
+import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -34,6 +35,7 @@ import com.android.doctorapp.util.extension.convertDate
 import com.android.doctorapp.util.extension.convertTime
 import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.hideKeyboard
+import com.bumptech.glide.Glide
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -317,5 +319,15 @@ fun setStatus(textView: AppCompatTextView, text: String) {
         textView.setTextColor(Color.parseColor("#f1c232"))
     } else {
         textView.setTextColor(Color.parseColor("#247A28"))
+    }
+}
+
+
+@BindingAdapter("app:imageUri")
+fun loadImageFromUri(imageView: ImageView, imageUri: Uri?) {
+    imageUri?.let {
+        Glide.with(imageView.context)
+            .load(it)
+            .into(imageView)
     }
 }

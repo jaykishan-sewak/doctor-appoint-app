@@ -1,5 +1,6 @@
 package com.android.doctorapp.ui.profile
 
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -136,7 +137,12 @@ class AddUserProfileFragment :
         }
 
         bindingView.icUpdateDoctor.setOnClickListener {
-            bottomSheetFragment = BottomSheetDialog()
+            bottomSheetFragment = BottomSheetDialog(object : BottomSheetDialog.DialogListener {
+                override fun getImageUri(uri: Uri) {
+                    viewModel.imageUri.value = uri
+                }
+
+            })
             bottomSheetFragment.show(requireActivity().supportFragmentManager, "BSDialogFragment")
         }
         setUpWithViewModel(viewModel)

@@ -1,5 +1,7 @@
 package com.android.doctorapp.repository
 
+import android.net.Uri
+import android.util.Log
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.local.USER_IS_LOGGED_IN
 import com.android.doctorapp.repository.models.ApiResponse
@@ -26,6 +28,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
 import retrofit2.Response
 import javax.inject.Inject
@@ -339,6 +342,22 @@ class AuthRepository @Inject constructor(
                 .await()
 
             ApiResponse.create(response = Response.success(doctorRequestModel))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+    suspend fun uploadImage(
+        imageURI: Uri,
+        storage: FirebaseStorage
+    ): ApiResponse<String> {
+        return try {
+            val timestamp = System.currentTimeMillis().toString()
+            val response =
+                storage.reference.child("images").child("$timestamp.jpg").putFile(imageURI).await()
+            val imageUrl = response.storage.downloadUrl.await()
+            Log.d("response.storage.downloadUrl---", imageUrl.toString())
+            ApiResponse.create(response = Response.success(imageUrl.toString()))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
         }

@@ -15,7 +15,7 @@ data class UserDataRequestModel(
     var isEmailVerified: Boolean = false,
     var isPhoneNumberVerified: Boolean = false,
     var availableTime: ArrayList<AddShiftRequestModel>? = null,
-    var images: String = "",
+    var images: String ?= "",
     var isAdmin: Boolean = false,
     var isNotificationEnable: Boolean = false,
     var dob: Date? = null,
