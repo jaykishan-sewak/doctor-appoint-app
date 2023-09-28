@@ -24,6 +24,7 @@ import com.android.doctorapp.util.extension.openPhoneDialer
 import com.android.doctorapp.util.extension.selectDate
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 
@@ -35,6 +36,7 @@ class UserRequestFragment :
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel: UserRequestViewModel by viewModels { viewModelFactory }
     lateinit var adapter: BookingAppointmentsAdapter
+    lateinit var userRequestCalender: Calendar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +55,8 @@ class UserRequestFragment :
             lifecycleOwner = viewLifecycleOwner
             viewModel = this@UserRequestFragment.viewModel
         }
+        userRequestCalender = Calendar.getInstance()
+
         setUpWithViewModel(viewModel)
         registerObserver(layoutBinding)
         return layoutBinding.root
@@ -79,7 +83,11 @@ class UserRequestFragment :
 
         viewModel.isDoctorRequestCalendar.observe(viewLifecycleOwner) {
             if (it) {
-                requireContext().selectDate(maxDate = null, minDate = null) { dobDate ->
+                requireContext().selectDate(
+                    myCalendar = userRequestCalender,
+                    maxDate = null,
+                    minDate = null
+                ) { dobDate ->
                     val formatter =
                         SimpleDateFormat(ConstantKey.FORMATTED_DATE, Locale.getDefault())
                     val date = formatter.parse(dobDate)

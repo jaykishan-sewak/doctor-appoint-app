@@ -15,6 +15,7 @@ import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.util.extension.selectDate
+import java.util.Calendar
 import java.util.Date
 import javax.inject.Inject
 
@@ -24,6 +25,7 @@ class SymptomsFragment : BaseFragment<FragmentSymptomsBinding>(R.layout.fragment
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel by viewModels<SymptomsViewModel> { viewModelFactory }
     lateinit var bindingView: FragmentSymptomsBinding
+    lateinit var symptomsCalender: Calendar
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +43,8 @@ class SymptomsFragment : BaseFragment<FragmentSymptomsBinding>(R.layout.fragment
             viewModel = this@SymptomsFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
         }
+        symptomsCalender = Calendar.getInstance()
+
         viewModel.getDoctorList()
         setUpWithViewModel(viewModel)
         registerObservers()
@@ -48,15 +52,14 @@ class SymptomsFragment : BaseFragment<FragmentSymptomsBinding>(R.layout.fragment
 
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-    }
-
     private fun registerObservers() {
         viewModel.isCalender.observe(viewLifecycleOwner) {
             if (binding.etLastVisitDate.id == it?.id) {
-                requireContext().selectDate(maxDate = Date().time, minDate = null) { dobDate ->
+                requireContext().selectDate(
+                    myCalendar = symptomsCalender,
+                    maxDate = Date().time,
+                    minDate = null
+                ) { dobDate ->
                     viewModel.lastVisitDate.value = dobDate
                     viewModel.isUpdateDataValid.value = true
                 }

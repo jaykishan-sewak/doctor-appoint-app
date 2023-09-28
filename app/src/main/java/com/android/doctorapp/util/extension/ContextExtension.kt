@@ -90,8 +90,12 @@ fun Context.isNetworkAvailable(): Boolean {
 
 }
 
-fun Context.selectDate(maxDate: Long?, minDate: Long?, handleClick: (date: String) -> Unit) {
-    val myCalendar = Calendar.getInstance()
+fun Context.selectDate(
+    myCalendar: Calendar,
+    maxDate: Long?,
+    minDate: Long?,
+    handleClick: (date: String) -> Unit
+) {
     val date = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
         val selectedDate = String.format("%02d-%02d-%04d", dayOfMonth, month + 1, year)
         myCalendar.set(Calendar.YEAR, year)
@@ -101,7 +105,10 @@ fun Context.selectDate(maxDate: Long?, minDate: Long?, handleClick: (date: Strin
     }
 
     val datePickerDialog = DatePickerDialog(
-        this, date, myCalendar[Calendar.YEAR], myCalendar[Calendar.MONTH],
+        this,
+        date,
+        myCalendar[Calendar.YEAR],
+        myCalendar[Calendar.MONTH],
         myCalendar[Calendar.DAY_OF_MONTH]
     )
     maxDate?.let { datePickerDialog.datePicker.maxDate = it }

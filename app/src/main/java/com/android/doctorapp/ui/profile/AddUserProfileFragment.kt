@@ -34,6 +34,7 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -47,6 +48,7 @@ class AddUserProfileFragment :
     private val viewModel by viewModels<AddDoctorViewModel> { viewModelFactory }
     lateinit var bindingView: FragmentUpdateDoctorProfileBinding
     lateinit var bottomSheetFragment: BottomSheetDialog
+    lateinit var addUserProfileCalender: Calendar
 
     val handler = Handler(Looper.getMainLooper())
     private val runnable = object : Runnable {
@@ -129,6 +131,8 @@ class AddUserProfileFragment :
             }
         }
 
+        addUserProfileCalender = Calendar.getInstance()
+
 
         // Inflate the layout for this fragment
         bindingView = binding {
@@ -149,11 +153,6 @@ class AddUserProfileFragment :
         checkLiveData(bindingView)
 
         return bindingView.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
     }
 
     override fun onDestroy() {
@@ -188,11 +187,19 @@ class AddUserProfileFragment :
         viewModel.isCalender.observe(viewLifecycleOwner) {
 
             if (binding.textDateOfBirth.id == it?.id) {
-                requireContext().selectDate(maxDate = Date().time, minDate = null) { dobDate ->
+                requireContext().selectDate(
+                    myCalendar = addUserProfileCalender,
+                    maxDate = Date().time,
+                    minDate = null
+                ) { dobDate ->
                     viewModel.dob.value = dobDate
                 }
             } else {
-                requireContext().selectDate(maxDate = null, minDate = Date().time)
+                requireContext().selectDate(
+                    myCalendar = addUserProfileCalender,
+                    maxDate = null,
+                    minDate = Date().time
+                )
                 { availableDate ->
                     viewModel.isAvailableDate.value = availableDate
                 }

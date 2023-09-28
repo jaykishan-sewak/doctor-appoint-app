@@ -26,6 +26,7 @@ import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.selectDate
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
@@ -39,6 +40,7 @@ class RequestDoctorFragment :
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel: RequestDoctorViewModel by viewModels { viewModelFactory }
     private lateinit var adapter: RequestAppointmentsAdapter
+    lateinit var requestCalender: Calendar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +60,9 @@ class RequestDoctorFragment :
             lifecycleOwner = viewLifecycleOwner
             viewModel = this@RequestDoctorFragment.viewModel
         }
+
+        requestCalender = Calendar.getInstance()
+
         setUpWithViewModel(viewModel)
         registerObserver(layoutBinding)
         return layoutBinding.root
@@ -84,10 +89,12 @@ class RequestDoctorFragment :
 
         viewModel.isRequestCalender.observe(viewLifecycleOwner) {
             if (it) {
-                requireContext().selectDate(maxDate = null, minDate = Date().time) { dobDate ->
+
+                requireContext().selectDate(myCalendar = requestCalender, maxDate = null, minDate = Date().time) { dobDate ->
                     val formatter = SimpleDateFormat(FORMATTED_DATE, Locale.getDefault())
                     val date = formatter.parse(dobDate)
                     viewModel.requestSelectedDate.value = date
+
                     updateToolbarTitle(dateFormatter(date!!, ConstantKey.DATE_MM_FORMAT))
                 }
             }
