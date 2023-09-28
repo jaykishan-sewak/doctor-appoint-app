@@ -123,14 +123,6 @@ class UpdateDoctorProfileFragment :
         super.onCreateView(inflater, container, savedInstanceState)
         handler.postDelayed(runnable, 1000)
 
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("aaddrreess")?.observe(viewLifecycleOwner) { result ->
-            if (result != null) {
-                Log.d("TAG", "onCreateView: $result")
-            } else {
-                Log.d("TAG", "onCreateView: Null")
-            }
-        }
-
         val arguments: Bundle? = arguments
         if (arguments != null)
             isFromAdmin = arguments.getBoolean(ConstantKey.BundleKeys.ADMIN_FRAGMENT)
@@ -246,6 +238,14 @@ class UpdateDoctorProfileFragment :
                 viewModel.contactNumber.value = it.contactNumber
             }
         }
+
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("address")?.observe(viewLifecycleOwner) { result ->
+            if (result != null) {
+                viewModel.address.value = result
+            } else {
+            }
+        }
+
         viewModel.clickResponse.observe(viewLifecycleOwner) {
             sendVerificationCode("+91$it")
         }

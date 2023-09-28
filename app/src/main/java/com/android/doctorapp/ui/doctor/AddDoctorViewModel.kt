@@ -84,7 +84,7 @@ class AddDoctorViewModel @Inject constructor(
 
     private val data = MutableLiveData<UserDataResponseModel>()
 
-    val address: MutableLiveData<String> = MutableLiveData("test")
+    val address: MutableLiveData<String> = MutableLiveData()
     val addressError: MutableLiveData<String?> = MutableLiveData()
 
     val dob: MutableLiveData<String> = MutableLiveData()

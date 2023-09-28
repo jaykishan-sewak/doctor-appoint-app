@@ -6,6 +6,10 @@
 
         <import type="android.view.View" />
 
+        <variable
+            name="viewModel"
+            type="com.android.doctorapp.ui.doctor.AddDoctorViewModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

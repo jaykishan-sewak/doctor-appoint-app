@@ -133,6 +133,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_address"
                     style="@style/custom_edit_text_bg"
+                    android:hint="Enter address"
                     android:onClick="@{(text_address) -> viewModel.calenderClick(text_address)}"
                     android:paddingEnd="@dimen/margin_55"
                     android:text="@={viewModel.address}"

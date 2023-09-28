@@ -13,6 +13,7 @@ import com.android.doctorapp.ui.bottomsheet.BottomSheetDialog
 import com.android.doctorapp.ui.doctor.AddDoctorFragment
 import com.android.doctorapp.ui.doctor.UpdateDoctorProfileFragment
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.AppointmentDoctorFragment
+import com.android.doctorapp.ui.doctordashboard.doctorfragment.DoctorAddressFragment
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.DoctorProfileFragment
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.RequestDoctorFragment
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.SelectedDateAppointmentsFragment
@@ -64,5 +65,7 @@ interface AppComponent {
     fun inject(fragment: SymptomsFragment)
 
     fun inject(fragment: BottomSheetDialog)
+
+    fun inject(fragment: DoctorAddressFragment)
 
 }

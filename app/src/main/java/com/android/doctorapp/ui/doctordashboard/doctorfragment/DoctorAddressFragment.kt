@@ -2,15 +2,12 @@ package com.android.doctorapp.ui.doctordashboard.doctorfragment
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
-import android.location.LocationManager
 import android.os.Bundle
-import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,21 +17,25 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.FragmentDoctorAddressBinding
+import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.util.extension.isGPSEnabled
 import com.android.doctorapp.util.extension.toast
 import com.android.doctorapp.util.permission.RuntimePermission.Companion.askPermission
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.LocationSettingsResponse
 import java.util.Locale
 
 
 class DoctorAddressFragment :
     BaseFragment<FragmentDoctorAddressBinding>(R.layout.fragment_doctor_address) {
-
-//    @Inject
-//    lateinit var viewModelFactory: ViewModelProvider.Factory
-//    private val viewModel by viewModels<AdminDashboardViewModel> { viewModelFactory }
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var latitude: Double = 0.0
@@ -43,6 +44,7 @@ class DoctorAddressFragment :
     private val locationUpdateFastestInterval: Long = 0
     private val locationRequestCode = 100
 
+    private lateinit var locationRequest: LocationRequest
 
     override fun builder(): FragmentToolbar {
         return FragmentToolbar.Builder()
@@ -53,6 +55,11 @@ class DoctorAddressFragment :
             .build()
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        (requireActivity().application as AppComponentProvider).getAppComponent().inject(this)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -61,7 +68,10 @@ class DoctorAddressFragment :
         super.onCreateView(inflater, container, savedInstanceState)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-
+        locationRequest = LocationRequest.create()
+            .setInterval(10000) // 10 seconds
+            .setFastestInterval(5000) // 5 seconds
+            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
 
         binding.textUseCurrentLocation.setOnClickListener {
             askPermission(
@@ -69,87 +79,82 @@ class DoctorAddressFragment :
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ).onAccepted {
-                val locationManager =
-                    requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-                val gps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-
-                if (gps) {
-                    if (ActivityCompat.checkSelfPermission(
-                            requireContext(),
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                            requireContext(),
-                            Manifest.permission.ACCESS_COARSE_LOCATION
-                        ) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        return@onAccepted
-                    }
-                    fusedLocationClient.lastLocation
-                        .addOnSuccessListener { location ->
-//                             getting the last known or current location
-                            if (location != null) {
-                                latitude = location.latitude
-                                longitude = location.longitude
-                                val addresses: List<Address?>?
-                                val geocoder = Geocoder(requireContext(), Locale.getDefault())
-                                addresses = geocoder.getFromLocation(latitude, longitude, 1)
-                                val address: String = addresses!![0].getAddressLine(0)
-                                context?.toast("$address")
-
-                                findNavController().previousBackStackEntry?.savedStateHandle?.set("aaddrreess", address)
-
-                                findNavController().popBackStack()
-                            } else {
-                                context?.toast(getString(R.string.something_went_wrong))
-                            }
-                        }
-                        .addOnFailureListener {
-                            context?.toast(getString(R.string.failed_to_get_current_location))
-                        }
-                } else {
-                    /*val locationRequest: LocationRequest = LocationRequest.create()
-                        .setInterval(locationUpdateInterval)
-                        .setFastestInterval(locationUpdateFastestInterval)
-                        .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                    val builder = LocationSettingsRequest.Builder()
-                        .addLocationRequest(locationRequest)
-                    LocationServices
-                        .getSettingsClient(requireActivity())
-                        .checkLocationSettings(builder.build())
-                        .addOnSuccessListener(requireActivity()) { response: LocationSettingsResponse? -> }
-                        .addOnFailureListener(requireActivity()) { ex ->
-                            if (ex is ResolvableApiException) {
-                                try {
-                                    val resolvable = ex
-                                    resolvable.startResolutionForResult(
-                                        requireActivity(),
-                                        locationRequestCode
-                                    )
-//
-//                                    val intent: Intent = resolvable.startResolutionForResult(requireActivity())
-//                                    gpsEnableLauncher.launch(resolvable)
-
-                                } catch (sendEx: SendIntentException) {
-                                    // Ignore the error.
-                                }
-                            }
-                        }*/
-
-                    val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                    startActivity(intent)
-
-
-                }
-
-
+                requestLocationUpdates()
             }.onDenied {
                 context?.toast(getString(R.string.location_permission))
             }.ask()
         }
-        return binding {
 
+        return binding {
         }.root
+
     }
+
+    private fun requestLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+
+        if (context?.isGPSEnabled() == true) {
+            fusedLocationClient.requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                null
+            )
+        } else {
+            val locationRequest: LocationRequest = LocationRequest.create()
+                .setInterval(locationUpdateInterval)
+                .setFastestInterval(locationUpdateFastestInterval)
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+            val builder = LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest)
+            LocationServices
+                .getSettingsClient(requireActivity())
+                .checkLocationSettings(builder.build())
+                .addOnSuccessListener(requireActivity()) { response: LocationSettingsResponse? -> }
+                .addOnFailureListener(requireActivity()) { ex ->
+                    if (ex is ResolvableApiException) {
+                        try {
+                            ex.startResolutionForResult(
+                                requireActivity(),
+                                locationRequestCode
+                            )
+                        } catch (sendEx: IntentSender.SendIntentException) {
+                        }
+                    }
+                }
+        }
+    }
+
+    private val locationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult?) {
+            locationResult?.lastLocation?.let { location ->
+                // Handle the location update here
+                latitude = location.latitude
+                longitude = location.longitude
+
+                val addresses: List<Address>?
+                val geocoder = Geocoder(requireContext(), Locale.getDefault())
+                addresses = geocoder.getFromLocation(latitude, longitude, 1)
+                val address: String = addresses!![0].getAddressLine(0)
+
+                findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                    "address",
+                    address
+                )
+                fusedLocationClient.removeLocationUpdates(this)
+                findNavController().popBackStack()
+            }
+        }
+    }
+
 
     override fun onActivityResult(
         requestCode: Int,
@@ -158,14 +163,9 @@ class DoctorAddressFragment :
     ) {
         if (locationRequestCode == requestCode) {
             if (Activity.RESULT_OK == resultCode) {
-//                binding.textUseCurrentLocation.performClick()
-
             } else {
                 context?.toast(getString(R.string.location_permission))
-//                Log.d("TAG", "onActivityResult: else")
             }
         }
-        Log.d("TAG", "onActivityResult: ")
     }
-
 }
