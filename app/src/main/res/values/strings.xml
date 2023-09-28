@@ -205,6 +205,11 @@
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
     <string name="already_added_in_holiday">Already Added date in Holiday</string>
+    <string name="denied_the_permission">Denied the permission</string>
+    <string name="permission_needed">Permission Needed</string>
+    <string name="permission_msg">Permission is needed for using the camera ...</string>
+    <string name="go_to_settings">Go to settings</string>
+    <string name="cancel_the_permission">Cancel the permission</string>
     <string name="hint_doctor_fees">Fees</string>
     <string name="valid_fees_desc">Fees Must be Required</string>
     <string name="location_permission">Location Permission Declined</string>

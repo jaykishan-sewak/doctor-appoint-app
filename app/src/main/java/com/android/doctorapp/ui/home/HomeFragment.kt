@@ -21,6 +21,7 @@ import com.android.doctorapp.util.extension.startActivity
 import com.android.doctorapp.util.extension.startActivityFinish
 import com.android.doctorapp.util.extension.toast
 import com.android.doctorapp.util.liveadapter.LiveAdapter
+import com.android.doctorapp.util.permission.RuntimePermission.Companion.askPermission
 import javax.inject.Inject
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
@@ -43,7 +44,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             else e("Toast GONE")
         }
 
-// TODO this is how to as permission
+//// TODO this is how to as permission
 //        askPermission(
 //            this,
 //            Manifest.permission.WRITE_EXTERNAL_STORAGE,

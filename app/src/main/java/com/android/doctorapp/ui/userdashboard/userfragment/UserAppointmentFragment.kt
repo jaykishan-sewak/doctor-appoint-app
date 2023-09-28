@@ -87,6 +87,8 @@ class UserAppointmentFragment :
                         R.id.action_user_appointment_to_bookAppointment,
                         bundle
                     )
+                    binding.searchEt.setText("")
+
                 }
             }
         )

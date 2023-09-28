@@ -1,6 +1,7 @@
 package com.android.doctorapp.ui.doctor
 
 import android.app.TimePickerDialog
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -25,6 +26,7 @@ import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.AddShiftTimeModel
 import com.android.doctorapp.repository.models.HolidayModel
 import com.android.doctorapp.repository.models.WeekOffModel
+import com.android.doctorapp.ui.bottomsheet.BottomSheetDialog
 import com.android.doctorapp.ui.doctor.adapter.AddDoctorHolidayAdapter
 import com.android.doctorapp.ui.doctor.adapter.AddDoctorTimeAdapter
 import com.android.doctorapp.ui.doctor.adapter.CustomAutoCompleteAdapter
@@ -94,6 +96,7 @@ class UpdateDoctorProfileFragment :
     private var tempWeekOffList = ArrayList<WeekOffModel>()
     private var tempShiftTimeList = ArrayList<AddShiftTimeModel>()
 
+    lateinit var bottomSheetFragment: BottomSheetDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (requireActivity().application as AppComponentProvider).getAppComponent().inject(this)
@@ -193,6 +196,15 @@ class UpdateDoctorProfileFragment :
         binding.rvHoliday.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
+        binding.icUpdateDoctor.setOnClickListener {
+            bottomSheetFragment = BottomSheetDialog(object : BottomSheetDialog.DialogListener {
+                override fun getImageUri(uri: Uri) {
+                    viewModel.imageUri.value = uri
+                }
+
+            })
+            bottomSheetFragment.show(requireActivity().supportFragmentManager, "BSDialogFragment")
+        }
         viewModel.setBindingData(bindingView)
         viewModel.getDegreeItems()
         viewModel.getSpecializationItems()
@@ -221,7 +233,10 @@ class UpdateDoctorProfileFragment :
                 viewModel.email.value = it.email
                 viewModel.contactNumber.value = it.contactNumber
                 viewModel.address.value = it.address
-                viewModel.selectGenderValue.value = it.gender
+                if (it.gender == ConstantKey.FEMALE_GENDER)
+                    viewModel.gender.value = R.id.radioButtonFemale
+                else
+                    viewModel.gender.value = R.id.radioButtonMale
                 viewModel.dob.value = dateFormatter(it.dob, ConstantKey.DATE_MM_FORMAT)
                 viewModel.isProfileNavigation.value = true
                 viewModel.fees.value = it.doctorFees.toString()
@@ -455,7 +470,6 @@ class UpdateDoctorProfileFragment :
                 addDoctorHolidayAdapter.updateHolidayList(it)
             }
         }
-
     }
 
     private fun addSpecializationItem(uppercase: String) {
