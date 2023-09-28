@@ -4,12 +4,12 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.IntentSender.SendIntentException
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.LocationManager
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -24,12 +24,8 @@ import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.util.extension.toast
 import com.android.doctorapp.util.permission.RuntimePermission.Companion.askPermission
-import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsRequest
-import com.google.android.gms.location.LocationSettingsResponse
 import java.util.Locale
 
 
@@ -111,7 +107,7 @@ class DoctorAddressFragment :
                             context?.toast(getString(R.string.failed_to_get_current_location))
                         }
                 } else {
-                    val locationRequest: LocationRequest = LocationRequest.create()
+                    /*val locationRequest: LocationRequest = LocationRequest.create()
                         .setInterval(locationUpdateInterval)
                         .setFastestInterval(locationUpdateFastestInterval)
                         .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
@@ -137,8 +133,14 @@ class DoctorAddressFragment :
                                     // Ignore the error.
                                 }
                             }
-                        }
+                        }*/
+
+                    val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                    startActivity(intent)
+
+
                 }
+
 
             }.onDenied {
                 context?.toast(getString(R.string.location_permission))
@@ -165,6 +167,5 @@ class DoctorAddressFragment :
         }
         Log.d("TAG", "onActivityResult: ")
     }
-
 
 }
