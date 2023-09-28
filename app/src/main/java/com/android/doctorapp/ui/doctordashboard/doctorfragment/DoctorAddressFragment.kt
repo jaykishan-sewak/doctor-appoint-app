@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +32,7 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.LocationSettingsResponse
+import okhttp3.internal.wait
 import java.util.Locale
 
 
@@ -109,7 +111,7 @@ class DoctorAddressFragment :
                 null
             )
         } else {
-            val locationRequest: LocationRequest = LocationRequest.create()
+            /*val locationRequest: LocationRequest = LocationRequest.create()
                 .setInterval(locationUpdateInterval)
                 .setFastestInterval(locationUpdateFastestInterval)
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
@@ -118,8 +120,11 @@ class DoctorAddressFragment :
             LocationServices
                 .getSettingsClient(requireActivity())
                 .checkLocationSettings(builder.build())
-                .addOnSuccessListener(requireActivity()) { response: LocationSettingsResponse? -> }
+                .addOnSuccessListener(requireActivity()) { response: LocationSettingsResponse? ->
+                    Log.d("TAG", "requestLocationUpdates 1 : $response")
+                }
                 .addOnFailureListener(requireActivity()) { ex ->
+                    Log.d("TAG", "requestLocationUpdates 2 : ${ex.message}")
                     if (ex is ResolvableApiException) {
                         try {
                             ex.startResolutionForResult(
@@ -130,6 +135,19 @@ class DoctorAddressFragment :
                         }
                     }
                 }
+                .addOnCompleteListener {
+                    Log.d("TAG", "requestLocationUpdates: ")
+                }
+                .continueWith { 
+                    
+                }
+                .isComplete*/
+            GpsUtils(requireContext()).turnGPSOn(object : GpsUtils.onGpsListener {
+                override fun gpsStatus(isGPSEnable: Boolean) {
+                    Log.d("TAG", "gpsStatus: $isGPSEnable")
+                }
+
+            })
         }
     }
 
@@ -161,6 +179,7 @@ class DoctorAddressFragment :
         resultCode: Int,
         @Nullable data: Intent?
     ) {
+        Log.d("TAG", "onActivityResult: ")
         if (locationRequestCode == requestCode) {
             if (Activity.RESULT_OK == resultCode) {
             } else {

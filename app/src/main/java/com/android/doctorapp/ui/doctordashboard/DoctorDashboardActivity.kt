@@ -1,6 +1,8 @@
 package com.android.doctorapp.ui.doctordashboard
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -41,4 +43,10 @@ class DoctorDashboardActivity :
                 binding.navView.visibility = View.GONE
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.d("TAG", "onActivityResult: ${navController.currentDestination?.id}")
+    }
+
 }
