@@ -28,18 +28,16 @@
             android:id="@+id/scrollView"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_0"
+            app:layout_constraintBottom_toTopOf="@id/btnSignOut"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbarContainer"
-            app:layout_constraintBottom_toTopOf="@id/btnSignOut"
-            >
+            app:layout_constraintTop_toBottomOf="@id/toolbarContainer">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_16"
-                android:paddingBottom="@dimen/margin_20"
-                >
+                android:paddingBottom="@dimen/margin_20">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/profileImage"
@@ -54,8 +52,9 @@
                         android:id="@+id/ivDoctorImage"
                         android:layout_width="@dimen/dp_70"
                         android:layout_height="@dimen/dp_70"
+                        android:background="@drawable/ic_person_white"
                         android:scaleType="centerCrop"
-                        app:genderImage="@{viewModel.userProfileDataResponse.gender}" />
+                        app:imageUri="@{viewModel.imageUri}" />
 
                 </androidx.cardview.widget.CardView>
 
@@ -230,15 +229,15 @@
             android:id="@+id/btnSignOut"
             android:layout_width="@dimen/dp_150"
             android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_20"
             android:background="@drawable/rounded_btn"
             android:onClick="@{view -> viewModel.signOut()}"
             android:text="@string/sign_out"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:layout_marginVertical="@dimen/margin_20"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/scrollView"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/scrollView" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
