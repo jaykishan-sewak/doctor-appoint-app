@@ -53,32 +53,6 @@ class ProfileViewModel @Inject constructor(
     val navigationListener = _navigationListener.asLiveData()
 
 
-    init {
-        getUserProfile()
-    }
-
-    private fun getUserProfile() {
-        viewModelScope.launch {
-            setShowProgress(true)
-            when (val result = profileRepository.getUserProfile()) {
-                is ApiSuccessResponse -> {
-                    _profileResponse.postValue(result.body)
-                }
-
-                is ApiErrorResponse -> {
-                    setApiError(result.errorMessage)
-                }
-
-                is ApiNoNetworkResponse -> {
-                    setNoNetworkError(result.errorMessage)
-                }
-
-                else -> {}
-            }
-            setShowProgress(false)
-        }
-    }
-
     fun getUserProfileData() {
         viewModelScope.launch {
             var recordId: String = ""

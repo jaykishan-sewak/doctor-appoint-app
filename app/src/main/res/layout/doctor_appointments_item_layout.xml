@@ -23,7 +23,7 @@
             android:id="@+id/cardView1"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin_50"
+            android:layout_marginHorizontal="@dimen/margin_16"
             android:layout_marginVertical="@dimen/margin_10"
             android:backgroundTint="@color/white"
             android:elevation="@dimen/margin_5"

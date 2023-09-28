@@ -104,35 +104,37 @@ class AppointmentDoctorViewModel @Inject constructor(
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 session.getString(USER_ID).collectLatest {
-                    Log.d(TAG, "getAppointmentList: $it")
-                    setShowProgress(true)
-                    when (val response =
-                        appointmentRepository.getAppointmentsList(it!!, fireStore)) {
-                        is ApiSuccessResponse -> {
-                            setShowProgress(false)
-                            if (response.body.isNotEmpty()) {
-                                appointmentList.value = response.body!!
-                                sortedAppointmentList.value =
-                                    appointmentList.value!!.sortedByDescending {
-                                        it.bookingDateTime
-                                    }
-                                addData()
+                    if (it?.isNotEmpty() == true) {
+                        Log.d(TAG, "getAppointmentList: $it")
+                        setShowProgress(true)
+                        when (val response =
+                            appointmentRepository.getAppointmentsList(it!!, fireStore)) {
+                            is ApiSuccessResponse -> {
+                                setShowProgress(false)
+                                if (response.body.isNotEmpty()) {
+                                    appointmentList.value = response.body!!
+                                    sortedAppointmentList.value =
+                                        appointmentList.value!!.sortedByDescending {
+                                            it.bookingDateTime
+                                        }
+                                    addData()
+                                }
                             }
-                        }
 
-                        is ApiErrorResponse -> {
-                            context.toast(response.errorMessage)
-                            setShowProgress(false)
-                        }
+                            is ApiErrorResponse -> {
+                                context.toast(response.errorMessage)
+                                setShowProgress(false)
+                            }
 
-                        is ApiNoNetworkResponse -> {
-                            context.toast(response.errorMessage)
-                            setShowProgress(false)
-                        }
+                            is ApiNoNetworkResponse -> {
+                                context.toast(response.errorMessage)
+                                setShowProgress(false)
+                            }
 
-                        else -> {
-                            context.toast(context.getString(R.string.something_went_wrong))
-                            setShowProgress(false)
+                            else -> {
+                                context.toast(context.getString(R.string.something_went_wrong))
+                                setShowProgress(false)
+                            }
                         }
                     }
                 }
