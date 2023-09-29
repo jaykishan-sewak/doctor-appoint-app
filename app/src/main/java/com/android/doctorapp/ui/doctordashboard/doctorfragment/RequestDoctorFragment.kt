@@ -40,7 +40,6 @@ class RequestDoctorFragment :
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel: RequestDoctorViewModel by viewModels { viewModelFactory }
     private lateinit var adapter: RequestAppointmentsAdapter
-    lateinit var requestCalender: Calendar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +60,6 @@ class RequestDoctorFragment :
             viewModel = this@RequestDoctorFragment.viewModel
         }
 
-        requestCalender = Calendar.getInstance()
 
         setUpWithViewModel(viewModel)
         registerObserver(layoutBinding)
@@ -90,7 +88,11 @@ class RequestDoctorFragment :
         viewModel.isRequestCalender.observe(viewLifecycleOwner) {
             if (it) {
 
-                requireContext().selectDate(myCalendar = requestCalender, maxDate = null, minDate = Date().time) { dobDate ->
+                requireContext().selectDate(
+                    myCalendar = myCalender,
+                    maxDate = null,
+                    minDate = Date().time
+                ) { dobDate ->
                     val formatter = SimpleDateFormat(FORMATTED_DATE, Locale.getDefault())
                     val date = formatter.parse(dobDate)
                     viewModel.requestSelectedDate.value = date

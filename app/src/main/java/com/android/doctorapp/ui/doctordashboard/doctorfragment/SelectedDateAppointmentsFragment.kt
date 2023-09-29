@@ -40,7 +40,6 @@ class SelectedDateAppointmentsFragment :
     private val viewModel: SelectedDateAppointmentsViewModel by viewModels { viewModelFactory }
     var date = ""
     private lateinit var adapter: SelectedDateAdapter
-    lateinit var selecteDateCalender: Calendar
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +59,6 @@ class SelectedDateAppointmentsFragment :
                 arguments.getString(ConstantKey.BundleKeys.DATE)!!
             viewModel.selectedDate.value = Gson().fromJson(date, Date::class.java)
         }
-        selecteDateCalender = Calendar.getInstance()
 
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
@@ -94,7 +92,7 @@ class SelectedDateAppointmentsFragment :
         viewModel.isCalender.observe(viewLifecycleOwner) {
             if (it) {
                 requireContext().selectDate(
-                    myCalendar = selecteDateCalender,
+                    myCalendar = myCalender,
                     maxDate = null,
                     minDate = Date().time
                 ) { dobDate ->

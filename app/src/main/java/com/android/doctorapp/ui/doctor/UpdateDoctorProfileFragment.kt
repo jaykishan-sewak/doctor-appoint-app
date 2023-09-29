@@ -97,8 +97,6 @@ class UpdateDoctorProfileFragment :
 
     lateinit var bottomSheetFragment: BottomSheetDialog
 
-    lateinit var updateProfileCalender: Calendar
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,8 +127,6 @@ class UpdateDoctorProfileFragment :
         if (arguments != null)
             isFromAdmin = arguments.getBoolean(ConstantKey.BundleKeys.ADMIN_FRAGMENT)
         isNotFromAdmin = isFromAdmin
-
-        updateProfileCalender = Calendar.getInstance()
 
 
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -260,7 +256,7 @@ class UpdateDoctorProfileFragment :
         viewModel.isCalender.observe(viewLifecycleOwner) {
             if (layoutBinding.textDateOfBirth.id == it?.id) {
                 requireContext().selectDate(
-                    myCalendar = updateProfileCalender,
+                    myCalendar = myCalender,
                     maxDate = Date().time,
                     minDate = null
                 ) { dobDate ->
@@ -273,7 +269,7 @@ class UpdateDoctorProfileFragment :
                 }
             } else if (layoutBinding.btnAddHoliday.id == it?.id) {
                 requireContext().selectDate(
-                    myCalendar = updateProfileCalender,
+                    myCalendar = myCalender,
                     maxDate = null,
                     minDate = null
                 ) { holidayDate ->
@@ -306,7 +302,7 @@ class UpdateDoctorProfileFragment :
 
             } else {
                 requireContext().selectDate(
-                    myCalendar = updateProfileCalender,
+                    myCalendar = myCalender,
                     maxDate = null,
                     minDate = Date().time
                 ) { availableDate ->

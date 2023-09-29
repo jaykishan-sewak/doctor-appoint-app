@@ -48,7 +48,6 @@ class AddUserProfileFragment :
     private val viewModel by viewModels<AddDoctorViewModel> { viewModelFactory }
     lateinit var bindingView: FragmentUpdateDoctorProfileBinding
     lateinit var bottomSheetFragment: BottomSheetDialog
-    lateinit var addUserProfileCalender: Calendar
 
     val handler = Handler(Looper.getMainLooper())
     private val runnable = object : Runnable {
@@ -131,8 +130,6 @@ class AddUserProfileFragment :
             }
         }
 
-        addUserProfileCalender = Calendar.getInstance()
-
 
         // Inflate the layout for this fragment
         bindingView = binding {
@@ -188,7 +185,7 @@ class AddUserProfileFragment :
 
             if (binding.textDateOfBirth.id == it?.id) {
                 requireContext().selectDate(
-                    myCalendar = addUserProfileCalender,
+                    myCalendar = myCalender,
                     maxDate = Date().time,
                     minDate = null
                 ) { dobDate ->
@@ -196,7 +193,7 @@ class AddUserProfileFragment :
                 }
             } else {
                 requireContext().selectDate(
-                    myCalendar = addUserProfileCalender,
+                    myCalendar = myCalender,
                     maxDate = null,
                     minDate = Date().time
                 )
