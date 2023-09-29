@@ -3,6 +3,7 @@ package com.android.doctorapp.util.extension
 import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
@@ -292,4 +293,9 @@ fun currentDate(): Date {
             SimpleDateFormat(ConstantKey.DATE_MM_FORMAT, Locale.getDefault()).parse("2000-01-01")
         defaultDate!!
     }
+}
+
+fun Context.isGPSEnabled(): Boolean {
+    val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 }

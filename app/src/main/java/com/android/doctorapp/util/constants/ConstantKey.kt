@@ -63,5 +63,6 @@ object ConstantKey {
     const val BOOKING_DATE_FORMAT = "EEE MMM dd yyyy HH:mm:ss"
     const val FORMATTED_DATE_MONTH_YEAR = "EEE MMM dd yyyy"
     const val FORMATTED_HOUR_MINUTE_SECOND = "HH:mm:ss"
+    const val GPS_REQUEST_CODE = 1
 
 }
