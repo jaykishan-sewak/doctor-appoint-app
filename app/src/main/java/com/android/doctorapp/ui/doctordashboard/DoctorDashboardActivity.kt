@@ -60,8 +60,13 @@ class DoctorDashboardActivity :
             if (currentDestinationId == R.id.navigation_doctor_address) {
                 val fragmentManager = supportFragmentManager
                 val fragment = fragmentManager.findFragmentById(currentDestinationId)
+                val fragment1 = fragmentManager.primaryNavigationFragment?.childFragmentManager?.findFragmentById(currentDestinationId)
+                Log.d("TAG", "onActivityResult: $fragment1")
                 if (fragment is DoctorAddressFragment) {
+                    Log.d("TAG", "onActivityResult: if")
                     fragment.requestLocationUpdates()
+                } else {
+                    Log.d("TAG", "onActivityResult: else")
                 }
             }
         }

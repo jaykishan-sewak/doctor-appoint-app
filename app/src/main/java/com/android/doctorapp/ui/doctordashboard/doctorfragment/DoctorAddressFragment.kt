@@ -93,6 +93,7 @@ class DoctorAddressFragment :
     }
 
     fun requestLocationUpdates() {
+        Log.d("TAG", "requestLocationUpdates: ")
         if (ActivityCompat.checkSelfPermission(
                 requireActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION
