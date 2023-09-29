@@ -56,19 +56,37 @@ class DoctorDashboardActivity :
                 yourFragment.yourMethod()
             }*/
 
-            val currentDestinationId = navController.currentDestination?.id ?: 0
+            /*val currentDestinationId = navController.currentDestination?.id ?: 0
             if (currentDestinationId == R.id.navigation_doctor_address) {
                 val fragmentManager = supportFragmentManager
+
                 val fragment = fragmentManager.findFragmentById(currentDestinationId)
-                val fragment1 = fragmentManager.primaryNavigationFragment?.childFragmentManager?.findFragmentById(currentDestinationId)
-                Log.d("TAG", "onActivityResult: $fragment1")
                 if (fragment is DoctorAddressFragment) {
                     Log.d("TAG", "onActivityResult: if")
                     fragment.requestLocationUpdates()
                 } else {
                     Log.d("TAG", "onActivityResult: else")
                 }
+            }*/
+
+            val fragmentManager = supportFragmentManager
+            val navHostFragment = fragmentManager.findFragmentById(R.id.nav_host_fragment)
+            if (navHostFragment is NavHostFragment) {
+                // Get the current fragment in the navigation host
+                val currentFragment = navHostFragment.childFragmentManager.fragments
+                Log.d("TAG", "onActivityResult: $currentFragment")
+                currentFragment.forEachIndexed { index, fragment ->
+                    Log.d("TAG", "onActivityResult: $fragment")
+                    if (fragment is DoctorAddressFragment) {
+                        fragment.requestLocationUpdates()
+                    }
+                }
+// if (currentFragment is DoctorAddressFragment) {
+// // Now you have a reference to the UserAppointmentFragment
+// currentFragment.requestLocationUpdates()
+// }
             }
+
         }
 
     }
