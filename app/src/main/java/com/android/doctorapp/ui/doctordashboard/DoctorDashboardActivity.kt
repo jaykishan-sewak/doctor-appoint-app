@@ -7,10 +7,12 @@ import android.view.View
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.ActivityDoctorDashboardBinding
 import com.android.doctorapp.di.base.BaseActivity
+import com.android.doctorapp.ui.doctordashboard.doctorfragment.DoctorAddressFragment
 
 class DoctorDashboardActivity :
     BaseActivity<ActivityDoctorDashboardBinding>(R.layout.activity_doctor_dashboard) {
@@ -46,7 +48,24 @@ class DoctorDashboardActivity :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Log.d("TAG", "onActivityResult: ${navController.currentDestination?.id}")
+        if (requestCode == 10000) {
+            /*val fragment = navController.currentDestination as? DoctorAddressFragment
+            fragment?.requestLocationUpdates()*/
+            /*val yourFragmentInBackStack = navController.previousBackStackEntry?.destination
+            if (yourFragmentInBackStack?.id == R.id.navigation_doctor_address) {
+                yourFragment.yourMethod()
+            }*/
+
+            val currentDestinationId = navController.currentDestination?.id ?: 0
+            if (currentDestinationId == R.id.navigation_doctor_address) {
+                val fragmentManager = supportFragmentManager
+                val fragment = fragmentManager.findFragmentById(currentDestinationId)
+                if (fragment is DoctorAddressFragment) {
+                    fragment.requestLocationUpdates()
+                }
+            }
+        }
+
     }
 
 }

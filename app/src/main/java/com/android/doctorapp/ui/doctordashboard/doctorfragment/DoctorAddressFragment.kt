@@ -92,7 +92,7 @@ class DoctorAddressFragment :
 
     }
 
-    private fun requestLocationUpdates() {
+    fun requestLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(
                 requireActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION

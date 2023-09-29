@@ -38,7 +38,7 @@ class GpsUtils(private val context: Context) {
     }
 
     // method for turn on GPS
-    public fun turnGPSOn(onGpsListener: onGpsListener?) {
+    fun turnGPSOn(onGpsListener: onGpsListener?) {
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             onGpsListener?.gpsStatus(true)
         } else {
