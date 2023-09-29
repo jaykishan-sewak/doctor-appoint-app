@@ -96,6 +96,8 @@ class UpdateDoctorProfileFragment :
     private var tempShiftTimeList = ArrayList<AddShiftTimeModel>()
 
     lateinit var bottomSheetFragment: BottomSheetDialog
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (requireActivity().application as AppComponentProvider).getAppComponent().inject(this)
@@ -125,6 +127,7 @@ class UpdateDoctorProfileFragment :
         if (arguments != null)
             isFromAdmin = arguments.getBoolean(ConstantKey.BundleKeys.ADMIN_FRAGMENT)
         isNotFromAdmin = isFromAdmin
+
 
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             override fun onCodeAutoRetrievalTimeOut(str: String) {
@@ -252,7 +255,11 @@ class UpdateDoctorProfileFragment :
 
         viewModel.isCalender.observe(viewLifecycleOwner) {
             if (layoutBinding.textDateOfBirth.id == it?.id) {
-                requireContext().selectDate(maxDate = Date().time, minDate = null) { dobDate ->
+                requireContext().selectDate(
+                    myCalendar = myCalender,
+                    maxDate = Date().time,
+                    minDate = null
+                ) { dobDate ->
                     if (calculateAge(dobDate) > 22) {
                         viewModel.dob.value = dobDate
                         viewModel.dobError.value = null
@@ -262,6 +269,7 @@ class UpdateDoctorProfileFragment :
                 }
             } else if (layoutBinding.btnAddHoliday.id == it?.id) {
                 requireContext().selectDate(
+                    myCalendar = myCalender,
                     maxDate = null,
                     minDate = null
                 ) { holidayDate ->
@@ -294,6 +302,7 @@ class UpdateDoctorProfileFragment :
 
             } else {
                 requireContext().selectDate(
+                    myCalendar = myCalender,
                     maxDate = null,
                     minDate = Date().time
                 ) { availableDate ->
