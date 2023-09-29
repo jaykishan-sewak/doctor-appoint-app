@@ -88,20 +88,21 @@ class UserAppointmentFragment :
 
 
     fun requestLocationUpdates() {
-        val fineLocationPermission = android.Manifest.permission.ACCESS_FINE_LOCATION
-        val coarseLocationPermission = android.Manifest.permission.ACCESS_COARSE_LOCATION
 
         if (ActivityCompat.checkSelfPermission(
                 requireActivity(),
-                fineLocationPermission
+                android.Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 requireActivity(),
-                coarseLocationPermission
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             // Permissions are not granted, request them using the launcher
             requestLocationPermissionLauncher.launch(
-                arrayOf(fineLocationPermission, coarseLocationPermission)
+                arrayOf(
+                    android.Manifest.permission.ACCESS_FINE_LOCATION,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                )
             )
         }
 
@@ -124,12 +125,9 @@ class UserAppointmentFragment :
         override fun onLocationResult(p0: LocationResult) {
             p0.lastLocation?.let { location ->
                 // Handle the location update here
-                val latitude = location.latitude
-                val longitude = location.longitude
-                val addresses: List<Address>?
                 val geocoder = Geocoder(requireContext(), Locale.getDefault())
 
-                addresses = geocoder.getFromLocation(latitude, longitude, 1)
+                val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
                 if (!addresses.isNullOrEmpty()) {
                     val city = addresses[0].locality // Get the city name
                     viewModel.locationCity.postValue(addresses[0].locality)
