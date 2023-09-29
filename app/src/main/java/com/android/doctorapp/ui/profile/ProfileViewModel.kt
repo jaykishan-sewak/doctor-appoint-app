@@ -2,7 +2,9 @@ package com.android.doctorapp.ui.profile
 
 import android.content.ContentValues.TAG
 import android.content.Context
+import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -51,33 +53,8 @@ class ProfileViewModel @Inject constructor(
     val dateList: MutableLiveData<List<String>> = MutableLiveData()
     private val _navigationListener = SingleLiveEvent<Int>()
     val navigationListener = _navigationListener.asLiveData()
+    val imageUri = MutableLiveData<Uri>()
 
-
-    init {
-        getUserProfile()
-    }
-
-    private fun getUserProfile() {
-        viewModelScope.launch {
-            setShowProgress(true)
-            when (val result = profileRepository.getUserProfile()) {
-                is ApiSuccessResponse -> {
-                    _profileResponse.postValue(result.body)
-                }
-
-                is ApiErrorResponse -> {
-                    setApiError(result.errorMessage)
-                }
-
-                is ApiNoNetworkResponse -> {
-                    setNoNetworkError(result.errorMessage)
-                }
-
-                else -> {}
-            }
-            setShowProgress(false)
-        }
-    }
 
     fun getUserProfileData() {
         viewModelScope.launch {
@@ -90,6 +67,7 @@ class ProfileViewModel @Inject constructor(
                         profileRepository.getProfileRecordById(recordId, fireStore)) {
                         is ApiSuccessResponse -> {
                             userProfileDataResponse.value = response.body!!
+                            imageUri.value = userProfileDataResponse.value!!.images.toUri()
                             dateList.value = dateListFormatter(
                                 response.body.holidayList,
                                 ConstantKey.DATE_MM_FORMAT

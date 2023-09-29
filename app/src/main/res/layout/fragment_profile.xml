@@ -28,10 +28,10 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_0"
             android:layout_margin="@dimen/margin_16"
+            android:background="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:background="@color/white"
             app:layout_constraintTop_toBottomOf="@+id/toolbarContainer">
 
             <androidx.cardview.widget.CardView
@@ -47,8 +47,9 @@
                     android:id="@+id/ivDoctorImage"
                     android:layout_width="@dimen/dp_70"
                     android:layout_height="@dimen/dp_70"
+                    android:background="@drawable/ic_person_white"
                     android:scaleType="centerCrop"
-                    app:genderImage="@{viewModel.userProfileDataResponse.gender}" />
+                    app:imageUri="@{viewModel.imageUri}" />
 
             </androidx.cardview.widget.CardView>
 
@@ -142,16 +143,16 @@
                 android:id="@+id/tvSymptomView"
                 style="@style/label_text"
                 android:layout_height="@dimen/dp_48"
+                android:layout_marginHorizontal="@dimen/margin_5"
                 android:layout_marginTop="@dimen/margin_20"
                 android:background="@drawable/rounded_view_bg"
                 android:drawableEnd="@drawable/baseline_arrow_forward_ios_24"
                 android:elevation="@dimen/margin_5"
-                android:layout_marginHorizontal="@dimen/margin_5"
                 android:gravity="center_vertical"
+                android:onClick="@{view -> viewModel.clickOnSymptom()}"
                 android:paddingHorizontal="@dimen/margin_10"
                 android:text="@string/symptoms"
                 android:textColor="@color/black"
-                android:onClick="@{view -> viewModel.clickOnSymptom()}"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -161,27 +162,27 @@
                 android:id="@+id/tvFeedbackView"
                 style="@style/label_text"
                 android:layout_height="@dimen/dp_48"
+                android:layout_marginHorizontal="@dimen/margin_5"
                 android:layout_marginTop="@dimen/margin_20"
                 android:background="@drawable/rounded_view_bg"
                 android:drawableEnd="@drawable/baseline_arrow_forward_ios_24"
                 android:elevation="@dimen/margin_5"
                 android:gravity="center_vertical"
+                android:onClick="@{view -> viewModel.clickOnFeedback()}"
                 android:paddingHorizontal="@dimen/margin_10"
                 android:text="@string/feedback"
                 android:textColor="@color/black"
-                android:layout_marginHorizontal="@dimen/margin_5"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:onClick="@{view -> viewModel.clickOnFeedback()}"
                 app:layout_constraintTop_toBottomOf="@id/tvSymptomView" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvLogoutView"
                 style="@style/label_text"
                 android:layout_height="@dimen/dp_48"
-                android:layout_marginTop="@dimen/margin_20"
                 android:layout_marginHorizontal="@dimen/margin_5"
+                android:layout_marginTop="@dimen/margin_20"
                 android:background="@drawable/rounded_view_bg"
                 android:elevation="@dimen/margin_5"
                 android:gravity="center_vertical"

@@ -119,10 +119,8 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvDoctorAddressValue"
                 style="@style/label_text"
-                android:layout_marginTop="@dimen/margin_10"
                 android:text="@{viewModel.appointmentObj.doctorDetails != null &amp;&amp; !viewModel.appointmentObj.doctorDetails.address.isEmpty() ? viewModel.appointmentObj.doctorDetails.address : `-`}"
                 android:textAlignment="textEnd"
-                app:layout_constraintBottom_toBottomOf="@id/tvDoctorAddress"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tvDoctorAddress"
                 app:layout_constraintTop_toTopOf="@id/tvDoctorAddress"
@@ -136,7 +134,7 @@
                 android:textAlignment="textStart"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvDoctorAddress"
+                app:layout_constraintTop_toBottomOf="@id/tvDoctorAddressValue"
                 app:layout_constraintWidth_percent="0.6" />
 
             <androidx.appcompat.widget.AppCompatTextView

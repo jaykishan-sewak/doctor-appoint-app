@@ -123,8 +123,10 @@ class AppointmentRepository @Inject constructor() {
             val appointmentsList = arrayListOf<AppointmentModel>()
             for (document: DocumentSnapshot in response.documents) {
                 val user = document.toObject(AppointmentModel::class.java)
-                user?.id = document.id
-                appointmentsList.add(user!!)
+                user?.let {
+                    it.id = document.id
+                    appointmentsList.add(it)
+                }
             }
             ApiResponse.create(response = Response.success(appointmentsList))
         } catch (e: Exception) {
@@ -134,6 +136,7 @@ class AppointmentRepository @Inject constructor() {
 
     suspend fun getAppointmentsProgressList(
         date: Date,
+        userId: String,
         firestore: FirebaseFirestore
     ): ApiResponse<List<AppointmentModel>> {
         return try {
@@ -141,6 +144,7 @@ class AppointmentRepository @Inject constructor() {
             nextDate.time = date
             nextDate.add(Calendar.DATE, 1)
             val response = firestore.collection(TABLE_APPOINTMENT)
+                .whereEqualTo(FIELD_DOCTOR_ID, userId)
                 .whereEqualTo(FIELD_APPROVED_KEY, ConstantKey.FIELD_PENDING)
                 .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, date)
                 .whereLessThanOrEqualTo(FIELD_SELECTED_DATE, nextDate.time)
@@ -148,6 +152,7 @@ class AppointmentRepository @Inject constructor() {
             val appointmentsList = arrayListOf<AppointmentModel>()
             for (document: DocumentSnapshot in response.documents) {
                 val user = document.toObject(AppointmentModel::class.java)
+                user?.id = document.id
                 user?.let {
                     appointmentsList.add(it)
                 }

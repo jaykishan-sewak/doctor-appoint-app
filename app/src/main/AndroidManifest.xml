@@ -57,7 +57,7 @@
             android:name=".ui.admin.AdminDashboardActivity"
             android:exported="false"
             android:theme="@style/Theme.InfusionTemplate.NoActionBar"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustResize" />
 
     </application>
 
