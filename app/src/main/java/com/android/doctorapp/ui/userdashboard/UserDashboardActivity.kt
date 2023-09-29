@@ -59,8 +59,9 @@ class UserDashboardActivity :
                     currentFragment.requestLocationUpdates()
                 }
             }
+
         } else {
-            baseContext.toast(getString(R.string.location_permission))
+            this.toast(getString(R.string.location_permission))
         }
     }
 }

@@ -17,13 +17,16 @@ import com.google.android.gms.location.SettingsClient
 class GpsUtils(private val context: Context) {
     private val mSettingsClient: SettingsClient = LocationServices.getSettingsClient(context)
     private val mLocationSettingsRequest: LocationSettingsRequest
-    private val locationManager: LocationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private val locationManager: LocationManager =
+        context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
     val locationRequest: LocationRequest = LocationRequest.create()
 
     init {
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = (10 * 1000).toLong()
         locationRequest.fastestInterval = (2 * 1000).toLong()
+
+
         val builder = LocationSettingsRequest.Builder()
             .addLocationRequest(locationRequest)
         mLocationSettingsRequest = builder.build()
