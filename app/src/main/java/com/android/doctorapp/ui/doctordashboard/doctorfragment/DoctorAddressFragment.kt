@@ -5,31 +5,48 @@ import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.FragmentDoctorAddressBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.ui.doctor.AddDoctorViewModel
+import com.android.doctorapp.ui.profile.ProfileViewModel
 import com.android.doctorapp.util.GpsUtils
 import com.android.doctorapp.util.extension.isGPSEnabled
 import com.android.doctorapp.util.extension.toast
 import com.android.doctorapp.util.permission.RuntimePermission.Companion.askPermission
+import com.firebase.geofire.GeoFireUtils
+import com.firebase.geofire.GeoLocation
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.QuerySnapshot
 import java.util.Locale
+import javax.inject.Inject
 
 
 class DoctorAddressFragment :
     BaseFragment<FragmentDoctorAddressBinding>(R.layout.fragment_doctor_address) {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModel by viewModels<AddDoctorViewModel> { viewModelFactory }
+
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var latitude: Double = 0.0
@@ -76,9 +93,22 @@ class DoctorAddressFragment :
             }.ask()
         }
 
-        return binding {
-        }.root
+        binding.btn.setOnClickListener {
+            viewModel.test()
+        }
 
+        /*return binding {
+        }.root*/
+
+        return binding {
+            viewModel = this@DoctorAddressFragment.viewModel
+            lifecycleOwner = viewLifecycleOwner
+        }.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setUpWithViewModel(viewModel)
     }
 
     fun requestLocationUpdates() {
@@ -125,6 +155,69 @@ class DoctorAddressFragment :
                 )
                 fusedLocationClient.removeLocationUpdates(this)
                 findNavController().popBackStack()
+
+                latitude = 11.817621
+                longitude = 36.764983
+
+
+                viewModel
+
+                val hash = GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude, longitude))
+
+                val updates: MutableMap<String, Any> = mutableMapOf(
+                    "geohash" to hash,
+                    "lat" to latitude,
+                    "lng" to longitude,
+                )
+                Log.d("TAG", "onLocationResult 156 : $updates")
+
+                // Find cities within 50km of London
+                val center = GeoLocation(latitude, longitude)
+                val radiusInM = 50.0 * 1000.0
+
+                // Each item in 'bounds' represents a startAt/endAt pair. We have to issue
+                // a separate query for each pair. There can be up to 9 pairs of bounds
+                // depending on overlap, but in most cases there are 4.
+                val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInM)
+                val tasks: MutableList<Task<QuerySnapshot>> = ArrayList()
+                for (b in bounds) {
+//                    val q = db.collection("cities")
+//                        .orderBy("geohash")
+//                        .startAt(b.startHash)
+//                        .endAt(b.endHash)
+//                    tasks.add(q.get())
+                    Log.d("TAG", "onLocationResult 173: ${b.startHash}  -->     ${b.endHash}")
+                }
+
+                // Collect all the query results together into a single list
+                Tasks.whenAllComplete(tasks)
+                    .addOnCompleteListener {
+                        val matchingDocs: MutableList<DocumentSnapshot> = ArrayList()
+                        Log.d("TAG", "onLocationResult: $matchingDocs")
+                        for (task in tasks) {
+                            val snap = task.result
+                            for (doc in snap!!.documents) {
+                                val lat = doc.getDouble("lat")!!
+                                val lng = doc.getDouble("lng")!!
+                                Log.d("TAG", "onLocationResult 185: $lat  -->     $lng")
+                                // We have to filter out a few false positives due to GeoHash
+                                // accuracy, but most will match
+                                val docLocation = GeoLocation(lat, lng)
+                                val distanceInM =
+                                    GeoFireUtils.getDistanceBetween(docLocation, center)
+                                if (distanceInM <= radiusInM) {
+                                    matchingDocs.add(doc)
+                                }
+                            }
+                        }
+                        // matchingDocs contains the results
+                        // ...
+                    }
+                    .addOnFailureListener {
+                        Log.d("TAG", "onLocationResult: Failure")
+                    }
+
+
             }
         }
     }

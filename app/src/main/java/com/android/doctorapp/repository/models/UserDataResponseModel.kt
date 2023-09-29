@@ -1,6 +1,8 @@
 package com.android.doctorapp.repository.models
 
 import android.media.Rating
+import com.google.firebase.firestore.GeoPoint
+import com.google.type.LatLng
 import java.util.Date
 
 data class UserDataResponseModel(
@@ -25,5 +27,7 @@ data class UserDataResponseModel(
     var isUserVerified: Boolean = false,
     var holidayList: ArrayList<Date>? = null,
     var weekOffList: ArrayList<String>? = null,
-    var rating: Float? = null
+    var rating: Float? = null,
+    var addressLatLng: Any? = null
+
 )

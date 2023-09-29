@@ -33,7 +33,7 @@ object ConstantKey {
     const val FIELD_REJECTED = "REJECTED"
 
     object DBKeys {
-        const val TABLE_USER_DATA = "user_data"
+        const val TABLE_USER_DATA = "user_data1"
         const val FIELD_ADMIN = "admin"
         const val FIELD_DOCTOR = "doctor"
         const val TABLE_DEGREE = "degree"
@@ -65,5 +65,9 @@ object ConstantKey {
     const val FORMATTED_HOUR_MINUTE_SECOND = "HH:mm:ss"
 
     const val GPS_REQUEST_CODE = 1
+    const val KEY_GEO_HASH = "geohash"
+    const val KEY_LATITUDE = "latitude"
+    const val KEY_LONGITUDE = "longitude"
+
 
 }

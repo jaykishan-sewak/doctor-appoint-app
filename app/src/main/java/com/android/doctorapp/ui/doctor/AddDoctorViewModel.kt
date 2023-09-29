@@ -32,12 +32,19 @@ import com.android.doctorapp.repository.models.WeekOffModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.FEMALE_GENDER
+import com.android.doctorapp.util.constants.ConstantKey.KEY_GEO_HASH
+import com.android.doctorapp.util.constants.ConstantKey.KEY_LATITUDE
+import com.android.doctorapp.util.constants.ConstantKey.KEY_LONGITUDE
 import com.android.doctorapp.util.constants.ConstantKey.MALE_GENDER
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
+import com.firebase.geofire.GeoFireUtils
+import com.firebase.geofire.GeoLocation
 import com.google.android.material.chip.Chip
+import com.google.firebase.firestore.GeoPoint
+import com.google.type.LatLng
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -86,6 +93,8 @@ class AddDoctorViewModel @Inject constructor(
 
     val address: MutableLiveData<String> = MutableLiveData()
     val addressError: MutableLiveData<String?> = MutableLiveData()
+//    val addressLat: MutableLiveData<Double?> = MutableLiveData()
+//    val addressLng: MutableLiveData<Double?> = MutableLiveData()
 
     val dob: MutableLiveData<String> = MutableLiveData()
     val dobError: MutableLiveData<String?> = MutableLiveData()
@@ -369,10 +378,11 @@ class AddDoctorViewModel @Inject constructor(
 
     fun onUpdateClick() {
         if (context.isNetworkAvailable()) {
-            if (imageUri.value != null)
-                uploadImage(imageUri.value!!)
-            else
-                this.updateUser("")
+//            if (imageUri.value != null)
+//                uploadImage(imageUri.value!!)
+//            else
+//                this.updateUser("")
+            test()
         } else {
             context.toast(resourceProvider.getString(R.string.check_internet_connection))
         }
@@ -412,6 +422,136 @@ class AddDoctorViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun test() {
+        viewModelScope.launch {
+             /*when (val response = authRepository.testGeoHash(fireStore)) {
+                 else -> {
+
+                 }
+             }*/
+
+            val latitude = 23.0225
+            val longitude = 72.5714
+
+            val geohash = GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude, longitude))
+            val data1 = hashMapOf(
+                KEY_GEO_HASH to geohash,
+                KEY_LATITUDE to latitude,
+                KEY_LONGITUDE to longitude,
+//                "geopoint" to GeoPoint(latitude, longitude)
+
+                // ... other data fields
+            )
+
+            Log.d(TAG, "test: $data1")
+
+//            val myData: HashMap<String, Any> = data1
+
+            var recordId: String = ""
+            session.getString(USER_ID).collectLatest {
+                val userData: UserDataRequestModel
+                if (isDoctor.value == true) {
+                    userData = UserDataRequestModel(
+                        userId = it.toString(),
+                        isDoctor = true,
+                        email = email.value.toString(),
+                        name = name.value.toString(),
+                        gender = selectGenderValue.value.toString(),
+                        address = address.value.toString(),
+                        contactNumber = contactNumber.value.toString(),
+                        doctorFees = fees.value?.toInt(),
+                        degree = binding?.chipGroup?.children?.toList()
+                            ?.map { (it as Chip).text.toString() } as ArrayList<String>?,
+                        specialities = binding?.chipGroupSpec?.children?.toList()
+                            ?.map { (it as Chip).text.toString() } as ArrayList<String>?,
+                        isEmailVerified = true,
+                        isPhoneNumberVerified = true,
+                        availableTime = addShiftTimeSlotList.value?.toList()
+                            ?.map { newData ->
+                                AddShiftRequestModel(
+                                    startTime = newData.startTime,
+                                    endTime = newData.endTime,
+                                    isTimeSlotBook = newData.isTimeSlotBook
+                                )
+                            } as ArrayList<AddShiftRequestModel>,
+                        isAdmin = false,
+                        isNotificationEnable = notificationToggleData.value == true,
+                        dob = SimpleDateFormat(
+                            DATE_MM_FORMAT,
+                            Locale.getDefault()
+                        ).parse(dob.value.toString()),
+                        isUserVerified = true,
+                        holidayList = if (holidayList.value?.isNotEmpty() == true) holidayList.value?.toList()
+                            ?.map { holidayDate -> holidayDate.holidayDate } as ArrayList<Date> else null,
+                        weekOffList = if (weekDayNameList.value?.isNotEmpty() == true) weekDayNameList.value?.toList()
+                            ?.filter { it.isWeekOff == true }
+                            ?.map { weekOffModel -> weekOffModel.dayName }
+                                as ArrayList<String> else null,
+                            addressLatLng = data1
+//                        addressLatLng = GeoPoint(latitude, longitude)
+                    )
+                } else {
+                    //Here Code for User Update
+                    userData = UserDataRequestModel(
+                        userId = it.toString(),
+                        isDoctor = false,
+                        email = email.value.toString(),
+                        name = name.value.toString(),
+                        gender = selectGenderValue.value.toString(),
+                        address = address.value.toString(),
+                        contactNumber = contactNumber.value.toString(),
+                        isEmailVerified = true,
+                        isPhoneNumberVerified = true,
+                        isAdmin = false,
+                        dob = SimpleDateFormat(
+                            DATE_MM_FORMAT,
+                            Locale.getDefault()
+                        ).parse(dob.value.toString()),
+                        isUserVerified = true,
+
+                    )
+
+                }
+                setShowProgress(true)
+                when (val response = authRepository.testGeoHash(userData, fireStore)) {
+                    is ApiSuccessResponse -> {
+                        if (response.body.userId.isNotEmpty()) {
+                            name.value = ""
+                            email.value = ""
+                            address.value = ""
+                            contactNumber.value = ""
+                            dob.value = ""
+                            isAvailableDate.value = ""
+                            setShowProgress(false)
+                            if (isDoctor.value == true) {
+                                _addDoctorResponse.value =
+                                    resourceProvider.getString(R.string.success)
+                            } else {
+                                _addDoctorResponse.value =
+                                    resourceProvider.getString(R.string.success)
+                            }
+                        }
+                    }
+
+                    is ApiErrorResponse -> {
+                        _addDoctorResponse.value = response.errorMessage
+                        setShowProgress(false)
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        _addDoctorResponse.value = response.errorMessage
+                        setShowProgress(false)
+                    }
+
+                    else -> {
+                        setShowProgress(false)
+                    }
+                }
+            }
+
         }
     }
 

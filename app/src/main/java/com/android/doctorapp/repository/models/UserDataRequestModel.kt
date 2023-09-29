@@ -1,5 +1,7 @@
 package com.android.doctorapp.repository.models
 
+import com.google.firebase.firestore.GeoPoint
+import com.google.type.LatLng
 import java.util.Date
 
 data class UserDataRequestModel(
@@ -22,5 +24,6 @@ data class UserDataRequestModel(
     var dob: Date? = null,
     var isUserVerified: Boolean = false,
     var holidayList: ArrayList<Date>? = null,
-    var weekOffList: ArrayList<String>? = null
+    var weekOffList: ArrayList<String>? = null,
+    var addressLatLng: Any? = null
 )
