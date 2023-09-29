@@ -27,7 +27,7 @@
             android:name=".ui.userdashboard.UserDashboardActivity"
             android:exported="false"
             android:theme="@style/Theme.InfusionTemplate.NoActionBar"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.splash.SplashScreenActivity"
             android:exported="true"
