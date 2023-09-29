@@ -53,6 +53,7 @@ class UserRequestFragment :
             lifecycleOwner = viewLifecycleOwner
             viewModel = this@UserRequestFragment.viewModel
         }
+
         setUpWithViewModel(viewModel)
         registerObserver(layoutBinding)
         return layoutBinding.root
@@ -79,7 +80,11 @@ class UserRequestFragment :
 
         viewModel.isDoctorRequestCalendar.observe(viewLifecycleOwner) {
             if (it) {
-                requireContext().selectDate(maxDate = null, minDate = null) { dobDate ->
+                requireContext().selectDate(
+                    myCalendar = myCalender,
+                    maxDate = null,
+                    minDate = null
+                ) { dobDate ->
                     val formatter =
                         SimpleDateFormat(ConstantKey.FORMATTED_DATE, Locale.getDefault())
                     val date = formatter.parse(dobDate)

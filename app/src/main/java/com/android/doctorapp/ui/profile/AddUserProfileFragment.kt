@@ -34,6 +34,7 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -151,11 +152,6 @@ class AddUserProfileFragment :
         return bindingView.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         // Remove the callback to stop automatic calling
@@ -188,11 +184,19 @@ class AddUserProfileFragment :
         viewModel.isCalender.observe(viewLifecycleOwner) {
 
             if (binding.textDateOfBirth.id == it?.id) {
-                requireContext().selectDate(maxDate = Date().time, minDate = null) { dobDate ->
+                requireContext().selectDate(
+                    myCalendar = myCalender,
+                    maxDate = Date().time,
+                    minDate = null
+                ) { dobDate ->
                     viewModel.dob.value = dobDate
                 }
             } else {
-                requireContext().selectDate(maxDate = null, minDate = Date().time)
+                requireContext().selectDate(
+                    myCalendar = myCalender,
+                    maxDate = null,
+                    minDate = Date().time
+                )
                 { availableDate ->
                     viewModel.isAvailableDate.value = availableDate
                 }

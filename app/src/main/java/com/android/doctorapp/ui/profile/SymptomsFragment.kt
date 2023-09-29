@@ -41,6 +41,7 @@ class SymptomsFragment : BaseFragment<FragmentSymptomsBinding>(R.layout.fragment
             viewModel = this@SymptomsFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
         }
+
         viewModel.getDoctorList()
         setUpWithViewModel(viewModel)
         registerObservers()
@@ -48,15 +49,14 @@ class SymptomsFragment : BaseFragment<FragmentSymptomsBinding>(R.layout.fragment
 
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-    }
-
     private fun registerObservers() {
         viewModel.isCalender.observe(viewLifecycleOwner) {
             if (binding.etLastVisitDate.id == it?.id) {
-                requireContext().selectDate(maxDate = Date().time, minDate = null) { dobDate ->
+                requireContext().selectDate(
+                    myCalendar = myCalender,
+                    maxDate = Date().time,
+                    minDate = null
+                ) { dobDate ->
                     viewModel.lastVisitDate.value = dobDate
                     viewModel.isUpdateDataValid.value = true
                 }

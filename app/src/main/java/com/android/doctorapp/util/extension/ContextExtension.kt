@@ -91,8 +91,12 @@ fun Context.isNetworkAvailable(): Boolean {
 
 }
 
-fun Context.selectDate(maxDate: Long?, minDate: Long?, handleClick: (date: String) -> Unit) {
-    val myCalendar = Calendar.getInstance()
+fun Context.selectDate(
+    myCalendar: Calendar,
+    maxDate: Long?,
+    minDate: Long?,
+    handleClick: (date: String) -> Unit
+) {
     val date = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
         val selectedDate = String.format("%02d-%02d-%04d", dayOfMonth, month + 1, year)
         myCalendar.set(Calendar.YEAR, year)
@@ -102,7 +106,10 @@ fun Context.selectDate(maxDate: Long?, minDate: Long?, handleClick: (date: Strin
     }
 
     val datePickerDialog = DatePickerDialog(
-        this, date, myCalendar[Calendar.YEAR], myCalendar[Calendar.MONTH],
+        this,
+        date,
+        myCalendar[Calendar.YEAR],
+        myCalendar[Calendar.MONTH],
         myCalendar[Calendar.DAY_OF_MONTH]
     )
     maxDate?.let { datePickerDialog.datePicker.maxDate = it }
@@ -170,21 +177,6 @@ fun convertDateToFull(inputDateString: String): Date {
         ex.printStackTrace()
         val defaultDate = SimpleDateFormat(FULL_DATE_FORMAT).parse("01-Sep-2000")
         defaultDate
-    }
-}
-
-fun convertFullDateToDate(inputDateString: String): String {
-    return try {
-        val originalDateFormat = SimpleDateFormat(FULL_DATE_FORMAT, Locale.getDefault())
-        val targetDateFormat = SimpleDateFormat(FORMATTED_DATE, Locale.getDefault())
-        val calendar = Calendar.getInstance()
-        calendar.time = originalDateFormat.parse(inputDateString) ?: Date()
-        Log.d("TAG", "convertFullDateToDate: ${calendar.time}   -->     $inputDateString")
-        targetDateFormat.format(calendar.time)
-    } catch (e: Exception) {
-        e.printStackTrace()
-        Log.d("TAG", "convertFullDateToDate catch : ${e.message}")
-        ""
     }
 }
 

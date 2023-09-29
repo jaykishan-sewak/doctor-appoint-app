@@ -26,6 +26,7 @@ import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.selectDate
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
@@ -39,6 +40,8 @@ class SelectedDateAppointmentsFragment :
     private val viewModel: SelectedDateAppointmentsViewModel by viewModels { viewModelFactory }
     var date = ""
     private lateinit var adapter: SelectedDateAdapter
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (requireActivity().application as AppComponentProvider).getAppComponent().inject(this)
@@ -56,6 +59,7 @@ class SelectedDateAppointmentsFragment :
                 arguments.getString(ConstantKey.BundleKeys.DATE)!!
             viewModel.selectedDate.value = Gson().fromJson(date, Date::class.java)
         }
+
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
             viewModel = this@SelectedDateAppointmentsFragment.viewModel
@@ -87,7 +91,11 @@ class SelectedDateAppointmentsFragment :
 
         viewModel.isCalender.observe(viewLifecycleOwner) {
             if (it) {
-                requireContext().selectDate(maxDate = null, minDate = Date().time) { dobDate ->
+                requireContext().selectDate(
+                    myCalendar = myCalender,
+                    maxDate = null,
+                    minDate = Date().time
+                ) { dobDate ->
                     val formatter = SimpleDateFormat(FORMATTED_DATE, Locale.getDefault())
                     val date = formatter.parse(dobDate)
                     viewModel.selectedDate.value = date
