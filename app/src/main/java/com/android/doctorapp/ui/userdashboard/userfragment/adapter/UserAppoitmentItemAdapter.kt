@@ -1,7 +1,9 @@
 package com.android.doctorapp.ui.userdashboard.userfragment.adapter
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.doctorapp.R
@@ -14,11 +16,17 @@ class UserAppoitmentItemAdapter(
 ) : RecyclerView.Adapter<UserAppoitmentItemAdapter.ItemViewHolder>() {
 
     class ItemViewHolder(val view: UserRawLayoutBinding) : RecyclerView.ViewHolder(view.root) {
-        fun bind(item: UserDataResponseModel, listener: OnItemClickListener, position: Int) {
+        fun bind(
+            item: UserDataResponseModel,
+            listener: OnItemClickListener,
+            position: Int,
+            imageUri: Uri
+        ) {
             view.apply {
                 userData = item
                 index = position
                 onItemClickListener = listener
+                userImageUri = imageUri
             }
         }
     }
@@ -45,7 +53,8 @@ class UserAppoitmentItemAdapter(
 
     override fun onBindViewHolder(holder: UserAppoitmentItemAdapter.ItemViewHolder, position: Int) {
         val objects = userList[position]
-        holder.bind(objects, listener, position)
+        val imageUri = objects.images.toUri()
+        holder.bind(objects, listener, position, imageUri)
     }
 
     interface OnItemClickListener {

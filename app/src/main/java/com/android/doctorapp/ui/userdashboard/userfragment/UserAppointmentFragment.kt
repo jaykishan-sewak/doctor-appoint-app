@@ -1,9 +1,14 @@
 package com.android.doctorapp.ui.userdashboard.userfragment
 
+import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -16,7 +21,16 @@ import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.ui.userdashboard.userfragment.adapter.UserAppoitmentItemAdapter
+import com.android.doctorapp.util.GpsUtils
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.extension.isGPSEnabled
+import com.android.doctorapp.util.extension.toast
+import com.android.doctorapp.util.permission.RuntimePermission
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import java.util.Locale
 import javax.inject.Inject
 
 
@@ -28,17 +42,21 @@ class UserAppointmentFragment :
     private val viewModel: UserAppointmentViewModel by viewModels { viewModelFactory }
     private lateinit var adapter: UserAppoitmentItemAdapter
 
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+
     override fun builder(): FragmentToolbar {
         return FragmentToolbar.Builder()
             .withId(R.id.toolbar)
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
-            .withTitle(R.string.nearest_doctor)
+            .withTitleString(viewModel.locationCity.value!!)
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
             .build()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         (requireActivity().application as AppComponentProvider).getAppComponent().inject(this)
     }
 
@@ -52,10 +70,97 @@ class UserAppointmentFragment :
             lifecycleOwner = viewLifecycleOwner
             viewModel = this@UserAppointmentFragment.viewModel
         }
+
         setUpWithViewModel(viewModel)
+        RuntimePermission.askPermission(
+            this,
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+        ).onAccepted {
+            requestLocationUpdates()
+        }.onDenied {
+            context?.toast(getString(R.string.location_permission))
+        }.ask()
+
         registerObserver(layoutBinding)
         return layoutBinding.root
     }
+
+
+    fun requestLocationUpdates() {
+        val fineLocationPermission = android.Manifest.permission.ACCESS_FINE_LOCATION
+        val coarseLocationPermission = android.Manifest.permission.ACCESS_COARSE_LOCATION
+
+        if (ActivityCompat.checkSelfPermission(
+                requireActivity(),
+                fineLocationPermission
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireActivity(),
+                coarseLocationPermission
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permissions are not granted, request them using the launcher
+            requestLocationPermissionLauncher.launch(
+                arrayOf(fineLocationPermission, coarseLocationPermission)
+            )
+        }
+
+        if (requireContext().isGPSEnabled()) {
+            fusedLocationClient.requestLocationUpdates(
+                GpsUtils(requireContext()).locationRequest,
+                locationCallback,
+                null // Looper can be provided for the callback thread
+            )
+        } else {
+            GpsUtils(requireContext()).turnGPSOn(object : GpsUtils.onGpsListener {
+                override fun gpsStatus(isGPSEnable: Boolean) {
+                }
+            })
+
+        }
+    }
+
+    private val locationCallback = object : LocationCallback() {
+        override fun onLocationResult(p0: LocationResult) {
+            p0.lastLocation?.let { location ->
+                // Handle the location update here
+                val latitude = location.latitude
+                val longitude = location.longitude
+                val addresses: List<Address>?
+                val geocoder = Geocoder(requireContext(), Locale.getDefault())
+
+                addresses = geocoder.getFromLocation(latitude, longitude, 1)
+                if (!addresses.isNullOrEmpty()) {
+                    val city = addresses[0].locality // Get the city name
+                    viewModel.locationCity.postValue(addresses[0].locality)
+                    updateToolbarTitle(addresses[0].locality)
+                    context?.toast(city)
+                    stopLocationUpdates()
+                }
+                // Do something with latitude and longitude
+                // For example, update UI or send them to a server
+            }
+        }
+    }
+
+    private fun stopLocationUpdates() {
+        fusedLocationClient.removeLocationUpdates(locationCallback)
+    }
+
+    private val requestLocationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        if (permissions[android.Manifest.permission.ACCESS_FINE_LOCATION] == true &&
+            permissions[android.Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        ) {
+            // Permissions are granted, proceed with location updates
+            requestLocationUpdates()
+        } else {
+            // Handle permission denial
+            context?.toast(getString(R.string.location_permission))
+        }
+    }
+
 
     private fun registerObserver(layoutBinding: FragmentUserAppointmentBinding) {
         viewModel.getItems()
@@ -72,7 +177,6 @@ class UserAppointmentFragment :
                 adapter.filterList(emptyList())
             }
         }
-
     }
 
 
@@ -88,7 +192,6 @@ class UserAppointmentFragment :
                         bundle
                     )
                     binding.searchEt.setText("")
-
                 }
             }
         )

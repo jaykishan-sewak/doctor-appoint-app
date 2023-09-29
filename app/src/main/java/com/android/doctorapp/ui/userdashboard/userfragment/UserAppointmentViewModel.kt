@@ -28,6 +28,8 @@ class UserAppointmentViewModel @Inject constructor(
     val dataFound: MutableLiveData<Boolean> = MutableLiveData(false)
 
     private val tempData = MutableLiveData<List<UserDataResponseModel>>()
+    val locationCity: MutableLiveData<String> = MutableLiveData("Nearest Doctors")
+
 
     fun lengthChecked(text: CharSequence) {
         if (text.toString().length >= 3) {
