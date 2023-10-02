@@ -1,7 +1,6 @@
 package com.android.doctorapp.ui.userdashboard.userfragment
 
 import android.content.Context
-import android.provider.Settings.Global.getString
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -24,7 +23,7 @@ class UserAppointmentViewModel @Inject constructor(
     private val context: Context
 ) : BaseViewModel() {
 
-    private val items = MutableLiveData<List<UserDataResponseModel>>()
+    private val items = MutableLiveData<List<UserDataResponseModel>?>()
     val doctorList = items.asLiveData()
     val dataFound: MutableLiveData<Boolean> = MutableLiveData(false)
 
@@ -58,7 +57,7 @@ class UserAppointmentViewModel @Inject constructor(
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
                         if (response.body.isNotEmpty()) {
-                            items.value = response.body!!
+                            items.value = response.body
                             tempData.value = items.value
                         }
                     }

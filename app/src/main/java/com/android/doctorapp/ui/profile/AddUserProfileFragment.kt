@@ -7,6 +7,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -34,7 +35,6 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.coroutines.launch
-import java.util.Calendar
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -70,7 +70,12 @@ class AddUserProfileFragment :
             .withId(R.id.toolbar)
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             .withTitle(R.string.title_profile)
-            .withNavigationIcon(requireActivity().getDrawable(R.drawable.ic_back_white))
+            .withNavigationIcon(
+                AppCompatResources.getDrawable(
+                    requireContext(),
+                    R.drawable.ic_back_white
+                )
+            )
             .withNavigationListener {
                 findNavController().popBackStack()
             }
@@ -147,7 +152,7 @@ class AddUserProfileFragment :
             bottomSheetFragment.show(requireActivity().supportFragmentManager, "BSDialogFragment")
         }
         setUpWithViewModel(viewModel)
-        checkLiveData(bindingView)
+        checkLiveData()
 
         return bindingView.root
     }
@@ -158,7 +163,7 @@ class AddUserProfileFragment :
         handler.removeCallbacks(runnable)
     }
 
-    private fun checkLiveData(layoutBinding: FragmentUpdateDoctorProfileBinding) {
+    private fun checkLiveData() {
 
         viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
             if (viewModel.isProfileNavigation.value!!) {

@@ -1,7 +1,6 @@
 package com.android.doctorapp.ui.userdashboard.userfragment
 
 import android.content.pm.PackageManager
-import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -167,7 +166,7 @@ class UserAppointmentFragment :
         layoutBinding.recyclerView.adapter = adapter
 
         viewModel.doctorList.observe(viewLifecycleOwner) { it1 ->
-            if (it1 != null && it1.isNotEmpty()) {
+            if (!it1.isNullOrEmpty()) {
                 adapter.filterList(it1)
                 viewModel.dataFound.value = false
             } else {
