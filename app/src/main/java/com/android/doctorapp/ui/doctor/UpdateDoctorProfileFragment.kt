@@ -15,6 +15,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
@@ -478,9 +479,9 @@ class UpdateDoctorProfileFragment :
             }
         }
 
-        viewModel.imageUri.observe(viewLifecycleOwner) {
+        viewModel.imageUri.observe(viewLifecycleOwner, Observer {
             Log.d("TAG", "registerObserver: $it")
-        }
+        })
 
     }
 
