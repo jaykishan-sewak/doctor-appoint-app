@@ -38,9 +38,9 @@
             android:id="@+id/action_user_profile_to_feedBack"
             app:destination="@+id/Feedback" />
 
-        <!--        <action-->
-        <!--            android:id="@+id/action_user_profile_to_symptoms"-->
-        <!--            app:destination="@+id/Symptoms"/>-->
+        <action
+            android:id="@+id/action_user_profile_to_symptoms"
+            app:destination="@+id/Symptoms" />
 
 
     </fragment>
@@ -81,12 +81,12 @@
 
     </fragment>
 
-    <!--    <fragment-->
-    <!--        android:id="@+id/Symptoms"-->
-    <!--        android:name="com.android.doctorapp.ui.profile.SymptomsFragment"-->
-    <!--        tools:layout="@layout/fragment_symptoms">-->
+    <fragment
+        android:id="@+id/Symptoms"
+        android:name="com.android.doctorapp.ui.profile.SymptomsFragment"
+        tools:layout="@layout/fragment_symptoms">
 
-    <!--    </fragment>-->
+    </fragment>
 
 
 </navigation>
