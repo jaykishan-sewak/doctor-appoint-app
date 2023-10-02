@@ -26,7 +26,6 @@ import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.selectDate
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
@@ -76,11 +75,11 @@ class RequestDoctorFragment :
             viewModel.isRequestCalender.value = false
         }
         viewModel.requestAppointmentList.observe(viewLifecycleOwner) {
-            if (it != null && it.isNotEmpty()) {
+            if (!it.isNullOrEmpty()) {
                 adapter.filterList(it)
                 viewModel.dataFound.value = true
             } else {
-                adapter.filterList(it)
+                adapter.filterList(it!!)
                 viewModel.dataFound.value = false
             }
         }

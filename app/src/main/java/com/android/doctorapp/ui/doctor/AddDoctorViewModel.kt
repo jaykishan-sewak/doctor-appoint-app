@@ -109,11 +109,11 @@ class AddDoctorViewModel @Inject constructor(
 
     val degreeLiveList = MutableLiveData<List<String>>()
     val specializationLiveList = MutableLiveData<List<String>>()
-    val selectGenderValue: MutableLiveData<String> =
+    private val selectGenderValue: MutableLiveData<String> =
         MutableLiveData(MALE_GENDER)
     val userId: MutableLiveData<String?> = MutableLiveData(null)
-    val tempEmail: MutableLiveData<String?> = MutableLiveData()
-    val tempContactNumber: MutableLiveData<String?> = MutableLiveData()
+    private val tempEmail: MutableLiveData<String?> = MutableLiveData()
+    private val tempContactNumber: MutableLiveData<String?> = MutableLiveData()
 
 
     private val weekDayList = ArrayList<WeekOffModel>()
@@ -413,7 +413,6 @@ class AddDoctorViewModel @Inject constructor(
 
     private fun updateUser(imageUrl: String) {
         viewModelScope.launch {
-            var recordId: String = ""
             session.getString(USER_ID).collectLatest {
                 val userData: UserDataRequestModel
                 if (isDoctor.value == true) {

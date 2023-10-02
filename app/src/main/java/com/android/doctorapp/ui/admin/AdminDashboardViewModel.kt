@@ -28,7 +28,7 @@ class AdminDashboardViewModel @Inject constructor(
     private val session: Session
 
 ) : BaseViewModel() {
-    val doctorList = MutableLiveData<List<UserDataResponseModel>>()
+    val doctorList = MutableLiveData<List<UserDataResponseModel>?>()
 
     val _navigationListener = SingleLiveEvent<Int>()
     val navigationListener = _navigationListener.asLiveData()
@@ -52,7 +52,7 @@ class AdminDashboardViewModel @Inject constructor(
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
                         if (response.body.isNotEmpty()) {
-                            doctorList.value = response.body!!
+                            doctorList.value = response.body
                         }
                     }
 

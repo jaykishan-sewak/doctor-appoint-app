@@ -29,7 +29,7 @@ class RequestDoctorViewModel @Inject constructor(
 
     ) : BaseViewModel() {
 
-    val requestAppointmentList = MutableLiveData<List<AppointmentModel>>()
+    val requestAppointmentList = MutableLiveData<List<AppointmentModel>?>()
     var requestSelectedDate: MutableLiveData<Date> = SingleLiveEvent()
     val isRequestCalender: MutableLiveData<Boolean> = MutableLiveData(false)
     val dataFound: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -46,7 +46,7 @@ class RequestDoctorViewModel @Inject constructor(
                             )) {
                             is ApiSuccessResponse -> {
                                 setShowProgress(false)
-                                requestAppointmentList.value = response.body!!
+                                requestAppointmentList.value = response.body
                             }
 
                             is ApiErrorResponse -> {

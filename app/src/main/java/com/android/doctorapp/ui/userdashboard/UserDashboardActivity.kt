@@ -35,7 +35,7 @@ class UserDashboardActivity :
             }
             true
         }
-        navController.addOnDestinationChangedListener { controller: NavController?, destination: NavDestination, arguments: Bundle? ->
+        navController.addOnDestinationChangedListener { _: NavController?, destination: NavDestination, _: Bundle? ->
             if (destination.id == R.id.navigation_search
                 || destination.id == R.id.navigation_booking
                 || destination.id == R.id.navigation_user_profile
