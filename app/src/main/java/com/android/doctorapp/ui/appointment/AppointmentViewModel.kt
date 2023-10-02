@@ -291,9 +291,9 @@ class AppointmentViewModel @Inject constructor(
 
     private fun calculateAge(dateOfBirth: Date?): String {
         try {
-            val dateOfBirth1 = dateFormatter(dateOfBirth, FORMATTED_DATE)
+            val formattedDateOfBirth = dateFormatter(dateOfBirth, FORMATTED_DATE)
             val dateFormatter = SimpleDateFormat(DATE_MONTH_FORMAT, Locale.getDefault())
-            val dob: Date = dateFormatter.parse(dateOfBirth1)
+            val dob: Date = dateFormatter.parse(formattedDateOfBirth)
             val calendarDob = Calendar.getInstance()
             calendarDob.time = dob
 
