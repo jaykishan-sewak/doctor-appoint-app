@@ -216,7 +216,4 @@
     <string name="failed_to_get_current_location">Failed on getting current location</string>
     <string name="gps_permission_denied">GPS permission denied</string>
 
-
-    <string name="location_permission">Location permission denied</string>
-    <string name="gps_permission_denied">GPS permission denied</string>
 </resources>
