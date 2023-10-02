@@ -4,6 +4,8 @@
 
     <data>
 
+        <import type="android.net.Uri" />
+
         <variable
             name="userData"
             type="com.android.doctorapp.repository.models.UserDataResponseModel" />
@@ -15,6 +17,10 @@
         <variable
             name="index"
             type="Integer" />
+
+        <variable
+            name="userImageUri"
+            type="Uri" />
     </data>
 
 
@@ -35,8 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_10"
-            android:paddingVertical="@dimen/margin_15"
-            >
+            android:paddingVertical="@dimen/margin_15">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/ivDoctorImageView"
@@ -52,8 +57,9 @@
                     android:id="@+id/ivDoctorImage"
                     android:layout_width="@dimen/dp_70"
                     android:layout_height="@dimen/dp_70"
+                    android:background="@drawable/ic_person_white"
                     android:scaleType="centerCrop"
-                    app:genderImage="@{userData.gender}" />
+                    app:imageUri="@{userImageUri}" />
 
             </androidx.cardview.widget.CardView>
 

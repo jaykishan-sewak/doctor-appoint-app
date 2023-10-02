@@ -1,14 +1,18 @@
 package com.android.doctorapp.ui.userdashboard
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.ActivityUserDashboardBinding
 import com.android.doctorapp.di.base.BaseActivity
+import com.android.doctorapp.ui.userdashboard.userfragment.UserAppointmentFragment
+import com.android.doctorapp.util.extension.toast
 
 
 class UserDashboardActivity :
@@ -39,6 +43,25 @@ class UserDashboardActivity :
                 binding.userNavView.visibility = View.VISIBLE
             else
                 binding.userNavView.visibility = View.GONE
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            val fragmentManager = supportFragmentManager
+            val navHostFragment = fragmentManager.findFragmentById(R.id.userNavHostFragment)
+            if (navHostFragment is NavHostFragment) {
+                // Get the current fragment in the navigation host
+                val currentFragment = navHostFragment.childFragmentManager.fragments.firstOrNull()
+                if (currentFragment is UserAppointmentFragment) {
+                    // Now you have a reference to the UserAppointmentFragment
+                    currentFragment.requestLocationUpdates()
+                }
+            }
+
+        } else {
+            this.toast(getString(R.string.location_permission))
         }
     }
 }

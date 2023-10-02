@@ -1,6 +1,7 @@
 package com.android.doctorapp.ui.userdashboard.userfragment
 
 import android.content.Context
+import android.provider.Settings.Global.getString
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -28,6 +29,9 @@ class UserAppointmentViewModel @Inject constructor(
     val dataFound: MutableLiveData<Boolean> = MutableLiveData(false)
 
     private val tempData = MutableLiveData<List<UserDataResponseModel>>()
+    val locationCity: MutableLiveData<String> =
+        MutableLiveData(resourceProvider.getString(R.string.nearest_doctor))
+
 
     fun lengthChecked(text: CharSequence) {
         if (text.toString().length >= 3) {
