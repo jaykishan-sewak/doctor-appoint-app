@@ -2,6 +2,7 @@ package com.android.doctorapp.ui.doctor
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.RadioGroup
@@ -367,7 +368,7 @@ class AddDoctorViewModel @Inject constructor(
 
     fun onUpdateClick() {
         if (context.isNetworkAvailable()) {
-            if (imageUri.value != null)
+            if (imageUri.value != null && !imageUri.value.toString().startsWith("https:"))
                 uploadImage(imageUri.value!!)
             else
                 this.updateUser("")
