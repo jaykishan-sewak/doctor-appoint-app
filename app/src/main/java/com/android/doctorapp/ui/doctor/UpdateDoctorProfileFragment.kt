@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -96,6 +97,9 @@ class UpdateDoctorProfileFragment :
     private var tempShiftTimeList = ArrayList<AddShiftTimeModel>()
 
     lateinit var bottomSheetFragment: BottomSheetDialog
+    private val dobCalender: Calendar = Calendar.getInstance()
+    private val holidayCalender: Calendar = Calendar.getInstance()
+    private val availableDateCalender: Calendar = Calendar.getInstance()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -256,7 +260,7 @@ class UpdateDoctorProfileFragment :
         viewModel.isCalender.observe(viewLifecycleOwner) {
             if (layoutBinding.textDateOfBirth.id == it?.id) {
                 requireContext().selectDate(
-                    myCalendar = myCalender,
+                    myCalendar = dobCalender,
                     maxDate = Date().time,
                     minDate = null
                 ) { dobDate ->
@@ -269,7 +273,7 @@ class UpdateDoctorProfileFragment :
                 }
             } else if (layoutBinding.btnAddHoliday.id == it?.id) {
                 requireContext().selectDate(
-                    myCalendar = myCalender,
+                    myCalendar = holidayCalender,
                     maxDate = null,
                     minDate = null
                 ) { holidayDate ->
@@ -302,7 +306,7 @@ class UpdateDoctorProfileFragment :
 
             } else {
                 requireContext().selectDate(
-                    myCalendar = myCalender,
+                    myCalendar = availableDateCalender,
                     maxDate = null,
                     minDate = Date().time
                 ) { availableDate ->
@@ -467,6 +471,11 @@ class UpdateDoctorProfileFragment :
                 addDoctorHolidayAdapter.updateHolidayList(it)
             }
         }
+
+        viewModel.imageUri.observe(viewLifecycleOwner) {
+            Log.d("TAG", "registerObserver: $it")
+        }
+
     }
 
     private fun addSpecializationItem(uppercase: String) {

@@ -40,6 +40,7 @@ class RequestDoctorFragment :
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel: RequestDoctorViewModel by viewModels { viewModelFactory }
     private lateinit var adapter: RequestAppointmentsAdapter
+    private val myCalender: Calendar = Calendar.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

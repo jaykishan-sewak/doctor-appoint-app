@@ -2,6 +2,7 @@ package com.android.doctorapp.ui.doctor
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.RadioGroup
@@ -131,7 +132,7 @@ class AddDoctorViewModel @Inject constructor(
     var gender: MutableLiveData<Int> = MutableLiveData()
     val isCameraClick: MutableLiveData<Boolean> = MutableLiveData(false)
     val isGalleryClick: MutableLiveData<Boolean> = MutableLiveData(false)
-    val imageUri = MutableLiveData<Uri>()
+    val imageUri: MutableLiveData<Uri> = MutableLiveData<Uri>()
 
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {

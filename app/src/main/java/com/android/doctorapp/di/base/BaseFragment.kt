@@ -21,7 +21,6 @@ abstract class BaseFragment<T : ViewDataBinding> constructor(
     protected var bindingComponent: DataBindingComponent? = DataBindingUtil.getDefaultComponent()
 
     private var _binding: T? = null
-    val  myCalender: Calendar = Calendar.getInstance()
 
     @BindingOnly
     protected val binding: T

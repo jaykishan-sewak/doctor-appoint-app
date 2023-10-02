@@ -40,6 +40,7 @@ class SelectedDateAppointmentsFragment :
     private val viewModel: SelectedDateAppointmentsViewModel by viewModels { viewModelFactory }
     var date = ""
     private lateinit var adapter: SelectedDateAdapter
+    private val  myCalender: Calendar = Calendar.getInstance()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

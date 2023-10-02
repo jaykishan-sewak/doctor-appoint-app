@@ -48,6 +48,7 @@ class AddUserProfileFragment :
     private val viewModel by viewModels<AddDoctorViewModel> { viewModelFactory }
     lateinit var bindingView: FragmentUpdateDoctorProfileBinding
     lateinit var bottomSheetFragment: BottomSheetDialog
+    private val myCalender: Calendar = Calendar.getInstance()
 
     val handler = Handler(Looper.getMainLooper())
     private val runnable = object : Runnable {
