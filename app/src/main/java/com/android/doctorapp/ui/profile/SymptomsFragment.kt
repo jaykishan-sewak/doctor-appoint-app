@@ -16,6 +16,7 @@ import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.util.extension.selectDate
+import java.util.Calendar
 import java.util.Date
 import javax.inject.Inject
 
@@ -24,7 +25,8 @@ class SymptomsFragment : BaseFragment<FragmentSymptomsBinding>(R.layout.fragment
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel by viewModels<SymptomsViewModel> { viewModelFactory }
-    lateinit var bindingView: FragmentSymptomsBinding
+    private lateinit var bindingView: FragmentSymptomsBinding
+    private val myCalender: Calendar = Calendar.getInstance()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

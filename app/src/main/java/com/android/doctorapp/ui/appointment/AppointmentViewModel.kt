@@ -1,6 +1,7 @@
 package com.android.doctorapp.ui.appointment
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -18,9 +19,11 @@ import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.repository.models.SymptomModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.DATE_MONTH_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.DAY_NAME_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.FIELD_PENDING
 import com.android.doctorapp.util.constants.ConstantKey.FIELD_REJECTED
+import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.constants.ConstantKey.FULL_DATE_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.FULL_DAY_NAME_FORMAT
 import com.android.doctorapp.util.extension.asLiveData
@@ -34,6 +37,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 
@@ -258,7 +262,7 @@ class AppointmentViewModel @Inject constructor(
                             userName.value = response.body.name
                             contactNumber.value = response.body.contactNumber
                             ageDate = response.body.dob!!
-                            age.value = calculateAge(response.body.dob.toString())
+                            age.value = calculateAge(response.body.dob)
                             setShowProgress(false)
                         }
 
@@ -285,20 +289,26 @@ class AppointmentViewModel @Inject constructor(
         }
     }
 
-    private fun calculateAge(dateOfBirth: String): String {
-        val dateFormatter = SimpleDateFormat(FULL_DATE_FORMAT)
-        val dob: Date = dateFormatter.parse(dateOfBirth)
-        val calendarDob = Calendar.getInstance()
-        calendarDob.time = dob
+    private fun calculateAge(dateOfBirth: Date?): String {
+        try {
+            val formattedDateOfBirth = dateFormatter(dateOfBirth, FORMATTED_DATE)
+            val dateFormatter = SimpleDateFormat(DATE_MONTH_FORMAT, Locale.getDefault())
+            val dob: Date = dateFormatter.parse(formattedDateOfBirth)
+            val calendarDob = Calendar.getInstance()
+            calendarDob.time = dob
 
-        val currentDate = Calendar.getInstance()
+            val currentDate = Calendar.getInstance()
 
-        val years = currentDate.get(Calendar.YEAR) - calendarDob.get(Calendar.YEAR)
-        if (currentDate.get(Calendar.DAY_OF_YEAR) < calendarDob.get(Calendar.DAY_OF_YEAR)) {
-            // Adjust age if birthday hasn't occurred yet this year
-            return "${years - 1}"
+            val years = currentDate.get(Calendar.YEAR) - calendarDob.get(Calendar.YEAR)
+            if (currentDate.get(Calendar.DAY_OF_YEAR) < calendarDob.get(Calendar.DAY_OF_YEAR)) {
+                // Adjust age if birthday hasn't occurred yet this year
+                return "${years - 1}"
+            }
+            return years.toString()
+        } catch (e: Exception) {
+            Log.d("TAG", "calculateAge: ${e.fillInStackTrace()}")
+            return ""
         }
-        return years.toString()
     }
 
     fun onCancelClick() {

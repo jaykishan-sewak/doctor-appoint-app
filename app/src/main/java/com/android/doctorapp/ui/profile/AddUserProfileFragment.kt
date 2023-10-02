@@ -35,6 +35,7 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -48,6 +49,7 @@ class AddUserProfileFragment :
     private val viewModel by viewModels<AddDoctorViewModel> { viewModelFactory }
     lateinit var bindingView: FragmentUpdateDoctorProfileBinding
     lateinit var bottomSheetFragment: BottomSheetDialog
+    private val myCalender: Calendar = Calendar.getInstance()
 
     val handler = Handler(Looper.getMainLooper())
     private val runnable = object : Runnable {

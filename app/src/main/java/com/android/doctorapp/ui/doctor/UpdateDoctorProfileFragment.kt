@@ -97,6 +97,9 @@ class UpdateDoctorProfileFragment :
     private var tempShiftTimeList = ArrayList<AddShiftTimeModel>()
 
     lateinit var bottomSheetFragment: BottomSheetDialog
+    private val dobCalender: Calendar = Calendar.getInstance()
+    private val holidayCalender: Calendar = Calendar.getInstance()
+    private val availableDateCalender: Calendar = Calendar.getInstance()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -200,7 +203,6 @@ class UpdateDoctorProfileFragment :
                 override fun getImageUri(uri: Uri) {
                     viewModel.imageUri.value = uri
                 }
-
             })
             bottomSheetFragment.show(requireActivity().supportFragmentManager, "BSDialogFragment")
         }
@@ -262,7 +264,7 @@ class UpdateDoctorProfileFragment :
         viewModel.isCalender.observe(viewLifecycleOwner) {
             if (layoutBinding.textDateOfBirth.id == it?.id) {
                 requireContext().selectDate(
-                    myCalendar = myCalender,
+                    myCalendar = dobCalender,
                     maxDate = Date().time,
                     minDate = null
                 ) { dobDate ->
@@ -275,7 +277,7 @@ class UpdateDoctorProfileFragment :
                 }
             } else if (layoutBinding.btnAddHoliday.id == it?.id) {
                 requireContext().selectDate(
-                    myCalendar = myCalender,
+                    myCalendar = holidayCalender,
                     maxDate = null,
                     minDate = null
                 ) { holidayDate ->
@@ -308,7 +310,7 @@ class UpdateDoctorProfileFragment :
 
             } else {
                 requireContext().selectDate(
-                    myCalendar = myCalender,
+                    myCalendar = availableDateCalender,
                     maxDate = null,
                     minDate = Date().time
                 ) { availableDate ->
@@ -473,6 +475,7 @@ class UpdateDoctorProfileFragment :
                 addDoctorHolidayAdapter.updateHolidayList(it)
             }
         }
+
     }
 
     private fun addSpecializationItem(uppercase: String) {
