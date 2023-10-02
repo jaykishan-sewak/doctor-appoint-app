@@ -92,8 +92,8 @@ class LoginViewModel @Inject constructor(
      *  Validate the user input fields.
      */
     private fun isAllValidate() {
-        isDataValid.value = (!email.value.isNullOrEmpty() && !password.value.isNullOrEmpty()
-                && emailError.value.isNullOrEmpty() && passwordError.value.isNullOrEmpty())
+        isDataValid.value =
+            (!email.value.isNullOrEmpty() && !password.value.isNullOrEmpty() && emailError.value.isNullOrEmpty() && passwordError.value.isNullOrEmpty())
     }
 
     fun isValidateEmail(text: CharSequence) {
@@ -105,8 +105,8 @@ class LoginViewModel @Inject constructor(
         isAllValidate()
     }
 
-    fun isValidPassword(text: CharSequence) {
-        if (text.toString().isEmpty()) {
+    fun isValidPassword(text: CharSequence?) {
+        if (text.toString().isEmpty() && text.toString() != "") {
             passwordError.value = resourceProvider.getString(R.string.enter_password)
         } else {
             passwordError.value = null
