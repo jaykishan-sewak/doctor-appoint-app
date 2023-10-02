@@ -1,5 +1,6 @@
 package com.android.doctorapp.repository
 
+import android.util.Log
 import com.android.doctorapp.repository.models.ApiResponse
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.FeedbackResponseModel
@@ -13,6 +14,8 @@ import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_USER_ID
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_APPOINTMENT
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_SYMPTOM
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_USER_DATA
+import com.android.doctorapp.util.constants.ConstantKey.FIELD_APPROVED
+import com.android.doctorapp.util.constants.ConstantKey.FIELD_PENDING
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
@@ -42,6 +45,44 @@ class AppointmentRepository @Inject constructor() {
         fireStore: FirebaseFirestore
     ): ApiResponse<UserDataResponseModel> {
         return try {
+            /*val appointmentResponse = fireStore.collection(TABLE_APPOINTMENT)
+                .whereEqualTo(FIELD_DOCTOR_ID, userId)
+                .whereIn(FIELD_APPROVED_KEY, listOf(FIELD_APPROVED, FIELD_PENDING))
+                .get()
+                .await()
+
+            val bookedAppointmentList = arrayListOf<AppointmentModel>()
+
+            for (document: DocumentSnapshot in appointmentResponse.documents) {
+                val doctor = document.toObject(AppointmentModel::class.java)
+                doctor?.let {
+                    it.id = document.id
+                    val doctorResponse = fireStore.collection(TABLE_USER_DATA)
+                        .whereEqualTo(FIELD_USER_ID, userId)
+                        .get()
+                        .await()
+                }
+            }
+*/
+
+
+            /*for (document: DocumentSnapshot in response.documents) {
+                val user = document.toObject(AppointmentModel::class.java)
+                user?.let {
+                    it.id = document.id
+                    val doctorDetails = fireStore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
+                        .whereEqualTo(ConstantKey.DBKeys.FIELD_USER_ID, it.doctorId)
+                        .get()
+                        .await()
+                    var dataModel = UserDataResponseModel()
+                    for (snapshot in doctorDetails) {
+                        dataModel = snapshot.toObject()
+                    }
+                    it.doctorDetails = dataModel
+                    bookedAppointmentList.add(it)
+                }
+            }*/
+
             val response = fireStore.collection(TABLE_USER_DATA)
                 .whereEqualTo(FIELD_USER_ID, userId)
                 .get()
