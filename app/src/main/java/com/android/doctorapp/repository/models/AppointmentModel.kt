@@ -13,7 +13,9 @@ data class AppointmentModel(
     var contactNumber: String = "",
     var age: String = "",
     var doctorId: String = "",
-    var doctorDetails: UserDataResponseModel? = null
+    var doctorDetails: UserDataResponseModel? = null,
+    var symptomDetails: String = "",
+    var sufferingDay: String = ""
 )
 
 data class Header(val date: Date?)

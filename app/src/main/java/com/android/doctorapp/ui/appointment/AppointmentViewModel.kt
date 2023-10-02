@@ -89,6 +89,14 @@ class AppointmentViewModel @Inject constructor(
     var userDataResponse: MutableLiveData<UserDataResponseModel?> = MutableLiveData()
     var symptomResponse: MutableLiveData<SymptomModel?> = MutableLiveData()
 
+    val symptomDetails: MutableLiveData<String> = MutableLiveData()
+    val sufferingDays: MutableLiveData<String> = MutableLiveData()
+    var isSymptomDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
+
+    val symptomDetailsError: MutableLiveData<String?> = MutableLiveData()
+    val sufferingDaysError: MutableLiveData<String?> = MutableLiveData()
+
+
     private fun get15DaysList() {
         val currentDate: String = getCurrentDate().toString()
         val dateList = mutableListOf<Date>()
@@ -141,7 +149,7 @@ class AppointmentViewModel @Inject constructor(
 
     fun validateDateTime() {
         isBookAppointmentDataValid.value = isDateSelected.value == true
-                && isTimeSelected.value == true
+                && isTimeSelected.value == true && isSymptomDataValid.value == true
     }
 
     fun bookAppointment() {
@@ -160,7 +168,9 @@ class AppointmentViewModel @Inject constructor(
                     age = age.value.toString(),
                     contactNumber = contactNumber.value.toString(),
                     userId = it.toString(),
-                    doctorId = doctorId.value.toString()
+                    doctorId = doctorId.value.toString(),
+                    symptomDetails = symptomDetails.value.toString(),
+                    sufferingDay = sufferingDays.value.toString()
                 )
                 when (val response =
                     appointmentRepository.addBookingAppointment(appointmentModel, fireStore)) {
@@ -503,4 +513,38 @@ class AppointmentViewModel @Inject constructor(
 
         }
     }
+
+    private fun validatesAllFields(): Boolean {
+        isSymptomDataValid.value =
+            (!symptomDetails.value.isNullOrEmpty() && !sufferingDays.value.isNullOrEmpty()
+                    && symptomDetailsError.value.isNullOrEmpty()
+                    && sufferingDaysError.value.isNullOrEmpty()
+                    )
+        validateDateTime()
+        return isSymptomDataValid.value!!
+    }
+
+    fun isValidSymptomDetails(text: CharSequence?) {
+        if (text?.toString().isNullOrEmpty() || ((text?.toString()?.length ?: 0) < 3)) {
+            symptomDetailsError.value = resourceProvider.getString(R.string.valid_symptom_desc)
+        } else if (text?.get(0)?.isLetter() != true) {
+            symptomDetailsError.value =
+                resourceProvider.getString(R.string.valid_symptom_start_with_char)
+        } else {
+            symptomDetailsError.value = null
+        }
+        validatesAllFields()
+    }
+
+    fun isValidNumberOfDays(text: CharSequence?) {
+        if (text?.toString().isNullOrEmpty()) {
+            sufferingDaysError.value =
+                resourceProvider.getString(R.string.valid_number_of_days_desc)
+        } else {
+            sufferingDaysError.value = null
+        }
+        validatesAllFields()
+    }
+
+
 }
