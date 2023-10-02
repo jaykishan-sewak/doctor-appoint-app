@@ -69,7 +69,7 @@ class AdminDashboardFragment :
 
     private fun registerObserver(layoutBinding: FragmentAdminDashboardBinding) {
         viewModel.doctorList.observe(viewLifecycleOwner) {
-            updateRecyclerView(it)
+            updateRecyclerView(it!!)
             layoutBinding.recyclerView.layoutManager = GridLayoutManager(requireActivity(), 2)
             layoutBinding.recyclerView.adapter = adapter
 
