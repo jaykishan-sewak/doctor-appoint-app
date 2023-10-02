@@ -40,6 +40,8 @@ class AdminDashboardViewModel @Inject constructor(
     private val _navigateToLogin = SingleLiveEvent<Boolean>()
     val navigateToLogin = _navigateToLogin.asLiveData()
 
+    val isLogoutClick: MutableLiveData<Boolean> = MutableLiveData(false)
+
     init {
         getItems()
     }
