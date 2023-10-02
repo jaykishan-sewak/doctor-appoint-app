@@ -36,7 +36,7 @@ class UserRequestFragment :
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel: UserRequestViewModel by viewModels { viewModelFactory }
     lateinit var adapter: BookingAppointmentsAdapter
-    private val  myCalender: Calendar = Calendar.getInstance()
+    private val myCalender: Calendar = Calendar.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

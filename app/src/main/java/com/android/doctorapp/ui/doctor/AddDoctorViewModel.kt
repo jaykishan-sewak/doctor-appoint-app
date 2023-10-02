@@ -2,7 +2,6 @@ package com.android.doctorapp.ui.doctor
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.RadioGroup
@@ -204,7 +203,9 @@ class AddDoctorViewModel @Inject constructor(
 
                             data.value = userObj
                             _dataResponse.value = response.body
-                            imageUri.value = response.body.images?.toUri()
+                            if (!response.body.images.isNullOrEmpty()) {
+                                imageUri.value = response.body.images?.toUri()
+                            }
                             setShowProgress(false)
                         }
 

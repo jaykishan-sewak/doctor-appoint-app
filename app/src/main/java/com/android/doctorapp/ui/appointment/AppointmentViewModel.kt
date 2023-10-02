@@ -113,10 +113,6 @@ class AppointmentViewModel @Inject constructor(
 
         daysList.forEachIndexed { index, dateSlotModel ->
             holidayList.forEachIndexed { _, data ->
-                Log.d("TAG", "get15DaysList: ${dateFormatter(dateSlotModel.date!!, DATE_MM_FORMAT)}   -->     ${dateFormatter(
-                        data,
-                        DATE_MM_FORMAT
-                    )}")
                 if (dateFormatter(dateSlotModel.date!!, DATE_MM_FORMAT) == dateFormatter(
                         data,
                         DATE_MM_FORMAT
@@ -308,7 +304,7 @@ class AppointmentViewModel @Inject constructor(
                 // Adjust age if birthday hasn't occurred yet this year
                 return "${years - 1}"
             }
-             return years.toString()
+            return years.toString()
         } catch (e: Exception) {
             Log.d("TAG", "calculateAge: ${e.fillInStackTrace()}")
             return ""

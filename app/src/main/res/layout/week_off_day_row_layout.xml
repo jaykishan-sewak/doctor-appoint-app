@@ -28,20 +28,9 @@
             android:layout_height="wrap_content"
             android:checked="@={viewModel.weekOff}"
             android:text="@{viewModel.dayName}"
-
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-<!--        <androidx.appcompat.widget.AppCompatTextView-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="@{viewModel.dayName}"-->
-<!--            android:textColor="@color/black"-->
-<!--            app:layout_constraintBottom_toBottomOf="@+id/week_off_checkbox"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toEndOf="@id/week_off_checkbox"-->
-<!--            app:layout_constraintTop_toTopOf="@+id/week_off_checkbox" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

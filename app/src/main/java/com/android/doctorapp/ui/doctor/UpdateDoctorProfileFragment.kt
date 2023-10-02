@@ -7,7 +7,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,6 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
@@ -205,7 +203,6 @@ class UpdateDoctorProfileFragment :
                 override fun getImageUri(uri: Uri) {
                     viewModel.imageUri.value = uri
                 }
-
             })
             bottomSheetFragment.show(requireActivity().supportFragmentManager, "BSDialogFragment")
         }
@@ -478,10 +475,6 @@ class UpdateDoctorProfileFragment :
                 addDoctorHolidayAdapter.updateHolidayList(it)
             }
         }
-
-        viewModel.imageUri.observe(viewLifecycleOwner, Observer {
-            Log.d("TAG", "registerObserver: $it")
-        })
 
     }
 
