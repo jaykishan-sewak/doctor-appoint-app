@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -75,7 +76,12 @@ class BookAppointmentFragment :
             .withId(R.id.toolbar)
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             .withTitle(R.string.title_appointment)
-            .withNavigationIcon(requireActivity().getDrawable(R.drawable.ic_back_white))
+            .withNavigationIcon(
+                AppCompatResources.getDrawable(
+                    requireContext(),
+                    R.drawable.ic_back_white
+                )
+            )
             .withNavigationListener {
                 findNavController().popBackStack()
             }
@@ -111,7 +117,7 @@ class BookAppointmentFragment :
                             dateFormat = SimpleDateFormat(BOOKING_DATE_FORMAT)
                             selectedDateTime = dateFormat.parse("$dateStr $timeStr")!!
                             viewModel.addBookingAppointmentData(selectedDateTime)
-                        } catch (e: Exception) {
+                        } catch (_: Exception) {
                         }
                     }
                     negativeButton(context.resources.getString(R.string.cancel)) { dialog ->

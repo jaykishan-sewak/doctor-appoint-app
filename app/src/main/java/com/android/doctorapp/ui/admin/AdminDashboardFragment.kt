@@ -2,6 +2,7 @@ package com.android.doctorapp.ui.admin
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -16,9 +17,11 @@ import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.ui.admin.adapter.AdminDoctorItemAdapter
+import com.android.doctorapp.ui.authentication.AuthenticationActivity
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.ADMIN_FRAGMENT
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.ITEM_POSITION
+import com.android.doctorapp.util.extension.startActivityFinish
 import javax.inject.Inject
 
 
@@ -34,7 +37,25 @@ class AdminDashboardFragment :
         .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
         .withTitle(R.string.doctor_list)
         .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
+        .withMenu(R.menu.admin_logout_menu)
+        .withMenuItems(generateMenuItems(), generateMenuClicks())
         .build()
+
+
+    private fun generateMenuClicks(): MenuItem.OnMenuItemClickListener {
+        return MenuItem.OnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_admin_logout -> {
+                    viewModel.isLogoutClick.value = true
+                }
+            }
+            false
+        }
+    }
+
+    private fun generateMenuItems(): List<Int> {
+        return listOf(R.id.action_admin_logout)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +90,7 @@ class AdminDashboardFragment :
 
     private fun registerObserver(layoutBinding: FragmentAdminDashboardBinding) {
         viewModel.doctorList.observe(viewLifecycleOwner) {
-            updateRecyclerView(it)
+            updateRecyclerView(it!!)
             layoutBinding.recyclerView.layoutManager = GridLayoutManager(requireActivity(), 2)
             layoutBinding.recyclerView.adapter = adapter
 
@@ -77,6 +98,13 @@ class AdminDashboardFragment :
 
         viewModel.navigationListener.observe(viewLifecycleOwner) {
             findNavController().navigate(it)
+        }
+
+        viewModel.isLogoutClick.observe(viewLifecycleOwner) {
+            if (it) {
+                viewModel.signOut()
+                startActivityFinish<AuthenticationActivity>()
+            }
         }
 
     }

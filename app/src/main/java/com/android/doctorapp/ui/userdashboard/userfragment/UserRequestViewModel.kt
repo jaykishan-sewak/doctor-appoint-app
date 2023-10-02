@@ -1,8 +1,6 @@
 package com.android.doctorapp.ui.userdashboard.userfragment
 
-import android.content.ContentValues.TAG
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -18,7 +16,6 @@ import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
-import com.google.gson.Gson
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -31,14 +28,14 @@ class UserRequestViewModel @Inject constructor(
     private val context: Context
 ) : BaseViewModel() {
 
-    val userAppointmentData = MutableLiveData<List<AppointmentModel>>()
+    val userAppointmentData = MutableLiveData<List<AppointmentModel>?>()
     val isDoctorRequestCalendar: MutableLiveData<Boolean> = MutableLiveData(false)
     var requestSelectedDate: MutableLiveData<Date> = SingleLiveEvent()
     val dataFound: MutableLiveData<Boolean> = MutableLiveData(false)
 
     fun getRequestAppointmentList() {
         viewModelScope.launch {
-            var recordId: String = ""
+            var recordId = ""
             session.getString(USER_ID).collectLatest {
                 recordId = it.orEmpty()
                 if (context.isNetworkAvailable()) {
@@ -51,13 +48,11 @@ class UserRequestViewModel @Inject constructor(
                         )) {
                         is ApiSuccessResponse -> {
                             setShowProgress(false)
-                            userAppointmentData.value = response.body!!
-                            Log.d("List------", Gson().toJson(response.body))
+                            userAppointmentData.value = response.body
                         }
 
                         is ApiErrorResponse -> {
                             context.toast(response.errorMessage)
-                            Log.d(TAG, "getRequestAppointmentList: ${response.errorMessage}")
                             setShowProgress(false)
                         }
 

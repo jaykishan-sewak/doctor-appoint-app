@@ -1,8 +1,6 @@
 package com.android.doctorapp.ui.doctordashboard.doctorfragment
 
-import android.content.ContentValues.TAG
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -27,10 +25,10 @@ class SelectedDateAppointmentsViewModel @Inject constructor(
 ) : BaseViewModel() {
 
 
-    val appointmentList = MutableLiveData<List<AppointmentModel>>()
+    val appointmentList = MutableLiveData<List<AppointmentModel>?>()
     var selectedDate: MutableLiveData<Date> = SingleLiveEvent()
     val isCalender: MutableLiveData<Boolean> = MutableLiveData(false)
-    val dataFound : MutableLiveData<Boolean> = MutableLiveData(false)
+    val dataFound: MutableLiveData<Boolean> = MutableLiveData(false)
 
 
     fun getAppointmentList() {
@@ -44,21 +42,18 @@ class SelectedDateAppointmentsViewModel @Inject constructor(
                     )) {
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
-                        appointmentList.value = response.body!!
+                        appointmentList.value = response.body
                     }
 
                     is ApiErrorResponse -> {
-                        Log.d(TAG, "Error ")
                         setShowProgress(false)
                     }
 
                     is ApiNoNetworkResponse -> {
-                        Log.d(TAG, "Network ")
                         setShowProgress(false)
                     }
 
                     else -> {
-                        Log.d(TAG, "else ")
                         setShowProgress(false)
                     }
                 }

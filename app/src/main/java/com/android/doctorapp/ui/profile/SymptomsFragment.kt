@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -65,18 +66,18 @@ class SymptomsFragment : BaseFragment<FragmentSymptomsBinding>(R.layout.fragment
             }
         }
 
-        viewModel.doctorList.observe(viewLifecycleOwner) {
+        viewModel.doctorList.observe(viewLifecycleOwner) { it ->
             val doctorName = arrayListOf<String>()
-            it.forEach {
+            it?.forEach {
                 doctorName.add(it.name)
             }
-            var adapter = ArrayAdapter<String>(
+            val adapter = ArrayAdapter<String>(
                 requireContext(),
                 android.R.layout.simple_dropdown_item_1line,
                 doctorName
             )
             binding.autoCompleteTextViewDoctorName.setAdapter(adapter)
-            binding.autoCompleteTextViewDoctorName.setOnItemClickListener { adapterView, view, i, l ->
+            binding.autoCompleteTextViewDoctorName.setOnItemClickListener { _, _, i, _ ->
                 viewModel.doctorObj?.postValue(viewModel.doctorList.value!![i])
             }
 
@@ -94,7 +95,12 @@ class SymptomsFragment : BaseFragment<FragmentSymptomsBinding>(R.layout.fragment
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             .withTitle(R.string.symptoms)
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
-            .withNavigationIcon(requireActivity().getDrawable(R.drawable.ic_back_white))
+            .withNavigationIcon(
+                AppCompatResources.getDrawable(
+                    requireContext(),
+                    R.drawable.ic_back_white
+                )
+            )
             .withNavigationListener {
                 findNavController().popBackStack()
             }

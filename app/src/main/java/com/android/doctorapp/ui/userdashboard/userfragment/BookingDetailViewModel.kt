@@ -7,7 +7,6 @@ import com.android.doctorapp.R
 import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AppointmentRepository
-import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
@@ -24,7 +23,6 @@ import javax.inject.Inject
 class BookingDetailViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val appointmentRepository: AppointmentRepository,
-    private val session: Session,
     private val context: Context
 ) : BaseViewModel() {
 
@@ -48,7 +46,7 @@ class BookingDetailViewModel @Inject constructor(
                     appointmentRepository.updateAppointmentDataById(
                         appointmentObj.value!!.apply {
                             reason = text
-                            status = ConstantKey.FIELD_REJECTED
+                            status = FIELD_REJECTED
                         },
                         fireStore
                     )) {

@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.viewModels
@@ -113,7 +114,12 @@ class UpdateDoctorProfileFragment :
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             .withTitle(if (isFromAdmin) R.string.update_doctor else R.string.title_profile)
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
-            .withNavigationIcon(if (isFromAdmin || !isNotFromAdmin) requireActivity().getDrawable(R.drawable.ic_back_white) else null)
+            .withNavigationIcon(
+                if (isFromAdmin || !isNotFromAdmin) AppCompatResources.getDrawable(
+                    requireContext(),
+                    R.drawable.ic_back_white
+                ) else null
+            )
             .withNavigationListener {
                 findNavController().popBackStack()
             }
@@ -278,11 +284,11 @@ class UpdateDoctorProfileFragment :
                     minDate = null
                 ) { holidayDate ->
                     val monthDate = convertDateToMonth(holidayDate)
-                    if (tempHolidayList.isNullOrEmpty()) {
+                    if (tempHolidayList.isEmpty()) {
                         tempHolidayList.add(HolidayModel(holidayDate = convertDateToFull(monthDate)))
                     } else {
-                        val isAlreadyHoliday = tempHolidayList.any {
-                            monthDate == dateFormatter(it.holidayDate, DATE_MONTH_FORMAT)
+                        val isAlreadyHoliday = tempHolidayList.any { it1 ->
+                            monthDate == dateFormatter(it1.holidayDate, DATE_MONTH_FORMAT)
                         }
                         if (isAlreadyHoliday) {
                             context?.toast(getString(R.string.already_added_in_holiday))

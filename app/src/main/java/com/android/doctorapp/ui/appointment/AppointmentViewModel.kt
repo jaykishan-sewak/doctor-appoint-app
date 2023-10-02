@@ -72,7 +72,7 @@ class AppointmentViewModel @Inject constructor(
 
     val doctorId: MutableLiveData<String> = MutableLiveData("")
     val doctorName: MutableLiveData<String> = MutableLiveData()
-    val doctorSpecialities: MutableLiveData<String> = MutableLiveData()
+    private val doctorSpecialities: MutableLiveData<String> = MutableLiveData()
     private val userName = MutableLiveData<String>()
     private val contactNumber = MutableLiveData<String>()
     private lateinit var ageDate: Date
@@ -94,7 +94,7 @@ class AppointmentViewModel @Inject constructor(
     var symptomResponse: MutableLiveData<SymptomModel?> = MutableLiveData()
 
     private fun get15DaysList() {
-        val currentDate: String = getCurrentDate().toString()
+        val currentDate: String = getCurrentDate()
         val dateList = mutableListOf<Date>()
         val calendar = Calendar.getInstance()
         calendar.time = dateFormatFull.parse(currentDate) as Date

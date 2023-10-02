@@ -54,9 +54,9 @@ class RegisterViewModel @Inject constructor(
     val isGoogleClick: MutableLiveData<Boolean> = MutableLiveData(false)
     private val googleResponse: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    val signInAccountTask: MutableLiveData<Task<GoogleSignInAccount>> = MutableLiveData()
-    val googleSignInAccount: MutableLiveData<GoogleSignInAccount> = MutableLiveData()
-    val authCredential: MutableLiveData<AuthCredential> = MutableLiveData()
+    val signInAccountTask: MutableLiveData<Task<GoogleSignInAccount>?> = MutableLiveData()
+    val googleSignInAccount: MutableLiveData<GoogleSignInAccount?> = MutableLiveData()
+    val authCredential: MutableLiveData<AuthCredential?> = MutableLiveData()
 
 
     init {
@@ -123,7 +123,7 @@ class RegisterViewModel @Inject constructor(
     private fun callRegisterApi() {
         viewModelScope.launch {
             setShowProgress(true)
-            when (val response = authRepository.register(
+            when (authRepository.register(
                 firebaseAuth,
                 email = email.value.toString(),
                 password = password.value.toString(),
@@ -228,7 +228,7 @@ class RegisterViewModel @Inject constructor(
                 )) {
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
-                        signInAccountTask.postValue(response.body!!)
+                        signInAccountTask.postValue(response.body)
                     }
 
                     is ApiErrorResponse -> {
@@ -259,7 +259,7 @@ class RegisterViewModel @Inject constructor(
             )) {
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
-                    googleSignInAccount.postValue(response.body!!)
+                    googleSignInAccount.postValue(response.body)
                 }
 
                 is ApiErrorResponse -> {
@@ -285,7 +285,7 @@ class RegisterViewModel @Inject constructor(
             )) {
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
-                    authCredential.postValue(response.body!!)
+                    authCredential.postValue(response.body)
                 }
 
                 is ApiErrorResponse -> {
