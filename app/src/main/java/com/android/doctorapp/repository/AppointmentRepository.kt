@@ -1,5 +1,7 @@
 package com.android.doctorapp.repository
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import com.android.doctorapp.repository.models.ApiResponse
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.FeedbackResponseModel
@@ -10,12 +12,16 @@ import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_APPROVED_KE
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_DOCTOR_ID
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_SELECTED_DATE
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_USER_ID
+import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_VISITED_KEY
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_APPOINTMENT
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_SYMPTOM
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_USER_DATA
+import com.android.doctorapp.util.constants.ConstantKey.FIELD_APPROVED
+import com.android.doctorapp.util.constants.ConstantKey.FIELD_REJECTED
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
+import com.google.gson.Gson
 import kotlinx.coroutines.tasks.await
 import retrofit2.Response
 import java.util.Calendar
@@ -91,6 +97,7 @@ class AppointmentRepository @Inject constructor() {
         return try {
             val response = firestore.collection(ConstantKey.DBKeys.TABLE_APPOINTMENT)
                 .whereEqualTo(FIELD_DOCTOR_ID, userId)
+                .whereIn(FIELD_APPROVED_KEY, arrayListOf(FIELD_APPROVED, FIELD_REJECTED))
                 .get().await()
 
 
@@ -116,6 +123,7 @@ class AppointmentRepository @Inject constructor() {
             nextDate.time = date
             nextDate.add(Calendar.DATE, 1)
             val response = firestore.collection(TABLE_APPOINTMENT)
+                .whereIn(FIELD_APPROVED_KEY, arrayListOf(FIELD_APPROVED, FIELD_REJECTED))
                 .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, date)
                 .whereLessThanOrEqualTo(FIELD_SELECTED_DATE, nextDate.time)
                 .get().await()
@@ -211,6 +219,7 @@ class AppointmentRepository @Inject constructor() {
                 .get()
                 .await()
             val dataModel = response.toObject(AppointmentModel::class.java)
+            Log.d(TAG, "usergetAppointmentDetails: ${Gson().toJson(dataModel)}")
             ApiResponse.create(response = Response.success(dataModel))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
@@ -289,6 +298,41 @@ class AppointmentRepository @Inject constructor() {
                 dataModel = snapshot.toObject()
             }
             ApiResponse.create(response = Response.success(dataModel))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+    suspend fun getAppointmentsHistoryList(
+        userId: String,
+        firestore: FirebaseFirestore
+    ): ApiResponse<List<AppointmentModel>> {
+        return try {
+            val response = firestore.collection(ConstantKey.DBKeys.TABLE_APPOINTMENT)
+                .whereEqualTo(FIELD_USER_ID, userId)
+                .whereEqualTo(FIELD_VISITED_KEY, true)
+                .get().await()
+
+
+            val appointmentsList = arrayListOf<AppointmentModel>()
+            for (document: DocumentSnapshot in response.documents) {
+                val user = document.toObject(AppointmentModel::class.java)
+                user?.let {
+                    it.id = document.id
+                    val doctorDetails = firestore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
+                        .whereEqualTo(ConstantKey.DBKeys.FIELD_USER_ID, it.doctorId)
+                        .get()
+                        .await()
+                    var dataModel = UserDataResponseModel()
+                    for (snapshot in doctorDetails) {
+                        dataModel = snapshot.toObject()
+                    }
+                    it.doctorDetails = dataModel
+                    appointmentsList.add(it)
+                }
+            }
+            Log.d(TAG, "AppointmentsHistoryList: $appointmentsList")
+            ApiResponse.create(response = Response.success(appointmentsList))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
         }

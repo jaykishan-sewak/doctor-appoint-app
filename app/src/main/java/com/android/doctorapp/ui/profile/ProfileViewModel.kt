@@ -53,6 +53,9 @@ class ProfileViewModel @Inject constructor(
     val navigationListener = _navigationListener.asLiveData()
     val imageUri = MutableLiveData<Uri>()
 
+    init {
+        emailClick.postValue("")
+    }
 
     fun getUserProfileData() {
         viewModelScope.launch {
@@ -128,6 +131,10 @@ class ProfileViewModel @Inject constructor(
 
     fun clickOnFeedback() {
         _navigationListener.value = R.id.action_user_profile_to_feedBack
+    }
+
+    fun clickOnHistory() {
+        _navigationListener.value = R.id.action_user_profile_to_history
     }
 
 }
