@@ -71,6 +71,7 @@ class AppointmentViewModel @Inject constructor(
     val onlineBookingToggleData: MutableLiveData<Boolean> = MutableLiveData(false)
 
     val doctorId: MutableLiveData<String> = MutableLiveData("")
+    val doctorDocumentID: MutableLiveData<String> = MutableLiveData("")
     val doctorName: MutableLiveData<String> = MutableLiveData()
     private val doctorSpecialities: MutableLiveData<String> = MutableLiveData()
     private val userName = MutableLiveData<String>()
@@ -99,16 +100,16 @@ class AppointmentViewModel @Inject constructor(
 
     val symptomDetailsError: MutableLiveData<String?> = MutableLiveData()
     val sufferingDaysError: MutableLiveData<String?> = MutableLiveData()
+    val currentDate1: String = getCurrentDate()
 
 
     private fun get15DaysList() {
-        val currentDate: String = getCurrentDate()
         val dateList = mutableListOf<Date>()
         val calendar = Calendar.getInstance()
-        calendar.time = dateFormatFull.parse(currentDate) as Date
+        calendar.time = dateFormatFull.parse(currentDate1) as Date
 
         // Add the current date to the list
-        dateList.add(dateFormatFull.parse(currentDate) as Date)
+        dateList.add(dateFormatFull.parse(currentDate1) as Date)
 
         for (i in 1 until 15) {
             calendar.add(Calendar.DAY_OF_YEAR, 1)
@@ -120,6 +121,9 @@ class AppointmentViewModel @Inject constructor(
         }
 
         daysList.forEachIndexed { index, dateSlotModel ->
+            if (dateSlotModel.date == dateFormatFull.parse(currentDate1) as Date) {
+                daysList[index].dateSelect = true
+            }
             holidayList.forEachIndexed { _, data ->
                 if (dateFormatter(dateSlotModel.date!!, DATE_MM_FORMAT) == dateFormatter(
                         data,
@@ -206,7 +210,12 @@ class AppointmentViewModel @Inject constructor(
             if (context.isNetworkAvailable()) {
                 setShowProgress(true)
                 when (val response =
-                    appointmentRepository.getDoctorById(doctorId.value.toString(), fireStore)) {
+                    appointmentRepository.getDoctorById(
+                        doctorId.value.toString(),
+                        doctorDocumentID.value.toString(),
+                        dateFormatFull.parse(currentDate1) as Date,
+                        fireStore
+                    )) {
                     is ApiSuccessResponse -> {
                         doctorName.value = response.body.name
                         val weekOffDbList = response.body.weekOffList
@@ -301,7 +310,7 @@ class AppointmentViewModel @Inject constructor(
 
     private fun calculateAge(dateOfBirth: Date?): String {
         try {
-            val formattedDateOfBirth = dateFormatter(dateOfBirth, FORMATTED_DATE)
+            val formattedDateOfBirth = dateFormatter(dateOfBirth, DATE_MONTH_FORMAT)
             val dateFormatter = SimpleDateFormat(DATE_MONTH_FORMAT, Locale.getDefault())
             val dob: Date = dateFormatter.parse(formattedDateOfBirth)
             val calendarDob = Calendar.getInstance()

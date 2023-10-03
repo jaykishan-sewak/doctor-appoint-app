@@ -64,5 +64,6 @@ object ConstantKey {
     const val FORMATTED_DATE_MONTH_YEAR = "EEE MMM dd yyyy"
     const val FORMATTED_HOUR_MINUTE_SECOND = "HH:mm:ss"
     const val GPS_REQUEST_CODE = 1
+    const val FORMATTED_DATE_TIME = "dd-MM-yyyy HH:mm"
 
 }

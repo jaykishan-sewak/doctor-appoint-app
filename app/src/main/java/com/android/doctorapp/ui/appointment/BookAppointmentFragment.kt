@@ -20,8 +20,9 @@ import com.android.doctorapp.repository.models.AddShiftTimeModel
 import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.ui.appointment.adapter.AppointmentDateAdapter
 import com.android.doctorapp.ui.appointment.adapter.AppointmentTimeAdapter
-import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.BOOKING_DATE_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DOCTOR_ID
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_ID
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE_MONTH_YEAR
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_HOUR_MINUTE_SECOND
 import com.android.doctorapp.util.extension.alert
@@ -60,7 +61,9 @@ class BookAppointmentFragment :
         val arguments: Bundle? = arguments
         if (arguments != null) {
             viewModel.doctorId.value =
-                arguments.getString(ConstantKey.BundleKeys.USER_ID).toString()
+                arguments.getString(USER_ID).toString()
+            viewModel.doctorDocumentID.value =
+                arguments.getString(DOCTOR_ID).toString()
         }
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
