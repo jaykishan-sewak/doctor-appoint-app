@@ -143,6 +143,7 @@ class BookAppointmentFragment :
                 override fun onItemClick(item: DateSlotModel, position: Int) {
                     dateList.forEachIndexed { index, dateSlotModel ->
                         if (dateSlotModel.date == item.date) {
+                            item.date?.let { viewModel.getDoctorData(date1 = it) }
                             dateStr = dateFormatter(item.date, FORMATTED_DATE_MONTH_YEAR)
                             dateList[index].dateSelect = true
                             appointmentDateAdapter.notifyItemChanged(index)

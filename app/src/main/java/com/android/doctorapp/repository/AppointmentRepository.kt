@@ -14,7 +14,7 @@ import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_SYMPTOM
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_USER_DATA
 import com.android.doctorapp.util.constants.ConstantKey.FIELD_APPROVED
 import com.android.doctorapp.util.constants.ConstantKey.FIELD_PENDING
-import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE_TIME
+import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_TIME
 import com.android.doctorapp.util.extension.dateFormatter
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -50,7 +50,7 @@ class AppointmentRepository @Inject constructor() {
             val nextDate = Calendar.getInstance()
             nextDate.time = date
             nextDate.add(Calendar.DATE, 1)
-//            Log.d("TAG", "getDoctorById: $date        -->     ${nextDate.time}      -->     ${dateFormatter(date, "EEE MMM dd yyyy")}")
+            Log.d("TAG", "getDoctorById: $date        -->     ${nextDate.time}")
             val appointmentList = ArrayList<AppointmentModel>()
             val appointmentResponse = fireStore.collection(TABLE_APPOINTMENT)
                 .whereEqualTo(FIELD_DOCTOR_ID, userId)
@@ -78,8 +78,8 @@ class AppointmentRepository @Inject constructor() {
                 appointmentList.forEachIndexed { index, appointmentModel ->
                     if (dateFormatter(
                             addShiftResponseModel.startTime,
-                            FORMATTED_DATE_TIME
-                        ) == dateFormatter(appointmentModel.bookingDateTime, FORMATTED_DATE_TIME)
+                            FORMATTED_TIME
+                        ) == dateFormatter(appointmentModel.bookingDateTime, FORMATTED_TIME)
                     ) {
                         doctorDataModel1.availableTime?.get(timeIndex)?.isTimeSlotBook = true
                         return@forEachIndexed

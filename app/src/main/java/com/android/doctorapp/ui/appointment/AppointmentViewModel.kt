@@ -18,6 +18,7 @@ import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.repository.models.SymptomModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
+import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MONTH_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.DAY_NAME_FORMAT
@@ -48,7 +49,7 @@ class AppointmentViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider
 ) : BaseViewModel() {
 
-    private val dateFormatFull = SimpleDateFormat(FULL_DATE_FORMAT)
+    private val dateFormatFull = SimpleDateFormat(FORMATTED_DATE, Locale.getDefault())
 
     private val _daysDateList = MutableLiveData<ArrayList<DateSlotModel>>()
     val daysDateList = _daysDateList.asLiveData()
@@ -205,15 +206,16 @@ class AppointmentViewModel @Inject constructor(
         }
     }
 
-    fun getDoctorData() {
+    fun getDoctorData(date1 : Date = dateFormatFull.parse(currentDate1) as Date) {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 setShowProgress(true)
+//                Log.d("TAG", "getDoctorData: $currentDate1")
                 when (val response =
                     appointmentRepository.getDoctorById(
                         doctorId.value.toString(),
                         doctorDocumentID.value.toString(),
-                        dateFormatFull.parse(currentDate1) as Date,
+                        date1,
                         fireStore
                     )) {
                     is ApiSuccessResponse -> {
