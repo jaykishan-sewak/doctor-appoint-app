@@ -126,5 +126,11 @@ class AppointmentDetailFragment :
                 findNavController().popBackStack()
         }
 
+        viewModel.updateClick.observe(viewLifecycleOwner) {
+            if (it) {
+                viewModel.appointmentUpdateApiCall()
+            }
+        }
+
     }
 }

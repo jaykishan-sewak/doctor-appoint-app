@@ -42,6 +42,10 @@
             android:id="@+id/action_user_profile_to_symptoms"
             app:destination="@+id/Symptoms" />
 
+        <action
+            android:id="@+id/action_user_profile_to_history"
+            app:destination="@+id/History" />
+
 
     </fragment>
 
@@ -85,6 +89,13 @@
         android:id="@+id/Symptoms"
         android:name="com.android.doctorapp.ui.profile.SymptomsFragment"
         tools:layout="@layout/fragment_symptoms">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/History"
+        android:name="com.android.doctorapp.ui.profile.HistoryFragment"
+        tools:layout="@layout/fragment_history">
 
     </fragment>
 
