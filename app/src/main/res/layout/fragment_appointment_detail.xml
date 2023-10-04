@@ -222,7 +222,7 @@
                 app:layout_constraintTop_toTopOf="@id/tvIsVisited"
                 app:layout_constraintWidth_percent="0.4" />
 
-             <androidx.appcompat.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvPatientSymptoms"
                 style="@style/label_text2"
                 android:layout_marginTop="@dimen/margin_10"
@@ -232,7 +232,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvVisitedToggleValue"
                 app:layout_constraintWidth_percent="0.6" />
-
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvPatientSymptomsValue"

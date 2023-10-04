@@ -93,6 +93,7 @@ class AppointmentRepository @Inject constructor() {
             val response = firestore.collection(TABLE_APPOINTMENT)
                 .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, date)
                 .whereLessThanOrEqualTo(FIELD_SELECTED_DATE, nextDate.time)
+//                .whereIn(FIELD_APPROVED_KEY, listOf(FIELD_APPROVED, FIELD_REJECTED))
                 .get().await()
 
             val appointmentsList = arrayListOf<AppointmentModel>()

@@ -1,7 +1,6 @@
 package com.android.doctorapp.ui.doctordashboard.doctorfragment
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -47,7 +46,6 @@ class SelectedDateAppointmentsViewModel @Inject constructor(
                     }
 
                     is ApiErrorResponse -> {
-                        Log.d("TAG", "getAppointmentList: ${response.errorMessage}")
                         setShowProgress(false)
                     }
 
