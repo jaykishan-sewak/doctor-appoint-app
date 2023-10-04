@@ -219,7 +219,6 @@ class AppointmentRepository @Inject constructor() {
                 .get()
                 .await()
             val dataModel = response.toObject(AppointmentModel::class.java)
-            Log.d(TAG, "usergetAppointmentDetails: ${Gson().toJson(dataModel)}")
             ApiResponse.create(response = Response.success(dataModel))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
@@ -331,7 +330,6 @@ class AppointmentRepository @Inject constructor() {
                     appointmentsList.add(it)
                 }
             }
-            Log.d(TAG, "AppointmentsHistoryList: $appointmentsList")
             ApiResponse.create(response = Response.success(appointmentsList))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
