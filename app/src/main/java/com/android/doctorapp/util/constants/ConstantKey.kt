@@ -45,6 +45,7 @@ object ConstantKey {
         const val FIELD_DOCTOR_ID = "doctorId"
         const val TABLE_SYMPTOM = "symptom"
         const val TABLE_FEEDBACK = "feedback"
+        const val SUB_TABLE_FEEDBACK = "sub_feedback"
 
 
     }

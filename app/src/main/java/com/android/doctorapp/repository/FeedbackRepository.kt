@@ -51,12 +51,15 @@ class FeedbackRepository @Inject constructor(
     }
 
     suspend fun addFeedbackData(
+        userId: String,
         requestModel: FeedbackRequestModel,
         firestore: FirebaseFirestore
     ): ApiResponse<String> {
         return try {
-            val data =
-                firestore.collection(ConstantKey.DBKeys.TABLE_FEEDBACK).add(requestModel).await()
+            val userTable =
+                firestore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
+            val userRef = userTable.document(userId)
+            val data = userRef.collection(ConstantKey.DBKeys.SUB_TABLE_FEEDBACK).add(requestModel).await()
             ApiResponse.create(response = Response.success(data.id))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())

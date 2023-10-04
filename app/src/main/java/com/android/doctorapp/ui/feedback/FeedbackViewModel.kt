@@ -16,6 +16,7 @@ import com.android.doctorapp.repository.models.FeedbackRequestModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
+import com.android.doctorapp.util.extension.currentDate
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import kotlinx.coroutines.flow.collectLatest
@@ -77,11 +78,12 @@ class FeedbackViewModel @Inject constructor(
                 if (context.isNetworkAvailable()) {
                     setShowProgress(true)
                     when (val response = feedRepository.addFeedbackData(
+                        it!!,
                         FeedbackRequestModel(
-                            userId = it!!,
-                            doctorId = doctorId.value!!,
+                            userId = it,
                             rating = rating.value,
-                            feedbackMessage = feedbackMsg.value!!
+                            feedbackMessage = feedbackMsg.value!!,
+                            createdAt = currentDate()
                         ),
                         fireStore
                     )) {
