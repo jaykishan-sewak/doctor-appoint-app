@@ -1,7 +1,6 @@
 package com.android.doctorapp.ui.appointment
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -24,7 +23,7 @@ import com.android.doctorapp.util.constants.ConstantKey.DAY_NAME_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.FIELD_PENDING
 import com.android.doctorapp.util.constants.ConstantKey.FIELD_REJECTED
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
-import com.android.doctorapp.util.constants.ConstantKey.FULL_DATE_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_TIME
 import com.android.doctorapp.util.constants.ConstantKey.FULL_DAY_NAME_FORMAT
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.convertToFormatDate
@@ -48,7 +47,7 @@ class AppointmentViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider
 ) : BaseViewModel() {
 
-    private val dateFormatFull = SimpleDateFormat(FULL_DATE_FORMAT)
+    private val dateFormatFull = SimpleDateFormat(FORMATTED_DATE, Locale.getDefault())
 
     private val _daysDateList = MutableLiveData<ArrayList<DateSlotModel>>()
     val daysDateList = _daysDateList.asLiveData()
@@ -71,6 +70,7 @@ class AppointmentViewModel @Inject constructor(
     val onlineBookingToggleData: MutableLiveData<Boolean> = MutableLiveData(false)
 
     val doctorId: MutableLiveData<String> = MutableLiveData("")
+    val doctorDocumentID: MutableLiveData<String> = MutableLiveData("")
     val doctorName: MutableLiveData<String> = MutableLiveData()
     private val doctorSpecialities: MutableLiveData<String> = MutableLiveData()
     private val userName = MutableLiveData<String>()
@@ -99,6 +99,7 @@ class AppointmentViewModel @Inject constructor(
 
     val symptomDetailsError: MutableLiveData<String?> = MutableLiveData()
     val sufferingDaysError: MutableLiveData<String?> = MutableLiveData()
+    private val currentDate: String = getCurrentDate()
 
     val isVisitedToggleData: MutableLiveData<Boolean> = MutableLiveData(false)
 
@@ -106,7 +107,6 @@ class AppointmentViewModel @Inject constructor(
 
 
     private fun get15DaysList() {
-        val currentDate: String = getCurrentDate()
         val dateList = mutableListOf<Date>()
         val calendar = Calendar.getInstance()
         calendar.time = dateFormatFull.parse(currentDate) as Date
@@ -119,11 +119,15 @@ class AppointmentViewModel @Inject constructor(
             dateList.add(calendar.time)
         }
 
+        daysList.clear()
         dateList.forEach {
             daysList.add(DateSlotModel(date = it, disable = false))
         }
 
         daysList.forEachIndexed { index, dateSlotModel ->
+            if (dateSlotModel.date == dateFormatFull.parse(currentDate) as Date) {
+                daysList[index].dateSelect = true
+            }
             holidayList.forEachIndexed { _, data ->
                 if (dateFormatter(dateSlotModel.date!!, DATE_MM_FORMAT) == dateFormatter(
                         data,
@@ -208,62 +212,12 @@ class AppointmentViewModel @Inject constructor(
     fun getDoctorData() {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
-                setShowProgress(true)
-                when (val response =
-                    appointmentRepository.getDoctorById(doctorId.value.toString(), fireStore)) {
-                    is ApiSuccessResponse -> {
-                        doctorName.value = response.body.name
-                        val weekOffDbList = response.body.weekOffList
-                        weekOffDbList?.forEachIndexed { index, s ->
-                            weekOfDayList.add(s)
-                        }
-                        response.body.holidayList?.forEachIndexed { index, holidayModel ->
-                            holidayList.add(holidayModel)
-                        }
-                        doctorSpecialities.value = response.body.specialities.toString()
-
-                        val tempList = response.body.availableTime?.sortedBy {
-                            it.startTime
-                        }
-
-                        tempList?.forEachIndexed { index, addShiftResponseModel ->
-                            timeList.add(
-                                AddShiftTimeModel(
-                                    startTime = addShiftResponseModel.startTime,
-                                    endTime = addShiftResponseModel.endTime,
-                                    isTimeSlotBook = addShiftResponseModel.isTimeSlotBook
-                                )
-                            )
-                        }
-
-                        doctorDetails.value = response.body
-
-                        _timeSlotList.value = timeList
-                        _holidayDateList.value = holidayList
-
-                        getUserData()
-                        get15DaysList()
-                    }
-
-                    is ApiErrorResponse -> {
-                        context.toast(response.errorMessage)
-                        setShowProgress(false)
-                    }
-
-                    is ApiNoNetworkResponse -> {
-                        context.toast(response.errorMessage)
-                        setShowProgress(false)
-                    }
-
-                    else -> {
-                        context.toast(resourceProvider.getString(R.string.something_went_wrong))
-                        setShowProgress(false)
-                    }
-                }
+                getAppointmentData()
             } else {
                 context.toast(resourceProvider.getString(R.string.check_internet_connection))
             }
         }
+
     }
 
     private fun getUserData() {
@@ -305,7 +259,7 @@ class AppointmentViewModel @Inject constructor(
 
     private fun calculateAge(dateOfBirth: Date?): String {
         try {
-            val formattedDateOfBirth = dateFormatter(dateOfBirth, FORMATTED_DATE)
+            val formattedDateOfBirth = dateFormatter(dateOfBirth, DATE_MONTH_FORMAT)
             val dateFormatter = SimpleDateFormat(DATE_MONTH_FORMAT, Locale.getDefault())
             val dob: Date = dateFormatter.parse(formattedDateOfBirth)
             val calendarDob = Calendar.getInstance()
@@ -320,7 +274,6 @@ class AppointmentViewModel @Inject constructor(
             }
             return years.toString()
         } catch (e: Exception) {
-            Log.d("TAG", "calculateAge: ${e.fillInStackTrace()}")
             return ""
         }
     }
@@ -605,5 +558,139 @@ class AppointmentViewModel @Inject constructor(
         }
     }
 
+    fun getAppointmentData(selectedDate: Date = dateFormatFull.parse(currentDate) as Date) {
+        viewModelScope.launch {
+            if (context.isNetworkAvailable()) {
+                setShowProgress(true)
+                when (val response =
+                    appointmentRepository.getDoctorAppointmentByDate(
+                        doctorId.value.toString(),
+                        selectedDate,
+                        fireStore
+                    )) {
+                    is ApiSuccessResponse -> {
+                        if (timeList.isEmpty()) {
+                            getDoctorDataDetails(response.body)
+                        } else {
+                            timeList.forEachIndexed { index, addShiftTimeModel ->
+                                addShiftTimeModel.isTimeSlotBook = false
+                            }
 
+                            response.body.forEachIndexed { index, appointmentModel ->
+                                timeList.forEachIndexed { timeIndex, addShiftTimeModel ->
+                                    if (dateFormatter(
+                                            appointmentModel.bookingDateTime,
+                                            FORMATTED_TIME
+                                        ) == dateFormatter(
+                                            addShiftTimeModel.startTime,
+                                            FORMATTED_TIME
+                                        )
+                                    ) {
+                                        timeList.get(timeIndex).isTimeSlotBook = true
+                                    }
+                                }
+                            }
+                            _timeSlotList.value = timeList
+                            setShowProgress(false)
+                        }
+                    }
+
+                    is ApiErrorResponse -> {
+                        context.toast(response.errorMessage)
+                        setShowProgress(false)
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        context.toast(response.errorMessage)
+                        setShowProgress(false)
+                    }
+
+                    else -> {
+                        context.toast(resourceProvider.getString(R.string.something_went_wrong))
+                        setShowProgress(false)
+                    }
+                }
+            } else {
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
+            }
+        }
+    }
+
+    private fun getDoctorDataDetails(appointmentList: ArrayList<AppointmentModel>) {
+        viewModelScope.launch {
+            if (context.isNetworkAvailable()) {
+                when (val doctorResponse = appointmentRepository.getDoctorById(
+                    doctorDocumentID.value.toString(),
+                    fireStore
+                )) {
+
+                    is ApiSuccessResponse -> {
+                        doctorName.value = doctorResponse.body.name
+                        val weekOffDbList = doctorResponse.body.weekOffList
+                        weekOffDbList?.forEachIndexed { index, s ->
+                            weekOfDayList.add(s)
+                        }
+                        doctorResponse.body.holidayList?.forEachIndexed { index, holidayModel ->
+                            holidayList.add(holidayModel)
+                        }
+                        doctorSpecialities.value =
+                            doctorResponse.body.specialities.toString()
+
+                        val tempList = doctorResponse.body.availableTime?.sortedBy {
+                            it.startTime
+                        }
+
+                        timeList.clear()
+
+                        tempList?.forEachIndexed { index, addShiftResponseModel ->
+                            timeList.add(
+                                AddShiftTimeModel(
+                                    startTime = addShiftResponseModel.startTime,
+                                    endTime = addShiftResponseModel.endTime,
+                                    isTimeSlotBook = addShiftResponseModel.isTimeSlotBook
+                                )
+                            )
+                        }
+
+                        appointmentList.forEachIndexed { index, appointmentModel ->
+                            timeList.forEachIndexed { timeIndex, addShiftTimeModel ->
+                                if (dateFormatter(
+                                        appointmentModel.bookingDateTime,
+                                        FORMATTED_TIME
+                                    ) == dateFormatter(addShiftTimeModel.startTime, FORMATTED_TIME)
+                                ) {
+                                    timeList.get(timeIndex).isTimeSlotBook = true
+                                }
+                            }
+                        }
+
+                        doctorDetails.value = doctorResponse.body
+                        _timeSlotList.value = timeList
+                        _holidayDateList.value = holidayList
+                        getUserData()
+                        get15DaysList()
+
+                        setShowProgress(false)
+                    }
+
+                    is ApiErrorResponse -> {
+                        context.toast(doctorResponse.errorMessage)
+                        setShowProgress(false)
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        context.toast(doctorResponse.errorMessage)
+                        setShowProgress(false)
+                    }
+
+                    else -> {
+                        context.toast(resourceProvider.getString(R.string.something_went_wrong))
+                        setShowProgress(false)
+                    }
+                }
+            } else {
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
+            }
+        }
+    }
 }
