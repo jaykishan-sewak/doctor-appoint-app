@@ -103,6 +103,10 @@ class AppointmentViewModel @Inject constructor(
     val sufferingDaysError: MutableLiveData<String?> = MutableLiveData()
     val currentDate1: String = getCurrentDate()
 
+    val isVisitedToggleData: MutableLiveData<Boolean> = MutableLiveData(false)
+
+    var updateClick = MutableLiveData(false)
+
 
     private fun get15DaysList() {
         val dateList = mutableListOf<Date>()
@@ -396,6 +400,7 @@ class AppointmentViewModel @Inject constructor(
                     )) {
                     is ApiSuccessResponse -> {
                         appointmentResponse.postValue(response.body)
+                        isVisitedToggleData.postValue(response.body.isVisited)
                         getAppointmentUserDetails()
                         getUserSymptomDetails()
                         setShowProgress(false)
@@ -565,6 +570,50 @@ class AppointmentViewModel @Inject constructor(
             sufferingDaysError.value = null
         }
         validatesAllFields()
+    }
+
+    fun onUpdateClick() {
+        updateClick.value = true
+    }
+
+    fun appointmentUpdateApiCall() {
+        viewModelScope.launch {
+            if (context.isNetworkAvailable()) {
+                setShowProgress(true)
+                when (val response =
+                    appointmentRepository.updateAppointmentDataById(
+                        appointmentObj.value!!.apply {
+                            isVisited = isVisitedToggleData.value!!
+                        },
+                        fireStore
+                    )) {
+                    is ApiSuccessResponse -> {
+                        setShowProgress(false)
+                        _navigationListener.value = true
+                    }
+
+                    is ApiErrorResponse -> {
+                        context.toast(response.errorMessage)
+                        setShowProgress(false)
+                        _navigationListener.value = true
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        context.toast(response.errorMessage)
+                        setShowProgress(false)
+                        _navigationListener.value = true
+                    }
+
+                    else -> {
+                        context.toast(resourceProvider.getString(R.string.something_went_wrong))
+                        setShowProgress(false)
+                    }
+                }
+            } else {
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
+            }
+
+        }
     }
 
 

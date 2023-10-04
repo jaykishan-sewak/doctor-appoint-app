@@ -214,4 +214,11 @@
     <string name="cancel_the_permission">Cancel the permission</string>
     <string name="location_permission">Location permission denied</string>
     <string name="gps_permission_denied">GPS permission denied</string>
+
+    <string name="history">History</string>
+    <string name="details">Details :</string>
+    <string name="is_visited">Is Visited :</string>
+    <string name="no_booking_history_found">No booking history Found</string>
+
+
 </resources>
