@@ -1,9 +1,14 @@
 package com.android.doctorapp.repository
 
+import android.content.ContentValues
+import android.util.Log
 import com.android.doctorapp.repository.models.ApiResponse
 import com.android.doctorapp.repository.models.AppointmentModel
+import com.android.doctorapp.repository.models.FeedbackRequestModel
+import com.android.doctorapp.repository.models.FeedbackResponseModel
 import com.android.doctorapp.repository.models.SymptomModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
+import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_APPROVED_KEY
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_DOCTOR_ID
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_SELECTED_DATE
@@ -27,12 +32,11 @@ import javax.inject.Inject
 class AppointmentRepository @Inject constructor() {
 
     suspend fun addBookingAppointment(
-        appointmentModel: AppointmentModel,
-        fireStore: FirebaseFirestore
+        appointmentModel: AppointmentModel, fireStore: FirebaseFirestore
     ): ApiResponse<AppointmentModel> {
         return try {
-            val bookingAppointmentResponse = fireStore.collection(TABLE_APPOINTMENT)
-                .add(appointmentModel).await()
+            val bookingAppointmentResponse =
+                fireStore.collection(TABLE_APPOINTMENT).add(appointmentModel).await()
             ApiResponse.create(response = Response.success(appointmentModel))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
@@ -40,14 +44,12 @@ class AppointmentRepository @Inject constructor() {
     }
 
     suspend fun getUserById(
-        userId: String,
-        fireStore: FirebaseFirestore
+        userId: String, fireStore: FirebaseFirestore
     ): ApiResponse<UserDataResponseModel> {
         return try {
-            val response = fireStore.collection(TABLE_USER_DATA)
-                .whereEqualTo(FIELD_USER_ID, userId)
-                .get()
-                .await()
+            val response =
+                fireStore.collection(TABLE_USER_DATA).whereEqualTo(FIELD_USER_ID, userId).get()
+                    .await()
             var dataModel = UserDataResponseModel()
             for (snapshot in response) {
                 dataModel = snapshot.toObject()
@@ -59,14 +61,13 @@ class AppointmentRepository @Inject constructor() {
     }
 
     suspend fun getAppointmentsList(
-        userId: String,
-        firestore: FirebaseFirestore
+        userId: String, firestore: FirebaseFirestore
     ): ApiResponse<List<AppointmentModel>> {
         return try {
-            val response = firestore.collection(TABLE_APPOINTMENT)
-                .whereEqualTo(FIELD_DOCTOR_ID, userId)
-                .whereIn(FIELD_APPROVED_KEY, arrayListOf(FIELD_APPROVED, FIELD_REJECTED))
-                .get().await()
+            val response =
+                firestore.collection(TABLE_APPOINTMENT).whereEqualTo(FIELD_DOCTOR_ID, userId)
+                    .whereIn(FIELD_APPROVED_KEY, arrayListOf(FIELD_APPROVED, FIELD_REJECTED)).get()
+                    .await()
 
 
             val appointmentsList = arrayListOf<AppointmentModel>()
@@ -83,20 +84,18 @@ class AppointmentRepository @Inject constructor() {
     }
 
     suspend fun getAppointmentsSelectedDateList(
-        doctorId: String,
-        date: Date,
-        firestore: FirebaseFirestore
+        doctorId: String, date: Date, firestore: FirebaseFirestore
     ): ApiResponse<List<AppointmentModel>> {
         return try {
             val nextDate = Calendar.getInstance()
             nextDate.time = date
             nextDate.add(Calendar.DATE, 1)
-            val response = firestore.collection(TABLE_APPOINTMENT)
-                .whereEqualTo(FIELD_DOCTOR_ID, doctorId)
-                .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, date)
-                .whereLessThanOrEqualTo(FIELD_SELECTED_DATE, nextDate.time)
-                .whereIn(FIELD_APPROVED_KEY, listOf(FIELD_APPROVED, FIELD_REJECTED))
-                .get().await()
+            val response =
+                firestore.collection(TABLE_APPOINTMENT).whereEqualTo(FIELD_DOCTOR_ID, doctorId)
+                    .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, date)
+                    .whereLessThanOrEqualTo(FIELD_SELECTED_DATE, nextDate.time)
+                    .whereIn(FIELD_APPROVED_KEY, listOf(FIELD_APPROVED, FIELD_REJECTED)).get()
+                    .await()
 
             val appointmentsList = arrayListOf<AppointmentModel>()
             for (document: DocumentSnapshot in response.documents) {
@@ -113,20 +112,17 @@ class AppointmentRepository @Inject constructor() {
     }
 
     suspend fun getAppointmentsProgressList(
-        date: Date,
-        userId: String,
-        firestore: FirebaseFirestore
+        date: Date, userId: String, firestore: FirebaseFirestore
     ): ApiResponse<List<AppointmentModel>> {
         return try {
             val nextDate = Calendar.getInstance()
             nextDate.time = date
             nextDate.add(Calendar.DATE, 1)
-            val response = firestore.collection(TABLE_APPOINTMENT)
-                .whereEqualTo(FIELD_DOCTOR_ID, userId)
-                .whereEqualTo(FIELD_APPROVED_KEY, FIELD_PENDING)
-                .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, date)
-                .whereLessThanOrEqualTo(FIELD_SELECTED_DATE, nextDate.time)
-                .get().await()
+            val response =
+                firestore.collection(TABLE_APPOINTMENT).whereEqualTo(FIELD_DOCTOR_ID, userId)
+                    .whereEqualTo(FIELD_APPROVED_KEY, FIELD_PENDING)
+                    .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, date)
+                    .whereLessThanOrEqualTo(FIELD_SELECTED_DATE, nextDate.time).get().await()
             val appointmentsList = arrayListOf<AppointmentModel>()
             for (document: DocumentSnapshot in response.documents) {
                 val user = document.toObject(AppointmentModel::class.java)
@@ -143,19 +139,15 @@ class AppointmentRepository @Inject constructor() {
 
 
     suspend fun updateAppointmentData(
-        requestModel: AppointmentModel,
-        fireStore: FirebaseFirestore
+        requestModel: AppointmentModel, fireStore: FirebaseFirestore
     ): ApiResponse<AppointmentModel> {
         return try {
             val response = fireStore.collection(TABLE_APPOINTMENT)
-                .whereEqualTo(FIELD_USER_ID, requestModel.userId)
-                .get()
-                .await()
+                .whereEqualTo(FIELD_USER_ID, requestModel.userId).get().await()
 
-            val updateUserResponse = fireStore.collection(TABLE_APPOINTMENT)
-                .document(response.documents[0].id)
-                .set(requestModel)
-                .await()
+            val updateUserResponse =
+                fireStore.collection(TABLE_APPOINTMENT).document(response.documents[0].id)
+                    .set(requestModel).await()
 
             ApiResponse.create(response = Response.success(requestModel))
         } catch (e: Exception) {
@@ -164,14 +156,13 @@ class AppointmentRepository @Inject constructor() {
     }
 
     suspend fun updateAppointmentDataById(
-        requestModel: AppointmentModel,
-        fireStore: FirebaseFirestore
+        requestModel: AppointmentModel, fireStore: FirebaseFirestore
     ): ApiResponse<AppointmentModel> {
         return try {
             val requestData = requestModel.copy(doctorDetails = null)
             val response =
-                fireStore.collection(TABLE_APPOINTMENT).document(requestModel.id)
-                    .set(requestData).await()
+                fireStore.collection(TABLE_APPOINTMENT).document(requestModel.id).set(requestData)
+                    .await()
 
             ApiResponse.create(response = Response.success(requestModel))
         } catch (e: Exception) {
@@ -180,14 +171,11 @@ class AppointmentRepository @Inject constructor() {
     }
 
     suspend fun getAppointmentDetails(
-        documentId: String,
-        fireStore: FirebaseFirestore
+        documentId: String, fireStore: FirebaseFirestore
     ): ApiResponse<AppointmentModel> {
         return try {
-            val response = fireStore.collection(TABLE_APPOINTMENT)
-                .document(documentId)
-                .get()
-                .await()
+            val response =
+                fireStore.collection(TABLE_APPOINTMENT).document(documentId).get().await()
             val dataModel = response.toObject(AppointmentModel::class.java)
             ApiResponse.create(response = Response.success(dataModel))
         } catch (e: Exception) {
@@ -196,14 +184,12 @@ class AppointmentRepository @Inject constructor() {
     }
 
     suspend fun getAppointmentUserDetails(
-        userId: String,
-        fireStore: FirebaseFirestore
+        userId: String, fireStore: FirebaseFirestore
     ): ApiResponse<UserDataResponseModel> {
         return try {
-            val response = fireStore.collection(TABLE_USER_DATA)
-                .whereEqualTo(FIELD_USER_ID, userId)
-                .get()
-                .await()
+            val response =
+                fireStore.collection(TABLE_USER_DATA).whereEqualTo(FIELD_USER_ID, userId).get()
+                    .await()
             var dataModel = UserDataResponseModel()
             for (snapshot in response) {
                 dataModel = snapshot.toObject()
@@ -215,20 +201,16 @@ class AppointmentRepository @Inject constructor() {
     }
 
     suspend fun getBookAppointmentDetailsList(
-        selectedDate: Date,
-        userId: String,
-        fireStore: FirebaseFirestore
+        selectedDate: Date, userId: String, fireStore: FirebaseFirestore
     ): ApiResponse<List<AppointmentModel>> {
         return try {
             val nextDate = Calendar.getInstance()
             nextDate.time = selectedDate
             nextDate.add(Calendar.DATE, 1)
-            val response = fireStore.collection(TABLE_APPOINTMENT)
-                .whereEqualTo(FIELD_USER_ID, userId)
-                .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, selectedDate)
-                .whereLessThanOrEqualTo(FIELD_SELECTED_DATE, nextDate.time)
-                .get()
-                .await()
+            val response =
+                fireStore.collection(TABLE_APPOINTMENT).whereEqualTo(FIELD_USER_ID, userId)
+                    .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, selectedDate)
+                    .whereLessThanOrEqualTo(FIELD_SELECTED_DATE, nextDate.time).get().await()
             val bookedAppointmentList = arrayListOf<AppointmentModel>()
 
             for (document: DocumentSnapshot in response.documents) {
@@ -236,9 +218,7 @@ class AppointmentRepository @Inject constructor() {
                 user?.let {
                     it.id = document.id
                     val doctorDetails = fireStore.collection(TABLE_USER_DATA)
-                        .whereEqualTo(FIELD_USER_ID, it.doctorId)
-                        .get()
-                        .await()
+                        .whereEqualTo(FIELD_USER_ID, it.doctorId).get().await()
                     var dataModel = UserDataResponseModel()
                     for (snapshot in doctorDetails) {
                         dataModel = snapshot.toObject()
@@ -254,14 +234,12 @@ class AppointmentRepository @Inject constructor() {
     }
 
     suspend fun getUserSymptomDetails(
-        userId: String,
-        fireStore: FirebaseFirestore
+        userId: String, fireStore: FirebaseFirestore
     ): ApiResponse<SymptomModel> {
         return try {
-            val response = fireStore.collection(TABLE_SYMPTOM)
-                .whereEqualTo(FIELD_USER_ID, userId)
-                .get()
-                .await()
+            val response =
+                fireStore.collection(TABLE_SYMPTOM).whereEqualTo(FIELD_USER_ID, userId).get()
+                    .await()
             var dataModel = SymptomModel()
             for (snapshot in response) {
                 dataModel = snapshot.toObject()
@@ -273,14 +251,12 @@ class AppointmentRepository @Inject constructor() {
     }
 
     suspend fun getAppointmentsHistoryList(
-        userId: String,
-        firestore: FirebaseFirestore
+        userId: String, firestore: FirebaseFirestore
     ): ApiResponse<List<AppointmentModel>> {
         return try {
-            val response = firestore.collection(TABLE_APPOINTMENT)
-                .whereEqualTo(FIELD_USER_ID, userId)
-                .whereEqualTo(FIELD_VISITED_KEY, true)
-                .get().await()
+            val response =
+                firestore.collection(TABLE_APPOINTMENT).whereEqualTo(FIELD_USER_ID, userId)
+                    .whereEqualTo(FIELD_VISITED_KEY, true).get().await()
 
 
             val appointmentsList = arrayListOf<AppointmentModel>()
@@ -289,9 +265,7 @@ class AppointmentRepository @Inject constructor() {
                 user?.let {
                     it.id = document.id
                     val doctorDetails = firestore.collection(TABLE_USER_DATA)
-                        .whereEqualTo(FIELD_USER_ID, it.doctorId)
-                        .get()
-                        .await()
+                        .whereEqualTo(FIELD_USER_ID, it.doctorId).get().await()
                     var dataModel = UserDataResponseModel()
                     for (snapshot in doctorDetails) {
                         dataModel = snapshot.toObject()
@@ -307,22 +281,19 @@ class AppointmentRepository @Inject constructor() {
     }
 
     suspend fun getDoctorAppointmentByDate(
-        doctorId: String,
-        date: Date,
-        fireStore: FirebaseFirestore
+        doctorId: String, date: Date, fireStore: FirebaseFirestore
     ): ApiResponse<ArrayList<AppointmentModel>> {
         return try {
             val nextDate = Calendar.getInstance()
             nextDate.time = date
             nextDate.add(Calendar.DATE, 1)
             val appointmentList = ArrayList<AppointmentModel>()
-            val appointmentResponse = fireStore.collection(TABLE_APPOINTMENT)
-                .whereEqualTo(FIELD_DOCTOR_ID, doctorId)
-                .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, date)
-                .whereLessThanOrEqualTo(FIELD_SELECTED_DATE, nextDate.time)
-                .whereIn(FIELD_APPROVED_KEY, listOf(FIELD_APPROVED, FIELD_PENDING))
-                .get()
-                .await()
+            val appointmentResponse =
+                fireStore.collection(TABLE_APPOINTMENT).whereEqualTo(FIELD_DOCTOR_ID, doctorId)
+                    .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, date)
+                    .whereLessThanOrEqualTo(FIELD_SELECTED_DATE, nextDate.time)
+                    .whereIn(FIELD_APPROVED_KEY, listOf(FIELD_APPROVED, FIELD_PENDING)).get()
+                    .await()
             for (appointmentSnapshot in appointmentResponse) {
                 appointmentList.add(appointmentSnapshot.toObject())
             }
@@ -334,17 +305,57 @@ class AppointmentRepository @Inject constructor() {
     }
 
     suspend fun getDoctorById(
-        doctorDocumentId: String,
-        fireStore: FirebaseFirestore
+        doctorDocumentId: String, fireStore: FirebaseFirestore
     ): ApiResponse<UserDataResponseModel> {
         return try {
-            val doctorResponse = fireStore.collection(TABLE_USER_DATA)
-                .document(doctorDocumentId)
-                .get()
-                .await()
+            val doctorResponse =
+                fireStore.collection(TABLE_USER_DATA).document(doctorDocumentId).get().await()
             val doctorDataModel = doctorResponse.toObject(UserDataResponseModel::class.java)
             ApiResponse.create(response = Response.success(doctorDataModel))
 
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+    suspend fun getFeedbackDoctorList(firestore: FirebaseFirestore): ApiResponse<List<UserDataResponseModel>> {
+        return try {
+            val response = firestore.collection(TABLE_USER_DATA)
+                .whereEqualTo(ConstantKey.DBKeys.FIELD_DOCTOR, true).get().await()
+
+            val userList = arrayListOf<UserDataResponseModel>()
+            for (document: DocumentSnapshot in response.documents) {
+                val user = document.toObject(UserDataResponseModel::class.java)
+
+                user?.let {
+                    it.docId = document.id
+                    val subCollectionRef = firestore.collection(TABLE_USER_DATA).document(it.docId)
+                        .collection(ConstantKey.DBKeys.SUB_TABLE_FEEDBACK)
+
+                    val querySnapshot = subCollectionRef.get().await()
+                    var total = 0F
+                    var numberOfFeedbacks = 0
+                    val feedbackList = mutableListOf<FeedbackRequestModel>()
+                    for (document1 in querySnapshot.documents) {
+                        val feedback = document1.toObject(FeedbackResponseModel::class.java)
+                        Log.d(ContentValues.TAG, "getFeedbackDoctorList: ${feedback?.rating}")
+                        feedback.let {
+                            total += it!!.rating!!
+                            numberOfFeedbacks++
+                        }
+                    }
+
+                    if (numberOfFeedbacks > 0) {
+                        it.rating = total / numberOfFeedbacks
+                    } else {
+                        it.rating = 0F // Set a default rating if there are no feedbacks
+                    }
+
+                    userList.add(it)
+
+                }
+            }
+            ApiResponse.create(response = Response.success(userList))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
         }

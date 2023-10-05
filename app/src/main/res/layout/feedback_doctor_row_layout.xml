@@ -4,7 +4,8 @@
 
     <data>
 
-        <import type="android.view.View"/>
+        <import type="android.view.View" />
+
         <variable
             name="userData"
             type="com.android.doctorapp.repository.models.UserDataResponseModel" />
@@ -23,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_15"
-        android:onClick="@{userData.feedbackDetails != null ? ()->onItemClickListener.onItemClick(userData,index) : null}">
+        android:onClick="@{()->onItemClickListener.onItemClick(userData,index)}">
 
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
@@ -67,12 +68,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_20"
+                    android:paddingHorizontal="@dimen/margin_10"
                     android:text="@{userData.name}"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    android:paddingHorizontal="@dimen/margin_10"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ivDoctorImageView" />
@@ -82,29 +83,28 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_5"
+                    android:paddingHorizontal="@dimen/margin_10"
                     android:text="@{userData.contactNumber}"
                     android:textAlignment="textStart"
                     android:textColor="@color/grey"
                     android:textFontWeight="@integer/m3_sys_motion_duration_extra_long1"
                     android:textSize="12sp"
-                    android:paddingHorizontal="@dimen/margin_10"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvDoctorName"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/tvDoctorName" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_edit_feedback"
                     android:layout_width="@dimen/margin_20"
                     android:layout_height="@dimen/margin_20"
-                    android:visibility="@{userData.feedbackDetails != null ? View.VISIBLE : View.GONE}"
-                    android:onClick="@{()->onItemClickListener.onEditClick(userData,index)}"
                     android:layout_marginHorizontal="@dimen/margin_10"
                     android:layout_marginVertical="@dimen/margin_10"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvDoctorEmail"
+                    android:onClick="@{()->onItemClickListener.onEditClick(userData,index)}"
+                    android:src="@drawable/ic_blue_edit"
+                    android:visibility="@{userData.feedbackDetails != null ? View.VISIBLE : View.INVISIBLE}"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:src="@drawable/ic_blue_edit"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvDoctorEmail" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_delete_feedback"
@@ -112,11 +112,12 @@
                     android:layout_height="@dimen/margin_20"
                     android:layout_marginHorizontal="@dimen/margin_30"
                     android:layout_marginVertical="@dimen/margin_10"
-                    android:visibility="@{userData.feedbackDetails != null ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintStart_toEndOf="@id/iv_edit_feedback"
-                    app:layout_constraintTop_toBottomOf="@+id/tvDoctorEmail"
+                    android:onClick="@{()->onItemClickListener.onDeleteClick(userData,index)}"
+                    android:src="@drawable/ic_blue_delete"
+                    android:visibility="@{userData.feedbackDetails != null ? View.VISIBLE : View.INVISIBLE}"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:src="@drawable/ic_blue_delete"/>
+                    app:layout_constraintStart_toEndOf="@id/iv_edit_feedback"
+                    app:layout_constraintTop_toBottomOf="@+id/tvDoctorEmail" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

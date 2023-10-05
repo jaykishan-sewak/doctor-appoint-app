@@ -1,8 +1,6 @@
 package com.android.doctorapp.ui.feedback
 
-import android.content.ContentValues.TAG
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +18,7 @@ import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.ui.feedback.adapter.DoctorListAdapter
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.extension.toast
 import com.google.gson.Gson
 import javax.inject.Inject
 
@@ -87,23 +86,31 @@ class FeedbackFragment : BaseFragment<FragmentFeedbackBinding>(R.layout.fragment
             items,
             object : DoctorListAdapter.OnItemClickListener {
                 override fun onItemClick(item: UserDataResponseModel, position: Int) {
-                    val bundle = Bundle()
-                    bundle.putString(ConstantKey.BundleKeys.USER_DATA, Gson().toJson(item))
-                    Log.d(TAG, "onItemClick: ${Gson().toJson(item)} ")
-                    findNavController().navigate(
-                        R.id.action_feedback_to_feedBack_details, bundle
-                    )
+                    if (item.feedbackDetails == null) {
+                        val bundle = Bundle()
+                        bundle.putString(ConstantKey.BundleKeys.USER_DATA, Gson().toJson(item))
+                        findNavController().navigate(
+                            R.id.action_feedback_to_feedBack_details, bundle
+                        )
+                    }
+
                 }
 
                 override fun onEditClick(item: UserDataResponseModel, position: Int) {
                     val bundle = Bundle()
                     bundle.putString(ConstantKey.BundleKeys.USER_DATA, Gson().toJson(item))
-                    Log.d(TAG, "onItemClick: ${Gson().toJson(item)} ")
-                    viewModel.isEditClicked.value = true
                     findNavController().navigate(
                         R.id.action_feedback_to_feedBack_details, bundle
                     )
                 }
+
+                override fun onDeleteClick(item: UserDataResponseModel, position: Int) {
+//
+                    viewModel.deleteFeedback(item, position)
+                    context!!.toast("onDeleteClick: Data deleted")
+                }
+
+
             })
     }
 }

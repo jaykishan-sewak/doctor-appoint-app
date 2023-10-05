@@ -1,10 +1,7 @@
 package com.android.doctorapp.repository
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.models.ApiResponse
-import com.android.doctorapp.repository.models.FeedbackRequestModel
 import com.android.doctorapp.repository.models.FeedbackResponseModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey
@@ -86,47 +83,4 @@ class AdminRepository @Inject constructor(
 
     suspend fun clearLoggedInSession() = session.clearLoggedInSession()
 
-    suspend fun getFeedbackDoctorList(firestore: FirebaseFirestore): ApiResponse<List<UserDataResponseModel>> {
-        return try {
-            val response = firestore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
-                .whereEqualTo(ConstantKey.DBKeys.FIELD_DOCTOR, true).get().await()
-
-            val userList = arrayListOf<UserDataResponseModel>()
-            for (document: DocumentSnapshot in response.documents) {
-                val user = document.toObject(UserDataResponseModel::class.java)
-
-                user?.let {
-                    it.docId = document.id
-                    val subCollectionRef = firestore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
-                        .document(it.docId)
-                        .collection(ConstantKey.DBKeys.SUB_TABLE_FEEDBACK)
-
-                    val querySnapshot = subCollectionRef.get().await()
-                    var total = 0F
-                    var numberOfFeedbacks = 0
-                    val feedbackList = mutableListOf<FeedbackRequestModel>()
-                    for (document1 in querySnapshot.documents) {
-                        val feedback = document1.toObject(FeedbackResponseModel::class.java)
-                        Log.d(TAG, "getFeedbackDoctorList: ${feedback?.rating}")
-                        feedback.let {
-                            total += it!!.rating!!
-                            numberOfFeedbacks++
-                        }
-                    }
-
-                    if (numberOfFeedbacks > 0) {
-                        it.rating = total / numberOfFeedbacks
-                    } else {
-                        it.rating = 0F // Set a default rating if there are no feedbacks
-                    }
-
-                    userList.add(it)
-
-                }
-            }
-            ApiResponse.create(response = Response.success(userList))
-        } catch (e: Exception) {
-            ApiResponse.create(e.fillInStackTrace())
-        }
-    }
 }
