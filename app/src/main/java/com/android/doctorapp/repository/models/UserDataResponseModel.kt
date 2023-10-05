@@ -1,11 +1,10 @@
 package com.android.doctorapp.repository.models
 
-import android.media.Rating
 import java.util.Date
 
 data class UserDataResponseModel(
     var docId: String = "",
-    var userId: String = "",
+    var userId: String? = "",
     var isDoctor: Boolean = false,
     var email: String = "",
     var name: String = "",

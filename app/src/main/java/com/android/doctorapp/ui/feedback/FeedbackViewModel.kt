@@ -1,8 +1,6 @@
 package com.android.doctorapp.ui.feedback
 
-import android.content.ContentValues.TAG
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -21,7 +19,6 @@ import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.currentDate
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
-import com.google.gson.Gson
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -39,7 +36,7 @@ class FeedbackViewModel @Inject constructor(
     val doctorId = MutableLiveData("")
     private val _navigationListener = SingleLiveEvent<Boolean>()
     val navigationListener = _navigationListener.asLiveData()
-    var userDataObj = MutableLiveData<UserDataResponseModel>()
+    var userDataObj = MutableLiveData<UserDataResponseModel?>()
     var doctorFeedbackObj = MutableLiveData<UserDataResponseModel?>()
 
 
@@ -83,11 +80,11 @@ class FeedbackViewModel @Inject constructor(
                 if (context.isNetworkAvailable()) {
                     setShowProgress(true)
                     when (val response = feedRepository.addFeedbackData(
-                        userDataObj.value!!.docId,
+                        userDataObj.value?.docId,
                         FeedbackRequestModel(
-                            userId = it!!,
+                            userId = it,
                             rating = rating.value,
-                            feedbackMessage = feedbackMsg.value!!,
+                            feedbackMessage = feedbackMsg.value,
                             createdAt = currentDate()
                         ),
                         fireStore
@@ -125,7 +122,7 @@ class FeedbackViewModel @Inject constructor(
                 if (context.isNetworkAvailable()) {
                     setShowProgress(true)
                     when (val response = feedRepository.getUserFeedbackData(
-                        userDataObj.value!!.userId,
+                        userDataObj.value?.userId,
                         fireStore,
                         it
                     )) {
@@ -134,8 +131,6 @@ class FeedbackViewModel @Inject constructor(
                             doctorFeedbackObj.value = response.body
                             rating.value = response.body.feedbackDetails?.rating
                             feedbackMsg.value = response.body.feedbackDetails?.feedbackMessage
-                            Log.d(TAG, "UserDataFeedback: ${Gson().toJson(response.body)} ")
-                            Log.d(TAG, "getUserFeedbackData: ${response.body}")
                         }
 
                         is ApiErrorResponse -> {
@@ -163,12 +158,12 @@ class FeedbackViewModel @Inject constructor(
                 if (context.isNetworkAvailable()) {
                     setShowProgress(true)
                     when (val response = feedRepository.getUpdateFeedbackData(
-                        userDataObj.value!!.userId,
+                        userDataObj.value?.userId,
                         fireStore,
                         FeedbackRequestModel(
-                            userId = it!!,
+                            userId = it,
                             rating = rating.value,
-                            feedbackMessage = feedbackMsg.value!!,
+                            feedbackMessage = feedbackMsg.value,
                             createdAt = currentDate()
                         ),
                     )) {
@@ -216,11 +211,6 @@ class FeedbackViewModel @Inject constructor(
                                 currentList.removeAt(position)
                                 doctorList.postValue(currentList)
                             }
-//                            _navigationListener.value = response.body!!
-//                            rating.value = 0f
-//                            feedbackMsg.value = ""
-//                            _navigationListener.value = true
-
                         }
 
                         is ApiErrorResponse -> {

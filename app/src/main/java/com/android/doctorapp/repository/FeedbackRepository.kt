@@ -67,14 +67,14 @@ class FeedbackRepository @Inject constructor(
     }
 
     suspend fun addFeedbackData(
-        docId: String,
+        docId: String?,
         requestModel: FeedbackRequestModel,
         firestore: FirebaseFirestore
     ): ApiResponse<String> {
         return try {
             val data =
                 firestore.collection(TABLE_USER_DATA)
-                    .document(docId)
+                    .document(docId!!)
                     .collection(SUB_TABLE_FEEDBACK)
                     .add(requestModel)
                     .await()
@@ -86,7 +86,7 @@ class FeedbackRepository @Inject constructor(
     }
 
     suspend fun getUserFeedbackData(
-        doctorId: String,
+        doctorId: String?,
         fireStore: FirebaseFirestore,
         userId: String?
     ): ApiResponse<UserDataResponseModel> {
@@ -97,10 +97,10 @@ class FeedbackRepository @Inject constructor(
                     .get()
                     .await()
 
-            var dataModel = UserDataResponseModel()
+            var dataModel: UserDataResponseModel? = UserDataResponseModel()
             for (userDataDocument in userDataSnapshot.documents) {
-                dataModel = userDataDocument.toObject()!!
-                dataModel.docId = userDataDocument.id
+                dataModel = userDataDocument.toObject()
+                dataModel?.docId = userDataDocument.id
                 val feedbackCollection = userDataDocument.reference.collection(SUB_TABLE_FEEDBACK)
                     .whereEqualTo(FIELD_USER_ID, userId)
                     .get().await()
@@ -110,7 +110,7 @@ class FeedbackRepository @Inject constructor(
                         val feedbackData =
                             feedbackDocument.toObject(FeedbackResponseModel::class.java)!!
                         feedbackData.feedbackId = feedbackDocument.id
-                        dataModel.feedbackDetails = feedbackData
+                        dataModel?.feedbackDetails = feedbackData
                     }
                 }
             }
@@ -122,7 +122,7 @@ class FeedbackRepository @Inject constructor(
 
 
     suspend fun getUpdateFeedbackData(
-        doctorId: String,
+        doctorId: String?,
         fireStore: FirebaseFirestore,
         feedbackRequestModel: FeedbackRequestModel
     ): ApiResponse<FeedbackRequestModel> {

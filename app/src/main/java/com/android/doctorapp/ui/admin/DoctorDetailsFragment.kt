@@ -54,7 +54,7 @@ class DoctorDetailsFragment :
         return MenuItem.OnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_edit -> viewModel.moveToUpdateScreen()
-                R.id.action_delete -> viewModel.deleteDoctorData(viewModel.doctorDetails.value!!.docId)
+                R.id.action_delete -> viewModel.deleteDoctorData(viewModel.doctorDetails.value?.docId)
             }
             false
         }
@@ -111,7 +111,7 @@ class DoctorDetailsFragment :
             )
         }
         viewModel.deleteId.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty()) {
+            if (it!!.isNotEmpty()) {
                 context?.alert {
                     setTitle(resources.getString(R.string.delete))
                     setMessage(resources.getString(R.string.are_you_sure_want_to_delete))

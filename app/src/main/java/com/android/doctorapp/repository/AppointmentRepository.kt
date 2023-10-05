@@ -1,10 +1,9 @@
 package com.android.doctorapp.repository
 
-import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.util.Log
 import com.android.doctorapp.repository.models.ApiResponse
 import com.android.doctorapp.repository.models.AppointmentModel
-import com.android.doctorapp.repository.models.FeedbackRequestModel
 import com.android.doctorapp.repository.models.FeedbackResponseModel
 import com.android.doctorapp.repository.models.SymptomModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
@@ -23,6 +22,7 @@ import com.android.doctorapp.util.constants.ConstantKey.FIELD_REJECTED
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
+import com.google.gson.Gson
 import kotlinx.coroutines.tasks.await
 import retrofit2.Response
 import java.util.Calendar
@@ -303,6 +303,7 @@ class AppointmentRepository @Inject constructor() {
                     appointmentsList.add(it)
                 }
             }
+            Log.d(TAG, "AppointmentsHistoryList: ${Gson().toJson(appointmentsList)}")
             ApiResponse.create(response = Response.success(appointmentsList))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
@@ -370,24 +371,18 @@ class AppointmentRepository @Inject constructor() {
                     val querySnapshot = subCollectionRef.get().await()
                     var total = 0F
                     var numberOfFeedbacks = 0
-                    val feedbackList = mutableListOf<FeedbackRequestModel>()
                     for (document1 in querySnapshot.documents) {
                         val feedback = document1.toObject(FeedbackResponseModel::class.java)
-                        Log.d(ContentValues.TAG, "getFeedbackDoctorList: ${feedback?.rating}")
-                        feedback.let {
-                            total += it!!.rating!!
+                        feedback.let { data ->
+                            total += data?.rating!!
                             numberOfFeedbacks++
                         }
                     }
-
-                    if (numberOfFeedbacks > 0) {
-                        it.rating = total / numberOfFeedbacks
-                    } else {
-                        it.rating = 0F // Set a default rating if there are no feedbacks
-                    }
+                    it.rating = if (numberOfFeedbacks > 0) {
+                        total / numberOfFeedbacks
+                    } else 0F
 
                     userList.add(it)
-
                 }
             }
             ApiResponse.create(response = Response.success(userList))
