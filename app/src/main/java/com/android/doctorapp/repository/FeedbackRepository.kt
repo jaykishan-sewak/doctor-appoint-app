@@ -52,7 +52,7 @@ class FeedbackRepository @Inject constructor(
                         if (feedbackDocument != null) {
                             val feedbackData =
                                 feedbackDocument.toObject(FeedbackResponseModel::class.java)!!
-                            feedbackData.feedbackId = feedbackDocument.id
+                            feedbackData.feedbackDocId = feedbackDocument.id
                             dataModel.feedbackDetails = feedbackData
                         }
                     }
@@ -109,7 +109,7 @@ class FeedbackRepository @Inject constructor(
                     if (feedbackDocument != null) {
                         val feedbackData =
                             feedbackDocument.toObject(FeedbackResponseModel::class.java)!!
-                        feedbackData.feedbackId = feedbackDocument.id
+                        feedbackData.feedbackDocId = feedbackDocument.id
                         dataModel?.feedbackDetails = feedbackData
                     }
                 }

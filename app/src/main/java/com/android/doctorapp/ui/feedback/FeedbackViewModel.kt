@@ -202,7 +202,7 @@ class FeedbackViewModel @Inject constructor(
                     when (val response = feedRepository.deleteFeedbackData(
                         item.docId,
                         fireStore,
-                        item.feedbackDetails!!.feedbackId
+                        item.feedbackDetails!!.feedbackDocId
                     )) {
                         is ApiSuccessResponse -> {
                             setShowProgress(false)
