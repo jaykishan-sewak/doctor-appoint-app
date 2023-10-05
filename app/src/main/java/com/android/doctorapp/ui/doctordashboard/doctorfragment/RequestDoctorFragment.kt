@@ -20,15 +20,13 @@ import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.ui.doctordashboard.adapter.RequestAppointmentsAdapter
 import com.android.doctorapp.util.constants.ConstantKey
-import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
+import com.android.doctorapp.util.constants.ConstantKey.DATE_PICKER
 import com.android.doctorapp.util.extension.currentDate
 import com.android.doctorapp.util.extension.dateFormatter
-import com.android.doctorapp.util.extension.selectDate
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.gson.Gson
-import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
-import java.util.Locale
 import javax.inject.Inject
 
 
@@ -41,6 +39,9 @@ class RequestDoctorFragment :
     private val viewModel: RequestDoctorViewModel by viewModels { viewModelFactory }
     private lateinit var adapter: RequestAppointmentsAdapter
     private val myCalender: Calendar = Calendar.getInstance()
+
+    //    private lateinit var requestDatePicker: MaterialDatePicker<Pair<Long!, Long!>!>
+    private lateinit var requestDatePicker: MaterialDatePicker<androidx.core.util.Pair<Long, Long>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,18 +89,23 @@ class RequestDoctorFragment :
 
         viewModel.isRequestCalender.observe(viewLifecycleOwner) {
             if (it) {
-
-                requireContext().selectDate(
-                    myCalendar = myCalender,
-                    maxDate = null,
-                    minDate = Date().time
-                ) { dobDate ->
-                    val formatter = SimpleDateFormat(FORMATTED_DATE, Locale.getDefault())
-                    val date = formatter.parse(dobDate)
-                    viewModel.requestSelectedDate.value = date
-
-                    updateToolbarTitle(dateFormatter(date!!, ConstantKey.DATE_MM_FORMAT))
+                requestDatePicker = MaterialDatePicker.Builder.dateRangePicker().build()
+                requestDatePicker.show(requireActivity().supportFragmentManager, DATE_PICKER)
+                requestDatePicker.addOnPositiveButtonClickListener { dateRange ->
+                    viewModel.startDate.value = changeTime(dateRange.first, true)
+                    viewModel.endDate.value = changeTime(dateRange.second, false)
+                    viewModel.getRequestAppointmentList()
                 }
+
+                // Setting up the event for when cancelled is clicked
+                requestDatePicker.addOnNegativeButtonClickListener {
+                }
+
+                // Setting up the event for when back button is pressed
+                requestDatePicker.addOnCancelListener {
+                }
+
+
             }
         }
     }
@@ -156,6 +162,21 @@ class RequestDoctorFragment :
                 }
             }
         )
+    }
+
+    private fun changeTime(longDate: Long, isStart: Boolean): Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = Date(longDate)
+        if (isStart) {
+            calendar.set(Calendar.HOUR_OF_DAY, 0)
+            calendar.set(Calendar.MINUTE, 0)
+            calendar.set(Calendar.SECOND, 0)
+        } else {
+            calendar.set(Calendar.HOUR_OF_DAY, 23)
+            calendar.set(Calendar.MINUTE, 59)
+            calendar.set(Calendar.SECOND, 59)
+        }
+        return calendar.time
     }
 
 }

@@ -70,4 +70,5 @@ object ConstantKey {
     const val GPS_REQUEST_CODE = 1
     const val FORMATTED_TIME = "HH:mm"
 
+    const val DATE_PICKER = "DatePicker"
 }
