@@ -119,11 +119,11 @@ class AddDoctorViewModel @Inject constructor(
 
     val degreeLiveList = MutableLiveData<List<String>>()
     val specializationLiveList = MutableLiveData<List<String>>()
-    val selectGenderValue: MutableLiveData<String> =
+    private val selectGenderValue: MutableLiveData<String> =
         MutableLiveData(MALE_GENDER)
     val userId: MutableLiveData<String?> = MutableLiveData(null)
-    val tempEmail: MutableLiveData<String?> = MutableLiveData()
-    val tempContactNumber: MutableLiveData<String?> = MutableLiveData()
+    private val tempEmail: MutableLiveData<String?> = MutableLiveData()
+    private val tempContactNumber: MutableLiveData<String?> = MutableLiveData()
 
 
     private val weekDayList = ArrayList<WeekOffModel>()
@@ -141,7 +141,7 @@ class AddDoctorViewModel @Inject constructor(
     var gender: MutableLiveData<Int> = MutableLiveData()
     val isCameraClick: MutableLiveData<Boolean> = MutableLiveData(false)
     val isGalleryClick: MutableLiveData<Boolean> = MutableLiveData(false)
-    val imageUri = MutableLiveData<Uri>()
+    val imageUri: MutableLiveData<Uri> = MutableLiveData<Uri>()
 
     val fees: MutableLiveData<String> = MutableLiveData()
     val feesError: MutableLiveData<String?> = MutableLiveData()
@@ -216,7 +216,9 @@ class AddDoctorViewModel @Inject constructor(
 
                             data.value = userObj
                             _dataResponse.value = response.body
-                            imageUri.value = response.body.images?.toUri()
+                            if (!response.body.images.isNullOrEmpty()) {
+                                imageUri.value = response.body.images?.toUri()
+                            }
                             setShowProgress(false)
                         }
 
@@ -263,7 +265,6 @@ class AddDoctorViewModel @Inject constructor(
                             && isEmailVerified.value!!
                             && binding?.chipGroup?.children?.toList()?.size!! > 0
                             && binding?.chipGroupSpec?.children?.toList()?.size!! > 0
-                            && !fees.value.isNullOrEmpty() && feesError.value.isNullOrEmpty()
                             )
             }
 
@@ -378,11 +379,10 @@ class AddDoctorViewModel @Inject constructor(
 
     fun onUpdateClick() {
         if (context.isNetworkAvailable()) {
-//            if (imageUri.value != null)
-//                uploadImage(imageUri.value!!)
-//            else
-//                this.updateUser("")
-            test()
+            if (imageUri.value != null && !imageUri.value.toString().startsWith("https:"))
+                uploadImage(imageUri.value!!)
+            else
+                this.updateUser("")
         } else {
             context.toast(resourceProvider.getString(R.string.check_internet_connection))
         }
@@ -557,7 +557,6 @@ class AddDoctorViewModel @Inject constructor(
 
     private fun updateUser(imageUrl: String) {
         viewModelScope.launch {
-            var recordId: String = ""
             session.getString(USER_ID).collectLatest {
                 val userData: UserDataRequestModel
                 if (isDoctor.value == true) {

@@ -32,6 +32,7 @@ object ConstantKey {
     const val FIELD_PENDING = "PENDING"
     const val FIELD_REJECTED = "REJECTED"
 
+
     object DBKeys {
         const val TABLE_USER_DATA = "user_data"
         const val FIELD_ADMIN = "admin"
@@ -45,6 +46,7 @@ object ConstantKey {
         const val FIELD_DOCTOR_ID = "doctorId"
         const val TABLE_SYMPTOM = "symptom"
         const val TABLE_FEEDBACK = "feedback"
+        const val FIELD_VISITED_KEY = "visited"
 
 
     }
@@ -68,5 +70,6 @@ object ConstantKey {
     const val KEY_LATITUDE = "latitude"
     const val KEY_LONGITUDE = "longitude"
 
+    const val FORMATTED_TIME = "HH:mm"
 
 }

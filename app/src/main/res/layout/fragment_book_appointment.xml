@@ -12,6 +12,7 @@
 
     </data>
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -27,133 +28,304 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <View
-            android:id="@+id/doctor_detail_view"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_150"
-            android:layout_marginHorizontal="@dimen/margin_30"
-            android:layout_marginTop="@dimen/margin_10"
-            android:background="@drawable/book_appointment_bg"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbarContainer" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ic_doctor_profile"
-            android:layout_width="@dimen/profile_image_dimension"
-            android:layout_height="@dimen/profile_image_dimension"
-            android:layout_marginStart="@dimen/margin_30"
-            android:layout_marginTop="@dimen/margin_20"
-            android:src="@mipmap/ic_launcher"
-            app:layout_constraintStart_toStartOf="@id/doctor_detail_view"
-            app:layout_constraintTop_toTopOf="@id/doctor_detail_view" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/text_doctor_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_20"
-            android:layout_marginTop="@dimen/margin_15"
-            android:layout_marginEnd="@dimen/margin_20"
-            android:text="@{viewModel.doctorName}"
-            android:textColor="@color/white"
-            app:layout_constraintEnd_toEndOf="@+id/doctor_detail_view"
-            app:layout_constraintStart_toEndOf="@+id/ic_doctor_profile"
-            app:layout_constraintTop_toTopOf="@+id/ic_doctor_profile" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/text_doctor_specialization"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            app:layout_constraintEnd_toEndOf="@+id/text_doctor_name"
-            app:layout_constraintStart_toStartOf="@+id/text_doctor_name"
-            app:layout_constraintTop_toBottomOf="@+id/text_doctor_name"
-            app:string="@{viewModel.doctorDetails != null ? viewModel.doctorDetails.specialities : null}" />
-
-        <RatingBar
-            android:id="@+id/doctorRatingBar"
-            style="@style/Widget.AppCompat.RatingBar.Small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:max="5"
-            android:rating="@{viewModel.doctorDetails.rating}"
-            app:layout_constraintStart_toStartOf="@+id/text_doctor_specialization"
-            app:layout_constraintTop_toBottomOf="@+id/text_doctor_specialization" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/text_title_schedule"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_20"
-            android:text="@string/title_schedule"
-            android:textColor="@color/blue"
-            app:layout_constraintStart_toStartOf="@+id/doctor_detail_view"
-            app:layout_constraintTop_toBottomOf="@+id/doctor_detail_view" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_schedule_date"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_10"
-            app:layout_constraintEnd_toEndOf="@+id/doctor_detail_view"
-            app:layout_constraintStart_toStartOf="@+id/doctor_detail_view"
-            app:layout_constraintTop_toBottomOf="@+id/text_title_schedule" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/text_select_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_10"
-            android:text="@string/title_select_time"
-            android:textColor="@color/blue"
-            app:layout_constraintStart_toStartOf="@+id/rv_schedule_date"
-            app:layout_constraintTop_toBottomOf="@+id/rv_schedule_date" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_time"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginVertical="@dimen/margin_10"
-            app:layout_constraintBottom_toTopOf="@+id/switch_online_booking"
-            app:layout_constraintEnd_toEndOf="@+id/rv_schedule_date"
-            app:layout_constraintStart_toStartOf="@+id/text_select_time"
-            app:layout_constraintTop_toBottomOf="@+id/text_select_time" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/txt_doctor_notification"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/online_booking"
-            android:textColor="@color/black"
-            app:layout_constraintBottom_toBottomOf="@+id/switch_online_booking"
-            app:layout_constraintStart_toStartOf="@+id/button_book_appointment"
-            app:layout_constraintTop_toTopOf="@+id/switch_online_booking" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switch_online_booking"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="@={viewModel.onlineBookingToggleData}"
-            app:layout_constraintBottom_toTopOf="@+id/button_book_appointment"
-            app:layout_constraintEnd_toEndOf="@+id/button_book_appointment" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/button_book_appointment"
-            style="@style/user_login_editText"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/margin_50"
-            android:layout_marginHorizontal="@dimen/margin_20"
-            android:layout_marginBottom="@dimen/margin_10"
-            android:background="@drawable/button_state_colors"
-            android:enabled="@{viewModel.isBookAppointmentDataValid}"
-            android:onClick="@{() -> viewModel.bookAppointment()}"
-            android:text="@string/title_appointment"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
+        <ScrollView
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbarContainer">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="@dimen/margin_20">
+
+                <View
+                    android:id="@+id/doctor_detail_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_150"
+                    android:layout_marginHorizontal="@dimen/margin_30"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:background="@drawable/book_appointment_bg"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ic_doctor_profile"
+                    android:layout_width="@dimen/profile_image_dimension"
+                    android:layout_height="@dimen/profile_image_dimension"
+                    android:layout_marginStart="@dimen/margin_30"
+                    android:layout_marginTop="@dimen/margin_20"
+                    android:src="@mipmap/ic_launcher"
+                    app:layout_constraintStart_toStartOf="@id/doctor_detail_view"
+                    app:layout_constraintTop_toTopOf="@id/doctor_detail_view" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_doctor_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_20"
+                    android:layout_marginTop="@dimen/margin_15"
+                    android:layout_marginEnd="@dimen/margin_20"
+                    android:text="@{viewModel.doctorName}"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="@+id/doctor_detail_view"
+                    app:layout_constraintStart_toEndOf="@+id/ic_doctor_profile"
+                    app:layout_constraintTop_toTopOf="@+id/ic_doctor_profile" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_doctor_specialization"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="@+id/text_doctor_name"
+                    app:layout_constraintStart_toStartOf="@+id/text_doctor_name"
+                    app:layout_constraintTop_toBottomOf="@+id/text_doctor_name"
+                    app:string="@{viewModel.doctorDetails != null ? viewModel.doctorDetails.specialities : null}" />
+
+                <RatingBar
+                    android:id="@+id/doctorRatingBar"
+                    style="@style/Widget.AppCompat.RatingBar.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:max="5"
+                    android:rating="@{viewModel.doctorDetails.rating}"
+                    app:layout_constraintStart_toStartOf="@+id/text_doctor_specialization"
+                    app:layout_constraintTop_toBottomOf="@+id/text_doctor_specialization" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_title_schedule"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_20"
+                    android:text="@string/title_schedule"
+                    android:textColor="@color/blue"
+                    app:layout_constraintStart_toStartOf="@+id/doctor_detail_view"
+                    app:layout_constraintTop_toBottomOf="@+id/doctor_detail_view" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_schedule_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10"
+                    app:layout_constraintEnd_toEndOf="@+id/doctor_detail_view"
+                    app:layout_constraintStart_toStartOf="@+id/doctor_detail_view"
+                    app:layout_constraintTop_toBottomOf="@+id/text_title_schedule" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_select_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:text="@string/title_select_time"
+                    android:textColor="@color/blue"
+                    app:layout_constraintStart_toStartOf="@+id/rv_schedule_date"
+                    app:layout_constraintTop_toBottomOf="@+id/rv_schedule_date" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/margin_10"
+                    app:layout_constraintBottom_toTopOf="@+id/text_symptom_label"
+                    app:layout_constraintEnd_toEndOf="@+id/rv_schedule_date"
+                    app:layout_constraintStart_toStartOf="@+id/text_select_time"
+                    app:layout_constraintTop_toBottomOf="@+id/text_select_time" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_symptom_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:text="@string/symptoms"
+                    android:textColor="@color/blue"
+                    app:layout_constraintStart_toStartOf="@+id/rv_time"
+                    app:layout_constraintTop_toBottomOf="@+id/rv_time" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/fieldSymptomsDetails"
+                    style="@style/user_login_tlEditText"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_20"
+                    app:error="@{viewModel.symptomDetailsError}"
+                    app:errorEnabled="@{viewModel.symptomDetailsError!= null ? true : false}"
+                    app:layout_constraintEnd_toEndOf="@+id/rv_time"
+                    app:layout_constraintStart_toStartOf="@+id/rv_time"
+                    app:layout_constraintTop_toBottomOf="@+id/text_symptom_label">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etSymptomsDetails"
+                        style="@style/user_login_editText"
+                        android:afterTextChanged="@{(text) -> viewModel.isValidSymptomDetails(text)}"
+                        android:hint="@string/symptom_details"
+                        android:imeOptions="actionNext"
+                        android:singleLine="false"
+                        android:text="@={viewModel.symptomDetails}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/fieldNumberOfDays"
+                    style="@style/user_login_tlEditText"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10"
+                    app:error="@{viewModel.sufferingDaysError}"
+                    app:errorEnabled="@{viewModel.sufferingDaysError!= null ? true : false}"
+                    app:layout_constraintEnd_toEndOf="@+id/rv_time"
+                    app:layout_constraintStart_toStartOf="@+id/rv_time"
+                    app:layout_constraintTop_toBottomOf="@+id/fieldSymptomsDetails">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etSufferingDays"
+                        style="@style/user_login_editText"
+                        android:afterTextChanged="@{(text) -> viewModel.isValidNumberOfDays(text)}"
+                        android:hint="@string/number_of_days"
+                        android:imeOptions="actionNext"
+                        android:inputType="number"
+                        android:text="@={viewModel.sufferingDays}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvConsultQuestion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_30"
+                    android:text="@string/have_you_consult_any_doctor"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="@+id/doctor_detail_view"
+                    app:layout_constraintTop_toBottomOf="@+id/fieldNumberOfDays" />
+
+                <RadioGroup
+                    android:id="@+id/radio_consult"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="@dimen/margin_50"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="@+id/doctor_detail_view"
+                    app:layout_constraintStart_toStartOf="@+id/doctor_detail_view"
+                    app:layout_constraintTop_toBottomOf="@+id/tvConsultQuestion">
+
+                    <androidx.appcompat.widget.AppCompatRadioButton
+                        android:id="@+id/radioButtonYes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/yes"
+                        android:value="@string/yes" />
+
+                    <androidx.appcompat.widget.AppCompatRadioButton
+                        android:id="@+id/radioButtonNo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_10"
+                        android:checked="true"
+                        android:text="@string/no"
+                        android:value="@string/no" />
+
+                </RadioGroup>
+
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/autoCompleteTextViewDoctorName"
+                    style="@style/user_login_editText"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="55dp"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:background="@drawable/rounded_bg"
+                    android:completionThreshold="3"
+                    android:hint="@string/enter_doctor_name"
+                    app:layout_constraintEnd_toEndOf="@+id/doctor_detail_view"
+                    app:layout_constraintStart_toStartOf="@+id/doctor_detail_view"
+                    app:layout_constraintTop_toBottomOf="@+id/radio_consult" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/lastVisitDate"
+                    style="@style/user_login_tlEditText"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10"
+                    app:layout_constraintEnd_toEndOf="@+id/doctor_detail_view"
+                    app:layout_constraintStart_toStartOf="@+id/doctor_detail_view"
+                    app:layout_constraintTop_toBottomOf="@+id/lastPrescription">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etLastVisitDate"
+                        style="@style/user_login_editText"
+                        android:clickable="false"
+                        android:drawableEnd="@drawable/ic_calendar_blue"
+                        android:focusable="false"
+                        android:hint="@string/last_visit_date" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/lastPrescription"
+                    style="@style/user_login_tlEditText"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10"
+                    app:layout_constraintEnd_toEndOf="@+id/doctor_detail_view"
+                    app:layout_constraintStart_toStartOf="@+id/doctor_detail_view"
+                    app:layout_constraintTop_toBottomOf="@+id/autoCompleteTextViewDoctorName">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etLastPrescription"
+                        style="@style/user_login_editText"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:hint="@string/last_prescription" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/gpItems"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:constraint_referenced_ids="autoCompleteTextViewDoctorName, radio_consult, tvConsultQuestion, lastVisitDate,lastPrescription" />
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txt_doctor_notification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/online_booking"
+                    android:textColor="@color/black"
+                    app:layout_constraintBottom_toBottomOf="@+id/switch_online_booking"
+                    app:layout_constraintStart_toStartOf="@+id/button_book_appointment"
+                    app:layout_constraintTop_toTopOf="@+id/switch_online_booking" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch_online_booking"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="@={viewModel.onlineBookingToggleData}"
+                    app:layout_constraintEnd_toEndOf="@+id/button_book_appointment"
+                    app:layout_constraintTop_toBottomOf="@+id/lastVisitDate" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/button_book_appointment"
+                    style="@style/user_login_editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin_50"
+                    android:layout_marginHorizontal="@dimen/margin_20"
+                    android:layout_marginBottom="@dimen/margin_10"
+                    android:background="@drawable/button_state_colors"
+                    android:enabled="@{viewModel.isBookAppointmentDataValid}"
+                    android:onClick="@{() -> viewModel.bookAppointment()}"
+                    android:text="@string/title_appointment"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/switch_online_booking" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

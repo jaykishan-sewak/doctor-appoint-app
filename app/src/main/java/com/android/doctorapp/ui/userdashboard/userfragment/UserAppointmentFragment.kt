@@ -1,7 +1,6 @@
 package com.android.doctorapp.ui.userdashboard.userfragment
 
 import android.content.pm.PackageManager
-import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -23,6 +22,7 @@ import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.ui.userdashboard.userfragment.adapter.UserAppoitmentItemAdapter
 import com.android.doctorapp.util.GpsUtils
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DOCTOR_ID
 import com.android.doctorapp.util.extension.isGPSEnabled
 import com.android.doctorapp.util.extension.toast
 import com.android.doctorapp.util.permission.RuntimePermission
@@ -167,7 +167,7 @@ class UserAppointmentFragment :
         layoutBinding.recyclerView.adapter = adapter
 
         viewModel.doctorList.observe(viewLifecycleOwner) { it1 ->
-            if (it1 != null && it1.isNotEmpty()) {
+            if (!it1.isNullOrEmpty()) {
                 adapter.filterList(it1)
                 viewModel.dataFound.value = false
             } else {
@@ -185,6 +185,7 @@ class UserAppointmentFragment :
                 override fun onItemClick(item: UserDataResponseModel, position: Int) {
                     val bundle = Bundle()
                     bundle.putString(ConstantKey.BundleKeys.USER_ID, item.userId)
+                    bundle.putString(DOCTOR_ID, item.id)
                     findNavController().navigate(
                         R.id.action_user_appointment_to_bookAppointment,
                         bundle

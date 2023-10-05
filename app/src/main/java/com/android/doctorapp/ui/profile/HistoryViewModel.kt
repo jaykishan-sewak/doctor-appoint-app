@@ -1,6 +1,8 @@
-package com.android.doctorapp.ui.doctordashboard.doctorfragment
+package com.android.doctorapp.ui.profile
 
+import android.content.ContentValues.TAG
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -13,40 +15,45 @@ import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.AppointmentModel
-import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.Date
 import javax.inject.Inject
 
-class RequestDoctorViewModel @Inject constructor(
+class HistoryViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val appointmentRepository: AppointmentRepository,
     private val context: Context,
-    private val session: Session,
+    private val session: Session
+) : BaseViewModel() {
 
-    ) : BaseViewModel() {
-
-    val requestAppointmentList = MutableLiveData<List<AppointmentModel>?>()
-    var requestSelectedDate: MutableLiveData<Date> = SingleLiveEvent()
-    val isRequestCalender: MutableLiveData<Boolean> = MutableLiveData(false)
+    val appointmentHistoryList = MutableLiveData<List<AppointmentModel>>()
     val dataFound: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    fun getRequestAppointmentList() {
+
+    init {
+        getAppointmentHistoryList()
+    }
+
+    private fun getAppointmentHistoryList() {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 session.getString(USER_ID).collectLatest {
                     if (it?.isNotEmpty() == true) {
                         setShowProgress(true)
                         when (val response =
-                            appointmentRepository.getAppointmentsProgressList(
-                                requestSelectedDate.value!!, it, fireStore
+                            appointmentRepository.getAppointmentsHistoryList(
+                                it, fireStore
                             )) {
                             is ApiSuccessResponse -> {
                                 setShowProgress(false)
-                                requestAppointmentList.value = response.body
+                                appointmentHistoryList.value = response.body!!
+                                Log.d(
+                                    TAG,
+                                    "getHistoryAppointmentHistoryList: ${Gson().toJson(response.body)} "
+                                )
                             }
 
                             is ApiErrorResponse -> {
@@ -68,5 +75,6 @@ class RequestDoctorViewModel @Inject constructor(
             }
         }
     }
+
 
 }

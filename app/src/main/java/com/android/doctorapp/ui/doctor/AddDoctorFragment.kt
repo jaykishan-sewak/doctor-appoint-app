@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -35,7 +36,12 @@ class AddDoctorFragment : BaseFragment<FragmentAddDoctorBinding>(R.layout.fragme
             .withId(R.id.toolbar)
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             .withTitle(if (viewModel.email.value.isNullOrEmpty()) R.string.add_doctor else R.string.update_doctor)
-            .withNavigationIcon(requireActivity().getDrawable(R.drawable.ic_back_white))
+            .withNavigationIcon(
+                AppCompatResources.getDrawable(
+                    requireContext(),
+                    R.drawable.ic_back_white
+                )
+            )
             .withNavigationListener {
                 findNavController().popBackStack()
             }.withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white)).build()
@@ -64,7 +70,7 @@ class AddDoctorFragment : BaseFragment<FragmentAddDoctorBinding>(R.layout.fragme
             false
         )
         viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
-            if (it.equals("Success")) {
+            if (it.equals(getString(R.string.success))) {
                 context?.toast(resources.getString(R.string.doctor_save_successfully))
                 viewModel.navigationListener.observe(viewLifecycleOwner) {
                     navController.previousBackStackEntry?.savedStateHandle?.set(

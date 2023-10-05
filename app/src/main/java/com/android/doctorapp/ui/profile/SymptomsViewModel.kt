@@ -1,8 +1,6 @@
 package com.android.doctorapp.ui.profile
 
-import android.content.ContentValues.TAG
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.widget.RadioGroup
 import androidx.lifecycle.MutableLiveData
@@ -24,7 +22,6 @@ import com.android.doctorapp.util.extension.convertDateToFull
 import com.android.doctorapp.util.extension.hideKeyboard
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
-import com.google.gson.Gson
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -54,7 +51,7 @@ class SymptomsViewModel @Inject constructor(
     private val lastVisitTimeError: MutableLiveData<String?> = MutableLiveData()
     var doctorObj: MutableLiveData<UserDataResponseModel>? = MutableLiveData()
 
-    var doctorList = MutableLiveData<List<UserDataResponseModel>>()
+    var doctorList = MutableLiveData<List<UserDataResponseModel>?>()
 
     private val _navigationListener = SingleLiveEvent<Int>()
     val navigationListener = _navigationListener.asLiveData()
@@ -76,7 +73,6 @@ class SymptomsViewModel @Inject constructor(
 
     private fun updateUser() {
         viewModelScope.launch {
-            var recordId: String = ""
             session.getString(USER_ID).collectLatest {
                 //Here Code for User Update
                 val userData = SymptomModel(
@@ -129,8 +125,7 @@ class SymptomsViewModel @Inject constructor(
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
                         if (response.body.isNotEmpty()) {
-                            doctorList.value = response.body!!
-                            Log.d(TAG, "getDoctorList: ${Gson().toJson(response.body)}")
+                            doctorList.value = response.body
                         }
                     }
 

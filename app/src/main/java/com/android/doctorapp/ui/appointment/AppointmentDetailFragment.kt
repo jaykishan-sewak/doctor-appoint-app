@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -35,7 +36,12 @@ class AppointmentDetailFragment :
             .withId(R.id.toolbar)
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             .withTitle(R.string.appointment_detail)
-            .withNavigationIcon(requireActivity().getDrawable(R.drawable.ic_back_white))
+            .withNavigationIcon(
+                AppCompatResources.getDrawable(
+                    requireContext(),
+                    R.drawable.ic_back_white
+                )
+            )
             .withNavigationListener {
                 findNavController().popBackStack()
             }
@@ -105,18 +111,25 @@ class AppointmentDetailFragment :
                 }
             }
         }
-        viewModel.cancelClick.observe(viewLifecycleOwner) { it ->
+        viewModel.cancelClick.observe(viewLifecycleOwner) {
             if (it) {
-                CustomDialogFragment(requireContext(),object :CustomDialogFragment.OnButtonClickListener{
-                    override fun oClick(text: String) {
-                        viewModel.appointmentRejectApiCall(text)
-                    }
-                }).show()
+                CustomDialogFragment(requireContext(),
+                    object : CustomDialogFragment.OnButtonClickListener {
+                        override fun oClick(text: String) {
+                            viewModel.appointmentRejectApiCall(text)
+                        }
+                    }).show()
             }
         }
         viewModel.navigationListener.observe(viewLifecycleOwner) {
             if (it)
                 findNavController().popBackStack()
+        }
+
+        viewModel.updateClick.observe(viewLifecycleOwner) {
+            if (it) {
+                viewModel.appointmentUpdateApiCall()
+            }
         }
 
     }

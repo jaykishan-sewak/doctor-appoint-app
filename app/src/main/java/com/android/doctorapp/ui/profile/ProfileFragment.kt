@@ -76,6 +76,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
         registerObservers()
     }
 
+
     private fun registerObservers() {
         viewModel.isEdit.value = false
 
@@ -91,7 +92,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
             requireActivity().openPhoneDialer(it)
         }
         viewModel.emailClick.observe(viewLifecycleOwner) {
-            requireActivity().openEmailSender(it)
+            if (!it.isNullOrEmpty()) {
+                requireActivity().openEmailSender(it)
+            }
         }
         viewModel.navigateToLogin.observe(viewLifecycleOwner) {
             if (it)

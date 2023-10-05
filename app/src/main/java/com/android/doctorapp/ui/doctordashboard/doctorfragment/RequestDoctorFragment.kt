@@ -40,6 +40,7 @@ class RequestDoctorFragment :
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel: RequestDoctorViewModel by viewModels { viewModelFactory }
     private lateinit var adapter: RequestAppointmentsAdapter
+    private val myCalender: Calendar = Calendar.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,11 +77,11 @@ class RequestDoctorFragment :
             viewModel.isRequestCalender.value = false
         }
         viewModel.requestAppointmentList.observe(viewLifecycleOwner) {
-            if (it != null && it.isNotEmpty()) {
+            if (!it.isNullOrEmpty()) {
                 adapter.filterList(it)
                 viewModel.dataFound.value = true
             } else {
-                adapter.filterList(it)
+                adapter.filterList(it!!)
                 viewModel.dataFound.value = false
             }
         }

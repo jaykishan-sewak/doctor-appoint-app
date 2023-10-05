@@ -44,7 +44,6 @@ class OtpVerificationViewModel @Inject constructor(
                 otpVerificationId.value.toString(), otpDigit.value.toString()
             )
             signInWithPhoneAuthCredential(credential)
-        } else {
         }
 
     }

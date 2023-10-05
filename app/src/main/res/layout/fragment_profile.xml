@@ -90,6 +90,7 @@
                 android:layout_marginTop="@dimen/margin_5"
                 android:drawableStart="@drawable/ic_calendar_blue"
                 android:drawablePadding="@dimen/margin_20"
+                android:gravity="center_vertical"
                 android:textColor="@color/grey"
                 android:textStyle="bold"
                 app:headerDate="@{viewModel.userProfileDataResponse.dob}"
@@ -122,6 +123,7 @@
                 android:drawableStart="@drawable/ic_email_blue"
                 android:drawablePadding="@dimen/margin_20"
                 android:focusable="true"
+                android:gravity="center_vertical"
                 android:onClick="@{()->viewModel.onClickEmailIcon(viewModel.userProfileDataResponse.email)}"
                 android:text="@{viewModel.userProfileDataResponse.email}"
                 android:textColor="@color/grey"
@@ -140,7 +142,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tvEmail" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvSymptomView"
+                android:id="@+id/tvSymptomHistory"
                 style="@style/label_text"
                 android:layout_height="@dimen/dp_48"
                 android:layout_marginHorizontal="@dimen/margin_5"
@@ -149,14 +151,15 @@
                 android:drawableEnd="@drawable/baseline_arrow_forward_ios_24"
                 android:elevation="@dimen/margin_5"
                 android:gravity="center_vertical"
-                android:onClick="@{view -> viewModel.clickOnSymptom()}"
+                android:onClick="@{view -> viewModel.clickOnHistory()}"
                 android:paddingHorizontal="@dimen/margin_10"
-                android:text="@string/symptoms"
+                android:text="@string/history"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/divider" />
+
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvFeedbackView"
@@ -175,7 +178,7 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvSymptomView" />
+                app:layout_constraintTop_toBottomOf="@id/tvSymptomHistory" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvLogoutView"

@@ -5,31 +5,28 @@
     <data>
 
         <variable
-            name="onClickListener"
-            type="com.android.doctorapp.ui.doctordashboard.adapter.PatientListAdapter.OnItemClickListener" />
-
-        <variable
-            name="userData"
+            name="historyData"
             type="com.android.doctorapp.repository.models.AppointmentModel" />
 
+        <variable
+            name="index"
+            type="Integer" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/rowView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView1"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_16"
-            android:layout_marginVertical="@dimen/margin_10"
+            android:layout_marginVertical="@dimen/margin_20"
             android:backgroundTint="@color/white"
             android:elevation="@dimen/margin_5"
             android:paddingHorizontal="@dimen/margin_10"
             app:cardCornerRadius="@dimen/margin_10"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -41,57 +38,59 @@
                 android:paddingVertical="@dimen/margin_10">
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvPatientName"
+                    android:id="@+id/tvDoctorName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableStart="@drawable/ic_person_white"
                     android:drawablePadding="@dimen/margin_10"
-                    android:text="@{userData.name}"
+                    android:text="@{historyData.doctorDetails.name}"
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvPatientContact"
+                    android:id="@+id/tvBookingDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
                     android:clickable="true"
-                    android:drawableStart="@drawable/ic_phone_white"
+                    android:drawableStart="@drawable/ic_calendar_blue"
                     android:drawablePadding="@dimen/margin_10"
                     android:focusable="true"
-                    android:onClick="@{()->onClickListener.onClick(userData.contactNumber)}"
-                    android:text="@{userData.contactNumber}"
                     android:textColor="@color/black"
                     android:textSize="16sp"
+                    app:headerDate="@{historyData.bookingDateTime}"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvPatientName" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvDoctorName" />
 
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvPatientAge"
+                    android:id="@+id/symptomDetailLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_5"
                     android:layout_marginTop="@dimen/margin_10"
-                    android:text="@{userData.age}"
+                    android:text="@string/details"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvPatientContact" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvBookingDate" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/statusLabel"
-                    android:layout_width="0dp"
+                    android:id="@+id/tvSymptomDetails"
+                    android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_5"
-                    android:textAlignment="center"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/tvPatientAge"
-                    app:status="@{userData.status}" />
+                    android:layout_marginStart="@dimen/margin_10"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:text="@{historyData.symptomDetails}"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toEndOf="@id/symptomDetailLabel"
+                    app:layout_constraintTop_toBottomOf="@id/tvBookingDate" />
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

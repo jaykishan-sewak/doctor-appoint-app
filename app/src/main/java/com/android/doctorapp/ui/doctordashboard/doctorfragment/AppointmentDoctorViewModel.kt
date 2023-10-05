@@ -1,8 +1,6 @@
 package com.android.doctorapp.ui.doctordashboard.doctorfragment
 
-import android.content.ContentValues.TAG
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -35,7 +33,7 @@ class AppointmentDoctorViewModel @Inject constructor(
 
     val finalAppointmentList = MutableLiveData<List<Any>>()
     private val mainList = mutableListOf<Any>()
-    private val appointmentList = MutableLiveData<List<AppointmentModel>>()
+    private val appointmentList = MutableLiveData<List<AppointmentModel>?>()
     private val sortedAppointmentList = MutableLiveData<List<AppointmentModel>>()
 
     val dataFound: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -105,17 +103,16 @@ class AppointmentDoctorViewModel @Inject constructor(
             if (context.isNetworkAvailable()) {
                 session.getString(USER_ID).collectLatest {
                     if (it?.isNotEmpty() == true) {
-                        Log.d(TAG, "getAppointmentList: $it")
                         setShowProgress(true)
                         when (val response =
-                            appointmentRepository.getAppointmentsList(it!!, fireStore)) {
+                            appointmentRepository.getAppointmentsList(it, fireStore)) {
                             is ApiSuccessResponse -> {
                                 setShowProgress(false)
                                 if (response.body.isNotEmpty()) {
-                                    appointmentList.value = response.body!!
+                                    appointmentList.value = response.body
                                     sortedAppointmentList.value =
-                                        appointmentList.value!!.sortedByDescending {
-                                            it.bookingDateTime
+                                        appointmentList.value!!.sortedByDescending { it1 ->
+                                            it1.bookingDateTime
                                         }
                                     addData()
                                 }

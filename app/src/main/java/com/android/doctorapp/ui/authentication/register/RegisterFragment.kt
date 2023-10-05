@@ -64,7 +64,7 @@ class RegisterFragment : BaseFragment<FragmentSignupBinding>(R.layout.fragment_s
             }
 
             viewModel.signInAccountTask.observe(viewLifecycleOwner) {
-                if (it.isSuccessful) {
+                if (it!!.isSuccessful) {
                     val msg = getString(R.string.sign_with_google_successful)
                     context?.toast(msg)
                     viewModel.callGoogleSignInAccountAPI(it)
@@ -78,14 +78,14 @@ class RegisterFragment : BaseFragment<FragmentSignupBinding>(R.layout.fragment_s
             }
 
             viewModel.authCredential.observe(viewLifecycleOwner) {
-                viewModel.callGoogleAPI(it)
+                viewModel.callGoogleAPI(it!!)
             }
 
             viewModel.addUserResponse.observe(viewLifecycleOwner) {
                 if (it.equals(resources.getString(R.string.success))) {
                     context?.toast(resources.getString(R.string.user_save_successfully))
-                    viewModel.navigationListener.observe(viewLifecycleOwner) {
-                        findNavController().navigate(it)
+                    viewModel.navigationListener.observe(viewLifecycleOwner) { it1 ->
+                        findNavController().navigate(it1)
                     }
                 } else {
                     context?.alert {

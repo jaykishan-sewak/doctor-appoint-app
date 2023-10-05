@@ -12,7 +12,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import com.android.doctorapp.di.base.annotation.BindingOnly
 import com.android.doctorapp.di.base.toolbar.ToolbarFragment
-import java.util.Calendar
 
 abstract class BaseFragment<T : ViewDataBinding> constructor(
     @LayoutRes private val contentLayoutId: Int
@@ -21,7 +20,6 @@ abstract class BaseFragment<T : ViewDataBinding> constructor(
     protected var bindingComponent: DataBindingComponent? = DataBindingUtil.getDefaultComponent()
 
     private var _binding: T? = null
-    val  myCalender: Calendar = Calendar.getInstance()
 
     @BindingOnly
     protected val binding: T

@@ -1,4 +1,4 @@
-package com.android.doctorapp.ui.userdashboard.userfragment
+package com.android.doctorapp.ui.profile
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,67 +9,57 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.doctorapp.R
-import com.android.doctorapp.databinding.FragmentBookingDetailBinding
+import com.android.doctorapp.databinding.FragmentHistoryBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
-import com.android.doctorapp.repository.models.AppointmentModel
-import com.android.doctorapp.ui.appointment.dialog.CustomDialogFragment
-import com.android.doctorapp.util.constants.ConstantKey
-import com.google.gson.Gson
+import com.android.doctorapp.ui.profile.adapter.HistoryAdapter
 import javax.inject.Inject
 
 
-class BookingDetailFragment :
-    BaseFragment<FragmentBookingDetailBinding>(R.layout.fragment_booking_detail) {
-
+class HistoryFragment : BaseFragment<FragmentHistoryBinding>(R.layout.fragment_history) {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    val viewModel: BookingDetailViewModel by viewModels { viewModelFactory }
+    private val viewModel by viewModels<HistoryViewModel> { viewModelFactory }
+    private lateinit var adapter: HistoryAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (requireActivity().application as AppComponentProvider).getAppComponent().inject(this)
+
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        if (arguments != null) {
-
-            val appointmentObj =
-                requireArguments().getString(ConstantKey.BundleKeys.BOOKING_APPOINTMENT_DATA)
-            viewModel.appointmentObj.value =
-                Gson().fromJson(appointmentObj, AppointmentModel::class.java)
-        }
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
-            viewModel = this@BookingDetailFragment.viewModel
+            viewModel = this@HistoryFragment.viewModel
         }
         setUpWithViewModel(viewModel)
-        registerObserver()
+        registerObservers(layoutBinding)
         return layoutBinding.root
     }
 
-    private fun registerObserver() {
 
-        viewModel.cancelClick.observe(viewLifecycleOwner) {
-            if (it) {
-                CustomDialogFragment(requireContext(),
-                    object : CustomDialogFragment.OnButtonClickListener {
-                        override fun oClick(text: String) {
-                            viewModel.appointmentRejectApiCall(text)
-                        }
-                    }).show()
+    private fun registerObservers(layoutBinding: FragmentHistoryBinding) {
+        layoutBinding.historyRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        adapter = HistoryAdapter(emptyList())
+        layoutBinding.historyRecyclerView.adapter = adapter
+        viewModel.appointmentHistoryList.observe(viewLifecycleOwner) {
+            if (it != null && it.isNotEmpty()) {
+                adapter.filterList(it)
+                viewModel.dataFound.value = true
+            } else {
+                adapter.filterList(emptyList())
+                viewModel.dataFound.value = false
             }
-        }
-
-        viewModel.navigationListener.observe(viewLifecycleOwner) {
-            if (it)
-                findNavController().popBackStack()
         }
     }
 
@@ -77,7 +67,6 @@ class BookingDetailFragment :
         return FragmentToolbar.Builder()
             .withId(R.id.toolbar)
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
-            .withTitle(R.string.appointment_detail)
             .withNavigationIcon(
                 AppCompatResources.getDrawable(
                     requireContext(),
@@ -87,9 +76,8 @@ class BookingDetailFragment :
             .withNavigationListener {
                 findNavController().popBackStack()
             }
-            .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
+            .withTitle(R.string.history)
             .build()
     }
-
 
 }

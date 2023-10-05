@@ -22,6 +22,7 @@ import com.android.doctorapp.ui.feedback.FeedbackFragment
 import com.android.doctorapp.ui.home.HomeFragment
 import com.android.doctorapp.ui.otp.OtpVerificationFragment
 import com.android.doctorapp.ui.profile.AddUserProfileFragment
+import com.android.doctorapp.ui.profile.HistoryFragment
 import com.android.doctorapp.ui.profile.ProfileFragment
 import com.android.doctorapp.ui.profile.SymptomsFragment
 import com.android.doctorapp.ui.userdashboard.userfragment.BookingDetailFragment
@@ -65,6 +66,7 @@ interface AppComponent {
     fun inject(fragment: SymptomsFragment)
 
     fun inject(fragment: BottomSheetDialog)
+    fun inject(fragment: HistoryFragment)
 
     fun inject(fragment: DoctorAddressFragment)
 

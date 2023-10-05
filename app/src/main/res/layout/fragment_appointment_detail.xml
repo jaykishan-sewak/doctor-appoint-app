@@ -107,10 +107,10 @@
                 app:layout_constraintWidth_percent="0.4" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvPatientSymptoms"
+                android:id="@+id/tvPatientSuffer"
                 style="@style/label_text2"
                 android:layout_marginTop="@dimen/margin_10"
-                android:text="@string/symptoms_label"
+                android:text="@string/suffering_days"
                 android:textAlignment="textStart"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -119,34 +119,10 @@
 
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvPatientSymptomsValue"
-                style="@style/label_text"
-                android:layout_marginTop="@dimen/margin_10"
-                android:text="@{viewModel.symptomResponse != null &amp;&amp; !viewModel.symptomResponse.symptomDetails.isEmpty() ? viewModel.symptomResponse.symptomDetails : `-`}"
-                android:textAlignment="textEnd"
-                app:layout_constraintBottom_toBottomOf="@id/tvPatientSymptoms"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/tvPatientSymptoms"
-                app:layout_constraintTop_toTopOf="@id/tvPatientSymptoms"
-                app:layout_constraintWidth_percent="0.4" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvPatientSuffer"
-                style="@style/label_text2"
-                android:layout_marginTop="@dimen/margin_10"
-                android:text="@string/suffering_days"
-                android:textAlignment="textStart"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvPatientSymptoms"
-                app:layout_constraintWidth_percent="0.6" />
-
-
-            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvPatientSufferValue"
                 style="@style/label_text"
                 android:layout_marginTop="@dimen/margin_10"
-                android:text="@{viewModel.symptomResponse != null  &amp;&amp; !viewModel.symptomResponse.sufferingDay.isEmpty() ? viewModel.symptomResponse.sufferingDay : `-`}"
+                android:text="@{viewModel.appointmentResponse != null  &amp;&amp; !viewModel.appointmentResponse.sufferingDay.isEmpty() ? viewModel.appointmentResponse.sufferingDay : `-`}"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/tvPatientSuffer"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -223,12 +199,74 @@
                 app:layout_constraintTop_toTopOf="@id/tvStatusLabel"
                 app:layout_constraintWidth_percent="0.4" />
 
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvIsVisited"
+                style="@style/label_text2"
+                android:layout_marginTop="@dimen/margin_10"
+                android:text="@string/is_visited"
+                android:textAlignment="textStart"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvStatusLabel"
+                app:layout_constraintWidth_percent="0.6" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/tvVisitedToggleValue"
+                style="@style/label_text"
+                android:layout_marginTop="@dimen/margin_10"
+                android:checked="@={viewModel.isVisitedToggleData()}"
+                android:textAlignment="textEnd"
+                app:layout_constraintBottom_toBottomOf="@id/tvIsVisited"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tvIsVisited"
+                app:layout_constraintTop_toTopOf="@id/tvIsVisited"
+                app:layout_constraintWidth_percent="0.4" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvPatientSymptoms"
+                style="@style/label_text2"
+                android:layout_marginTop="@dimen/margin_10"
+                android:text="@string/symptoms_label"
+                android:textAlignment="textStart"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvVisitedToggleValue"
+                app:layout_constraintWidth_percent="0.6" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvPatientSymptomsValue"
+                style="@style/label_text"
+                android:layout_marginTop="@dimen/margin_10"
+                android:text="@{viewModel.appointmentResponse != null &amp;&amp; !viewModel.appointmentResponse.symptomDetails.isEmpty() ? viewModel.appointmentResponse.symptomDetails : `-`}"
+                android:textAlignment="textEnd"
+                app:layout_constraintBottom_toBottomOf="@id/tvPatientSymptoms"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tvPatientSymptoms"
+                app:layout_constraintTop_toTopOf="@id/tvPatientSymptoms"
+                app:layout_constraintWidth_percent="0.4" />
+
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/btnGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="@{viewModel.isShowBothButton ? View.VISIBLE:View.GONE}"
                 app:constraint_referenced_ids="btnConfirm,btnReject" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnUpdate"
+                style="@style/user_login_editText"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/margin_50"
+                android:layout_marginBottom="@dimen/margin_10"
+                android:background="@drawable/button_state_colors"
+                android:onClick="@{()->viewModel.onUpdateClick()}"
+                android:text="@string/update"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:visibility="@{viewModel.appointmentResponse.status.equalsIgnoreCase(`APPROVED`) ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toTopOf="@+id/btnCancel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnCancel"

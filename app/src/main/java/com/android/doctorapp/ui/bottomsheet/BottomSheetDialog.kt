@@ -1,5 +1,6 @@
 package com.android.doctorapp.ui.bottomsheet
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -24,6 +25,7 @@ import com.android.doctorapp.util.extension.negativeButton
 import com.android.doctorapp.util.extension.positiveButton
 import com.android.doctorapp.util.extension.toast
 import com.android.doctorapp.util.permission.RuntimePermission
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
@@ -84,7 +86,7 @@ class BottomSheetDialog(listener: DialogListener) :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (requireActivity().application as AppComponentProvider).getAppComponent().inject(this)
-        setStyle(STYLE_NORMAL, R.style.AppBottomSheetDialogTheme);
+        setStyle(STYLE_NORMAL, R.style.AppBottomSheetDialogTheme)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -111,13 +113,23 @@ class BottomSheetDialog(listener: DialogListener) :
 
             if (result.resultCode == AppCompatActivity.RESULT_OK) {
                 val imageBitmap = result.data?.extras?.get("data") as Bitmap
-                val imageUri = saveImageToFile(imageBitmap)
-                listener.getImageUri(imageUri)
+                val uri: Uri = bitmapToUri(requireContext(), imageBitmap)
+
+//                val imageUri = saveImageToFile(imageBitmap)
+                listener.getImageUri(uri)
                 dismiss()
             } else {
                 Log.d("camera---", "cancel")
             }
         }
+
+    fun bitmapToUri(context: Context, bitmap: Bitmap): Uri {
+        val bytes = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val path =
+            MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Title", null)
+        return Uri.parse(path)
+    }
 
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

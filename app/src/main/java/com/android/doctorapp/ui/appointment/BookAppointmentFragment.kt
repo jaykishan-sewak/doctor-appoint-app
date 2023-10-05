@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -19,8 +20,9 @@ import com.android.doctorapp.repository.models.AddShiftTimeModel
 import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.ui.appointment.adapter.AppointmentDateAdapter
 import com.android.doctorapp.ui.appointment.adapter.AppointmentTimeAdapter
-import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.BOOKING_DATE_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DOCTOR_ID
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_ID
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE_MONTH_YEAR
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_HOUR_MINUTE_SECOND
 import com.android.doctorapp.util.extension.alert
@@ -59,7 +61,9 @@ class BookAppointmentFragment :
         val arguments: Bundle? = arguments
         if (arguments != null) {
             viewModel.doctorId.value =
-                arguments.getString(ConstantKey.BundleKeys.USER_ID).toString()
+                arguments.getString(USER_ID).toString()
+            viewModel.doctorDocumentID.value =
+                arguments.getString(DOCTOR_ID).toString()
         }
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
@@ -75,7 +79,12 @@ class BookAppointmentFragment :
             .withId(R.id.toolbar)
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             .withTitle(R.string.title_appointment)
-            .withNavigationIcon(requireActivity().getDrawable(R.drawable.ic_back_white))
+            .withNavigationIcon(
+                AppCompatResources.getDrawable(
+                    requireContext(),
+                    R.drawable.ic_back_white
+                )
+            )
             .withNavigationListener {
                 findNavController().popBackStack()
             }
@@ -111,7 +120,7 @@ class BookAppointmentFragment :
                             dateFormat = SimpleDateFormat(BOOKING_DATE_FORMAT)
                             selectedDateTime = dateFormat.parse("$dateStr $timeStr")!!
                             viewModel.addBookingAppointmentData(selectedDateTime)
-                        } catch (e: Exception) {
+                        } catch (_: Exception) {
                         }
                     }
                     negativeButton(context.resources.getString(R.string.cancel)) { dialog ->
@@ -134,6 +143,7 @@ class BookAppointmentFragment :
                 override fun onItemClick(item: DateSlotModel, position: Int) {
                     dateList.forEachIndexed { index, dateSlotModel ->
                         if (dateSlotModel.date == item.date) {
+                            item.date?.let { viewModel.getAppointmentData(selectedDate = it) }
                             dateStr = dateFormatter(item.date, FORMATTED_DATE_MONTH_YEAR)
                             dateList[index].dateSelect = true
                             appointmentDateAdapter.notifyItemChanged(index)

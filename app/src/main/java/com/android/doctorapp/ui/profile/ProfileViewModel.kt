@@ -1,9 +1,7 @@
 package com.android.doctorapp.ui.profile
 
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -44,7 +42,7 @@ class ProfileViewModel @Inject constructor(
     private val _onProfilePictureClicked = SingleLiveEvent<Unit>()
     val onProfilePictureClicked = _onProfilePictureClicked.asLiveData()
 
-    var userProfileDataResponse: MutableLiveData<UserDataResponseModel> = MutableLiveData()
+    var userProfileDataResponse: MutableLiveData<UserDataResponseModel?> = MutableLiveData()
     val isEdit: MutableLiveData<Boolean> = MutableLiveData(false)
     val isDoctorEdit: MutableLiveData<Boolean> = MutableLiveData(false)
 
@@ -55,6 +53,9 @@ class ProfileViewModel @Inject constructor(
     val navigationListener = _navigationListener.asLiveData()
     val imageUri = MutableLiveData<Uri>()
 
+    init {
+        emailClick.postValue("")
+    }
 
     fun getUserProfileData() {
         viewModelScope.launch {
@@ -66,13 +67,12 @@ class ProfileViewModel @Inject constructor(
                     when (val response =
                         profileRepository.getProfileRecordById(recordId, fireStore)) {
                         is ApiSuccessResponse -> {
-                            userProfileDataResponse.value = response.body!!
+                            userProfileDataResponse.value = response.body
                             imageUri.value = userProfileDataResponse.value!!.images.toUri()
                             dateList.value = dateListFormatter(
                                 response.body.holidayList,
                                 ConstantKey.DATE_MM_FORMAT
                             )
-                            Log.d(TAG, "DateList: ${response.body}")
                             setShowProgress(false)
                         }
 
@@ -131,6 +131,10 @@ class ProfileViewModel @Inject constructor(
 
     fun clickOnFeedback() {
         _navigationListener.value = R.id.action_user_profile_to_feedBack
+    }
+
+    fun clickOnHistory() {
+        _navigationListener.value = R.id.action_user_profile_to_history
     }
 
 }

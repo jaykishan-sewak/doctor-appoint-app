@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -40,6 +41,7 @@ class SelectedDateAppointmentsFragment :
     private val viewModel: SelectedDateAppointmentsViewModel by viewModels { viewModelFactory }
     var date = ""
     private lateinit var adapter: SelectedDateAdapter
+    private val myCalender: Calendar = Calendar.getInstance()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,11 +82,11 @@ class SelectedDateAppointmentsFragment :
             viewModel.isCalender.value = false
         }
         viewModel.appointmentList.observe(viewLifecycleOwner) {
-            if (it != null && it.isNotEmpty()) {
+            if (!it.isNullOrEmpty()) {
                 adapter.filterList(it)
                 viewModel.dataFound.value = true
             } else {
-                adapter.filterList(it)
+                adapter.filterList(it!!)
                 viewModel.dataFound.value = false
             }
         }
@@ -110,7 +112,12 @@ class SelectedDateAppointmentsFragment :
             .withId(R.id.toolbar)
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             .withTitleString(dateFormatter(viewModel.selectedDate.value!!, DATE_MM_FORMAT))
-            .withNavigationIcon(requireActivity().getDrawable(R.drawable.ic_back_white))
+            .withNavigationIcon(
+                AppCompatResources.getDrawable(
+                    requireContext(),
+                    R.drawable.ic_back_white
+                )
+            )
             .withNavigationListener {
                 findNavController().popBackStack()
             }
