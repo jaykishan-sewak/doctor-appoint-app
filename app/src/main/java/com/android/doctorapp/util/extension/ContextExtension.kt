@@ -299,3 +299,9 @@ fun Context.isGPSEnabled(): Boolean {
     val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
     return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 }
+
+fun getCurrentDate(): String {
+    val dateFormatFull = SimpleDateFormat(FORMATTED_DATE, Locale.getDefault())
+    val currentCal = Calendar.getInstance()
+    return dateFormatFull.format(currentCal.time)
+}

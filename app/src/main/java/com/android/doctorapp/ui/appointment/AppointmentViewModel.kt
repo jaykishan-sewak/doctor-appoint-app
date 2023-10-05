@@ -29,6 +29,7 @@ import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.convertToFormatDate
 import com.android.doctorapp.util.extension.currentDate
 import com.android.doctorapp.util.extension.dateFormatter
+import com.android.doctorapp.util.extension.getCurrentDate
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import kotlinx.coroutines.flow.collectLatest
@@ -46,8 +47,6 @@ class AppointmentViewModel @Inject constructor(
     private val context: Context,
     private val resourceProvider: ResourceProvider
 ) : BaseViewModel() {
-
-    private val dateFormatFull = SimpleDateFormat(FORMATTED_DATE, Locale.getDefault())
 
     private val _daysDateList = MutableLiveData<ArrayList<DateSlotModel>>()
     val daysDateList = _daysDateList.asLiveData()
@@ -109,10 +108,16 @@ class AppointmentViewModel @Inject constructor(
     private fun get15DaysList() {
         val dateList = mutableListOf<Date>()
         val calendar = Calendar.getInstance()
-        calendar.time = dateFormatFull.parse(currentDate) as Date
+        calendar.time =
+            SimpleDateFormat(FORMATTED_DATE, Locale.getDefault()).parse(currentDate) as Date
 
         // Add the current date to the list
-        dateList.add(dateFormatFull.parse(currentDate) as Date)
+        dateList.add(
+            SimpleDateFormat(
+                FORMATTED_DATE,
+                Locale.getDefault()
+            ).parse(currentDate) as Date
+        )
 
         for (i in 1 until 15) {
             calendar.add(Calendar.DAY_OF_YEAR, 1)
@@ -125,7 +130,10 @@ class AppointmentViewModel @Inject constructor(
         }
 
         daysList.forEachIndexed { index, dateSlotModel ->
-            if (dateSlotModel.date == dateFormatFull.parse(currentDate) as Date) {
+            if (dateSlotModel.date == SimpleDateFormat(FORMATTED_DATE, Locale.getDefault()).parse(
+                    currentDate
+                ) as Date
+            ) {
                 daysList[index].dateSelect = true
             }
             holidayList.forEachIndexed { _, data ->
@@ -154,10 +162,6 @@ class AppointmentViewModel @Inject constructor(
     }
 
     // Function to get the current date as a Date object
-    private fun getCurrentDate(): String {
-        val currentCal = Calendar.getInstance()
-        return dateFormatFull.format(currentCal.time)
-    }
 
     fun validateDateTime() {
         isBookAppointmentDataValid.value = isDateSelected.value == true
@@ -558,7 +562,12 @@ class AppointmentViewModel @Inject constructor(
         }
     }
 
-    fun getAppointmentData(selectedDate: Date = dateFormatFull.parse(currentDate) as Date) {
+    fun getAppointmentData(
+        selectedDate: Date = SimpleDateFormat(
+            FORMATTED_DATE,
+            Locale.getDefault()
+        ).parse(currentDate) as Date
+    ) {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 setShowProgress(true)

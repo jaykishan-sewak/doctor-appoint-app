@@ -113,19 +113,17 @@ class AppointmentRepository @Inject constructor() {
     }
 
     suspend fun getAppointmentsProgressList(
-        date: Date,
         userId: String,
+        startDate: Date,
+        endDate: Date,
         firestore: FirebaseFirestore
     ): ApiResponse<List<AppointmentModel>> {
         return try {
-            val nextDate = Calendar.getInstance()
-            nextDate.time = date
-            nextDate.add(Calendar.DATE, 1)
             val response = firestore.collection(TABLE_APPOINTMENT)
                 .whereEqualTo(FIELD_DOCTOR_ID, userId)
                 .whereEqualTo(FIELD_APPROVED_KEY, FIELD_PENDING)
-                .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, date)
-                .whereLessThanOrEqualTo(FIELD_SELECTED_DATE, nextDate.time)
+                .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, startDate)
+                .whereLessThanOrEqualTo(FIELD_SELECTED_DATE, endDate)
                 .get().await()
             val appointmentsList = arrayListOf<AppointmentModel>()
             for (document: DocumentSnapshot in response.documents) {
