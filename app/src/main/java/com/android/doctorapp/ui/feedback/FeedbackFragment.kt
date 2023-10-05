@@ -1,6 +1,8 @@
 package com.android.doctorapp.ui.feedback
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +20,7 @@ import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.ui.feedback.adapter.DoctorListAdapter
 import com.android.doctorapp.util.constants.ConstantKey
+import com.google.gson.Gson
 import javax.inject.Inject
 
 class FeedbackFragment : BaseFragment<FragmentFeedbackBinding>(R.layout.fragment_feedback) {
@@ -85,7 +88,18 @@ class FeedbackFragment : BaseFragment<FragmentFeedbackBinding>(R.layout.fragment
             object : DoctorListAdapter.OnItemClickListener {
                 override fun onItemClick(item: UserDataResponseModel, position: Int) {
                     val bundle = Bundle()
-                    bundle.putString(ConstantKey.BundleKeys.DOCTOR_ID, item.userId)
+                    bundle.putString(ConstantKey.BundleKeys.USER_DATA, Gson().toJson(item))
+                    Log.d(TAG, "onItemClick: ${Gson().toJson(item)} ")
+                    findNavController().navigate(
+                        R.id.action_feedback_to_feedBack_details, bundle
+                    )
+                }
+
+                override fun onEditClick(item: UserDataResponseModel, position: Int) {
+                    val bundle = Bundle()
+                    bundle.putString(ConstantKey.BundleKeys.USER_DATA, Gson().toJson(item))
+                    Log.d(TAG, "onItemClick: ${Gson().toJson(item)} ")
+                    viewModel.isEditClicked.value = true
                     findNavController().navigate(
                         R.id.action_feedback_to_feedBack_details, bundle
                     )

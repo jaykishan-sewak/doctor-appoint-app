@@ -19,6 +19,7 @@ object ConstantKey {
         const val BOOKING_FRAGMENT = "BOOKING_FRAGMENT"
         const val BOOKING_APPOINTMENT_DATA = "bookingAppointmentData"
         const val DOCTOR_ID = "doctorId"
+        const val USER_DATA = "userData"
 
     }
 

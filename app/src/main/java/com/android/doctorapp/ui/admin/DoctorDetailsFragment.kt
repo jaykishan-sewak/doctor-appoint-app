@@ -54,7 +54,7 @@ class DoctorDetailsFragment :
         return MenuItem.OnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_edit -> viewModel.moveToUpdateScreen()
-                R.id.action_delete -> viewModel.deleteDoctorData(viewModel.doctorDetails.value!!.id)
+                R.id.action_delete -> viewModel.deleteDoctorData(viewModel.doctorDetails.value!!.docId)
             }
             false
         }

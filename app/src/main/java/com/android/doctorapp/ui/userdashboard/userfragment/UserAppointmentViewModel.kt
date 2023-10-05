@@ -53,7 +53,7 @@ class UserAppointmentViewModel @Inject constructor(
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 setShowProgress(true)
-                when (val response = adminRepository.getDoctorList(fireStore)) {
+                when (val response = adminRepository.getFeedbackDoctorList(fireStore)) {
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
                         if (response.body.isNotEmpty()) {

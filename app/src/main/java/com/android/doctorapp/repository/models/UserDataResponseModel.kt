@@ -4,7 +4,7 @@ import android.media.Rating
 import java.util.Date
 
 data class UserDataResponseModel(
-    var id: String = "",
+    var docId: String = "",
     var userId: String = "",
     var isDoctor: Boolean = false,
     var email: String = "",
@@ -24,5 +24,6 @@ data class UserDataResponseModel(
     var isUserVerified: Boolean = false,
     var holidayList: ArrayList<Date>? = null,
     var weekOffList: ArrayList<String>? = null,
-    var rating: Float? = null
+    var rating: Float? = null,
+    var feedbackDetails: FeedbackResponseModel? = null
 )

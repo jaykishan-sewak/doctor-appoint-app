@@ -59,7 +59,7 @@ class ProfileRepository @Inject constructor(
             for (document: DocumentSnapshot in response.documents) {
                 val user = document.toObject(UserDataResponseModel::class.java)
                 user?.let {
-                    it.id = document.id
+                    it.docId = document.id
                     userList.add(it)
                 }
             }
