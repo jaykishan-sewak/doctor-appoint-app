@@ -20,6 +20,7 @@ import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.ui.doctordashboard.adapter.RequestAppointmentsAdapter
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.DATE_PICKER
 import com.android.doctorapp.util.extension.currentDate
 import com.android.doctorapp.util.extension.dateFormatter
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -89,7 +90,7 @@ class RequestDoctorFragment :
         viewModel.isRequestCalender.observe(viewLifecycleOwner) {
             if (it) {
                 requestDatePicker = MaterialDatePicker.Builder.dateRangePicker().build()
-                requestDatePicker.show(requireActivity().supportFragmentManager, "DatePicker")
+                requestDatePicker.show(requireActivity().supportFragmentManager, DATE_PICKER)
                 requestDatePicker.addOnPositiveButtonClickListener { dateRange ->
                     viewModel.startDate.value = changeTime(dateRange.first, true)
                     viewModel.endDate.value = changeTime(dateRange.second, false)
