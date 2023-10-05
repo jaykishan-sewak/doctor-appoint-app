@@ -20,9 +20,8 @@ import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.ui.doctor.AddDoctorViewModel
-import com.android.doctorapp.ui.profile.ProfileViewModel
 import com.android.doctorapp.util.GpsUtils
-import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_USER_DATA
 import com.android.doctorapp.util.extension.isGPSEnabled
 import com.android.doctorapp.util.extension.toast
 import com.android.doctorapp.util.permission.RuntimePermission.Companion.askPermission
@@ -38,6 +37,7 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.gson.Gson
 import java.util.Locale
 import javax.inject.Inject
 
@@ -100,15 +100,15 @@ class DoctorAddressFragment :
             viewModel.test()
         }
 
-        binding.btnGet.setOnClickListener {
+        /*binding.btnGet.setOnClickListener {
             viewModel.getUserData().observe(viewLifecycleOwner) {
                 val center = GeoLocation(23.0225, 72.5714)
                 val radiusInM = 50.0 * 1000.0
-                Log.d("TAG", "onCreateView: $center   -->     $radiusInM")
+//                Log.d("TAG", "onCreateView: $center   -->     $radiusInM")
                 val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInM)
                 val tasks: MutableList<Task<QuerySnapshot>> = ArrayList()
                 for (b in bounds) {
-                    val q = fireStore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
+                    val q = fireStore.collection(TABLE_USER_DATA)
                         .orderBy("geohash")
                         .startAt(b.startHash)
                         .endAt(b.endHash)
@@ -118,7 +118,7 @@ class DoctorAddressFragment :
                     .addOnCompleteListener {
                         for (task in tasks) {
                             val snap = task.result
-                            Log.d("TAG", "onCreateView: ${tasks.size}")
+                            Log.d("TAG", "onCreateView: ${snap.documents}")
                             for (doc in snap!!.documents) {
                                 val lat = doc.getDouble("latitude")!!
                                 val lng = doc.getDouble("longitude")!!
@@ -140,10 +140,55 @@ class DoctorAddressFragment :
                     Log.d("TAG", "onCreateView: ${documentSnapshot.id}")
                 }
             }
-        }
+        }*/
 
-        /*return binding {
-        }.root*/
+
+        binding.btnGet.setOnClickListener {
+            val center = GeoLocation(51.5074, 0.1278)
+            val radiusInM = 50.0 * 1000.0
+
+            // Each item in 'bounds' represents a startAt/endAt pair. We have to issue
+            // a separate query for each pair. There can be up to 9 pairs of bounds
+            // depending on overlap, but in most cases there are 4.
+            val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInM)
+            val tasks: MutableList<Task<QuerySnapshot>> = ArrayList()
+            for (b in bounds) {
+                val q = fireStore.collection(TABLE_USER_DATA)
+                    .orderBy("geohash")
+                    .startAt(b.startHash)
+                    .endAt(b.endHash)
+                tasks.add(q.get())
+            }
+
+            // Collect all the query results together into a single list
+            Tasks.whenAllComplete(tasks)
+                .addOnCompleteListener {
+                    val matchingDocs: MutableList<DocumentSnapshot> = ArrayList()
+                    for (task in tasks) {
+                        tasks.forEachIndexed { index, task1 ->
+                            Log.d("TAG", "onCreateView: ${task1.result.documents}")
+                        }
+                        Log.d("TAG", "onCreateView: 171")
+                        val snap = task.result
+                        for (doc in snap!!.documents) {
+                            Log.d("TAG", "onCreateView: inside for")
+                            val lat = doc.getDouble("latitude")!!
+                            val lng = doc.getDouble("longitude")!!
+
+                            // We have to filter out a few false positives due to GeoHash
+                            // accuracy, but most will match
+                            val docLocation = GeoLocation(lat, lng)
+                            val distanceInM = GeoFireUtils.getDistanceBetween(docLocation, center)
+                            if (distanceInM <= radiusInM) {
+                                matchingDocs.add(doc)
+                            }
+                        }
+                    }
+
+                    // matchingDocs contains the results
+                    // ...
+                }
+        }
 
         return binding {
             viewModel = this@DoctorAddressFragment.viewModel

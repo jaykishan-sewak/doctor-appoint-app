@@ -34,7 +34,7 @@ object ConstantKey {
 
 
     object DBKeys {
-        const val TABLE_USER_DATA = "user_data"
+        const val TABLE_USER_DATA = "user_data1"
         const val FIELD_ADMIN = "admin"
         const val FIELD_DOCTOR = "doctor"
         const val TABLE_DEGREE = "degree"
