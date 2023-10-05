@@ -14,11 +14,16 @@ import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.util.SingleLiveEvent
+import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
+import com.android.doctorapp.util.extension.getCurrentDate
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 class RequestDoctorViewModel @Inject constructor(
@@ -33,16 +38,32 @@ class RequestDoctorViewModel @Inject constructor(
     var requestSelectedDate: MutableLiveData<Date> = SingleLiveEvent()
     val isRequestCalender: MutableLiveData<Boolean> = MutableLiveData(false)
     val dataFound: MutableLiveData<Boolean> = MutableLiveData(false)
+    val startDate: MutableLiveData<Date?> = MutableLiveData()
+    val endDate: MutableLiveData<Date?> = MutableLiveData()
+    private val currentDate: String = getCurrentDate()
 
     fun getRequestAppointmentList() {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 session.getString(USER_ID).collectLatest {
                     if (it?.isNotEmpty() == true) {
+                        if (startDate.value == null || endDate.value == null) {
+                            startDate.value =
+                                SimpleDateFormat(FORMATTED_DATE, Locale.getDefault()).parse(
+                                    currentDate
+                                )
+                            val nextDate = Calendar.getInstance()
+                            nextDate.time = startDate.value!!
+                            nextDate.add(Calendar.DATE, 1)
+                            endDate.value = nextDate.time
+                        }
                         setShowProgress(true)
                         when (val response =
                             appointmentRepository.getAppointmentsProgressList(
-                                requestSelectedDate.value!!, it, fireStore
+                                it,
+                                startDate.value!!,
+                                endDate.value!!,
+                                fireStore
                             )) {
                             is ApiSuccessResponse -> {
                                 setShowProgress(false)
@@ -68,5 +89,4 @@ class RequestDoctorViewModel @Inject constructor(
             }
         }
     }
-
 }
