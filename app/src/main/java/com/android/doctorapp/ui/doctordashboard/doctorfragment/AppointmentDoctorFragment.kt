@@ -18,7 +18,8 @@ import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.Header
 import com.android.doctorapp.ui.doctordashboard.adapter.PatientListAdapter
-import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DATE
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.REQUEST_FRAGMENT
 import com.google.gson.Gson
 import javax.inject.Inject
 
@@ -85,8 +86,8 @@ class AppointmentDoctorFragment :
             object : PatientListAdapter.OnItemClickListener {
                 override fun onItemClick(item: Header, position: Int) {
                     val bundle = Bundle()
-                    bundle.putString(ConstantKey.BundleKeys.DATE, Gson().toJson(item.date))
-                    bundle.putBoolean(ConstantKey.BundleKeys.REQUEST_FRAGMENT, false)
+                    bundle.putString(DATE, Gson().toJson(item.date))
+                    bundle.putBoolean(REQUEST_FRAGMENT, false)
                     findNavController().navigate(
                         R.id.action_doctor_appointment_to_selected_date,
                         bundle
