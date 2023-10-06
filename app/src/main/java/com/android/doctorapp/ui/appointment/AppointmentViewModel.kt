@@ -134,8 +134,11 @@ class AppointmentViewModel @Inject constructor(
                     currentDate
                 ) as Date
             ) {
+                isDateSelected.value = true
                 daysList[index].dateSelect = true
             }
+
+
             holidayList.forEachIndexed { _, data ->
                 if (dateFormatter(dateSlotModel.date!!, DATE_MM_FORMAT) == dateFormatter(
                         data,
@@ -143,6 +146,7 @@ class AppointmentViewModel @Inject constructor(
                     )
                 ) {
                     daysList[index] = DateSlotModel(date = dateSlotModel.date, disable = true)
+                    isDateSelected.value = false
                     return@forEachIndexed
                 }
             }

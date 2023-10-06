@@ -146,6 +146,7 @@ class BookAppointmentFragment :
                             item.date?.let { viewModel.getAppointmentData(selectedDate = it) }
                             dateStr = dateFormatter(item.date, FORMATTED_DATE_MONTH_YEAR)
                             dateList[index].dateSelect = true
+                            viewModel.isDateSelected.value = true
                             appointmentDateAdapter.notifyItemChanged(index)
                         } else {
                             dateList[index].dateSelect = false
@@ -153,7 +154,6 @@ class BookAppointmentFragment :
                         }
                     }
 
-                    viewModel.isDateSelected.value = true
                     viewModel.validateDateTime()
                 }
             })
