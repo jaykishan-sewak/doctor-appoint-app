@@ -71,4 +71,5 @@ object ConstantKey {
     const val FORMATTED_TIME = "HH:mm"
 
     const val DATE_PICKER = "DatePicker"
+    const val DD_MM_FORMAT = "dd-MM"
 }
