@@ -43,8 +43,6 @@ import com.android.doctorapp.util.extension.toast
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import com.google.android.material.chip.Chip
-import com.google.firebase.firestore.GeoPoint
-import com.google.type.LatLng
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -145,7 +143,8 @@ class AddDoctorViewModel @Inject constructor(
 
     val fees: MutableLiveData<String> = MutableLiveData()
     val feesError: MutableLiveData<String?> = MutableLiveData()
-
+    val geoHash: MutableLiveData<String?> = MutableLiveData()
+    var addressLatLngList = MutableLiveData<Map<String, Any>?>()
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
         this.binding = binding
@@ -427,11 +426,11 @@ class AddDoctorViewModel @Inject constructor(
 
     fun test() {
         viewModelScope.launch {
-             /*when (val response = authRepository.testGeoHash(fireStore)) {
-                 else -> {
+            /*when (val response = authRepository.testGeoHash(fireStore)) {
+                else -> {
 
-                 }
-             }*/
+                }
+            }*/
 
             val latitude = 23.0225
             val longitude = 72.5714
@@ -453,6 +452,7 @@ class AddDoctorViewModel @Inject constructor(
             var recordId: String = ""
             session.getString(USER_ID).collectLatest {
                 val userData: UserDataRequestModel
+                isDoctor.value = true
                 if (isDoctor.value == true) {
                     userData = UserDataRequestModel(
                         userId = it.toString(),
@@ -469,29 +469,29 @@ class AddDoctorViewModel @Inject constructor(
                             ?.map { (it as Chip).text.toString() } as ArrayList<String>?,
                         isEmailVerified = true,
                         isPhoneNumberVerified = true,
-                        availableTime = addShiftTimeSlotList.value?.toList()
+                        availableTime = null /*addShiftTimeSlotList.value?.toList()
                             ?.map { newData ->
                                 AddShiftRequestModel(
                                     startTime = newData.startTime,
                                     endTime = newData.endTime,
                                     isTimeSlotBook = newData.isTimeSlotBook
                                 )
-                            } as ArrayList<AddShiftRequestModel>,
+                            } as ArrayList<AddShiftRequestModel>*/,
                         isAdmin = false,
                         isNotificationEnable = notificationToggleData.value == true,
-                        dob = SimpleDateFormat(
+                        dob = null/*SimpleDateFormat(
                             DATE_MM_FORMAT,
                             Locale.getDefault()
-                        ).parse(dob.value.toString()),
+                        ).parse(dob.value.toString())*/,
                         isUserVerified = true,
-                        holidayList = if (holidayList.value?.isNotEmpty() == true) holidayList.value?.toList()
-                            ?.map { holidayDate -> holidayDate.holidayDate } as ArrayList<Date> else null,
-                        weekOffList = if (weekDayNameList.value?.isNotEmpty() == true) weekDayNameList.value?.toList()
+                        holidayList = null/*if (holidayList.value?.isNotEmpty() == true) holidayList.value?.toList()
+                            ?.map { holidayDate -> holidayDate.holidayDate } as ArrayList<Date> else null*/,
+                        weekOffList = null/*if (weekDayNameList.value?.isNotEmpty() == true) weekDayNameList.value?.toList()
                             ?.filter { it.isWeekOff == true }
                             ?.map { weekOffModel -> weekOffModel.dayName }
-                                as ArrayList<String> else null,
-                            addressLatLng = data1
-//                        addressLatLng = GeoPoint(latitude, longitude)
+                                as ArrayList<String> else null*/,
+//                            addressLatLng = data1
+//                        addressLatLng = addressLatLngList.value
                     )
                 } else {
                     //Here Code for User Update
@@ -512,7 +512,7 @@ class AddDoctorViewModel @Inject constructor(
                         ).parse(dob.value.toString()),
                         isUserVerified = true,
 
-                    )
+                        )
 
                 }
                 setShowProgress(true)
@@ -596,8 +596,9 @@ class AddDoctorViewModel @Inject constructor(
                             ?.filter { it.isWeekOff == true }
                             ?.map { weekOffModel -> weekOffModel.dayName }
                                 as ArrayList<String> else null,
-                        images = imageUrl
-
+                        images = imageUrl,
+                        addressLatLng = addressLatLngList.value,
+                        geohash = geoHash.value
                     )
                 } else {
                     //Here Code for User Update
@@ -1041,7 +1042,8 @@ class AddDoctorViewModel @Inject constructor(
     fun clickOnGallery() {
         isGalleryClick.value = true
     }
-     fun isValidFees(text: CharSequence?) {
+
+    fun isValidFees(text: CharSequence?) {
         if (text?.toString().isNullOrEmpty()) {
             feesError.value = resourceProvider.getString(R.string.valid_fees_desc)
         } else {

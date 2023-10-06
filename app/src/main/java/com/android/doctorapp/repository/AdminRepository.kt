@@ -1,13 +1,24 @@
 package com.android.doctorapp.repository
 
+import android.util.Log
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.models.ApiResponse
 import com.android.doctorapp.repository.models.FeedbackResponseModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_DOCTOR
+import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_DOCTOR_ID
+import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_FEEDBACK
+import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_USER_DATA
+import com.firebase.geofire.GeoFireUtils
+import com.firebase.geofire.GeoLocation
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.toObject
+import com.google.gson.Gson
 import kotlinx.coroutines.tasks.await
 import retrofit2.Response
 import javax.inject.Inject
@@ -18,8 +29,8 @@ class AdminRepository @Inject constructor(
 
     suspend fun getDoctorList(firestore: FirebaseFirestore): ApiResponse<List<UserDataResponseModel>> {
         return try {
-            val response = firestore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
-                .whereEqualTo(ConstantKey.DBKeys.FIELD_DOCTOR, true).get().await()
+            val response = firestore.collection(TABLE_USER_DATA)
+                .whereEqualTo(FIELD_DOCTOR, true).get().await()
 
             val userList = arrayListOf<UserDataResponseModel>()
             for (document: DocumentSnapshot in response.documents) {
@@ -44,13 +55,84 @@ class AdminRepository @Inject constructor(
         }
     }
 
+    suspend fun getLatLngDoctorList(
+        firestore: FirebaseFirestore,
+        latitude: Double,
+        longitude: Double
+    ): ApiResponse<List<UserDataResponseModel>> {
+        return try {
+            val center = GeoLocation(latitude, longitude)
+            val radiusInM = 50.0 * 1000.0
+            val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInM)
+            val doctorTasks: MutableList<Task<QuerySnapshot>> = ArrayList()
+            val userList = arrayListOf<UserDataResponseModel>()
+            val userFeedbackTask: MutableList<Task<QuerySnapshot>> = ArrayList()
+            val userFeedbackList: MutableList<Task<QuerySnapshot>> = ArrayList()
+            for (b in bounds) {
+                val response = firestore.collection(TABLE_USER_DATA)
+                    .whereEqualTo(FIELD_DOCTOR, true)
+                    .orderBy("geohash")
+                    .startAt(b.startHash)
+                    .endAt(b.endHash)
+                doctorTasks.add(response.get())
+            }
+            Tasks.whenAllComplete(doctorTasks)
+                .addOnCompleteListener {
+                    for (task in doctorTasks) {
+                        val snap = task.result
+                        for (doc in snap!!.documents) {
+                            val user = doc.toObject(UserDataResponseModel::class.java)
+                            user?.let {
+                                it.id = doc.id
+                                val feedbackResponse = firestore.collection(TABLE_FEEDBACK)
+                                    .whereEqualTo(FIELD_DOCTOR_ID, it.userId)
+                                userFeedbackTask.add(feedbackResponse.get())
+                            }
+                        }
+                        Tasks.whenAllComplete(userFeedbackTask)
+                            .addOnCompleteListener {
+                                for (task1 in userFeedbackTask) {
+                                    val snap1 = task1.result
+                                    for (feedback in snap1!!.documents) {
+                                        Log.d("TAG", "getLatLngDoctorList: ${Gson().toJson(feedback)}")
+                                    }
+                                }
+                                /*var feedback = FeedbackResponseModel()
+                                for (snapshot in feedbackData) {
+                                    feedback = snapshot.toObject()
+                                }*/
+                            }
+                    }
+                }
+
+
+//            user?.let {
+//                    it.id = document.id
+//                    val feedbackData = firestore.collection(ConstantKey.DBKeys.TABLE_FEEDBACK)
+//                        .whereEqualTo(ConstantKey.DBKeys.FIELD_DOCTOR_ID, it.userId)
+//                        .get()
+//                        .await()
+//                    var feedback = FeedbackResponseModel()
+//                    for (snapshot in feedbackData) {
+//                        feedback = snapshot.toObject()
+//                    }
+//                    it.rating = feedback.rating
+//                    userList.add(it)
+//                }
+
+            ApiResponse.create(response = Response.success(userList))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
     suspend fun deleteDoctor(
         firestore: FirebaseFirestore,
         documentId: String
     ): ApiResponse<Boolean> {
         return try {
             val response =
-                firestore.collection(ConstantKey.DBKeys.TABLE_USER_DATA).document(documentId)
+                firestore.collection(TABLE_USER_DATA).document(documentId)
                     .delete().await()
             ApiResponse.create(response = Response.success(true))
         } catch (e: Exception) {
@@ -63,7 +145,7 @@ class AdminRepository @Inject constructor(
         fireStore: FirebaseFirestore
     ): ApiResponse<UserDataResponseModel> {
         return try {
-            val response = fireStore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
+            val response = fireStore.collection(TABLE_USER_DATA)
                 .whereEqualTo(ConstantKey.DBKeys.FIELD_USER_ID, userId)
                 .get()
                 .await()

@@ -256,6 +256,12 @@ class UpdateDoctorProfileFragment :
             } else {
             }
         }
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Map<String, Any?>>("addressLatLng")?.observe(viewLifecycleOwner) { result ->
+            if (result != null) {
+                viewModel.geoHash.value = result.get("geohash").toString()
+                viewModel.addressLatLngList.value = result as Map<String, Any>?
+            }
+        }
 
         viewModel.clickResponse.observe(viewLifecycleOwner) {
             sendVerificationCode("+91$it")

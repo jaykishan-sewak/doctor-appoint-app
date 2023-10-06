@@ -43,7 +43,8 @@ class UserAppointmentFragment :
     private lateinit var adapter: UserAppoitmentItemAdapter
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-
+    private var latitude: Double = 0.0
+    private var longitude: Double = 0.0
 
     override fun builder(): FragmentToolbar {
         return FragmentToolbar.Builder()
@@ -125,7 +126,7 @@ class UserAppointmentFragment :
         override fun onLocationResult(p0: LocationResult) {
             p0.lastLocation?.let { location ->
                 // Handle the location update here
-                val geocoder = Geocoder(requireContext(), Locale.getDefault())
+                /*val geocoder = Geocoder(requireContext(), Locale.getDefault())
 
                 val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
                 if (!addresses.isNullOrEmpty()) {
@@ -134,7 +135,13 @@ class UserAppointmentFragment :
                     updateToolbarTitle(addresses[0].locality)
                     context?.toast(city)
                     stopLocationUpdates()
-                }
+                }*/
+
+
+                latitude = location.latitude
+                longitude = location.longitude
+                viewModel.getItems(latitude, longitude)
+                stopLocationUpdates()
                 // Do something with latitude and longitude
                 // For example, update UI or send them to a server
             }
@@ -161,7 +168,7 @@ class UserAppointmentFragment :
 
 
     private fun registerObserver(layoutBinding: FragmentUserAppointmentBinding) {
-        viewModel.getItems()
+//        viewModel.getItems()
         setAdapter(emptyList())
         layoutBinding.recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         layoutBinding.recyclerView.adapter = adapter

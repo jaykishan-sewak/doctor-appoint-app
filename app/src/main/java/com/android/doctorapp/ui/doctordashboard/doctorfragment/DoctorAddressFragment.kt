@@ -100,51 +100,8 @@ class DoctorAddressFragment :
             viewModel.test()
         }
 
-        /*binding.btnGet.setOnClickListener {
-            viewModel.getUserData().observe(viewLifecycleOwner) {
-                val center = GeoLocation(23.0225, 72.5714)
-                val radiusInM = 50.0 * 1000.0
-//                Log.d("TAG", "onCreateView: $center   -->     $radiusInM")
-                val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInM)
-                val tasks: MutableList<Task<QuerySnapshot>> = ArrayList()
-                for (b in bounds) {
-                    val q = fireStore.collection(TABLE_USER_DATA)
-                        .orderBy("geohash")
-                        .startAt(b.startHash)
-                        .endAt(b.endHash)
-                    tasks.add(q.get())
-                }
-                Tasks.whenAllComplete(tasks)
-                    .addOnCompleteListener {
-                        for (task in tasks) {
-                            val snap = task.result
-                            Log.d("TAG", "onCreateView: ${snap.documents}")
-                            for (doc in snap!!.documents) {
-                                val lat = doc.getDouble("latitude")!!
-                                val lng = doc.getDouble("longitude")!!
-
-                                // We have to filter out a few false positives due to GeoHash
-                                // accuracy, but most will match
-                                val docLocation = GeoLocation(lat, lng)
-                                val distanceInM = GeoFireUtils.getDistanceBetween(docLocation, center)
-                                if (distanceInM <= radiusInM) {
-                                    matchingDocs.add(doc)
-                                }
-                            }
-                        }
-
-                    // matchingDocs contains the results
-                    // ...
-                    }
-                matchingDocs.forEachIndexed { index, documentSnapshot ->
-                    Log.d("TAG", "onCreateView: ${documentSnapshot.id}")
-                }
-            }
-        }*/
-
-
         binding.btnGet.setOnClickListener {
-            val center = GeoLocation(51.5074, 0.1278)
+            val center = GeoLocation(23.0225, 65.5714)
             val radiusInM = 50.0 * 1000.0
 
             // Each item in 'bounds' represents a startAt/endAt pair. We have to issue
@@ -165,28 +122,19 @@ class DoctorAddressFragment :
                 .addOnCompleteListener {
                     val matchingDocs: MutableList<DocumentSnapshot> = ArrayList()
                     for (task in tasks) {
-                        tasks.forEachIndexed { index, task1 ->
-                            Log.d("TAG", "onCreateView: ${task1.result.documents}")
-                        }
-                        Log.d("TAG", "onCreateView: 171")
                         val snap = task.result
                         for (doc in snap!!.documents) {
-                            Log.d("TAG", "onCreateView: inside for")
-                            val lat = doc.getDouble("latitude")!!
-                            val lng = doc.getDouble("longitude")!!
 
-                            // We have to filter out a few false positives due to GeoHash
-                            // accuracy, but most will match
-                            val docLocation = GeoLocation(lat, lng)
-                            val distanceInM = GeoFireUtils.getDistanceBetween(docLocation, center)
-                            if (distanceInM <= radiusInM) {
-                                matchingDocs.add(doc)
+                            val fieldValue: Any? = doc.get("addressLatLng")
+                            if (fieldValue is Map<*, *>) {
+                                Log.d("TAG", "onCreateView: ${fieldValue.values}")
+                            } else {
+                                Log.d("TAG", "onCreateView: else")
                             }
+
                         }
                     }
 
-                    // matchingDocs contains the results
-                    // ...
                 }
         }
 
@@ -238,20 +186,6 @@ class DoctorAddressFragment :
                 val geocoder = Geocoder(requireContext(), Locale.getDefault())
                 addresses = geocoder.getFromLocation(latitude, longitude, 1)
                 val address: String = addresses!![0].getAddressLine(0)
-
-                findNavController().previousBackStackEntry?.savedStateHandle?.set(
-                    "address",
-                    address
-                )
-                fusedLocationClient.removeLocationUpdates(this)
-                findNavController().popBackStack()
-
-                latitude = 11.817621
-                longitude = 36.764983
-
-
-                viewModel
-
                 val hash = GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude, longitude))
 
                 val updates: MutableMap<String, Any> = mutableMapOf(
@@ -259,10 +193,17 @@ class DoctorAddressFragment :
                     "latitude" to latitude,
                     "longitude" to longitude,
                 )
+                viewModel.addressLatLngList.value = updates
 //                Log.d("TAG", "onLocationResult 156 : $updates")
 
+
+                findNavController().previousBackStackEntry?.savedStateHandle?.set("address", address)
+                findNavController().previousBackStackEntry?.savedStateHandle?.set("addressLatLng", updates)
+                fusedLocationClient.removeLocationUpdates(this)
+                findNavController().popBackStack()
+
                 // Find cities within 50km of London
-                val center = GeoLocation(latitude, longitude)
+                /*val center = GeoLocation(latitude, longitude)
                 val radiusInM = 50.0 * 1000.0
 
                 // Each item in 'bounds' represents a startAt/endAt pair. We have to issue
@@ -305,7 +246,7 @@ class DoctorAddressFragment :
                     }
                     .addOnFailureListener {
 //                        Log.d("TAG", "onLocationResult: Failure")
-                    }
+                    }*/
 
 
             }

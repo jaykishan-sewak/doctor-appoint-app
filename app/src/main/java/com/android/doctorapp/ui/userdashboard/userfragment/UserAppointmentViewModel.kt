@@ -49,11 +49,11 @@ class UserAppointmentViewModel @Inject constructor(
         items.value = filterList!!
     }
 
-    fun getItems() {
+    fun getItems(latitude: Double, longitude: Double) {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 setShowProgress(true)
-                when (val response = adminRepository.getDoctorList(fireStore)) {
+                when (val response = adminRepository.getLatLngDoctorList(fireStore, latitude, longitude)) {
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
                         if (response.body.isNotEmpty()) {
