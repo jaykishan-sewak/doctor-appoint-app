@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.doctorapp.R
-import com.android.doctorapp.databinding.UserDoctorRowLayoutBinding
+import com.android.doctorapp.databinding.FeedbackDoctorRowLayoutBinding
 import com.android.doctorapp.repository.models.UserDataResponseModel
 
 class DoctorListAdapter(
@@ -14,7 +14,7 @@ class DoctorListAdapter(
     private var listData: List<UserDataResponseModel>?,
     private val listener: OnItemClickListener
 ) : RecyclerView.Adapter<DoctorListAdapter.ItemViewHolder>() {
-    class ItemViewHolder(val view: UserDoctorRowLayoutBinding) :
+    class ItemViewHolder(val view: FeedbackDoctorRowLayoutBinding) :
         RecyclerView.ViewHolder(view.root) {
         fun bind(item: UserDataResponseModel?, listener: OnItemClickListener, position: Int) {
             view.apply {
@@ -36,8 +36,13 @@ class DoctorListAdapter(
     ): ItemViewHolder {
         val layoutInflater =
             LayoutInflater.from(parent.context)
-        val itemView: UserDoctorRowLayoutBinding =
-            DataBindingUtil.inflate(layoutInflater, R.layout.user_doctor_row_layout, parent, false)
+        val itemView: FeedbackDoctorRowLayoutBinding =
+            DataBindingUtil.inflate(
+                layoutInflater,
+                R.layout.feedback_doctor_row_layout,
+                parent,
+                false
+            )
         return ItemViewHolder(itemView)
     }
 
@@ -53,5 +58,8 @@ class DoctorListAdapter(
     interface OnItemClickListener {
         fun onItemClick(item: UserDataResponseModel, position: Int)
 
+        fun onEditClick(item: UserDataResponseModel, position: Int)
+
+        fun onDeleteClick(item: UserDataResponseModel, position: Int)
     }
 }

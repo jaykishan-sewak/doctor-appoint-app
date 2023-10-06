@@ -15,18 +15,19 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_16"
-            android:layout_marginVertical="@dimen/margin_20"
+            android:layout_marginVertical="@dimen/margin_10"
             android:backgroundTint="@color/white"
             android:elevation="@dimen/margin_5"
             android:paddingHorizontal="@dimen/margin_10"
             app:cardCornerRadius="@dimen/margin_10"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">

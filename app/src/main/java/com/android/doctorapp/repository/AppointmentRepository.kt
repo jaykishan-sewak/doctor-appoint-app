@@ -1,9 +1,13 @@
 package com.android.doctorapp.repository
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import com.android.doctorapp.repository.models.ApiResponse
 import com.android.doctorapp.repository.models.AppointmentModel
+import com.android.doctorapp.repository.models.FeedbackResponseModel
 import com.android.doctorapp.repository.models.SymptomModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
+import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_APPROVED_KEY
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_DOCTOR_ID
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_SELECTED_DATE
@@ -18,6 +22,7 @@ import com.android.doctorapp.util.constants.ConstantKey.FIELD_REJECTED
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
+import com.google.gson.Gson
 import kotlinx.coroutines.tasks.await
 import retrofit2.Response
 import java.util.Calendar
@@ -298,6 +303,7 @@ class AppointmentRepository @Inject constructor() {
                     appointmentsList.add(it)
                 }
             }
+            Log.d(TAG, "AppointmentsHistoryList: ${Gson().toJson(appointmentsList)}")
             ApiResponse.create(response = Response.success(appointmentsList))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
@@ -343,6 +349,43 @@ class AppointmentRepository @Inject constructor() {
             val doctorDataModel = doctorResponse.toObject(UserDataResponseModel::class.java)
             ApiResponse.create(response = Response.success(doctorDataModel))
 
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+    suspend fun getFeedbackDoctorList(firestore: FirebaseFirestore): ApiResponse<List<UserDataResponseModel>> {
+        return try {
+            val response = firestore.collection(TABLE_USER_DATA)
+                .whereEqualTo(ConstantKey.DBKeys.FIELD_DOCTOR, true).get().await()
+
+            val userList = arrayListOf<UserDataResponseModel>()
+            for (document: DocumentSnapshot in response.documents) {
+                val user = document.toObject(UserDataResponseModel::class.java)
+
+                user?.let {
+                    it.docId = document.id
+                    val subCollectionRef = firestore.collection(TABLE_USER_DATA).document(it.docId)
+                        .collection(ConstantKey.DBKeys.SUB_TABLE_FEEDBACK)
+
+                    val querySnapshot = subCollectionRef.get().await()
+                    var total = 0F
+                    var numberOfFeedbacks = 0
+                    for (document1 in querySnapshot.documents) {
+                        val feedback = document1.toObject(FeedbackResponseModel::class.java)
+                        feedback.let { data ->
+                            total += data?.rating!!
+                            numberOfFeedbacks++
+                        }
+                    }
+                    it.rating = if (numberOfFeedbacks > 0) {
+                        total / numberOfFeedbacks
+                    } else 0F
+
+                    userList.add(it)
+                }
+            }
+            ApiResponse.create(response = Response.success(userList))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
         }

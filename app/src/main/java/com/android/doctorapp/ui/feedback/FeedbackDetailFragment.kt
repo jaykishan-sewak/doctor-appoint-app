@@ -14,7 +14,10 @@ import com.android.doctorapp.databinding.FragmentFeedbackDetailsBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.models.AppointmentModel
+import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey
+import com.google.gson.Gson
 import javax.inject.Inject
 
 class FeedbackDetailFragment :
@@ -52,9 +55,12 @@ class FeedbackDetailFragment :
         super.onCreateView(inflater, container, savedInstanceState)
         val arguments: Bundle? = arguments
         if (arguments != null) {
-            viewModel.doctorId.value =
-                arguments.getString(ConstantKey.BundleKeys.DOCTOR_ID)
+            val userObj = arguments.getString(ConstantKey.BundleKeys.USER_DATA)
+            viewModel.userDataObj.value =
+                Gson().fromJson(userObj, UserDataResponseModel::class.java)
+//            viewModel.doctorId.value = appointmentObj
         }
+        viewModel.getUserFeedbackData()
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
             viewModal = this@FeedbackDetailFragment.viewModel
@@ -62,6 +68,7 @@ class FeedbackDetailFragment :
 
         return layoutBinding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

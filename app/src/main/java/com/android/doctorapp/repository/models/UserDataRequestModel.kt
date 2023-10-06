@@ -22,4 +22,5 @@ data class UserDataRequestModel(
     var isUserVerified: Boolean = false,
     var holidayList: ArrayList<Date>? = null,
     var weekOffList: ArrayList<String>? = null
+
 )
