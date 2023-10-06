@@ -29,7 +29,7 @@ class HistoryViewModel @Inject constructor(
     private val session: Session
 ) : BaseViewModel() {
 
-    val appointmentHistoryList = MutableLiveData<List<AppointmentModel>>()
+    val appointmentHistoryList = MutableLiveData<List<AppointmentModel>?>()
     val dataFound: MutableLiveData<Boolean> = MutableLiveData(false)
 
 
@@ -49,7 +49,7 @@ class HistoryViewModel @Inject constructor(
                             )) {
                             is ApiSuccessResponse -> {
                                 setShowProgress(false)
-                                appointmentHistoryList.value = response.body!!
+                                appointmentHistoryList.value = response.body
                                 Log.d(
                                     TAG,
                                     "getHistoryAppointmentHistoryList: ${Gson().toJson(response.body)} "

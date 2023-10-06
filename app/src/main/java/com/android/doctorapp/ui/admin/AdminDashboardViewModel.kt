@@ -35,7 +35,7 @@ class AdminDashboardViewModel @Inject constructor(
     val doctorDetails: MutableLiveData<UserDataResponseModel?> = MutableLiveData()
     val userId: MutableLiveData<String> = MutableLiveData("")
     val itemPosition: MutableLiveData<Int> = MutableLiveData()
-    val deleteId: MutableLiveData<String> = MutableLiveData("")
+    val deleteId: MutableLiveData<String?> = MutableLiveData(null)
     val callClick = MutableLiveData("")
     private val _navigateToLogin = SingleLiveEvent<Boolean>()
     val navigateToLogin = _navigateToLogin.asLiveData()
@@ -75,11 +75,11 @@ class AdminDashboardViewModel @Inject constructor(
         }
     }
 
-    fun deleteDoctor(id: String) {
+    fun deleteDoctor(id: String?) {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 setShowProgress(true)
-                when (val response = adminRepository.deleteDoctor(fireStore, id)) {
+                when (val response = adminRepository.deleteDoctor(fireStore, id!!)) {
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
                         if (response.body) {
@@ -149,7 +149,7 @@ class AdminDashboardViewModel @Inject constructor(
         _navigationListener.value = R.id.admin_to_update_doctor
     }
 
-    fun deleteDoctorData(id: String) {
+    fun deleteDoctorData(id: String?) {
         deleteId.value = id
     }
 

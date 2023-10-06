@@ -4,9 +4,13 @@ import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.models.ApiResponse
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.FeedbackRequestModel
+import com.android.doctorapp.repository.models.FeedbackResponseModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey
-import com.android.doctorapp.util.constants.ConstantKey.FIELD_APPROVED
+import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_USER_ID
+import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_VISITED_KEY
+import com.android.doctorapp.util.constants.ConstantKey.DBKeys.SUB_TABLE_FEEDBACK
+import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_USER_DATA
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
@@ -24,25 +28,37 @@ class FeedbackRepository @Inject constructor(
     ): ApiResponse<List<UserDataResponseModel>> {
         return try {
             val response = fireStore.collection(ConstantKey.DBKeys.TABLE_APPOINTMENT)
-                .whereEqualTo(ConstantKey.DBKeys.FIELD_USER_ID, userId)
-                .whereEqualTo(ConstantKey.DBKeys.FIELD_APPROVED_KEY, FIELD_APPROVED)
+                .whereEqualTo(FIELD_USER_ID, userId)
+                .whereEqualTo(FIELD_VISITED_KEY, true)
                 .get()
                 .await()
             val dataList = arrayListOf<UserDataResponseModel>()
-
             for (document: DocumentSnapshot in response.documents) {
                 val user = document.toObject(AppointmentModel::class.java)
 
-                val doctorDetails = fireStore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
-                    .whereEqualTo(ConstantKey.DBKeys.FIELD_USER_ID, user?.doctorId)
+                val doctorDetails = fireStore.collection(TABLE_USER_DATA)
+                    .whereEqualTo(FIELD_USER_ID, user?.doctorId)
                     .get()
                     .await()
                 var dataModel = UserDataResponseModel()
+
                 for (snapshot in doctorDetails) {
                     dataModel = snapshot.toObject()
-                }
-                dataList.add(dataModel)
+                    dataModel.docId = snapshot.id
+                    val feedbackCollection = snapshot.reference.collection(SUB_TABLE_FEEDBACK)
+                        .whereEqualTo(FIELD_USER_ID, userId).get().await()
 
+                    for (feedbackDocument in feedbackCollection.documents) {
+                        if (feedbackDocument != null) {
+                            val feedbackData =
+                                feedbackDocument.toObject(FeedbackResponseModel::class.java)!!
+                            feedbackData.feedbackDocId = feedbackDocument.id
+                            dataModel.feedbackDetails = feedbackData
+                        }
+                    }
+                }
+                if (!dataList.map { it.userId }.contains(dataModel.userId))
+                    dataList.add(dataModel)
             }
             ApiResponse.create(response = Response.success(dataList))
         } catch (e: Exception) {
@@ -51,15 +67,109 @@ class FeedbackRepository @Inject constructor(
     }
 
     suspend fun addFeedbackData(
+        docId: String?,
         requestModel: FeedbackRequestModel,
         firestore: FirebaseFirestore
     ): ApiResponse<String> {
         return try {
             val data =
-                firestore.collection(ConstantKey.DBKeys.TABLE_FEEDBACK).add(requestModel).await()
+                firestore.collection(TABLE_USER_DATA)
+                    .document(docId!!)
+                    .collection(SUB_TABLE_FEEDBACK)
+                    .add(requestModel)
+                    .await()
+
             ApiResponse.create(response = Response.success(data.id))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
         }
     }
+
+    suspend fun getUserFeedbackData(
+        doctorId: String?,
+        fireStore: FirebaseFirestore,
+        userId: String?
+    ): ApiResponse<UserDataResponseModel> {
+        return try {
+            val userDataSnapshot =
+                fireStore.collection(TABLE_USER_DATA)
+                    .whereEqualTo(FIELD_USER_ID, doctorId)
+                    .get()
+                    .await()
+
+            var dataModel: UserDataResponseModel? = UserDataResponseModel()
+            for (userDataDocument in userDataSnapshot.documents) {
+                dataModel = userDataDocument.toObject()
+                dataModel?.docId = userDataDocument.id
+                val feedbackCollection = userDataDocument.reference.collection(SUB_TABLE_FEEDBACK)
+                    .whereEqualTo(FIELD_USER_ID, userId)
+                    .get().await()
+
+                for (feedbackDocument in feedbackCollection.documents) {
+                    if (feedbackDocument != null) {
+                        val feedbackData =
+                            feedbackDocument.toObject(FeedbackResponseModel::class.java)!!
+                        feedbackData.feedbackDocId = feedbackDocument.id
+                        dataModel?.feedbackDetails = feedbackData
+                    }
+                }
+            }
+            ApiResponse.create(response = Response.success(dataModel))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+
+    suspend fun getUpdateFeedbackData(
+        doctorId: String?,
+        fireStore: FirebaseFirestore,
+        feedbackRequestModel: FeedbackRequestModel
+    ): ApiResponse<FeedbackRequestModel> {
+        return try {
+            val userDataSnapshot =
+                fireStore.collection(TABLE_USER_DATA)
+                    .whereEqualTo(FIELD_USER_ID, doctorId)
+                    .get()
+                    .await()
+
+
+            for (userDataDocument in userDataSnapshot.documents) {
+                val feedbackCollection = userDataDocument.reference.collection(SUB_TABLE_FEEDBACK)
+                    .whereEqualTo(FIELD_USER_ID, feedbackRequestModel.userId)
+                    .get().await()
+
+                for (feedbackDocument in feedbackCollection.documents) {
+                    feedbackDocument.reference.set(feedbackRequestModel).await()
+
+                }
+            }
+            ApiResponse.create(response = Response.success(feedbackRequestModel))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+    suspend fun deleteFeedbackData(
+        userDocId: String,
+        fireStore: FirebaseFirestore,
+        feedbackDocId: String
+    ): ApiResponse<Boolean> {
+        return try {
+            val userDataSnapshot =
+                fireStore.collection(TABLE_USER_DATA)
+                    .document(userDocId)
+                    .collection(SUB_TABLE_FEEDBACK)
+                    .document(feedbackDocId)
+                    .delete()
+                    .await()
+
+            ApiResponse.create(response = Response.success(true))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+
 }
+

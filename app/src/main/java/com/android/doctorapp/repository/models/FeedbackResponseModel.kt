@@ -1,9 +1,11 @@
 package com.android.doctorapp.repository.models
 
+import java.util.Date
+
 class FeedbackResponseModel(
+    var feedbackDocId: String = "",
     var userId: String = "",
-    var id: String = "",
-    var doctorId: String = "",
     var rating: Float? = null,
     var feedbackMessage: String = "",
+    var createdAt: Date? = null
 )

@@ -19,6 +19,7 @@ object ConstantKey {
         const val BOOKING_FRAGMENT = "BOOKING_FRAGMENT"
         const val BOOKING_APPOINTMENT_DATA = "bookingAppointmentData"
         const val DOCTOR_ID = "doctorId"
+        const val USER_DATA = "userData"
 
     }
 
@@ -47,6 +48,7 @@ object ConstantKey {
         const val TABLE_SYMPTOM = "symptom"
         const val TABLE_FEEDBACK = "feedback"
         const val FIELD_VISITED_KEY = "visited"
+        const val SUB_TABLE_FEEDBACK = "sub_feedback"
 
 
     }
