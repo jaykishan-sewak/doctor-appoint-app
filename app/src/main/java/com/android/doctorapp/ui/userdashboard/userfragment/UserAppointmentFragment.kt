@@ -192,7 +192,7 @@ class UserAppointmentFragment :
                 override fun onItemClick(item: UserDataResponseModel, position: Int) {
                     val bundle = Bundle()
                     bundle.putString(ConstantKey.BundleKeys.USER_ID, item.userId)
-                    bundle.putString(DOCTOR_ID, item.id)
+                    bundle.putString(DOCTOR_ID, item.docId)
                     findNavController().navigate(
                         R.id.action_user_appointment_to_bookAppointment,
                         bundle

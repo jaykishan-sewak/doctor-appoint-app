@@ -94,7 +94,9 @@ class RequestDoctorFragment :
                 requestDatePicker.addOnPositiveButtonClickListener { dateRange ->
                     viewModel.startDate.value = changeTime(dateRange.first, true)
                     viewModel.endDate.value = changeTime(dateRange.second, false)
+                    requestDatePicker.dismissNow()
                     viewModel.getRequestAppointmentList()
+
                 }
 
                 // Setting up the event for when cancelled is clicked

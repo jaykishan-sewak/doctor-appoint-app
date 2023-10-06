@@ -6,8 +6,8 @@ import com.google.type.LatLng
 import java.util.Date
 
 data class UserDataResponseModel(
-    var id: String = "",
-    var userId: String = "",
+    var docId: String = "",
+    var userId: String? = "",
     var isDoctor: Boolean = false,
     var email: String = "",
     var name: String = "",

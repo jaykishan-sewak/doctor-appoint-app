@@ -53,7 +53,7 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(R.layout.fragment_h
         adapter = HistoryAdapter(emptyList())
         layoutBinding.historyRecyclerView.adapter = adapter
         viewModel.appointmentHistoryList.observe(viewLifecycleOwner) {
-            if (it != null && it.isNotEmpty()) {
+            if (!it.isNullOrEmpty()) {
                 adapter.filterList(it)
                 viewModel.dataFound.value = true
             } else {

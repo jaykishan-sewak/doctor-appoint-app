@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
 import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
-import com.android.doctorapp.repository.AdminRepository
+import com.android.doctorapp.repository.AppointmentRepository
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 class UserAppointmentViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
-    private val adminRepository: AdminRepository,
+    private val appointmentRepository: AppointmentRepository,
     private val context: Context
 ) : BaseViewModel() {
 

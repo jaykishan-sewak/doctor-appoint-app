@@ -35,8 +35,9 @@ class AdminRepository @Inject constructor(
             val userList = arrayListOf<UserDataResponseModel>()
             for (document: DocumentSnapshot in response.documents) {
                 val user = document.toObject(UserDataResponseModel::class.java)
+                var total: Int
                 user?.let {
-                    it.id = document.id
+                    it.docId = document.id
                     val feedbackData = firestore.collection(ConstantKey.DBKeys.TABLE_FEEDBACK)
                         .whereEqualTo(ConstantKey.DBKeys.FIELD_DOCTOR_ID, it.userId)
                         .get()
@@ -47,6 +48,7 @@ class AdminRepository @Inject constructor(
                     }
                     it.rating = feedback.rating
                     userList.add(it)
+
                 }
             }
             ApiResponse.create(response = Response.success(userList))
@@ -153,7 +155,7 @@ class AdminRepository @Inject constructor(
             var dataModel = UserDataResponseModel()
             for (snapshot in response) {
                 dataModel = snapshot.toObject()
-                dataModel.id = response.documents[0].id
+                dataModel.docId = response.documents[0].id
             }
             ApiResponse.create(response = Response.success(dataModel))
         } catch (e: Exception) {
@@ -162,4 +164,5 @@ class AdminRepository @Inject constructor(
     }
 
     suspend fun clearLoggedInSession() = session.clearLoggedInSession()
+
 }
