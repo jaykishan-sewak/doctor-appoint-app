@@ -43,7 +43,7 @@ class BookAppointmentFragment :
     private lateinit var appointmentDateAdapter: AppointmentDateAdapter
     private lateinit var dateFormat: SimpleDateFormat
     private lateinit var selectedDateTime: Date
-    private lateinit var dateStr: String
+//    private lateinit var dateStr: String
     private lateinit var timeStr: String
 
 
@@ -118,7 +118,7 @@ class BookAppointmentFragment :
                         dialog.dismiss()
                         try {
                             dateFormat = SimpleDateFormat(BOOKING_DATE_FORMAT)
-                            selectedDateTime = dateFormat.parse("$dateStr $timeStr")!!
+                            selectedDateTime = dateFormat.parse("${viewModel.dateStr.value} $timeStr")!!
                             viewModel.addBookingAppointmentData(selectedDateTime)
                         } catch (_: Exception) {
                         }
@@ -144,7 +144,7 @@ class BookAppointmentFragment :
                     dateList.forEachIndexed { index, dateSlotModel ->
                         if (dateSlotModel.date == item.date) {
                             item.date?.let { viewModel.getAppointmentData(selectedDate = it) }
-                            dateStr = dateFormatter(item.date, FORMATTED_DATE_MONTH_YEAR)
+                            viewModel.dateStr.value = dateFormatter(item.date, FORMATTED_DATE_MONTH_YEAR)
                             dateList[index].dateSelect = true
                             viewModel.isDateSelected.value = true
                             appointmentDateAdapter.notifyItemChanged(index)
