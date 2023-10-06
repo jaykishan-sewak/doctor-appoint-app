@@ -21,6 +21,7 @@ import com.android.doctorapp.util.extension.currentDate
 import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.openPhoneDialer
 import com.android.doctorapp.util.extension.selectDate
+import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -56,19 +57,37 @@ class UserRequestFragment :
         }
 
         setUpWithViewModel(viewModel)
+        viewModel.getUpcomingAppointmentList()
         registerObserver(layoutBinding)
         return layoutBinding.root
     }
 
     private fun registerObserver(layoutBinding: FragmentUserRequestBinding) {
+
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                val selectedTabPosition = tab?.position ?: return
+                when (selectedTabPosition) {
+                    0 -> callApiForTab2()
+                    1 -> callApiForTab1()
+                    else -> {}
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+
+            }
+        })
+
         setAdapter(emptyList())
         binding.requestUserRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.requestUserRecyclerView.adapter = adapter
 
         viewModel.requestSelectedDate.observe(viewLifecycleOwner) {
-            viewModel.getRequestAppointmentList()
-            viewModel.getUpcomingAppointmentList()
-            viewModel.getPastAppointmentList()
             viewModel.isDoctorRequestCalendar.value = false
         }
         viewModel.userAppointmentData.observe(viewLifecycleOwner) {
@@ -98,6 +117,14 @@ class UserRequestFragment :
         }
     }
 
+    fun callApiForTab1() {
+        viewModel.getPastAppointmentList()
+    }
+
+    fun callApiForTab2() {
+        viewModel.getUpcomingAppointmentList()
+    }
+
     override fun builder(): FragmentToolbar {
         return FragmentToolbar.Builder()
             .withId(R.id.toolbar)
@@ -106,21 +133,6 @@ class UserRequestFragment :
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
             .build()
     }
-
-//    private fun generateMenuClicks(): MenuItem.OnMenuItemClickListener {
-//        return MenuItem.OnMenuItemClickListener { item ->
-//            when (item.itemId) {
-//                R.id.action_calendar -> {
-//                    viewModel.isDoctorRequestCalendar.value = true
-//                }
-//            }
-//            false
-//        }
-//    }
-
-//    private fun generateMenuItems(): List<Int> {
-//        return listOf(R.id.action_calendar)
-//    }
 
     private fun setAdapter(items: List<AppointmentModel>) {
         adapter = BookingAppointmentsAdapter(

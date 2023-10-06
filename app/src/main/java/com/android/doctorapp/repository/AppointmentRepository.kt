@@ -1,7 +1,5 @@
 package com.android.doctorapp.repository
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import com.android.doctorapp.repository.models.ApiResponse
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.FeedbackResponseModel
@@ -23,7 +21,6 @@ import com.android.doctorapp.util.extension.currentDate
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
-import com.google.gson.Gson
 import kotlinx.coroutines.tasks.await
 import retrofit2.Response
 import java.util.Calendar
@@ -218,44 +215,6 @@ class AppointmentRepository @Inject constructor() {
         }
     }
 
-    suspend fun getBookAppointmentDetailsList(
-        selectedDate: Date,
-        userId: String,
-        fireStore: FirebaseFirestore
-    ): ApiResponse<List<AppointmentModel>> {
-        return try {
-            val nextDate = Calendar.getInstance()
-            nextDate.time = selectedDate
-            nextDate.add(Calendar.DATE, 1)
-            val response = fireStore.collection(TABLE_APPOINTMENT)
-                .whereEqualTo(FIELD_USER_ID, userId)
-                .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, selectedDate)
-                .whereLessThanOrEqualTo(FIELD_SELECTED_DATE, nextDate.time)
-                .get()
-                .await()
-            val bookedAppointmentList = arrayListOf<AppointmentModel>()
-
-            for (document: DocumentSnapshot in response.documents) {
-                val user = document.toObject(AppointmentModel::class.java)
-                user?.let {
-                    it.id = document.id
-                    val doctorDetails = fireStore.collection(TABLE_USER_DATA)
-                        .whereEqualTo(FIELD_USER_ID, it.doctorId)
-                        .get()
-                        .await()
-                    var dataModel = UserDataResponseModel()
-                    for (snapshot in doctorDetails) {
-                        dataModel = snapshot.toObject()
-                    }
-                    it.doctorDetails = dataModel
-                    bookedAppointmentList.add(it)
-                }
-            }
-            ApiResponse.create(response = Response.success(bookedAppointmentList))
-        } catch (e: Exception) {
-            ApiResponse.create(e.fillInStackTrace())
-        }
-    }
 
     suspend fun getUserSymptomDetails(
         userId: String,
@@ -420,7 +379,6 @@ class AppointmentRepository @Inject constructor() {
                     bookedAppointmentList.add(it)
                 }
             }
-            Log.d(TAG, "UpcomingBookAppointmentDetailsList: $bookedAppointmentList")
             ApiResponse.create(response = Response.success(bookedAppointmentList))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
@@ -436,7 +394,7 @@ class AppointmentRepository @Inject constructor() {
             val currentDate = currentDate()
             val response = fireStore.collection(TABLE_APPOINTMENT)
                 .whereEqualTo(FIELD_USER_ID, userId)
-                .whereLessThanOrEqualTo(FIELD_SELECTED_DATE, currentDate)
+                .whereLessThan(FIELD_SELECTED_DATE, currentDate)
                 .get()
                 .await()
             val bookedAppointmentList = arrayListOf<AppointmentModel>()
@@ -457,7 +415,6 @@ class AppointmentRepository @Inject constructor() {
                     bookedAppointmentList.add(it)
                 }
             }
-            Log.d(TAG, "PastBookAppointmentDetailsList: $bookedAppointmentList")
             ApiResponse.create(response = Response.success(bookedAppointmentList))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())

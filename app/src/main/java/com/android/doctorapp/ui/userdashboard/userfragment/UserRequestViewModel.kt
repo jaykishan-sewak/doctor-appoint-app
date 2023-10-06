@@ -1,8 +1,6 @@
 package com.android.doctorapp.ui.userdashboard.userfragment
 
-import android.content.ContentValues.TAG
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -18,7 +16,6 @@ import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
-import com.google.gson.Gson
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -37,8 +34,8 @@ class UserRequestViewModel @Inject constructor(
     val dataFound: MutableLiveData<Boolean> = MutableLiveData(false)
 
 
-
-    fun getRequestAppointmentList() {
+    fun getUpcomingAppointmentList() {
+        userAppointmentData.value = emptyList()
         viewModelScope.launch {
             var recordId = ""
             session.getString(USER_ID).collectLatest {
@@ -46,8 +43,7 @@ class UserRequestViewModel @Inject constructor(
                 if (context.isNetworkAvailable()) {
                     setShowProgress(true)
                     when (val response =
-                        appointmentRepository.getBookAppointmentDetailsList(
-                            requestSelectedDate.value!!,
+                        appointmentRepository.getUpcomingBookAppointmentDetailsList(
                             recordId,
                             fireStore
                         )) {
@@ -78,46 +74,8 @@ class UserRequestViewModel @Inject constructor(
         }
     }
 
-    fun getUpcomingAppointmentList() {
-        viewModelScope.launch {
-            var recordId = ""
-            session.getString(USER_ID).collectLatest {
-                recordId = it.orEmpty()
-                if (context.isNetworkAvailable()) {
-                    setShowProgress(true)
-                    when (val response =
-                        appointmentRepository.getUpcomingBookAppointmentDetailsList(
-                            recordId,
-                            fireStore
-                        )) {
-                        is ApiSuccessResponse -> {
-                            setShowProgress(false)
-                            Log.d(TAG, "getUpcomingAppointmentList: ${Gson().toJson(response.body)}")
-                        }
-
-                        is ApiErrorResponse -> {
-                            context.toast(response.errorMessage)
-                            setShowProgress(false)
-                        }
-
-                        is ApiNoNetworkResponse -> {
-                            context.toast(response.errorMessage)
-                            setShowProgress(false)
-                        }
-
-                        else -> {
-                            context.toast(resourceProvider.getString(R.string.something_went_wrong))
-                            setShowProgress(false)
-                        }
-                    }
-                } else {
-                    context.toast(resourceProvider.getString(R.string.check_internet_connection))
-                }
-            }
-        }
-    }
-
     fun getPastAppointmentList() {
+        userAppointmentData.value = emptyList()
         viewModelScope.launch {
             var recordId = ""
             session.getString(USER_ID).collectLatest {
@@ -131,7 +89,7 @@ class UserRequestViewModel @Inject constructor(
                         )) {
                         is ApiSuccessResponse -> {
                             setShowProgress(false)
-                            Log.d(TAG, "getPastAppointmentList: ${Gson().toJson(response.body)}")
+                            userAppointmentData.value = response.body
                         }
 
                         is ApiErrorResponse -> {

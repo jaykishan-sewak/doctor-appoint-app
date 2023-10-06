@@ -41,6 +41,7 @@ class RequestDoctorViewModel @Inject constructor(
     val startDate: MutableLiveData<Date?> = MutableLiveData()
     val endDate: MutableLiveData<Date?> = MutableLiveData()
     private val currentDate: String = getCurrentDate()
+    val rangeDate: MutableLiveData<String> = MutableLiveData()
 
     fun getRequestAppointmentList() {
         viewModelScope.launch {
