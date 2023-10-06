@@ -2,7 +2,6 @@ package com.android.doctorapp.ui.userdashboard.userfragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -68,6 +67,8 @@ class UserRequestFragment :
 
         viewModel.requestSelectedDate.observe(viewLifecycleOwner) {
             viewModel.getRequestAppointmentList()
+            viewModel.getUpcomingAppointmentList()
+            viewModel.getPastAppointmentList()
             viewModel.isDoctorRequestCalendar.value = false
         }
         viewModel.userAppointmentData.observe(viewLifecycleOwner) {
@@ -101,32 +102,25 @@ class UserRequestFragment :
         return FragmentToolbar.Builder()
             .withId(R.id.toolbar)
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
-            .withTitleString(
-                dateFormatter(
-                    viewModel.requestSelectedDate.value!!,
-                    ConstantKey.DATE_MM_FORMAT
-                )
-            )
-            .withMenu(R.menu.doctor_calendar_menu)
-            .withMenuItems(generateMenuItems(), generateMenuClicks())
+            .withTitle(R.string.my_booking)
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
             .build()
     }
 
-    private fun generateMenuClicks(): MenuItem.OnMenuItemClickListener {
-        return MenuItem.OnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.action_calendar -> {
-                    viewModel.isDoctorRequestCalendar.value = true
-                }
-            }
-            false
-        }
-    }
+//    private fun generateMenuClicks(): MenuItem.OnMenuItemClickListener {
+//        return MenuItem.OnMenuItemClickListener { item ->
+//            when (item.itemId) {
+//                R.id.action_calendar -> {
+//                    viewModel.isDoctorRequestCalendar.value = true
+//                }
+//            }
+//            false
+//        }
+//    }
 
-    private fun generateMenuItems(): List<Int> {
-        return listOf(R.id.action_calendar)
-    }
+//    private fun generateMenuItems(): List<Int> {
+//        return listOf(R.id.action_calendar)
+//    }
 
     private fun setAdapter(items: List<AppointmentModel>) {
         adapter = BookingAppointmentsAdapter(
