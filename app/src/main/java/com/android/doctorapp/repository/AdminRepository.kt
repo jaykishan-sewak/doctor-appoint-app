@@ -13,12 +13,10 @@ import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_USER_DATA
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.toObject
-import com.google.gson.Gson
 import kotlinx.coroutines.tasks.await
 import retrofit2.Response
 import javax.inject.Inject
@@ -38,8 +36,8 @@ class AdminRepository @Inject constructor(
                 var total: Int
                 user?.let {
                     it.docId = document.id
-                    val feedbackData = firestore.collection(ConstantKey.DBKeys.TABLE_FEEDBACK)
-                        .whereEqualTo(ConstantKey.DBKeys.FIELD_DOCTOR_ID, it.userId)
+                    val feedbackData = firestore.collection(TABLE_FEEDBACK)
+                        .whereEqualTo(FIELD_DOCTOR_ID, it.userId)
                         .get()
                         .await()
                     var feedback = FeedbackResponseModel()
@@ -68,60 +66,62 @@ class AdminRepository @Inject constructor(
             val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInM)
             val doctorTasks: MutableList<Task<QuerySnapshot>> = ArrayList()
             val userList = arrayListOf<UserDataResponseModel>()
-            val userFeedbackTask: MutableList<Task<QuerySnapshot>> = ArrayList()
-            val userFeedbackList: MutableList<Task<QuerySnapshot>> = ArrayList()
+            var feedback = FeedbackResponseModel()
+//            for (b in bounds) {
+//                val response = firestore.collection(TABLE_USER_DATA)
+//                    .whereEqualTo(FIELD_DOCTOR, true)
+//                    .orderBy("geohash")
+//                    .startAt(b.startHash)
+//                    .endAt(b.endHash)
+//                doctorTasks.add(response.get())
+//            }
+//            Tasks.whenAllComplete(doctorTasks)
+//                .addOnCompleteListener {
+//                    for (task in doctorTasks) {
+//                        val snap = task.result
+//                        for (doc in snap!!.documents) {
+//                            val user = doc.toObject(UserDataResponseModel::class.java)
+//                            user?.let {
+//                                it.docId = doc.id
+//                                val feedbackResponse = firestore.collection(TABLE_FEEDBACK)
+//                                    .whereEqualTo(FIELD_DOCTOR_ID, it.userId)
+//                                    .get().await()
+//                                it.rating = feedback.rating
+//                                userList.add(it)
+//
+//                            }
+//                        }
+//                    }
+//                }
+
             for (b in bounds) {
                 val response = firestore.collection(TABLE_USER_DATA)
                     .whereEqualTo(FIELD_DOCTOR, true)
                     .orderBy("geohash")
                     .startAt(b.startHash)
                     .endAt(b.endHash)
-                doctorTasks.add(response.get())
-            }
-            Tasks.whenAllComplete(doctorTasks)
-                .addOnCompleteListener {
-                    for (task in doctorTasks) {
-                        val snap = task.result
-                        for (doc in snap!!.documents) {
-                            val user = doc.toObject(UserDataResponseModel::class.java)
-                            user?.let {
-                                it.id = doc.id
-                                val feedbackResponse = firestore.collection(TABLE_FEEDBACK)
-                                    .whereEqualTo(FIELD_DOCTOR_ID, it.userId)
-                                userFeedbackTask.add(feedbackResponse.get())
-                            }
-                        }
-                        Tasks.whenAllComplete(userFeedbackTask)
-                            .addOnCompleteListener {
-                                for (task1 in userFeedbackTask) {
-                                    val snap1 = task1.result
-                                    for (feedback in snap1!!.documents) {
-                                        Log.d("TAG", "getLatLngDoctorList: ${Gson().toJson(feedback)}")
-                                    }
-                                }
-                                /*var feedback = FeedbackResponseModel()
-                                for (snapshot in feedbackData) {
-                                    feedback = snapshot.toObject()
-                                }*/
-                            }
+
+                // Use await() to wait for the get() task to complete
+                val snap = response.get().await()
+
+                for (doc in snap.documents) {
+                    val user = doc.toObject(UserDataResponseModel::class.java)
+                    user?.let {
+                        it.docId = doc.id
+
+                        // Use await() to wait for the feedbackResponse task to complete
+                        val feedbackResponse = firestore.collection(TABLE_FEEDBACK)
+                            .whereEqualTo(FIELD_DOCTOR_ID, it.userId)
+                            .get().await()
+
+                        // Process feedback data here and update user's rating
+                        it.rating = feedback.rating
+                        userList.add(it)
                     }
                 }
+            }
 
-
-//            user?.let {
-//                    it.id = document.id
-//                    val feedbackData = firestore.collection(ConstantKey.DBKeys.TABLE_FEEDBACK)
-//                        .whereEqualTo(ConstantKey.DBKeys.FIELD_DOCTOR_ID, it.userId)
-//                        .get()
-//                        .await()
-//                    var feedback = FeedbackResponseModel()
-//                    for (snapshot in feedbackData) {
-//                        feedback = snapshot.toObject()
-//                    }
-//                    it.rating = feedback.rating
-//                    userList.add(it)
-//                }
-
+            Log.d("TAG", "getLatLngDoctorList: ${userList.size}")
             ApiResponse.create(response = Response.success(userList))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
