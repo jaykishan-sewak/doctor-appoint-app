@@ -17,6 +17,7 @@ import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.repository.models.SymptomModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
+import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MONTH_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.DAY_NAME_FORMAT
@@ -104,6 +105,8 @@ class AppointmentViewModel @Inject constructor(
 
     var updateClick = MutableLiveData(false)
 
+    var dateStr: MutableLiveData<String> = MutableLiveData()
+
 
     private fun get15DaysList() {
         val dateList = mutableListOf<Date>()
@@ -134,6 +137,7 @@ class AppointmentViewModel @Inject constructor(
                     currentDate
                 ) as Date
             ) {
+                dateStr.value =  dateFormatter(currentDate(), ConstantKey.FORMATTED_DATE_MONTH_YEAR)
                 isDateSelected.value = true
                 daysList[index].dateSelect = true
             }
