@@ -24,39 +24,54 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ScrollView
-            android:id="@+id/scrollView"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="@dimen/dp_0"
-            app:layout_constraintBottom_toTopOf="@id/btnSignOut"
+        <View
+            android:id="@+id/topBackgroundView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_150"
+            android:background="@color/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbarContainer">
+            app:layout_constraintTop_toBottomOf="@id/toolbarContainer" />
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_24"
+            android:layout_marginTop="@dimen/dp_24"
+            android:backgroundTint="@color/white"
+            android:elevation="@dimen/margin_5"
+            android:paddingHorizontal="@dimen/margin_10"
+            app:cardCornerRadius="@dimen/margin_20"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/topBackgroundView">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_16"
-                android:paddingBottom="@dimen/margin_20">
+                android:paddingHorizontal="@dimen/margin_20"
+                android:paddingVertical="@dimen/margin_10">
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/profileImage"
-                    android:layout_width="@dimen/dp_70"
-                    android:layout_height="@dimen/dp_70"
-                    android:elevation="@dimen/margin_5"
-                    app:cardCornerRadius="250dp"
+                <FrameLayout
+                    android:id="@+id/imgFrame"
+                    android:layout_width="@dimen/_100dp"
+                    android:layout_height="@dimen/_100dp"
+                    android:background="@drawable/gray_border"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toBottomOf="@+id/ivEditProfile">
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivDoctorImage"
-                        android:layout_width="@dimen/dp_70"
-                        android:layout_height="@dimen/dp_70"
+                        android:id="@+id/ivDoctor"
+                        android:layout_width="@dimen/dp_100"
+                        android:layout_height="@dimen/dp_100"
                         android:background="@drawable/ic_person_white"
                         android:scaleType="centerCrop"
                         app:imageUri="@{viewModel.imageUri}" />
 
-                </androidx.cardview.widget.CardView>
+                </FrameLayout>
 
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -64,162 +79,275 @@
                     style="@style/TextAppearance.MaterialComponents.Body1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_10"
                     android:layout_marginTop="@dimen/margin_10"
                     android:text="@{viewModel.userProfileDataResponse.name}"
                     android:textColor="@color/colorPrimary"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@+id/profileImage"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imgFrame" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:drawableStart="@drawable/ic_email_blue"
+                    android:drawablePadding="@dimen/margin_10"
+                    android:focusable="true"
+                    android:onClick="@{()->viewModel.onClickEmailIcon(viewModel.userProfileDataResponse.email)}"
+                    android:text="@{viewModel.userProfileDataResponse.email}"
+                    android:textColor="@color/grey"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvName" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivEditProfile"
+                    android:layout_width="@dimen/margin_20"
+                    android:layout_height="@dimen/margin_20"
+                    android:layout_marginHorizontal="@dimen/margin_10"
+                    android:onClick="@{view -> viewModel.editClick()}"
+                    android:src="@drawable/ic_blue_edit"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
+            app:layout_constraintBottom_toTopOf="@id/btnSignOut"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cardView1">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_16"
+                android:paddingBottom="@dimen/margin_20">
+
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivContact"
+                    android:layout_width="@dimen/dp_32"
+                    android:layout_height="@dimen/dp_32"
+                    android:layout_marginTop="@dimen/margin_30"
+                    android:background="@drawable/blue_round_background"
+                    android:onClick="@{()->viewModel.onClickPhoneIcon(viewModel.userProfileDataResponse.contactNumber)}"
+                    android:padding="@dimen/margin_5"
+                    android:src="@drawable/ic_phone"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvContactNumber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_10"
                     android:layout_marginTop="@dimen/margin_30"
-                    android:clickable="true"
-                    android:drawableStart="@drawable/ic_phone_white"
-                    android:drawablePadding="@dimen/margin_20"
-                    android:focusable="true"
                     android:onClick="@{()->viewModel.onClickPhoneIcon(viewModel.userProfileDataResponse.contactNumber)}"
-                    android:text="@{viewModel.userProfileDataResponse != null &amp;&amp; !viewModel.userProfileDataResponse.address.isEmpty() ? viewModel.userProfileDataResponse.address : `-`}"
+                    android:text="@{viewModel.userProfileDataResponse != null &amp;&amp; !viewModel.userProfileDataResponse.contactNumber.isEmpty() ? viewModel.userProfileDataResponse.contactNumber : `-`}"
                     android:textColor="@color/grey"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/profileImage" />
+                    app:layout_constraintStart_toEndOf="@+id/ivContact"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvEmail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_10"
-                    android:clickable="true"
-                    android:drawableStart="@drawable/ic_email_blue"
-                    android:drawablePadding="@dimen/margin_20"
-                    android:focusable="true"
-                    android:onClick="@{()->viewModel.onClickEmailIcon(viewModel.userProfileDataResponse.email)}"
-                    android:text="@{viewModel.userProfileDataResponse.email}"
-                    android:textColor="@color/grey"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvContactNumber" />
-
-                <View
-                    android:id="@+id/divider"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/margin_2"
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivDegree"
+                    android:layout_width="@dimen/dp_32"
+                    android:layout_height="@dimen/dp_32"
                     android:layout_marginTop="@dimen/margin_30"
-                    android:background="@color/color_background_box_stroke"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:background="@drawable/blue_round_background"
+                    android:padding="@dimen/margin_5"
+                    android:src="@drawable/ic_degree_white"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvEmail" />
+                    app:layout_constraintTop_toBottomOf="@+id/ivContact" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvDegree"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_30"
-                    android:drawableStart="@drawable/ic_degree_blue"
-                    android:drawablePadding="@dimen/margin_20"
                     android:textColor="@color/grey"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider"
+                    app:layout_constraintBottom_toBottomOf="@id/ivDegree"
+                    app:layout_constraintStart_toStartOf="@+id/tvContactNumber"
+                    app:layout_constraintTop_toTopOf="@+id/ivDegree"
                     app:string="@{viewModel.userProfileDataResponse != null ? viewModel.userProfileDataResponse.degree : null}" />
+
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivSpecilities"
+                    android:layout_width="@dimen/dp_32"
+                    android:layout_height="@dimen/dp_32"
+                    android:layout_marginTop="@dimen/margin_30"
+                    android:background="@drawable/blue_round_background"
+                    android:padding="@dimen/margin_5"
+                    android:src="@drawable/ic_speciality_white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ivDegree" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvSpecialities"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_10"
-                    android:drawableStart="@drawable/ic_specialities_blue"
                     android:drawablePadding="@dimen/margin_20"
                     android:textColor="@color/grey"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvDegree"
+                    app:layout_constraintBottom_toBottomOf="@id/ivSpecilities"
+                    app:layout_constraintStart_toStartOf="@+id/tvContactNumber"
+                    app:layout_constraintTop_toTopOf="@+id/ivSpecilities"
                     app:string="@{viewModel.userProfileDataResponse != null ? viewModel.userProfileDataResponse.specialities : null}" />
+
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivHolidays"
+                    android:layout_width="@dimen/dp_32"
+                    android:layout_height="@dimen/dp_32"
+                    android:layout_marginTop="@dimen/margin_30"
+                    android:background="@drawable/blue_round_background"
+                    android:padding="@dimen/margin_5"
+                    android:src="@drawable/ic_holiday_white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ivSpecilities" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvHolidays"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_10"
-                    android:drawableStart="@drawable/ic_holiday_blue"
                     android:drawablePadding="@dimen/margin_20"
                     android:textColor="@color/grey"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvSpecialities"
+                    app:layout_constraintBottom_toBottomOf="@id/ivHolidays"
+                    app:layout_constraintStart_toStartOf="@id/tvContactNumber"
+                    app:layout_constraintTop_toTopOf="@+id/ivHolidays"
                     app:string="@{viewModel.dateList != null ? viewModel.dateList : null}" />
+
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivWeekOff"
+                    android:layout_width="@dimen/dp_32"
+                    android:layout_height="@dimen/dp_32"
+                    android:layout_marginTop="@dimen/margin_30"
+                    android:background="@drawable/blue_round_background"
+                    android:padding="@dimen/margin_5"
+                    android:src="@drawable/ic_week_off_white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ivHolidays" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvWeekOff"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_10"
-                    android:drawableStart="@drawable/ic_weekend_blue"
                     android:drawablePadding="@dimen/margin_20"
                     android:textColor="@color/grey"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvHolidays"
+                    app:layout_constraintBottom_toBottomOf="@id/ivWeekOff"
+                    app:layout_constraintStart_toStartOf="@id/tvContactNumber"
+                    app:layout_constraintTop_toTopOf="@id/ivWeekOff"
                     app:string="@{viewModel.userProfileDataResponse != null ? viewModel.userProfileDataResponse.weekOffList : null}" />
+
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivGender"
+                    android:layout_width="@dimen/dp_32"
+                    android:layout_height="@dimen/dp_32"
+                    android:layout_marginTop="28dp"
+                    android:background="@drawable/blue_round_background"
+                    android:padding="@dimen/margin_5"
+                    android:src="@drawable/ic_gender_white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ivWeekOff" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvGender"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_10"
-                    android:drawableStart="@drawable/ic_gender_blue"
                     android:drawablePadding="@dimen/margin_20"
                     android:text="@{viewModel.userProfileDataResponse != null &amp;&amp; !viewModel.userProfileDataResponse.gender.isEmpty() ? viewModel.userProfileDataResponse.gender : `-`}"
                     android:textColor="@color/grey"
                     android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/ivGender"
+                    app:layout_constraintStart_toStartOf="@id/tvContactNumber"
+                    app:layout_constraintTop_toTopOf="@id/ivGender" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivAddress"
+                    android:layout_width="@dimen/dp_32"
+                    android:layout_height="@dimen/dp_32"
+                    android:layout_marginTop="@dimen/margin_30"
+                    android:background="@drawable/blue_round_background"
+                    android:padding="@dimen/margin_5"
+                    android:src="@drawable/ic_address_white"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvWeekOff" />
+                    app:layout_constraintTop_toBottomOf="@+id/ivGender" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvAddress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_10"
-                    android:drawableStart="@drawable/ic_address_blue"
                     android:drawablePadding="@dimen/margin_20"
                     android:maxLines="2"
                     android:text="@{viewModel.userProfileDataResponse != null &amp;&amp; !viewModel.userProfileDataResponse.address.isEmpty() ? viewModel.userProfileDataResponse.address : `-`}"
                     android:textColor="@color/grey"
                     android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/ivAddress"
+                    app:layout_constraintStart_toStartOf="@id/tvContactNumber"
+                    app:layout_constraintTop_toTopOf="@id/ivAddress" />
+
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivDOB"
+                    android:layout_width="@dimen/dp_32"
+                    android:layout_height="@dimen/dp_32"
+                    android:layout_marginTop="@dimen/margin_30"
+                    android:background="@drawable/blue_round_background"
+                    android:padding="@dimen/margin_5"
+                    android:src="@drawable/ic_calender_white"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvGender" />
+                    app:layout_constraintTop_toBottomOf="@+id/ivAddress" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvDOB"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_10"
-                    android:drawableStart="@drawable/ic_calendar_blue"
                     android:drawablePadding="@dimen/margin_20"
                     android:textColor="@color/grey"
                     android:textStyle="bold"
                     app:headerDate="@{viewModel.userProfileDataResponse.dob}"
+                    app:layout_constraintBottom_toBottomOf="@id/ivDOB"
+                    app:layout_constraintStart_toStartOf="@id/tvContactNumber"
+                    app:layout_constraintTop_toTopOf="@id/ivDOB" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivAge"
+                    android:layout_width="@dimen/dp_32"
+                    android:layout_height="@dimen/dp_32"
+                    android:layout_marginTop="@dimen/margin_30"
+                    android:background="@drawable/blue_round_background"
+                    android:padding="@dimen/margin_5"
+                    android:src="@drawable/ic_age_white"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvAddress" />
+                    app:layout_constraintTop_toBottomOf="@+id/ivDOB" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvAge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_10"
-                    android:drawableStart="@drawable/ic_age_blue"
                     android:drawablePadding="@dimen/margin_20"
                     android:textColor="@color/grey"
                     android:textStyle="bold"
                     app:age="@{viewModel.userProfileDataResponse.dob}"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvDOB" />
+                    app:layout_constraintBottom_toBottomOf="@id/ivAge"
+                    app:layout_constraintStart_toStartOf="@id/tvContactNumber"
+                    app:layout_constraintTop_toTopOf="@id/ivAge" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

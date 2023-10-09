@@ -2,7 +2,6 @@ package com.android.doctorapp.ui.doctordashboard.doctorfragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
@@ -55,25 +54,9 @@ class DoctorProfileFragment :
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             .withTitle(R.string.title_profile)
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
-            .withMenu(R.menu.user_edit_menu)
-            .withMenuItems(generateMenuItems(), generateMenuClicks())
             .build()
     }
 
-    private fun generateMenuClicks(): MenuItem.OnMenuItemClickListener {
-        return MenuItem.OnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.action_edit -> {
-                    viewModel.isDoctorEdit.value = true
-                }
-            }
-            false
-        }
-    }
-
-    private fun generateMenuItems(): List<Int> {
-        return listOf(R.id.action_edit)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -83,14 +66,7 @@ class DoctorProfileFragment :
 
     private fun registerObservers() {
         viewModel.getUserProfileData()
-        viewModel.isDoctorEdit.value = false
-        viewModel.isDoctorEdit.observe(viewLifecycleOwner) {
-            if (it) {
-                findNavController().navigate(
-                    R.id.action_doctor_profile_to_updateDoctorProfile
-                )
-            }
-        }
+
         viewModel.phoneClick.observe(viewLifecycleOwner) {
             requireActivity().openPhoneDialer(it)
         }
@@ -102,6 +78,9 @@ class DoctorProfileFragment :
         viewModel.navigateToLogin.observe(viewLifecycleOwner) {
             if (it)
                 startActivityFinish<AuthenticationActivity>()
+        }
+        viewModel.navigationListener.observe(viewLifecycleOwner) {
+            findNavController().navigate(it)
         }
     }
 
