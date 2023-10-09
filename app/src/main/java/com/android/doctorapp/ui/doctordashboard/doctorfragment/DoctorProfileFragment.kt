@@ -16,6 +16,8 @@ import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.ui.authentication.AuthenticationActivity
 import com.android.doctorapp.ui.profile.ProfileViewModel
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DOCTOR_PROFILE_FRAGMENT
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.FROM_WHERE
 import com.android.doctorapp.util.extension.fetchImageOrShowError
 import com.android.doctorapp.util.extension.openEmailSender
 import com.android.doctorapp.util.extension.openPhoneDialer
@@ -66,7 +68,17 @@ class DoctorProfileFragment :
 
     private fun registerObservers() {
         viewModel.getUserProfileData()
-
+        viewModel.isDoctorEdit.value = false
+        viewModel.isDoctorEdit.observe(viewLifecycleOwner) {
+            if (it) {
+                val bundle = Bundle()
+                bundle.putString(FROM_WHERE, DOCTOR_PROFILE_FRAGMENT)
+                findNavController().navigate(
+                    R.id.action_doctor_profile_to_updateDoctorProfile,
+                    bundle
+                )
+            }
+        }
         viewModel.phoneClick.observe(viewLifecycleOwner) {
             requireActivity().openPhoneDialer(it)
         }

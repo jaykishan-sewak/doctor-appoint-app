@@ -15,6 +15,7 @@ import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.IS_DOCTOR_OR_USER_KEY
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.OTP_FRAGMENT
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.STORED_VERIFICATION_Id_KEY
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_CONTACT_NUMBER_KEY
 import javax.inject.Inject
@@ -98,6 +99,10 @@ class OtpVerificationFragment :
             }
         }
         viewModel.navigationListener.observe(viewLifecycleOwner) {
+            findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                OTP_FRAGMENT,
+                false
+            )
             findNavController().popBackStack()
 
         }
