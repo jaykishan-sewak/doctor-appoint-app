@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
 import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
-import com.android.doctorapp.repository.AdminRepository
 import com.android.doctorapp.repository.AppointmentRepository
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
@@ -20,7 +19,7 @@ import javax.inject.Inject
 
 class UserAppointmentViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
-    private val adminRepository: AdminRepository,
+    private val appointmentRepository: AppointmentRepository,
     private val context: Context
 ) : BaseViewModel() {
 
@@ -54,7 +53,8 @@ class UserAppointmentViewModel @Inject constructor(
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 setShowProgress(true)
-                when (val response = adminRepository.getLatLngDoctorList(fireStore, latitude, longitude)) {
+                when (val response =
+                    appointmentRepository.getLatLngDoctorList(fireStore, latitude, longitude)) {
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
                         if (response.body.isNotEmpty()) {

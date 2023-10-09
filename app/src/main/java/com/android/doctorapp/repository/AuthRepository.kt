@@ -15,8 +15,6 @@ import com.android.doctorapp.repository.network.AppApi
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_USER_ID
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_USER_DATA
-import com.firebase.geofire.GeoFireUtils
-import com.firebase.geofire.GeoLocation
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
@@ -218,51 +216,6 @@ class AuthRepository @Inject constructor(
         }
     }
 
-    suspend fun testGeoHash(
-        doctorRequestModel: UserDataRequestModel,
-        fireStore: FirebaseFirestore
-    ): ApiResponse<UserDataRequestModel> {
-        return try {
-            /*val latitude = 23.0225
-            val longitude = 72.5714
-            val precision = 9 // The precision determines the length of the geohash
-//            val geohash = GeoHash.withCharacterPrecision(latitude, longitude, precision).toBase32()
-            val geohash = GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude, longitude))
-
-            val data = hashMapOf(
-                "geohash" to geohash,
-                "lat" to latitude,
-                "lng" to longitude,
-
-                // ... other data fields
-            )
-
-            val response = fireStore.collection("places")
-                .document()
-                .set(data)
-                .addOnSuccessListener {
-                    Log.d("TAG", "testGeoHash: ")
-                }
-                .addOnSuccessListener {
-                    Log.d("TAG", "testGeoHash: ")
-                }*/
-
-            val response = fireStore.collection(TABLE_USER_DATA)
-                .whereEqualTo(FIELD_USER_ID, doctorRequestModel.userId)
-                .get()
-                .await()
-
-            val updateUserResponse = fireStore.collection(TABLE_USER_DATA)
-                .document(response.documents[0].id)
-                .set(doctorRequestModel)
-                .await()
-
-            ApiResponse.create(response = Response.success(doctorRequestModel))
-        } catch (e: Exception) {
-            ApiResponse.create(e.fillInStackTrace())
-        }
-    }
-
     suspend fun getRecordById(
         recordId: String,
         fireStore: FirebaseFirestore
@@ -378,12 +331,12 @@ class AuthRepository @Inject constructor(
         fireStore: FirebaseFirestore
     ): ApiResponse<UserDataRequestModel> {
         return try {
-            val response = fireStore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
+            val response = fireStore.collection(TABLE_USER_DATA)
                 .whereEqualTo(FIELD_USER_ID, doctorRequestModel.userId)
                 .get()
                 .await()
 
-            val updateUserResponse = fireStore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
+            val updateUserResponse = fireStore.collection(TABLE_USER_DATA)
                 .document(response.documents[0].id)
                 .set(doctorRequestModel)
                 .await()

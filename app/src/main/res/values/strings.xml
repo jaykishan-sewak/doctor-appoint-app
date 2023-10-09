@@ -224,6 +224,7 @@
     <string name="update_feedback">Update feedback</string>
     <string name="upcoming">Upcoming</string>
     <string name="past">Past</string>
-
+    <string name="use_my_current_location">Use My Current Location</string>
+    <string name="enter_address">Enter address</string>
 
 </resources>

@@ -20,6 +20,10 @@ object ConstantKey {
         const val BOOKING_APPOINTMENT_DATA = "bookingAppointmentData"
         const val DOCTOR_ID = "doctorId"
         const val USER_DATA = "userData"
+        const val OTP_FRAGMENT = "otpFragment"
+        const val ADDRESS_FRAGMENT = "addressFragment"
+        const val DOCTOR_PROFILE_FRAGMENT = "doctorProfileFragment"
+        const val FROM_WHERE = "fromWhere"
 
     }
 
@@ -35,7 +39,7 @@ object ConstantKey {
 
 
     object DBKeys {
-        const val TABLE_USER_DATA = "user_data1"
+        const val TABLE_USER_DATA = "user_data"
         const val FIELD_ADMIN = "admin"
         const val FIELD_DOCTOR = "doctor"
         const val TABLE_DEGREE = "degree"

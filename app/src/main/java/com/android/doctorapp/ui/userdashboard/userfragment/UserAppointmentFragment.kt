@@ -124,26 +124,12 @@ class UserAppointmentFragment :
 
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(p0: LocationResult) {
-            p0.lastLocation?.let { location ->
+            p0.lastLocation.let { location ->
                 // Handle the location update here
-                /*val geocoder = Geocoder(requireContext(), Locale.getDefault())
-
-                val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
-                if (!addresses.isNullOrEmpty()) {
-                    val city = addresses[0].locality // Get the city name
-                    viewModel.locationCity.postValue(addresses[0].locality)
-                    updateToolbarTitle(addresses[0].locality)
-                    context?.toast(city)
-                    stopLocationUpdates()
-                }*/
-
-
                 latitude = location.latitude
                 longitude = location.longitude
                 viewModel.getItems(latitude, longitude)
                 stopLocationUpdates()
-                // Do something with latitude and longitude
-                // For example, update UI or send them to a server
             }
         }
     }
@@ -168,7 +154,6 @@ class UserAppointmentFragment :
 
 
     private fun registerObserver(layoutBinding: FragmentUserAppointmentBinding) {
-//        viewModel.getItems()
         setAdapter(emptyList())
         layoutBinding.recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         layoutBinding.recyclerView.adapter = adapter
@@ -202,6 +187,5 @@ class UserAppointmentFragment :
             }
         )
     }
-
 
 }

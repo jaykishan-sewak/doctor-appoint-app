@@ -37,20 +37,23 @@ class AuthenticationActivity : BaseActivity<ActivityMainBinding>(R.layout.activi
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == ConstantKey.GPS_REQUEST_CODE && resultCode == RESULT_OK) {
-            val fragmentManager = supportFragmentManager
-            val navHostFragment =
-                fragmentManager.findFragmentById(R.id.nav_host_fragment_content_main)
-            if (navHostFragment is NavHostFragment) {
-                // Get the current fragment in the navigation host
-                val currentFragment = navHostFragment.childFragmentManager.fragments.firstOrNull()
-                if (currentFragment is DoctorAddressFragment) {
-                    // Now you have a reference to the UserAppointmentFragment
-                    currentFragment.requestLocationUpdates()
+        if (requestCode == ConstantKey.GPS_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                val fragmentManager = supportFragmentManager
+                val navHostFragment =
+                    fragmentManager.findFragmentById(R.id.nav_host_fragment_content_main)
+                if (navHostFragment is NavHostFragment) {
+                    // Get the current fragment in the navigation host
+                    val currentFragment =
+                        navHostFragment.childFragmentManager.fragments.firstOrNull()
+                    if (currentFragment is DoctorAddressFragment) {
+                        // Now you have a reference to the UserAppointmentFragment
+                        currentFragment.requestLocationUpdates()
+                    }
                 }
+            } else {
+                baseContext.toast(getString(R.string.gps_permission_denied))
             }
-        } else {
-            baseContext.toast(getString(R.string.gps_permission_denied))
         }
     }
 }

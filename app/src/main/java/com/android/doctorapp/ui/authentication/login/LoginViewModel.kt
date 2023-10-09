@@ -49,7 +49,7 @@ class LoginViewModel @Inject constructor(
 
     var googleSignInClient: GoogleSignInClient
 
-    val email: MutableLiveData<String> = MutableLiveData("myuser1@mailinator.com")
+    val email: MutableLiveData<String> = MutableLiveData("mydoc1@mailinator.com")
     val emailError: MutableLiveData<String?> = MutableLiveData()
 
     val password: MutableLiveData<String> = MutableLiveData("Admin@123")
