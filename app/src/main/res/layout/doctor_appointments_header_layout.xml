@@ -23,37 +23,31 @@
         android:paddingHorizontal="@dimen/margin_20"
         android:paddingVertical="@dimen/margin_10">
 
-        <View
-            android:id="@+id/headerDivider"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="@dimen/margin_2"
-            android:background="@color/grey"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/appointmentsDate"
             style="@style/doctor_text_view"
-            android:layout_marginTop="@dimen/margin_20"
+            android:layout_marginTop="@dimen/margin_10"
             app:headerDate="@{header1.date}"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/headerDivider" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/btnViewAll"
             style="@style/doctor_text_view"
             android:layout_height="@dimen/margin_30"
-            android:layout_marginTop="@dimen/margin_20"
-            android:background="@drawable/rounded_btn"
+            android:layout_marginTop="@dimen/margin_10"
             android:onClick="@{()->onItemClickListener.onItemClick(header1,index)}"
             android:text="@string/viewAll"
             android:textAllCaps="false"
-            android:textColor="@color/white"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/headerDivider" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
