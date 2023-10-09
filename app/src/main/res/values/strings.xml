@@ -222,6 +222,8 @@
     <string name="is_visited">Is Visited :</string>
     <string name="no_booking_history_found">No booking history Found</string>
     <string name="update_feedback">Update feedback</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="past">Past</string>
 
 
 </resources>

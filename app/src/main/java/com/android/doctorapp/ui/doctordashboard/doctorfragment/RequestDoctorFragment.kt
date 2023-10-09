@@ -21,6 +21,7 @@ import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.ui.doctordashboard.adapter.RequestAppointmentsAdapter
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DATE_PICKER
+import com.android.doctorapp.util.constants.ConstantKey.DD_MM_FORMAT
 import com.android.doctorapp.util.extension.currentDate
 import com.android.doctorapp.util.extension.dateFormatter
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -39,6 +40,7 @@ class RequestDoctorFragment :
     private val viewModel: RequestDoctorViewModel by viewModels { viewModelFactory }
     private lateinit var adapter: RequestAppointmentsAdapter
     private val myCalender: Calendar = Calendar.getInstance()
+    private var selectedDateRange: Pair<Long, Long>? = null
 
     //    private lateinit var requestDatePicker: MaterialDatePicker<Pair<Long!, Long!>!>
     private lateinit var requestDatePicker: MaterialDatePicker<androidx.core.util.Pair<Long, Long>>
@@ -89,11 +91,22 @@ class RequestDoctorFragment :
 
         viewModel.isRequestCalender.observe(viewLifecycleOwner) {
             if (it) {
-                requestDatePicker = MaterialDatePicker.Builder.dateRangePicker().build()
+                requestDatePicker = MaterialDatePicker.Builder.dateRangePicker().setSelection(
+                    androidx.core.util.Pair(
+                        selectedDateRange?.first,
+                        selectedDateRange?.second
+                    )
+                ).build()
                 requestDatePicker.show(requireActivity().supportFragmentManager, DATE_PICKER)
                 requestDatePicker.addOnPositiveButtonClickListener { dateRange ->
+                    selectedDateRange = Pair(dateRange.first, dateRange.second)
                     viewModel.startDate.value = changeTime(dateRange.first, true)
                     viewModel.endDate.value = changeTime(dateRange.second, false)
+                    viewModel.rangeDate.value = dateFormatter(
+                        viewModel.startDate.value,
+                        DD_MM_FORMAT
+                    ) + " To " + dateFormatter(viewModel.endDate.value, DD_MM_FORMAT)
+                    updateToolbarTitle(viewModel.rangeDate.value!!)
                     requestDatePicker.dismissNow()
                     viewModel.getRequestAppointmentList()
 
