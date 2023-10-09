@@ -5,6 +5,10 @@ import com.android.doctorapp.repository.models.ApiResponse
 import com.android.doctorapp.repository.models.FeedbackResponseModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_DOCTOR
+import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_DOCTOR_ID
+import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_FEEDBACK
+import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_USER_DATA
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
@@ -18,8 +22,8 @@ class AdminRepository @Inject constructor(
 
     suspend fun getDoctorList(firestore: FirebaseFirestore): ApiResponse<List<UserDataResponseModel>> {
         return try {
-            val response = firestore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
-                .whereEqualTo(ConstantKey.DBKeys.FIELD_DOCTOR, true).get().await()
+            val response = firestore.collection(TABLE_USER_DATA)
+                .whereEqualTo(FIELD_DOCTOR, true).get().await()
 
             val userList = arrayListOf<UserDataResponseModel>()
             for (document: DocumentSnapshot in response.documents) {
@@ -27,8 +31,8 @@ class AdminRepository @Inject constructor(
                 var total: Int
                 user?.let {
                     it.docId = document.id
-                    val feedbackData = firestore.collection(ConstantKey.DBKeys.TABLE_FEEDBACK)
-                        .whereEqualTo(ConstantKey.DBKeys.FIELD_DOCTOR_ID, it.userId)
+                    val feedbackData = firestore.collection(TABLE_FEEDBACK)
+                        .whereEqualTo(FIELD_DOCTOR_ID, it.userId)
                         .get()
                         .await()
                     var feedback = FeedbackResponseModel()
@@ -46,13 +50,14 @@ class AdminRepository @Inject constructor(
         }
     }
 
+
     suspend fun deleteDoctor(
         firestore: FirebaseFirestore,
         documentId: String
     ): ApiResponse<Boolean> {
         return try {
             val response =
-                firestore.collection(ConstantKey.DBKeys.TABLE_USER_DATA).document(documentId)
+                firestore.collection(TABLE_USER_DATA).document(documentId)
                     .delete().await()
             ApiResponse.create(response = Response.success(true))
         } catch (e: Exception) {
@@ -65,7 +70,7 @@ class AdminRepository @Inject constructor(
         fireStore: FirebaseFirestore
     ): ApiResponse<UserDataResponseModel> {
         return try {
-            val response = fireStore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
+            val response = fireStore.collection(TABLE_USER_DATA)
                 .whereEqualTo(ConstantKey.DBKeys.FIELD_USER_ID, userId)
                 .get()
                 .await()

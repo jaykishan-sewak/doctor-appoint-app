@@ -1,5 +1,6 @@
 package com.android.doctorapp.repository.models
 
+import com.firebase.geofire.core.GeoHash
 import java.util.Date
 
 data class UserDataRequestModel(
@@ -10,6 +11,7 @@ data class UserDataRequestModel(
     var gender: String = "MALE",
     var address: String = "",
     var contactNumber: String = "",
+    var doctorFees: Int? = null,
     var degree: ArrayList<String>? = null,
     var specialities: ArrayList<String>? = null,
     var isEmailVerified: Boolean = false,
@@ -21,6 +23,8 @@ data class UserDataRequestModel(
     var dob: Date? = null,
     var isUserVerified: Boolean = false,
     var holidayList: ArrayList<Date>? = null,
-    var weekOffList: ArrayList<String>? = null
-
+    var weekOffList: ArrayList<String>? = null,
+    var addressLatLng: Map<String, Any>? = null,
+    var geohash: String? = null
 )
+

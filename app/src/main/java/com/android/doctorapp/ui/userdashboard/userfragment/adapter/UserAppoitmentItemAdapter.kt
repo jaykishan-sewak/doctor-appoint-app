@@ -53,8 +53,8 @@ class UserAppoitmentItemAdapter(
 
     override fun onBindViewHolder(holder: UserAppoitmentItemAdapter.ItemViewHolder, position: Int) {
         val objects = userList[position]
-        val imageUri = objects.images.toUri()
-        holder.bind(objects, listener, position, imageUri)
+        val imageUri = objects.images?.toUri()
+        holder.bind(objects, listener, position, imageUri!!)
     }
 
     interface OnItemClickListener {

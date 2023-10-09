@@ -331,12 +331,12 @@ class AuthRepository @Inject constructor(
         fireStore: FirebaseFirestore
     ): ApiResponse<UserDataRequestModel> {
         return try {
-            val response = fireStore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
+            val response = fireStore.collection(TABLE_USER_DATA)
                 .whereEqualTo(FIELD_USER_ID, doctorRequestModel.userId)
                 .get()
                 .await()
 
-            val updateUserResponse = fireStore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
+            val updateUserResponse = fireStore.collection(TABLE_USER_DATA)
                 .document(response.documents[0].id)
                 .set(doctorRequestModel)
                 .await()
