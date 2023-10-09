@@ -107,6 +107,10 @@ class ProfileViewModel @Inject constructor(
         _navigateToLogin.postValue(true)
     }
 
+    fun editClick() {
+        _navigationListener.value = R.id.action_doctor_profile_to_updateDoctorProfile
+    }
+
     fun profilePictureClicked() {
         _onProfilePictureClicked.postValue(Unit)
     }

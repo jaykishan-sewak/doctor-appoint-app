@@ -137,7 +137,7 @@ class AppointmentViewModel @Inject constructor(
                     currentDate
                 ) as Date
             ) {
-                dateStr.value =  dateFormatter(currentDate(), ConstantKey.FORMATTED_DATE_MONTH_YEAR)
+                dateStr.value = dateFormatter(currentDate(), ConstantKey.FORMATTED_DATE_MONTH_YEAR)
                 isDateSelected.value = true
                 daysList[index].dateSelect = true
             }
@@ -150,7 +150,6 @@ class AppointmentViewModel @Inject constructor(
                     )
                 ) {
                     daysList[index] = DateSlotModel(date = dateSlotModel.date, disable = true)
-                    isDateSelected.value = false
                     return@forEachIndexed
                 }
             }
