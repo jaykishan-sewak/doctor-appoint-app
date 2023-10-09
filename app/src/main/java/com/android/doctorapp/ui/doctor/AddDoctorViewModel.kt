@@ -2,7 +2,6 @@ package com.android.doctorapp.ui.doctor
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.RadioGroup
@@ -30,6 +29,8 @@ import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.repository.models.WeekOffModel
 import com.android.doctorapp.util.SingleLiveEvent
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.ADDRESS_FRAGMENT
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.OTP_FRAGMENT
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.FEMALE_GENDER
 import com.android.doctorapp.util.constants.ConstantKey.MALE_GENDER
@@ -52,8 +53,6 @@ class AddDoctorViewModel @Inject constructor(
     private val session: Session
 
 ) : BaseViewModel() {
-
-    val TAG = AddDoctorViewModel::class.java.simpleName
 
     val name: MutableLiveData<String?> = MutableLiveData()
     val nameError: MutableLiveData<String?> = MutableLiveData()
@@ -134,6 +133,13 @@ class AddDoctorViewModel @Inject constructor(
     val isGalleryClick: MutableLiveData<Boolean> = MutableLiveData(false)
     val imageUri: MutableLiveData<Uri> = MutableLiveData<Uri>()
 
+    val fees: MutableLiveData<String> = MutableLiveData()
+    val feesError: MutableLiveData<String?> = MutableLiveData()
+    val geoHash: MutableLiveData<String?> = MutableLiveData()
+    var addressLatLngList = MutableLiveData<Map<String, Any>?>()
+    var useMyCurrentLocation: MutableLiveData<Boolean> = MutableLiveData<Boolean>(false)
+
+    var isFromWhere: MutableLiveData<String?> = MutableLiveData()
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
         this.binding = binding
@@ -180,25 +186,34 @@ class AddDoctorViewModel @Inject constructor(
                                 isEmailVerified.value = response.body.isEmailVerified
                             }
                             notificationToggleData.value = response.body.isNotificationEnable
-                            degreeLiveList.value = response.body.degree?.toList()
-                            specializationLiveList.value = response.body.specialities?.toList()
-                            holidayList.value =
-                                if (response.body.holidayList?.isNotEmpty() == true) response.body.holidayList?.map { holidayDate ->
-                                    HolidayModel(
-                                        holidayDate = holidayDate
-                                    )
-                                } as ArrayList<HolidayModel> else null
-
-
-                            addShiftTimeSlotList.value =
-                                if (response.body.availableTime?.isNotEmpty() == true)
-                                    response.body.availableTime?.map { shiftModel ->
-                                        AddShiftTimeModel(
-                                            startTime = shiftModel.startTime,
-                                            endTime = shiftModel.endTime,
-                                            isTimeSlotBook = shiftModel.isTimeSlotBook
+                            if (isFromWhere.value.equals(ADDRESS_FRAGMENT) || isFromWhere.value.equals(
+                                    OTP_FRAGMENT
+                                )
+                            ) {
+                            } else {
+                                degreeLiveList.value = response.body.degree?.toList()
+                                specializationLiveList.value = response.body.specialities?.toList()
+                            }
+                            if (holidayList.value.isNullOrEmpty()) {
+                                holidayList.value =
+                                    if (response.body.holidayList?.isNotEmpty() == true) response.body.holidayList?.map { holidayDate ->
+                                        HolidayModel(
+                                            holidayDate = holidayDate
                                         )
-                                    } as ArrayList<AddShiftTimeModel> else null
+                                    } as ArrayList<HolidayModel> else null
+                            }
+
+                            if (addShiftTimeSlotList.value.isNullOrEmpty()) {
+                                addShiftTimeSlotList.value =
+                                    if (response.body.availableTime?.isNotEmpty() == true)
+                                        response.body.availableTime?.map { shiftModel ->
+                                            AddShiftTimeModel(
+                                                startTime = shiftModel.startTime,
+                                                endTime = shiftModel.endTime,
+                                                isTimeSlotBook = shiftModel.isTimeSlotBook
+                                            )
+                                        } as ArrayList<AddShiftTimeModel> else null
+                            }
 
                             getDBWeekDayList(response.body.weekOffList)
 
@@ -243,7 +258,6 @@ class AddDoctorViewModel @Inject constructor(
                 isUpdateDataValid.value =
                     (!name.value.isNullOrEmpty() && !email.value.isNullOrEmpty()
                             && !contactNumber.value.isNullOrEmpty() && nameError.value.isNullOrEmpty()
-
                             && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
                             && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
                             && !dob.value.isNullOrEmpty() && dobError.value.isNullOrEmpty()
@@ -371,7 +385,7 @@ class AddDoctorViewModel @Inject constructor(
             if (imageUri.value != null && !imageUri.value.toString().startsWith("https:"))
                 uploadImage(imageUri.value!!)
             else
-                this.updateUser("")
+                this.updateUser(imageUri.value.toString())
         } else {
             context.toast(resourceProvider.getString(R.string.check_internet_connection))
         }
@@ -427,6 +441,7 @@ class AddDoctorViewModel @Inject constructor(
                         gender = selectGenderValue.value.toString(),
                         address = address.value.toString(),
                         contactNumber = contactNumber.value.toString(),
+                        doctorFees = fees.value?.toInt(),
                         degree = binding?.chipGroup?.children?.toList()
                             ?.map { (it as Chip).text.toString() } as ArrayList<String>?,
                         specialities = binding?.chipGroupSpec?.children?.toList()
@@ -454,8 +469,9 @@ class AddDoctorViewModel @Inject constructor(
                             ?.filter { it.isWeekOff == true }
                             ?.map { weekOffModel -> weekOffModel.dayName }
                                 as ArrayList<String> else null,
-                        images = imageUrl
-
+                        images = imageUrl,
+                        addressLatLng = addressLatLngList.value,
+                        geohash = geoHash.value
                     )
                 } else {
                     //Here Code for User Update
@@ -900,6 +916,16 @@ class AddDoctorViewModel @Inject constructor(
         isGalleryClick.value = true
     }
 
+    fun isValidFees(text: CharSequence?) {
+        if (text?.toString().isNullOrEmpty()) {
+            feesError.value = resourceProvider.getString(R.string.valid_fees_desc)
+        } else {
+            feesError.value = null
+        }
+        validateAllUpdateField()
+    }
+
+
     private fun uploadImage(image: Uri) {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
@@ -928,4 +954,9 @@ class AddDoctorViewModel @Inject constructor(
 
         }
     }
+
+    fun currentLocation() {
+        useMyCurrentLocation.value = true
+    }
+
 }

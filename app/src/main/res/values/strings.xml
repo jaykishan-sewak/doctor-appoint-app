@@ -192,7 +192,6 @@
     <string name="enter_doctor_name">Enter Doctor Name</string>
     <string name="last_prescription">Last Prescription</string>
     <string name="last_visit_date">Last Visit Date</string>
-
     <string name="feedback_desc">your feedback is important for us.</string>
     <string name="rate_your_experience">Rate Your Experience</string>
     <string name="anything_else_you_want_to_add">Anything else you want to add?</string>
@@ -205,15 +204,18 @@
     <string name="status_label">Status :</string>
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
-
     <string name="already_added_in_holiday">Already Added date in Holiday</string>
     <string name="denied_the_permission">Denied the permission</string>
     <string name="permission_needed">Permission Needed</string>
     <string name="permission_msg">Permission is needed for using the camera …</string>
     <string name="go_to_settings">Go to settings</string>
     <string name="cancel_the_permission">Cancel the permission</string>
-    <string name="location_permission">Location permission denied</string>
+    <string name="hint_doctor_fees">Fees</string>
+    <string name="valid_fees_desc">Fees Must be Required</string>
+    <string name="location_permission">Location Permission Declined</string>
+    <string name="failed_to_get_current_location">Failed on getting current location</string>
     <string name="gps_permission_denied">GPS permission denied</string>
+
 
     <string name="history">History</string>
     <string name="details">Details :</string>
@@ -222,6 +224,7 @@
     <string name="update_feedback">Update feedback</string>
     <string name="upcoming">Upcoming</string>
     <string name="past">Past</string>
-
+    <string name="use_my_current_location">Use My Current Location</string>
+    <string name="enter_address">Enter address</string>
 
 </resources>

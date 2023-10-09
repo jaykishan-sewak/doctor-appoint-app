@@ -68,7 +68,7 @@ class ProfileViewModel @Inject constructor(
                         profileRepository.getProfileRecordById(recordId, fireStore)) {
                         is ApiSuccessResponse -> {
                             userProfileDataResponse.value = response.body
-                            imageUri.value = userProfileDataResponse.value!!.images.toUri()
+                            imageUri.value = userProfileDataResponse.value!!.images?.toUri()
                             dateList.value = dateListFormatter(
                                 response.body.holidayList,
                                 ConstantKey.DATE_MM_FORMAT

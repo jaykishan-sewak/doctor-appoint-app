@@ -74,6 +74,10 @@
             android:id="@+id/action_updateDoctorFragment_to_OtpVerificationFragment"
             app:destination="@+id/OtpVerificationFragment" />
 
+        <action
+            android:id="@+id/action_updateDoctorFragment_to_doctor_address_fragment"
+            app:destination="@+id/navigation_doctor_address" />
+
     </fragment>
 
     <fragment
@@ -101,8 +105,7 @@
             app:destination="@+id/AddDoctorFragment" />
         <action
             android:id="@+id/admin_to_doctor_details"
-            app:destination="@+id/DoctorDetailsFragment"
-            />
+            app:destination="@+id/DoctorDetailsFragment" />
     </fragment>
 
 
@@ -141,4 +144,12 @@
             app:destination="@+id/AddDoctorFragment" />
 
     </fragment>
+
+    <fragment
+        android:id="@+id/navigation_doctor_address"
+        android:name="com.android.doctorapp.ui.doctordashboard.doctorfragment.DoctorAddressFragment"
+        tools:layout="@layout/fragment_doctor_address">
+
+    </fragment>
+
 </navigation>

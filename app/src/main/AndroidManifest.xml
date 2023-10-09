@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.PRECISE_LOCATION" />
 
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -58,15 +59,6 @@
             android:theme="@style/Theme.InfusionTemplate.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
 
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="com.android.doctorapp.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths" />
-        </provider>
     </application>
 
 </manifest>

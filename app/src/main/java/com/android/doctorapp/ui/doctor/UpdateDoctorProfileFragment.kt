@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,12 +33,19 @@ import com.android.doctorapp.ui.doctor.adapter.AddDoctorTimeAdapter
 import com.android.doctorapp.ui.doctor.adapter.CustomAutoCompleteAdapter
 import com.android.doctorapp.ui.doctor.adapter.WeekOffDayAdapter
 import com.android.doctorapp.ui.doctordashboard.DoctorDashboardActivity
-import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.ADDRESS_FRAGMENT
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.ADMIN_FRAGMENT
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.FROM_WHERE
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.IS_DOCTOR_OR_USER_KEY
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.OTP_FRAGMENT
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.STORED_VERIFICATION_Id_KEY
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_CONTACT_NUMBER_KEY
+import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MONTH_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.FEMALE_GENDER
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
+import com.android.doctorapp.util.constants.ConstantKey.HOUR_MIN_AM_PM_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.KEY_GEO_HASH
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.convertDateToFull
 import com.android.doctorapp.util.extension.convertDateToMonth
@@ -100,7 +108,7 @@ class UpdateDoctorProfileFragment :
     private val dobCalender: Calendar = Calendar.getInstance()
     private val holidayCalender: Calendar = Calendar.getInstance()
     private val availableDateCalender: Calendar = Calendar.getInstance()
-
+    private var fromFragment: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -132,11 +140,14 @@ class UpdateDoctorProfileFragment :
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
         handler.postDelayed(runnable, 1000)
-        val arguments: Bundle? = arguments
-        if (arguments != null)
-            isFromAdmin = arguments.getBoolean(ConstantKey.BundleKeys.ADMIN_FRAGMENT)
-        isNotFromAdmin = isFromAdmin
 
+        val arguments: Bundle? = arguments
+        if (arguments != null) {
+            isFromAdmin = arguments.getBoolean(ADMIN_FRAGMENT)
+            fromFragment = arguments.getString(FROM_WHERE)
+        }
+
+        isNotFromAdmin = isFromAdmin
 
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             override fun onCodeAutoRetrievalTimeOut(str: String) {
@@ -169,7 +180,7 @@ class UpdateDoctorProfileFragment :
                 val specialityList = binding.chipGroupSpec.children.toList()
                     .map { (it as Chip).text.toString() } as ArrayList<String>?
                 viewModel.specializationLiveList.value = specialityList!!
-
+                viewModel.isFromWhere.value = OTP_FRAGMENT
                 val bundle = Bundle()
                 bundle.putString(STORED_VERIFICATION_Id_KEY, storedVerificationId)
                 bundle.putBoolean(IS_DOCTOR_OR_USER_KEY, true)
@@ -214,18 +225,20 @@ class UpdateDoctorProfileFragment :
         return bindingView.root
     }
 
+
     private fun registerObserver(layoutBinding: FragmentUpdateDoctorProfileBinding) {
 
         updateHolidayRecyclerview(arrayListOf())
         updateWeekOffRecyclerview(arrayListOf())
         updateAddShiftTimeAdapter(arrayListOf())
 
-
-        viewModel.getUserData().observe(viewLifecycleOwner) {
-            viewModel.name.value = it.name
-            viewModel.email.value = it.email
-            viewModel.contactNumber.value = it.contactNumber
-        }
+//        if (viewModel.isFromWhere.value.isNullOrEmpty()) {
+            viewModel.getUserData().observe(viewLifecycleOwner) { getDate ->
+                viewModel.name.value = getDate.name
+                viewModel.email.value = getDate.email
+                viewModel.contactNumber.value = getDate.contactNumber
+            }
+//        }
 
         viewModel.userResponse.observe(viewLifecycleOwner) {
             if (it?.address?.isNotEmpty()!!) {
@@ -233,18 +246,35 @@ class UpdateDoctorProfileFragment :
                 viewModel.email.value = it.email
                 viewModel.contactNumber.value = it.contactNumber
                 viewModel.address.value = it.address
-                if (it.gender == ConstantKey.FEMALE_GENDER)
+                if (it.gender == FEMALE_GENDER)
                     viewModel.gender.value = R.id.radioButtonFemale
                 else
                     viewModel.gender.value = R.id.radioButtonMale
-                viewModel.dob.value = dateFormatter(it.dob, ConstantKey.DATE_MM_FORMAT)
+                viewModel.dob.value = dateFormatter(it.dob, DATE_MM_FORMAT)
                 viewModel.isProfileNavigation.value = true
+                viewModel.fees.value = it.doctorFees.toString()
             } else {
                 viewModel.name.value = it.name
                 viewModel.email.value = it.email
                 viewModel.contactNumber.value = it.contactNumber
             }
         }
+
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("address")
+            ?.observe(viewLifecycleOwner) { result ->
+                if (result != null) {
+                    viewModel.address.value = result
+                }
+            }
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Map<String, Any?>>(
+            "addressLatLng"
+        )?.observe(viewLifecycleOwner) { result ->
+            if (result != null) {
+                viewModel.geoHash.value = result.get(KEY_GEO_HASH).toString()
+                viewModel.addressLatLngList.value = result as Map<String, Any>?
+            }
+        }
+
         viewModel.clickResponse.observe(viewLifecycleOwner) {
             sendVerificationCode("+91$it")
         }
@@ -306,8 +336,9 @@ class UpdateDoctorProfileFragment :
             } else if (layoutBinding.btnAddTiming.id == it?.id) {
                 tempShiftTimeList.add(AddShiftTimeModel(isTimeSlotBook = false))
                 viewModel.addShiftTimeSlotList.value = tempShiftTimeList
-                viewModel.validateAllUpdateField()
-
+            } else if (layoutBinding.textAddress.id == it?.id) {
+                viewModel.isFromWhere.value = ADDRESS_FRAGMENT
+                findNavController().navigate(R.id.action_updateDoctorFragment_to_doctor_address_fragment)
             } else {
                 requireContext().selectDate(
                     myCalendar = availableDateCalender,
@@ -576,10 +607,10 @@ class UpdateDoctorProfileFragment :
                         if (it.startTime != null) {
                             dateFormatter(
                                 it.startTime,
-                                ConstantKey.HOUR_MIN_AM_PM_FORMAT
+                                HOUR_MIN_AM_PM_FORMAT
                             ) == dateFormatter(
                                 selectedTime,
-                                ConstantKey.HOUR_MIN_AM_PM_FORMAT
+                                HOUR_MIN_AM_PM_FORMAT
                             )
                         } else
                             false

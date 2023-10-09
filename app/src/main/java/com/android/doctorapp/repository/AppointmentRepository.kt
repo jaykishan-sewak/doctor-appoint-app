@@ -5,19 +5,23 @@ import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.FeedbackResponseModel
 import com.android.doctorapp.repository.models.SymptomModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
-import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_APPROVED_KEY
+import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_DOCTOR
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_DOCTOR_ID
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_SELECTED_DATE
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_USER_ID
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_VISITED_KEY
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_APPOINTMENT
+import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_FEEDBACK
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_SYMPTOM
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_USER_DATA
 import com.android.doctorapp.util.constants.ConstantKey.FIELD_APPROVED
 import com.android.doctorapp.util.constants.ConstantKey.FIELD_PENDING
 import com.android.doctorapp.util.constants.ConstantKey.FIELD_REJECTED
+import com.android.doctorapp.util.constants.ConstantKey.KEY_GEO_HASH
 import com.android.doctorapp.util.extension.currentDate
+import com.firebase.geofire.GeoFireUtils
+import com.firebase.geofire.GeoLocation
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
@@ -313,42 +317,51 @@ class AppointmentRepository @Inject constructor() {
         }
     }
 
-    suspend fun getFeedbackDoctorList(firestore: FirebaseFirestore): ApiResponse<List<UserDataResponseModel>> {
+    suspend fun getLatLngDoctorList(
+        firestore: FirebaseFirestore,
+        latitude: Double,
+        longitude: Double
+    ): ApiResponse<List<UserDataResponseModel>> {
         return try {
-            val response = firestore.collection(TABLE_USER_DATA)
-                .whereEqualTo(ConstantKey.DBKeys.FIELD_DOCTOR, true).get().await()
-
+            val center = GeoLocation(latitude, longitude)
+            val radiusInM = 50.0 * 1000.0
+            val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInM)
             val userList = arrayListOf<UserDataResponseModel>()
-            for (document: DocumentSnapshot in response.documents) {
-                val user = document.toObject(UserDataResponseModel::class.java)
+            var feedback = FeedbackResponseModel()
+            for (b in bounds) {
+                val response = firestore.collection(TABLE_USER_DATA)
+                    .whereEqualTo(FIELD_DOCTOR, true)
+                    .orderBy(KEY_GEO_HASH)
+                    .startAt(b.startHash)
+                    .endAt(b.endHash)
 
-                user?.let {
-                    it.docId = document.id
-                    val subCollectionRef = firestore.collection(TABLE_USER_DATA).document(it.docId)
-                        .collection(ConstantKey.DBKeys.SUB_TABLE_FEEDBACK)
+                // Use await() to wait for the get() task to complete
+                val snap = response.get().await()
 
-                    val querySnapshot = subCollectionRef.get().await()
-                    var total = 0F
-                    var numberOfFeedbacks = 0
-                    for (document1 in querySnapshot.documents) {
-                        val feedback = document1.toObject(FeedbackResponseModel::class.java)
-                        feedback.let { data ->
-                            total += data?.rating!!
-                            numberOfFeedbacks++
-                        }
+                for (doc in snap.documents) {
+                    val user = doc.toObject(UserDataResponseModel::class.java)
+                    user?.let {
+                        it.docId = doc.id
+
+                        // Use await() to wait for the feedbackResponse task to complete
+                        val feedbackResponse =
+                            firestore.collection(TABLE_FEEDBACK)
+                                .whereEqualTo(FIELD_DOCTOR_ID, it.userId)
+                                .get().await()
+
+                        // Process feedback data here and update user's rating
+                        it.rating = feedback.rating
+                        userList.add(it)
                     }
-                    it.rating = if (numberOfFeedbacks > 0) {
-                        total / numberOfFeedbacks
-                    } else 0F
-
-                    userList.add(it)
                 }
             }
+
             ApiResponse.create(response = Response.success(userList))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
         }
     }
+
 
     suspend fun getUpcomingBookAppointmentDetailsList(
         userId: String,
