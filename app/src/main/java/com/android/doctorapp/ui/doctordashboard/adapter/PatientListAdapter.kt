@@ -115,9 +115,6 @@ private class HeaderViewHolder(private val binding: DoctorAppointmentsHeaderLayo
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(header: Header, listener: PatientListAdapter.OnItemClickListener, position: Int) {
-        if (position == 0) {
-            binding.headerDivider.visibility = View.GONE
-        }
         binding.apply {
             header1 = header
             index = position

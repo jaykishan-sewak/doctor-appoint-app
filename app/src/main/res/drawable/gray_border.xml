@@ -6,4 +6,7 @@
         android:width="5dp"
         android:color="#D3D3D3" />
     <corners android:radius="20dp" />
+        android:width="@dimen/margin_5"
+        android:color="@color/gray_border" />
+    <corners android:radius="@dimen/margin_32" />
 </shape>

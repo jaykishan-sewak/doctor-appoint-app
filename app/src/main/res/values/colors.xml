@@ -29,6 +29,8 @@
     <color name="doctor_bg">#f2f2f8</color>
     <color name="pending">#f1c232</color>
     <color name="divider">#f1f1f1</color>
+    <color name="appointments_bg">#f3f6ff</color>
+    <color name="gray_border">#D3D3D3</color>
     <color name="dark_grey">#58657e</color>
     <color name="light_grey">#858383</color>
 </resources>
