@@ -33,4 +33,6 @@
     <color name="gray_border">#D3D3D3</color>
     <color name="dark_grey">#58657e</color>
     <color name="light_grey">#858383</color>
+    <color name="cyan">#8fd7da</color>
+
 </resources>
