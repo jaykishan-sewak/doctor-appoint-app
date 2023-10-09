@@ -31,7 +31,7 @@
         android:layout_marginVertical="@dimen/margin_10"
         android:backgroundTint="@color/white"
         android:elevation="@dimen/margin_5"
-        app:cardCornerRadius="@dimen/margin_10"
+        app:cardCornerRadius="@dimen/margin_20"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,21 +40,21 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin_10"
-            android:paddingVertical="@dimen/margin_15">
+            android:paddingBottom="@dimen/padding_10">
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/ivDoctorImageView"
+                android:id="@+id/profileImage"
                 android:layout_width="@dimen/dp_70"
                 android:layout_height="@dimen/dp_70"
+                android:layout_marginStart="@dimen/margin_15"
+                android:layout_marginTop="@dimen/margin_15"
                 android:elevation="@dimen/margin_5"
-                app:cardCornerRadius="250dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:cardCornerRadius="@dimen/margin_20"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivDoctorImage"
+                    android:id="@+id/ivDoctor"
                     android:layout_width="@dimen/dp_70"
                     android:layout_height="@dimen/dp_70"
                     android:background="@drawable/ic_person_white"
@@ -66,69 +66,61 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvDoctorName"
                 style="@style/doctor_text_view"
-                android:layout_marginStart="@dimen/margin_10"
+                android:layout_marginStart="@dimen/margin_15"
+                android:layout_marginTop="@dimen/dp_10"
                 android:text="@{userData.name}"
-                android:textColor="@color/blue"
-                android:textSize="18sp"
+                android:textColor="@color/dark_grey"
                 android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/ivDoctorImageView"
+                app:layout_constraintStart_toEndOf="@+id/profileImage"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvDegreeLabel"
-                style="@style/doctor_text_view"
-                android:layout_marginStart="@dimen/margin_10"
-                android:text="@string/label_degree"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/ivDoctorImageView"
-                app:layout_constraintTop_toBottomOf="@id/tvDoctorName" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvDoctorDegree"
                 style="@style/doctor_text_view"
                 android:layout_width="@dimen/dp_0"
-                android:layout_marginStart="@dimen/margin_10"
-                android:layout_marginEnd="@dimen/margin_10"
+                android:layout_marginTop="@dimen/dp_1"
                 android:maxLines="2"
-                android:textStyle="bold"
+                android:textColor="@color/light_grey"
+                android:textSize="13sp"
                 app:doctorSpecialization="@{userData.degree}"
-                app:layout_constraintEnd_toStartOf="@+id/btnView"
-                app:layout_constraintStart_toEndOf="@+id/tvDegreeLabel"
-                app:layout_constraintTop_toBottomOf="@id/tvDoctorName" />
+                app:layout_constraintStart_toStartOf="@+id/tvDoctorName"
+                app:layout_constraintTop_toBottomOf="@+id/tvDoctorName" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvGenderText"
                 style="@style/doctor_text_view"
-                android:layout_marginStart="@dimen/margin_10"
+                android:layout_marginTop="@dimen/dp_1"
                 android:text="@{userData.gender}"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/ivDoctorImageView"
-                app:layout_constraintTop_toBottomOf="@id/tvDoctorDegree" />
+                android:textColor="@color/light_grey"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="@+id/tvDoctorName"
+                app:layout_constraintTop_toBottomOf="@+id/tvDoctorDegree" />
 
             <RatingBar
                 android:id="@+id/doctorRatingBar"
                 style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_10"
+                android:layout_marginTop="@dimen/dp_1"
                 android:rating="@{userData.rating}"
-                app:layout_constraintStart_toEndOf="@id/ivDoctorImageView"
-                app:layout_constraintTop_toBottomOf="@id/tvGenderText" />
+                app:layout_constraintStart_toStartOf="@+id/tvDoctorName"
+                app:layout_constraintTop_toBottomOf="@+id/tvGenderText" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnView"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/margin_30"
+                android:layout_marginEnd="@dimen/margin_20"
                 android:background="@drawable/rounded_btn"
                 android:onClick="@{()->onItemClickListener.onItemClick(userData,index)}"
                 android:text="@string/view"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/doctorRatingBar"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
+                app:layout_constraintTop_toTopOf="@+id/doctorRatingBar" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.cardview.widget.CardView>
 </layout>

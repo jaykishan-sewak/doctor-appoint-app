@@ -7,7 +7,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -232,20 +231,21 @@ class UpdateDoctorProfileFragment :
         updateWeekOffRecyclerview(arrayListOf())
         updateAddShiftTimeAdapter(arrayListOf())
 
-//        if (viewModel.isFromWhere.value.isNullOrEmpty()) {
-            viewModel.getUserData().observe(viewLifecycleOwner) { getDate ->
-                viewModel.name.value = getDate.name
-                viewModel.email.value = getDate.email
-                viewModel.contactNumber.value = getDate.contactNumber
-            }
-//        }
+        viewModel.getUserData().observe(viewLifecycleOwner) { getDate ->
+            viewModel.name.value = getDate.name
+            viewModel.email.value = getDate.email
+            viewModel.contactNumber.value = getDate.contactNumber
+        }
 
         viewModel.userResponse.observe(viewLifecycleOwner) {
             if (it?.address?.isNotEmpty()!!) {
                 viewModel.name.value = it.name
                 viewModel.email.value = it.email
                 viewModel.contactNumber.value = it.contactNumber
-                viewModel.address.value = it.address
+                if (viewModel.isFromWhere.value.equals(ADDRESS_FRAGMENT)) {
+                } else {
+                    viewModel.address.value = it.address
+                }
                 if (it.gender == FEMALE_GENDER)
                     viewModel.gender.value = R.id.radioButtonFemale
                 else

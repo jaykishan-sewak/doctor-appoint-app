@@ -50,7 +50,7 @@
             android:background="@drawable/search_bg"
             android:drawableStart="@drawable/baseline_search_24"
             android:drawablePadding="@dimen/padding_10"
-            android:hint="@string/type_name"
+            android:hint="@string/search_doctor"
             android:paddingStart="@dimen/padding_10"
             android:textColorHint="@color/edittext_bg_grey"
             android:textStyle="bold"

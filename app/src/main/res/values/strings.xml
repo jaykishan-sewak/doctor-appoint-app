@@ -123,7 +123,7 @@
     <string name="specialist">Specialist :</string>
     <string name="label_degree">Degree :</string>
     <string name="view">View</string>
-    <string name="type_name">Type Name</string>
+    <string name="search_doctor">Search Doctor</string>
     <string name="appointment">Appointments</string>
     <string name="request">Request</string>
     <string name="doctor_appointment_fragment">Doctor Appointment fragment</string>
