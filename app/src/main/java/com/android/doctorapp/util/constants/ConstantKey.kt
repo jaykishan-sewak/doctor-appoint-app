@@ -20,6 +20,10 @@ object ConstantKey {
         const val BOOKING_APPOINTMENT_DATA = "bookingAppointmentData"
         const val DOCTOR_ID = "doctorId"
         const val USER_DATA = "userData"
+        const val OTP_FRAGMENT = "otpFragment"
+        const val ADDRESS_FRAGMENT = "addressFragment"
+        const val DOCTOR_PROFILE_FRAGMENT = "doctorProfileFragment"
+        const val FROM_WHERE = "fromWhere"
 
     }
 
@@ -68,6 +72,10 @@ object ConstantKey {
     const val FORMATTED_DATE_MONTH_YEAR = "EEE MMM dd yyyy"
     const val FORMATTED_HOUR_MINUTE_SECOND = "HH:mm:ss"
     const val GPS_REQUEST_CODE = 1
+    const val KEY_GEO_HASH = "geohash"
+    const val KEY_LATITUDE = "latitude"
+    const val KEY_LONGITUDE = "longitude"
+
     const val FORMATTED_TIME = "HH:mm"
 
     const val DATE_PICKER = "DatePicker"

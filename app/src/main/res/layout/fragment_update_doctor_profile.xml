@@ -47,17 +47,17 @@
                     android:layout_height="@dimen/profile_image_dimension"
                     android:elevation="@dimen/margin_5"
                     app:cardCornerRadius="250dp"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ivDoctorImage"
                         android:layout_width="@dimen/profile_image_dimension"
                         android:layout_height="@dimen/profile_image_dimension"
+                        android:background="@drawable/ic_person_white"
                         android:scaleType="centerCrop"
-                        app:imageUri="@{viewModel.imageUri}"
-                        android:background="@drawable/ic_person_white"/>
+                        app:imageUri="@{viewModel.imageUri}" />
 
                 </androidx.cardview.widget.CardView>
 
@@ -110,6 +110,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
+                    android:visibility="@{viewModel.isDoctor ? View.INVISIBLE : View.VISIBLE}"
                     app:error="@{viewModel.addressError}"
                     app:errorEnabled="@{viewModel.addressError!= null ? true : false}"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -128,6 +129,17 @@
                         android:textSize="14sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_address"
+                    style="@style/custom_edit_text_bg"
+                    android:hint="@string/enter_address"
+                    android:onClick="@{(text_address) -> viewModel.calenderClick(text_address)}"
+                    android:paddingEnd="@dimen/margin_55"
+                    android:text="@={viewModel.address}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_email" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_gender_title"
@@ -260,6 +272,32 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/field_update_fees"
+                    style="@style/user_login_tlEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10"
+                    app:error="@{viewModel.feesError}"
+                    app:errorEnabled="@{viewModel.feesError!= null ? true : false}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/field_date_of_birth">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_fees"
+                        style="@style/user_login_editText"
+                        android:afterTextChanged="@{(text) -> viewModel.isValidFees(text)}"
+                        android:hint="@string/hint_doctor_fees"
+                        android:imeOptions="actionNext"
+                        android:inputType="number"
+                        android:singleLine="true"
+                        android:text="@={viewModel.fees}"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
                 <View
                     android:id="@+id/degreeView"
                     android:layout_width="0dp"
@@ -269,7 +307,7 @@
                     app:layout_constraintBottom_toBottomOf="@id/chipGroup"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/field_date_of_birth" />
+                    app:layout_constraintTop_toBottomOf="@id/field_update_fees" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvDegreeLabel"
@@ -312,7 +350,7 @@
                         specializationView,chipGroup,autoCompleteTextView,chipGroupSpec,
                         autoCompleteTextViewSpec,btn_add_holiday, rv_holiday, text_select_week_off,
                         rv_week_off, btn_add_timing, rv_add_timing, txt_doctor_notification,
-                        switch_doctor_notification" />
+                        switch_doctor_notification, field_update_fees, text_address" />
 
                 <View
                     android:id="@+id/specializationView"
