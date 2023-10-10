@@ -1,6 +1,8 @@
 package com.android.doctorapp.ui.appointment
 
 import android.content.Context
+import android.net.Uri
+import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -87,6 +89,8 @@ class AppointmentViewModel @Inject constructor(
     var confirmClick = MutableLiveData(false)
     var rejectClick = MutableLiveData(false)
     var appointmentObj = MutableLiveData<AppointmentModel>()
+    val imageUri = MutableLiveData<Uri?>()
+
 
     val doctorDetails: MutableLiveData<UserDataResponseModel?> = MutableLiveData()
     var appointmentResponse: MutableLiveData<AppointmentModel?> = MutableLiveData()
@@ -391,6 +395,7 @@ class AppointmentViewModel @Inject constructor(
                     )) {
                     is ApiSuccessResponse -> {
                         userDataResponse.value = response.body
+                        imageUri.value = response.body.images?.toUri()
                         setShowProgress(false)
                     }
 

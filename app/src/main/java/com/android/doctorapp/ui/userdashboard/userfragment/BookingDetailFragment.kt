@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -70,6 +71,10 @@ class BookingDetailFragment :
         viewModel.navigationListener.observe(viewLifecycleOwner) {
             if (it)
                 findNavController().popBackStack()
+        }
+        viewModel.appointmentObj.observe(viewLifecycleOwner) {
+            if (it.doctorDetails?.images != null)
+                viewModel.imageUri.value = it.doctorDetails?.images?.toUri()
         }
     }
 

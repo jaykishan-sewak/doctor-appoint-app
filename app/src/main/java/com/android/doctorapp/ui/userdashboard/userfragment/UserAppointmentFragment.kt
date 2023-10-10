@@ -1,7 +1,6 @@
 package com.android.doctorapp.ui.userdashboard.userfragment
 
 import android.content.pm.PackageManager
-import android.location.Geocoder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -30,7 +29,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-import java.util.Locale
 import javax.inject.Inject
 
 
@@ -108,6 +106,7 @@ class UserAppointmentFragment :
         }
 
         if (requireContext().isGPSEnabled()) {
+            viewModel.setShowProgress(true)
             fusedLocationClient.requestLocationUpdates(
                 GpsUtils(requireContext()).locationRequest,
                 locationCallback,
@@ -126,7 +125,7 @@ class UserAppointmentFragment :
         override fun onLocationResult(p0: LocationResult) {
             p0.lastLocation.let { location ->
                 // Handle the location update here
-                latitude = location.latitude
+                latitude = location!!.latitude
                 longitude = location.longitude
                 viewModel.getItems(latitude, longitude)
                 stopLocationUpdates()
