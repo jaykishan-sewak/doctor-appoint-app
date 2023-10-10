@@ -60,8 +60,8 @@
                     android:layout_height="@dimen/dp_100"
                     android:elevation="@dimen/margin_5"
                     app:cardCornerRadius="@dimen/dp_32"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.appcompat.widget.AppCompatImageView
@@ -154,13 +154,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_10"
-                    android:layout_marginTop="@dimen/margin_30"
                     android:onClick="@{()->viewModel.onClickPhoneIcon(viewModel.userProfileDataResponse.contactNumber)}"
                     android:text="@{viewModel.userProfileDataResponse != null &amp;&amp; !viewModel.userProfileDataResponse.contactNumber.isEmpty() ? viewModel.userProfileDataResponse.contactNumber : `-`}"
                     android:textColor="@color/grey"
                     android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/ivContact"
                     app:layout_constraintStart_toEndOf="@+id/ivContact"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="@+id/ivContact" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivDegree"

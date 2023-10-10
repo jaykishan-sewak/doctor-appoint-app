@@ -50,9 +50,9 @@ class UserAppointmentViewModel @Inject constructor(
     }
 
     fun getItems(latitude: Double, longitude: Double) {
+        setShowProgress(true)
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
-                setShowProgress(true)
                 when (val response =
                     appointmentRepository.getLatLngDoctorList(fireStore, latitude, longitude)) {
                     is ApiSuccessResponse -> {
