@@ -1,6 +1,7 @@
 package com.android.doctorapp.ui.userdashboard.userfragment
 
 import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -11,7 +12,6 @@ import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.AppointmentModel
-import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.FIELD_REJECTED
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.currentDate
@@ -28,6 +28,7 @@ class BookingDetailViewModel @Inject constructor(
 
     var appointmentObj = MutableLiveData<AppointmentModel>()
     var cancelClick = MutableLiveData(false)
+    val imageUri = MutableLiveData<Uri?>()
 
     private val _navigationListener: MutableLiveData<Boolean> = MutableLiveData(false)
     val navigationListener = _navigationListener.asLiveData()
@@ -37,6 +38,7 @@ class BookingDetailViewModel @Inject constructor(
         val currentDate = currentDate()
         return appointmentObj.value?.bookingDateTime!! > currentDate && appointmentObj.value?.status != FIELD_REJECTED
     }
+
 
     fun appointmentRejectApiCall(text: String) {
         viewModelScope.launch {

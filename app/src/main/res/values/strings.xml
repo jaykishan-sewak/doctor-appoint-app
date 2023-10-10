@@ -197,8 +197,8 @@
     <string name="anything_else_you_want_to_add">Anything else you want to add?</string>
     <string name="feedback_hint">Tell us more about your overall experience</string>
     <string name="send_feedback">Send feedback</string>
-    <string name="symptoms_label">Symptoms :</string>
-    <string name="suffering_days">Suffering Days :</string>
+    <string name="symptoms_label">Symptoms</string>
+    <string name="suffering_days">Suffering Days</string>
     <string name="date_label">Date :</string>
     <string name="time_label">Time :</string>
     <string name="status_label">Status :</string>
@@ -219,13 +219,19 @@
 
     <string name="history">History</string>
     <string name="details">Details :</string>
-    <string name="is_visited">Is Visited :</string>
+    <string name="is_visited">Is Visited</string>
     <string name="no_booking_history_found">No booking history Found</string>
     <string name="update_feedback">Update feedback</string>
     <string name="upcoming">Upcoming</string>
     <string name="past">Past</string>
     <string name="use_my_current_location">Use My Current Location</string>
     <string name="enter_address">Enter address</string>
-    <string name="fees">Fees :</string>
+    <string name="fees">Fees</string>
+    <string name="email_label">Email</string>
+    <string name="age_label">Age</string>
+    <string name="specialist_label">Specialist</string>
+    <string name="scheduled_appointment">Scheduled Appointment</string>
+    <string name="patient_info">Patient Info.</string>
+    <string name="doctor_info">Doctor Info.</string>
 
 </resources>
