@@ -96,6 +96,27 @@
                 app:layout_constraintStart_toStartOf="@+id/tvDoctorName"
                 app:layout_constraintTop_toBottomOf="@+id/tvDoctorDegree" />
 
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvFeesTextLabel"
+                style="@style/doctor_text_view"
+                android:layout_marginTop="@dimen/dp_1"
+                android:text="@string/fees"
+                android:textColor="@color/light_grey"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="@+id/tvDoctorName"
+                app:layout_constraintTop_toBottomOf="@+id/tvGenderText" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvFeesTextValue"
+                style="@style/doctor_text_view"
+                android:layout_marginTop="@dimen/dp_1"
+                android:text="@{`₹`+userData.doctorFees}"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/tvFeesTextLabel"
+                app:layout_constraintStart_toEndOf="@+id/tvFeesTextLabel"
+                app:layout_constraintTop_toTopOf="@+id/tvFeesTextLabel" />
+
             <RatingBar
                 android:id="@+id/doctorRatingBar"
                 style="@style/Widget.AppCompat.RatingBar.Small"
@@ -104,7 +125,7 @@
                 android:layout_marginTop="@dimen/dp_1"
                 android:rating="@{userData.rating}"
                 app:layout_constraintStart_toStartOf="@+id/tvDoctorName"
-                app:layout_constraintTop_toBottomOf="@+id/tvGenderText" />
+                app:layout_constraintTop_toBottomOf="@+id/tvFeesTextLabel" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnView"

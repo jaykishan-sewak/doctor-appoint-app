@@ -5,6 +5,7 @@ import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.FeedbackResponseModel
 import com.android.doctorapp.repository.models.SymptomModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
+import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_APPROVED_KEY
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_DOCTOR
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_DOCTOR_ID
@@ -12,7 +13,6 @@ import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_SELECTED_DA
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_USER_ID
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_VISITED_KEY
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_APPOINTMENT
-import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_FEEDBACK
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_SYMPTOM
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_USER_DATA
 import com.android.doctorapp.util.constants.ConstantKey.FIELD_APPROVED
@@ -333,25 +333,33 @@ class AppointmentRepository @Inject constructor() {
 
                 // Use await() to wait for the get() task to complete
                 val snap = response.get().await()
+                for (document: DocumentSnapshot in snap.documents) {
+                    val user = document.toObject(UserDataResponseModel::class.java)
 
-                for (doc in snap.documents) {
-                    val user = doc.toObject(UserDataResponseModel::class.java)
                     user?.let {
-                        it.docId = doc.id
+                        it.docId = document.id
+                        val subCollectionRef =
+                            firestore.collection(TABLE_USER_DATA).document(it.docId)
+                                .collection(ConstantKey.DBKeys.SUB_TABLE_FEEDBACK)
 
-                        // Use await() to wait for the feedbackResponse task to complete
-                        val feedbackResponse =
-                            firestore.collection(TABLE_FEEDBACK)
-                                .whereEqualTo(FIELD_DOCTOR_ID, it.userId)
-                                .get().await()
+                        val querySnapshot = subCollectionRef.get().await()
+                        var total = 0F
+                        var numberOfFeedbacks = 0
+                        for (document1 in querySnapshot.documents) {
+                            val feedback = document1.toObject(FeedbackResponseModel::class.java)
+                            feedback.let { data ->
+                                total += data?.rating!!
+                                numberOfFeedbacks++
+                            }
+                        }
+                        it.rating = if (numberOfFeedbacks > 0) {
+                            total / numberOfFeedbacks
+                        } else 0F
 
-                        // Process feedback data here and update user's rating
-                        it.rating = feedback.rating
                         userList.add(it)
                     }
                 }
             }
-
             ApiResponse.create(response = Response.success(userList))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())

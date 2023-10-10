@@ -226,5 +226,6 @@
     <string name="past">Past</string>
     <string name="use_my_current_location">Use My Current Location</string>
     <string name="enter_address">Enter address</string>
+    <string name="fees">Fees :</string>
 
 </resources>
