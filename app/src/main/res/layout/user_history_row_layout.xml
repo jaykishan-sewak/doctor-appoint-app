@@ -4,6 +4,8 @@
 
     <data>
 
+        <import type="android.net.Uri" />
+
         <variable
             name="historyData"
             type="com.android.doctorapp.repository.models.AppointmentModel" />
@@ -11,6 +13,12 @@
         <variable
             name="index"
             type="Integer" />
+
+        <variable
+            name="imgUrl"
+            type="Uri" />
+
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,12 +29,12 @@
             android:id="@+id/cardView1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin_16"
+            android:layout_marginHorizontal="@dimen/margin_24"
             android:layout_marginVertical="@dimen/margin_10"
             android:backgroundTint="@color/white"
             android:elevation="@dimen/margin_5"
             android:paddingHorizontal="@dimen/margin_10"
-            app:cardCornerRadius="@dimen/margin_10"
+            app:cardCornerRadius="@dimen/margin_20"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -34,63 +42,74 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/margin_20"
-                android:paddingVertical="@dimen/margin_10">
+                android:layout_height="wrap_content">
+
+                <FrameLayout
+                    android:id="@+id/profileImage"
+                    android:layout_width="@dimen/dp_80"
+                    android:layout_height="@dimen/dp_0"
+                    android:background="@drawable/history_profile_shape"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivUser"
+                        android:layout_width="@dimen/dp_80"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/ic_person_white"
+                        android:scaleType="center"
+                        app:imageUri="@{imgUrl}" />
+
+                </FrameLayout>
+
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvDoctorName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/ic_person_white"
-                    android:drawablePadding="@dimen/margin_10"
+                    style="@style/label_text2"
+                    android:layout_marginStart="@dimen/margin_10"
+                    android:layout_marginTop="@dimen/margin_5"
                     android:text="@{historyData.doctorDetails.name}"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/profileImage"
                     app:layout_constraintTop_toTopOf="parent" />
 
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvBookingDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_10"
+                    style="@style/label_text2"
+                    android:layout_marginTop="@dimen/margin_5"
                     android:clickable="true"
                     android:drawableStart="@drawable/ic_calendar_blue"
                     android:drawablePadding="@dimen/margin_10"
                     android:focusable="true"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
+                    android:gravity="center_vertical"
+                    android:textSize="14sp"
                     app:headerDate="@{historyData.bookingDateTime}"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tvDoctorName"
                     app:layout_constraintTop_toBottomOf="@+id/tvDoctorName" />
 
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/symptomDetailLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_5"
-                    android:layout_marginTop="@dimen/margin_10"
+                    style="@style/label_text2"
+                    android:layout_marginTop="@dimen/margin_5"
+                    android:layout_marginBottom="@dimen/margin_5"
                     android:text="@string/details"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tvDoctorName"
                     app:layout_constraintTop_toBottomOf="@+id/tvBookingDate" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvSymptomDetails"
-                    android:layout_width="@dimen/dp_0"
-                    android:layout_height="wrap_content"
+                    style="@style/label_text2"
                     android:layout_marginStart="@dimen/margin_10"
-                    android:layout_marginTop="@dimen/margin_10"
                     android:text="@{historyData.symptomDetails}"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/symptomDetailLabel"
                     app:layout_constraintStart_toEndOf="@id/symptomDetailLabel"
-                    app:layout_constraintTop_toBottomOf="@id/tvBookingDate" />
+                    app:layout_constraintTop_toTopOf="@+id/symptomDetailLabel" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
