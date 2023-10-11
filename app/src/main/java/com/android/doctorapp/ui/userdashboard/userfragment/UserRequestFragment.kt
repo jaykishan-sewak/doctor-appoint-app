@@ -122,19 +122,19 @@ class UserRequestFragment :
 
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("tabValue")
             ?.observe(viewLifecycleOwner) { result ->
-                if (result.equals("Past")) {
+                if (result.equals(ConstantKey.PAST_LABEL)) {
                     viewModel.selectedTabPosition.postValue(1)
                 }
             }
     }
 
     fun callApiForTab1() {
-        viewModel.isUpcomingAppointments.value = "Past"
+        viewModel.upcomingOrPast.value = ConstantKey.PAST_LABEL
         viewModel.getPastAppointmentList()
     }
 
     fun callApiForTab2() {
-        viewModel.isUpcomingAppointments.value = "Upcoming"
+        viewModel.upcomingOrPast.value = ConstantKey.UPCOMING_LABEL
         viewModel.getUpcomingAppointmentList()
     }
 
@@ -160,7 +160,7 @@ class UserRequestFragment :
                     )
                     bundle.putString(
                         ConstantKey.BundleKeys.SELECTED_TAB,
-                        viewModel.isUpcomingAppointments.value
+                        viewModel.upcomingOrPast.value
                     )
                     findNavController().navigate(
                         R.id.action_user_booking_to_bookingDetail,

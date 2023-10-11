@@ -82,4 +82,6 @@ object ConstantKey {
 
     const val DATE_PICKER = "DatePicker"
     const val DD_MM_FORMAT = "dd-MM-yyyy"
+    const val PAST_LABEL = "Past"
+    const val UPCOMING_LABEL = "Upcoming"
 }
