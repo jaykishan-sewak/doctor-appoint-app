@@ -39,5 +39,6 @@
     <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_200">200dp</dimen>
     <dimen name="dp_20">20dp</dimen>
+    <dimen name="dp_80">80dp</dimen>
 
 </resources>

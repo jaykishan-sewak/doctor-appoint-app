@@ -1,7 +1,9 @@
 package com.android.doctorapp.ui.profile.adapter
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.doctorapp.R
@@ -14,10 +16,11 @@ class HistoryAdapter(
 
     class ItemViewHolder(val view: UserHistoryRowLayoutBinding) :
         RecyclerView.ViewHolder(view.root) {
-        fun bind(item: AppointmentModel, position: Int) {
+        fun bind(item: AppointmentModel, position: Int, imageUrl: Uri?) {
             view.apply {
                 historyData = item
                 index = position
+                imgUrl = imageUrl
             }
         }
     }
@@ -46,7 +49,8 @@ class HistoryAdapter(
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val objects = requestAppointmentList[position]
-        holder.bind(objects, position)
+        val imageUrl = objects.doctorDetails?.images?.toUri()
+        holder.bind(objects, position, imageUrl)
     }
 
     override fun getItemCount(): Int {
