@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.net.Uri" />
+
         <variable
             name="bookingData"
             type="com.android.doctorapp.repository.models.AppointmentModel" />
@@ -18,18 +20,22 @@
             name="index"
             type="Integer" />
 
+        <variable
+            name="imgUrl"
+            type="Uri" />
+
     </data>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/margin_16"
+        android:layout_marginHorizontal="@dimen/margin_20"
         android:layout_marginVertical="@dimen/margin_10"
         android:backgroundTint="@color/white"
         android:elevation="@dimen/margin_5"
         android:paddingHorizontal="@dimen/margin_10"
-        app:cardCornerRadius="@dimen/margin_10"
+        app:cardCornerRadius="@dimen/margin_20"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,74 +47,62 @@
             android:paddingHorizontal="@dimen/margin_20"
             android:paddingVertical="@dimen/margin_10">
 
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/profileImage"
+                android:layout_width="@dimen/dp_70"
+                android:layout_height="@dimen/dp_70"
+                android:elevation="@dimen/margin_5"
+                app:cardCornerRadius="@dimen/dp_20"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivDoctor"
+                    android:layout_width="@dimen/dp_70"
+                    android:layout_height="@dimen/dp_70"
+                    android:background="@drawable/ic_person_white"
+                    android:scaleType="center"
+                    app:imageUri="@{imgUrl}" />
+
+
+            </androidx.cardview.widget.CardView>
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvDoctorName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableStart="@drawable/ic_person_white"
+                style="@style/label_text2"
+                android:layout_marginStart="@dimen/margin_20"
                 android:drawablePadding="@dimen/margin_10"
                 android:text="@{bookingData.doctorDetails.name}"
-                android:textColor="@color/black"
-                android:textSize="20sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toEndOf="@id/profileImage"
+                app:layout_constraintTop_toTopOf="@id/profileImage" />
 
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvDoctorContact"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_10"
+                style="@style/label_text"
+                android:layout_marginStart="@dimen/margin_20"
+                android:layout_marginTop="@dimen/margin_5"
                 android:clickable="true"
                 android:drawableStart="@drawable/ic_phone_white"
-                android:drawablePadding="@dimen/margin_10"
+                android:drawablePadding="@dimen/margin_5"
+                android:focusable="true"
                 android:onClick="@{()->onItemClickListener.onClick(bookingData.contactNumber)}"
                 android:text="@{bookingData.doctorDetails.contactNumber}"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvDoctorName"
-                android:focusable="true" />
-
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/doctorAddressLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5"
-                android:layout_marginTop="@dimen/margin_10"
-                android:text="@string/address"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvDoctorContact" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvDoctorAddress"
-                android:layout_width="@dimen/dp_0"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_10"
-                android:layout_marginTop="@dimen/margin_10"
-                android:text="@{bookingData.doctorDetails.address}"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                app:layout_constraintStart_toEndOf="@id/doctorAddressLabel"
-                app:layout_constraintEnd_toStartOf="@id/viewAll"
-                app:layout_constraintTop_toBottomOf="@id/tvDoctorContact" />
-
+                app:layout_constraintStart_toEndOf="@id/profileImage"
+                app:layout_constraintTop_toBottomOf="@+id/tvDoctorName" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/statusLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_5"
+                style="@style/label_text"
+                android:layout_marginTop="@dimen/margin_10"
                 android:textAlignment="center"
                 android:textColor="@color/pending"
-                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/viewAll"
                 app:layout_constraintStart_toStartOf="@id/viewAll"
-                app:layout_constraintTop_toTopOf="@id/tvDoctorAddress"
+                app:layout_constraintTop_toBottomOf="@+id/viewAll"
                 app:status="@{bookingData.status}" />
 
             <androidx.appcompat.widget.AppCompatButton
@@ -120,9 +114,9 @@
                 android:onClick="@{()->onItemClickListener.onItemClick(bookingData,index)}"
                 android:text="@string/view"
                 android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="@+id/tvDoctorContact"
+                app:layout_constraintBottom_toTopOf="@+id/statusLabel"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tvDoctorContact" />
+                app:layout_constraintTop_toTopOf="parent" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

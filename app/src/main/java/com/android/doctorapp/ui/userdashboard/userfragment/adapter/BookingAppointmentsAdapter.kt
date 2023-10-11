@@ -1,7 +1,9 @@
 package com.android.doctorapp.ui.userdashboard.userfragment.adapter
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.doctorapp.R
@@ -10,20 +12,22 @@ import com.android.doctorapp.repository.models.AppointmentModel
 
 class BookingAppointmentsAdapter(
     private var bookingAppointmentList: List<AppointmentModel>,
-    private val listener: BookingAppointmentsAdapter.OnItemClickListener
+    private val listener: OnItemClickListener
 ) : RecyclerView.Adapter<BookingAppointmentsAdapter.ItemViewHolder>() {
 
     class ItemViewHolder(val view: UserBookingAppointmentsRowLayoutBinding) :
         RecyclerView.ViewHolder(view.root) {
         fun bind(
             item: AppointmentModel,
-            listener: BookingAppointmentsAdapter.OnItemClickListener,
-            position: Int
+            listener: OnItemClickListener,
+            position: Int,
+            imageUrl: Uri?
         ) {
             view.apply {
                 bookingData = item
                 index = position
                 onItemClickListener = listener
+                imgUrl = imageUrl
             }
         }
     }
@@ -44,7 +48,7 @@ class BookingAppointmentsAdapter(
                 parent,
                 false
             )
-        return BookingAppointmentsAdapter.ItemViewHolder(itemView)
+        return ItemViewHolder(itemView)
     }
 
     override fun getItemCount(): Int {
@@ -53,7 +57,8 @@ class BookingAppointmentsAdapter(
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val objects = bookingAppointmentList[position]
-        holder.bind(objects, listener, position)
+        val imageUrl = objects.doctorDetails?.images?.toUri()
+        holder.bind(objects, listener, position, imageUrl)
     }
 
     interface OnItemClickListener {
