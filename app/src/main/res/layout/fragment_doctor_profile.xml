@@ -111,7 +111,7 @@
                     android:layout_width="@dimen/margin_20"
                     android:layout_height="@dimen/margin_20"
                     android:layout_marginHorizontal="@dimen/margin_10"
-                    android:onClick="@{view -> viewModel.editClick()}"
+                    android:onClick="@{view -> viewModel.editClick(viewModel.userProfileDataResponse.doctor)}"
                     android:src="@drawable/ic_blue_edit"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

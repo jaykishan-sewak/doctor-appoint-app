@@ -91,9 +91,6 @@ class DoctorProfileFragment :
             if (it)
                 startActivityFinish<AuthenticationActivity>()
         }
-        viewModel.navigationListener.observe(viewLifecycleOwner) {
-            findNavController().navigate(it)
-        }
     }
 
     private val startForProfileImageResult =

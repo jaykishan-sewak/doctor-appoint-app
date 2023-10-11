@@ -110,6 +110,7 @@
                 android:id="@+id/tvFeesTextValue"
                 style="@style/doctor_text_view"
                 android:layout_marginTop="@dimen/dp_1"
+                android:layout_marginStart="@dimen/margin_5"
                 android:text="@{`₹`+userData.doctorFees}"
                 android:textSize="13sp"
                 android:textStyle="bold"
@@ -122,7 +123,7 @@
                 style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_1"
+                android:layout_marginTop="@dimen/margin_4"
                 android:rating="@{userData.rating}"
                 app:layout_constraintStart_toStartOf="@+id/tvDoctorName"
                 app:layout_constraintTop_toBottomOf="@+id/tvFeesTextLabel" />

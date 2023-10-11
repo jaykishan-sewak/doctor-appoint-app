@@ -2,7 +2,6 @@ package com.android.doctorapp.ui.profile
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
@@ -38,25 +37,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             .withTitle(R.string.title_profile)
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
-            .withMenu(R.menu.user_edit_menu)
-            .withMenuItems(generateMenuItems(), generateMenuClicks())
             .build()
     }
 
-    private fun generateMenuClicks(): MenuItem.OnMenuItemClickListener {
-        return MenuItem.OnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.action_edit -> {
-                    viewModel.isEdit.value = true
-                }
-            }
-            false
-        }
-    }
-
-    private fun generateMenuItems(): List<Int> {
-        return listOf(R.id.action_edit)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -78,16 +61,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
 
 
     private fun registerObservers() {
-        viewModel.isEdit.value = false
-
         viewModel.getUserProfileData()
-        viewModel.isEdit.observe(viewLifecycleOwner) {
-            if (it) {
-                findNavController().navigate(
-                    R.id.action_user_profile_to_updateUserProfile
-                )
-            }
-        }
         viewModel.phoneClick.observe(viewLifecycleOwner) {
             requireActivity().openPhoneDialer(it)
         }
