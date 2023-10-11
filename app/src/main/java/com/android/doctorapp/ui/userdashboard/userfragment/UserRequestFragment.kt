@@ -96,7 +96,7 @@ class UserRequestFragment :
             viewModel.isDoctorRequestCalendar.value = false
         }
         viewModel.userAppointmentData.observe(viewLifecycleOwner) {
-            if (it != null) {
+            if (!it.isNullOrEmpty()) {
                 adapter.filterList(it)
                 viewModel.dataFound.value = true
             } else {
