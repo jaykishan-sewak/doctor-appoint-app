@@ -37,7 +37,9 @@ class UserRequestViewModel @Inject constructor(
     var selectedTabPosition: MutableLiveData<Int> = MutableLiveData(0)
 
     fun getUpcomingAppointmentList() {
-        userAppointmentData.value = emptyList()
+        if (userAppointmentData.value != null && userAppointmentData.value?.size!! > 0)
+            userAppointmentData.value = emptyList()
+        dataFound.value = true
         viewModelScope.launch {
             var recordId = ""
             session.getString(USER_ID).collectLatest {
@@ -78,6 +80,7 @@ class UserRequestViewModel @Inject constructor(
 
     fun getPastAppointmentList() {
         userAppointmentData.value = emptyList()
+        dataFound.value = true
         viewModelScope.launch {
             var recordId = ""
             session.getString(USER_ID).collectLatest {

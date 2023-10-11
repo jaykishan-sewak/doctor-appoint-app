@@ -140,6 +140,8 @@ class AddDoctorViewModel @Inject constructor(
     var useMyCurrentLocation: MutableLiveData<Boolean> = MutableLiveData<Boolean>(false)
 
     var isFromWhere: MutableLiveData<String?> = MutableLiveData()
+    val description: MutableLiveData<String> = MutableLiveData("")
+    val descriptionError: MutableLiveData<String?> = MutableLiveData()
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
         this.binding = binding
@@ -261,6 +263,7 @@ class AddDoctorViewModel @Inject constructor(
                             && emailError.value.isNullOrEmpty() && contactNumberError.value.isNullOrEmpty()
                             && !address.value.isNullOrEmpty() && addressError.value.isNullOrEmpty()
                             && !dob.value.isNullOrEmpty() && dobError.value.isNullOrEmpty()
+                            && !description.value.isNullOrEmpty() && descriptionError.value.isNullOrEmpty()
                             && addShiftTimeSlotList.value?.filter { shiftTIme ->
                         shiftTIme.startTime == null || shiftTIme.endTime == null
                     }.isNullOrEmpty()
@@ -350,6 +353,16 @@ class AddDoctorViewModel @Inject constructor(
         }
         validateAllUpdateField()
     }
+
+    fun isValidDescription(text: CharSequence?) {
+        if (text?.toString().isNullOrEmpty() || ((text?.toString()?.length ?: 0) < 15)) {
+            descriptionError.value = resourceProvider.getString(R.string.valid_address_desc)
+        } else {
+            descriptionError.value = null
+        }
+        validateAllUpdateField()
+    }
+
 
     fun isDobGreater22() {
         dobError.value = resourceProvider.getString(R.string.age_validate)
@@ -442,6 +455,7 @@ class AddDoctorViewModel @Inject constructor(
                         address = address.value.toString(),
                         contactNumber = contactNumber.value.toString(),
                         doctorFees = fees.value?.toInt(),
+                        doctorDescription = description.value.toString(),
                         degree = binding?.chipGroup?.children?.toList()
                             ?.map { (it as Chip).text.toString() } as ArrayList<String>?,
                         specialities = binding?.chipGroupSpec?.children?.toList()
