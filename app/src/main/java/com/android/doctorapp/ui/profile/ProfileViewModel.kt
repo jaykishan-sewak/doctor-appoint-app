@@ -43,7 +43,6 @@ class ProfileViewModel @Inject constructor(
     val onProfilePictureClicked = _onProfilePictureClicked.asLiveData()
 
     var userProfileDataResponse: MutableLiveData<UserDataResponseModel?> = MutableLiveData()
-    val isEdit: MutableLiveData<Boolean> = MutableLiveData(false)
     val isDoctorEdit: MutableLiveData<Boolean> = MutableLiveData(false)
 
     val phoneClick: MutableLiveData<String> = MutableLiveData()
@@ -107,8 +106,11 @@ class ProfileViewModel @Inject constructor(
         _navigateToLogin.postValue(true)
     }
 
-    fun editClick() {
-        _navigationListener.value = R.id.action_doctor_profile_to_updateDoctorProfile
+    fun editClick(isDoctor: Boolean) {
+        if (isDoctor)
+            isDoctorEdit.postValue(true)
+        else
+            _navigationListener.value = R.id.action_user_profile_to_updateUserProfile
     }
 
     fun profilePictureClicked() {
