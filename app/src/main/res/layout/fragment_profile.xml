@@ -125,9 +125,9 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_16"
+            android:layout_marginHorizontal="@dimen/margin_16"
+            android:layout_marginVertical="@dimen/margin_24"
             android:background="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardView1">

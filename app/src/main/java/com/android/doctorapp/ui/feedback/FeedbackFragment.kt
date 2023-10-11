@@ -31,7 +31,7 @@ class FeedbackFragment : BaseFragment<FragmentFeedbackBinding>(R.layout.fragment
     override fun builder() = FragmentToolbar.Builder()
         .withId(R.id.toolbar)
         .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
-        .withTitle(R.string.user_doctor_list)
+        .withTitle(R.string.my_feedback)
         .withNavigationIcon(
             AppCompatResources.getDrawable(
                 requireContext(),

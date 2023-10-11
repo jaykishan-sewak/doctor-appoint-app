@@ -233,5 +233,6 @@
     <string name="scheduled_appointment">Scheduled Appointment</string>
     <string name="patient_info">Patient Info.</string>
     <string name="doctor_info">Doctor Info.</string>
+    <string name="my_feedback">My Feedback</string>
 
 </resources>

@@ -13,7 +13,7 @@
     <color name="yellow">#FFBF00</color>
     <color name="grey">#7b7b7b</color>
     <color name="btn_grey">#e5e5e5</color>
-    <color name="blue"> #1a4d91</color>
+    <color name="blue">#1a4d91</color>
     <color name="color_background_box">#F5F5F5</color>
     <color name="color_background_box_stroke">#DEDEDE</color>
     <color name="color_background_box_stroke_active">#A5A5A5</color>
@@ -34,5 +34,7 @@
     <color name="dark_grey">#58657e</color>
     <color name="light_grey">#858383</color>
     <color name="cyan">#8fd7da</color>
+    <color name="btn_green_bg">#164E18</color>
+    <color name="btn_red_bg">#A10303</color>
 
 </resources>

@@ -24,6 +24,8 @@ object ConstantKey {
         const val ADDRESS_FRAGMENT = "addressFragment"
         const val DOCTOR_PROFILE_FRAGMENT = "doctorProfileFragment"
         const val FROM_WHERE = "fromWhere"
+        const val SELECTED_TAB = "selectedTab"
+
 
     }
 

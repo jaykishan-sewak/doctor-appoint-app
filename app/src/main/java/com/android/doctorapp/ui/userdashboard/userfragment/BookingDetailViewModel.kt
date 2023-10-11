@@ -29,6 +29,7 @@ class BookingDetailViewModel @Inject constructor(
     var appointmentObj = MutableLiveData<AppointmentModel>()
     var cancelClick = MutableLiveData(false)
     val imageUri = MutableLiveData<Uri?>()
+    var selectedTab: MutableLiveData<String> = MutableLiveData()
 
     private val _navigationListener: MutableLiveData<Boolean> = MutableLiveData(false)
     val navigationListener = _navigationListener.asLiveData()
