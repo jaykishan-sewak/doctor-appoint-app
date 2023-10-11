@@ -57,12 +57,17 @@ class UserRequestFragment :
         }
 
         setUpWithViewModel(viewModel)
-        viewModel.getUpcomingAppointmentList()
         registerObserver(layoutBinding)
         return layoutBinding.root
     }
 
     private fun registerObserver(layoutBinding: FragmentUserRequestBinding) {
+        binding.tabLayout.getTabAt(viewModel.selectedTabPosition.value!!)?.select()
+        if (binding.tabLayout.getTabAt(0)?.isSelected == true) {
+            callApiForTab2()
+        } else {
+            callApiForTab1()
+        }
 
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -99,7 +104,6 @@ class UserRequestFragment :
                 viewModel.dataFound.value = false
             }
         }
-
         viewModel.isDoctorRequestCalendar.observe(viewLifecycleOwner) {
             if (it) {
                 requireContext().selectDate(
@@ -119,8 +123,7 @@ class UserRequestFragment :
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("tabValue")
             ?.observe(viewLifecycleOwner) { result ->
                 if (result.equals("Past")) {
-                    viewModel.selectedTabPosition.value = 1
-                    binding.tabLayout.getTabAt(viewModel.selectedTabPosition.value!!)?.select()
+                    viewModel.selectedTabPosition.postValue(1)
                 }
             }
     }

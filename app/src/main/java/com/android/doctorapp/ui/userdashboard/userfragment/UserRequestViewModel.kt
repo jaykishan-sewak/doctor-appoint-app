@@ -33,7 +33,7 @@ class UserRequestViewModel @Inject constructor(
     var requestSelectedDate: MutableLiveData<Date> = SingleLiveEvent()
     val dataFound: MutableLiveData<Boolean> = MutableLiveData(false)
     val isUpcomingAppointments: MutableLiveData<String> = MutableLiveData("Upcoming")
-    var selectedTabPosition: MutableLiveData<Int> = MutableLiveData()
+    var selectedTabPosition: MutableLiveData<Int> = MutableLiveData(0)
 
     fun getUpcomingAppointmentList() {
         userAppointmentData.value = emptyList()
@@ -114,14 +114,6 @@ class UserRequestViewModel @Inject constructor(
             }
         }
     }
-
-//    fun checkDataPastOrUpcoming(appointmentList: List<AppointmentModel>?) {
-//        val currentDate = currentDate()
-//        val appointmentData= appointmentList?.get(0)
-//        if (appointmentData?.bookingDateTime?.before(currentDate) == true) {
-//            isPastAppointments.postValue(true)
-//        }
-//    }
 
 
 }
