@@ -24,6 +24,8 @@ object ConstantKey {
         const val ADDRESS_FRAGMENT = "addressFragment"
         const val DOCTOR_PROFILE_FRAGMENT = "doctorProfileFragment"
         const val FROM_WHERE = "fromWhere"
+        const val SELECTED_TAB = "selectedTab"
+
 
     }
 
@@ -80,4 +82,6 @@ object ConstantKey {
 
     const val DATE_PICKER = "DatePicker"
     const val DD_MM_FORMAT = "dd-MM-yyyy"
+    const val PAST_LABEL = "Past"
+    const val UPCOMING_LABEL = "Upcoming"
 }

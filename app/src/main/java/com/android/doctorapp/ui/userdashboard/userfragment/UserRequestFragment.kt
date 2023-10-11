@@ -57,17 +57,22 @@ class UserRequestFragment :
         }
 
         setUpWithViewModel(viewModel)
-        viewModel.getUpcomingAppointmentList()
         registerObserver(layoutBinding)
         return layoutBinding.root
     }
 
     private fun registerObserver(layoutBinding: FragmentUserRequestBinding) {
+        binding.tabLayout.getTabAt(viewModel.selectedTabPosition.value!!)?.select()
+        if (binding.tabLayout.getTabAt(0)?.isSelected == true) {
+            callApiForTab2()
+        } else {
+            callApiForTab1()
+        }
 
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                val selectedTabPosition = tab?.position ?: return
-                when (selectedTabPosition) {
+                viewModel.selectedTabPosition.value = tab?.position ?: return
+                when (viewModel.selectedTabPosition.value) {
                     0 -> callApiForTab2()
                     1 -> callApiForTab1()
                     else -> {}
@@ -91,7 +96,7 @@ class UserRequestFragment :
             viewModel.isDoctorRequestCalendar.value = false
         }
         viewModel.userAppointmentData.observe(viewLifecycleOwner) {
-            if (it != null && it.isNotEmpty()) {
+            if (it != null) {
                 adapter.filterList(it)
                 viewModel.dataFound.value = true
             } else {
@@ -99,7 +104,6 @@ class UserRequestFragment :
                 viewModel.dataFound.value = false
             }
         }
-
         viewModel.isDoctorRequestCalendar.observe(viewLifecycleOwner) {
             if (it) {
                 requireContext().selectDate(
@@ -115,13 +119,22 @@ class UserRequestFragment :
                 }
             }
         }
+
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("tabValue")
+            ?.observe(viewLifecycleOwner) { result ->
+                if (result.equals(ConstantKey.PAST_LABEL)) {
+                    viewModel.selectedTabPosition.postValue(1)
+                }
+            }
     }
 
     fun callApiForTab1() {
+        viewModel.upcomingOrPast.value = ConstantKey.PAST_LABEL
         viewModel.getPastAppointmentList()
     }
 
     fun callApiForTab2() {
+        viewModel.upcomingOrPast.value = ConstantKey.UPCOMING_LABEL
         viewModel.getUpcomingAppointmentList()
     }
 
@@ -144,6 +157,10 @@ class UserRequestFragment :
                     bundle.putString(
                         ConstantKey.BundleKeys.BOOKING_APPOINTMENT_DATA,
                         Gson().toJson(item)
+                    )
+                    bundle.putString(
+                        ConstantKey.BundleKeys.SELECTED_TAB,
+                        viewModel.upcomingOrPast.value
                     )
                     findNavController().navigate(
                         R.id.action_user_booking_to_bookingDetail,

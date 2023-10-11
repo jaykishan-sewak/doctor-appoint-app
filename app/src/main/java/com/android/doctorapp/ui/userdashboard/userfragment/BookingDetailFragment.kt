@@ -29,6 +29,7 @@ class BookingDetailFragment :
     lateinit var viewModelFactory: ViewModelProvider.Factory
     val viewModel: BookingDetailViewModel by viewModels { viewModelFactory }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (requireActivity().application as AppComponentProvider).getAppComponent().inject(this)
@@ -45,6 +46,8 @@ class BookingDetailFragment :
                 requireArguments().getString(ConstantKey.BundleKeys.BOOKING_APPOINTMENT_DATA)
             viewModel.appointmentObj.value =
                 Gson().fromJson(appointmentObj, AppointmentModel::class.java)
+            viewModel.selectedTab.value =
+                requireArguments().getString(ConstantKey.BundleKeys.SELECTED_TAB)
         }
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
@@ -90,6 +93,10 @@ class BookingDetailFragment :
                 )
             )
             .withNavigationListener {
+                findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                    "tabValue",
+                    viewModel.selectedTab.value
+                )
                 findNavController().popBackStack()
             }
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))

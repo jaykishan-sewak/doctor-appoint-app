@@ -14,6 +14,7 @@ import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.util.SingleLiveEvent
+import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import kotlinx.coroutines.flow.collectLatest
@@ -32,7 +33,8 @@ class UserRequestViewModel @Inject constructor(
     val isDoctorRequestCalendar: MutableLiveData<Boolean> = MutableLiveData(false)
     var requestSelectedDate: MutableLiveData<Date> = SingleLiveEvent()
     val dataFound: MutableLiveData<Boolean> = MutableLiveData(false)
-
+    val upcomingOrPast: MutableLiveData<String> = MutableLiveData(ConstantKey.UPCOMING_LABEL)
+    var selectedTabPosition: MutableLiveData<Int> = MutableLiveData(0)
 
     fun getUpcomingAppointmentList() {
         userAppointmentData.value = emptyList()
