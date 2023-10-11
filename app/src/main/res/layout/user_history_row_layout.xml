@@ -67,7 +67,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvDoctorName"
                     style="@style/label_text2"
-                    android:layout_marginStart="@dimen/margin_10"
+                    android:layout_marginStart="@dimen/margin_30"
                     android:layout_marginTop="@dimen/margin_5"
                     android:text="@{historyData.doctorDetails.name}"
                     android:textStyle="bold"
