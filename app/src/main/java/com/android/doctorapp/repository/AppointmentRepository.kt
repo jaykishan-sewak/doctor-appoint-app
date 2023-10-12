@@ -270,7 +270,7 @@ class AppointmentRepository @Inject constructor() {
     }
 
     suspend fun getDoctorAppointmentByDate(
-        doctorId: String,
+        doctorId: String?,
         date: Date,
         fireStore: FirebaseFirestore
     ): ApiResponse<ArrayList<AppointmentModel>> {

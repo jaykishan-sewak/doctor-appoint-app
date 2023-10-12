@@ -36,5 +36,6 @@
     <color name="cyan">#8fd7da</color>
     <color name="btn_green_bg">#164E18</color>
     <color name="btn_red_bg">#A10303</color>
+    <color name="light_blue_bg">#4cbbd9</color>
 
 </resources>

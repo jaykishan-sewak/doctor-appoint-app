@@ -71,8 +71,6 @@ class AppointmentViewModel @Inject constructor(
     val isBookAppointmentClick: MutableLiveData<Boolean> = MutableLiveData(false)
     val onlineBookingToggleData: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    val doctorId: MutableLiveData<String> = MutableLiveData("")
-    val doctorDocumentID: MutableLiveData<String> = MutableLiveData("")
     val doctorName: MutableLiveData<String> = MutableLiveData()
     private val doctorSpecialities: MutableLiveData<String> = MutableLiveData()
     private val userName = MutableLiveData<String>()
@@ -111,6 +109,13 @@ class AppointmentViewModel @Inject constructor(
 
     var dateStr: MutableLiveData<String> = MutableLiveData()
 
+    val phoneClick: MutableLiveData<String> = MutableLiveData()
+    val emailClick: MutableLiveData<String> = MutableLiveData()
+    var doctorDataObj = MutableLiveData<UserDataResponseModel>()
+
+    init {
+        emailClick.postValue("")
+    }
 
     private fun get15DaysList() {
         val dateList = mutableListOf<Date>()
@@ -195,7 +200,7 @@ class AppointmentViewModel @Inject constructor(
                     age = age.value.toString(),
                     contactNumber = contactNumber.value.toString(),
                     userId = it.toString(),
-                    doctorId = doctorId.value.toString(),
+                    doctorId = doctorDataObj.value?.userId.toString(),
                     symptomDetails = symptomDetails.value.toString(),
                     sufferingDay = sufferingDays.value.toString()
                 )
@@ -585,7 +590,7 @@ class AppointmentViewModel @Inject constructor(
                 setShowProgress(true)
                 when (val response =
                     appointmentRepository.getDoctorAppointmentByDate(
-                        doctorId.value.toString(),
+                        doctorDataObj.value?.userId,
                         selectedDate,
                         fireStore
                     )) {
@@ -641,7 +646,7 @@ class AppointmentViewModel @Inject constructor(
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 when (val doctorResponse = appointmentRepository.getDoctorById(
-                    doctorDocumentID.value.toString(),
+                    doctorDataObj.value?.docId!!,
                     fireStore
                 )) {
 
@@ -686,6 +691,7 @@ class AppointmentViewModel @Inject constructor(
                         }
 
                         doctorDetails.value = doctorResponse.body
+                        imageUri.value = doctorResponse.body.images?.toUri()
                         _timeSlotList.value = timeList
                         _holidayDateList.value = holidayList
                         getUserData()
@@ -714,4 +720,13 @@ class AppointmentViewModel @Inject constructor(
             }
         }
     }
+
+    fun onClickPhoneIcon(contact: String) {
+        phoneClick.postValue(contact)
+    }
+
+    fun onClickEmailIcon(email: String) {
+        emailClick.postValue(email)
+    }
+
 }

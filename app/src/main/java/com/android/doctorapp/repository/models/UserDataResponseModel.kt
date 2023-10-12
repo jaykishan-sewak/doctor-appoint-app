@@ -1,8 +1,5 @@
 package com.android.doctorapp.repository.models
 
-import android.media.Rating
-import com.google.firebase.firestore.GeoPoint
-import com.google.type.LatLng
 import java.util.Date
 
 data class UserDataResponseModel(
@@ -15,6 +12,7 @@ data class UserDataResponseModel(
     var address: String = "",
     var contactNumber: String = "",
     var doctorFees: Int? = null,
+    var doctorDescription: String = "",
     var degree: ArrayList<String>? = null,
     var specialities: ArrayList<String>? = null,
     var isEmailVerified: Boolean = false,

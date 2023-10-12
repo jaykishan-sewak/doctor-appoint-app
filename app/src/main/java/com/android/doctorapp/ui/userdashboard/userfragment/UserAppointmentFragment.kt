@@ -21,7 +21,6 @@ import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.ui.userdashboard.userfragment.adapter.UserAppoitmentItemAdapter
 import com.android.doctorapp.util.GpsUtils
 import com.android.doctorapp.util.constants.ConstantKey
-import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DOCTOR_ID
 import com.android.doctorapp.util.extension.isGPSEnabled
 import com.android.doctorapp.util.extension.toast
 import com.android.doctorapp.util.permission.RuntimePermission
@@ -29,6 +28,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.gson.Gson
 import javax.inject.Inject
 
 
@@ -175,8 +175,10 @@ class UserAppointmentFragment :
             object : UserAppoitmentItemAdapter.OnItemClickListener {
                 override fun onItemClick(item: UserDataResponseModel, position: Int) {
                     val bundle = Bundle()
-                    bundle.putString(ConstantKey.BundleKeys.USER_ID, item.userId)
-                    bundle.putString(DOCTOR_ID, item.docId)
+                    bundle.putString(
+                        ConstantKey.BundleKeys.BOOK_APPOINTMENT_DATA,
+                        Gson().toJson(item)
+                    )
                     findNavController().navigate(
                         R.id.action_user_appointment_to_bookAppointment,
                         bundle

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
@@ -18,17 +19,20 @@ import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.AddShiftTimeModel
 import com.android.doctorapp.repository.models.DateSlotModel
+import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.ui.appointment.adapter.AppointmentDateAdapter
 import com.android.doctorapp.ui.appointment.adapter.AppointmentTimeAdapter
+import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.BOOKING_DATE_FORMAT
-import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DOCTOR_ID
-import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_ID
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE_MONTH_YEAR
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_HOUR_MINUTE_SECOND
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.negativeButton
 import com.android.doctorapp.util.extension.neutralButton
+import com.android.doctorapp.util.extension.openEmailSender
+import com.android.doctorapp.util.extension.openPhoneDialer
+import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Date
 import javax.inject.Inject
@@ -43,8 +47,10 @@ class BookAppointmentFragment :
     private lateinit var appointmentDateAdapter: AppointmentDateAdapter
     private lateinit var dateFormat: SimpleDateFormat
     private lateinit var selectedDateTime: Date
-//    private lateinit var dateStr: String
+
+    //    private lateinit var dateStr: String
     private lateinit var timeStr: String
+    private var isExpanded = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,10 +66,11 @@ class BookAppointmentFragment :
         super.onCreateView(inflater, container, savedInstanceState)
         val arguments: Bundle? = arguments
         if (arguments != null) {
-            viewModel.doctorId.value =
-                arguments.getString(USER_ID).toString()
-            viewModel.doctorDocumentID.value =
-                arguments.getString(DOCTOR_ID).toString()
+
+            val doctorDataObj =
+                requireArguments().getString(ConstantKey.BundleKeys.BOOK_APPOINTMENT_DATA)
+            viewModel.doctorDataObj.value =
+                Gson().fromJson(doctorDataObj, UserDataResponseModel::class.java)
         }
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
@@ -99,6 +106,10 @@ class BookAppointmentFragment :
 
         viewModel.getDoctorData()
 
+        binding.textDoctorDesc.setOnClickListener {
+            isExpanded = !isExpanded
+            updateDescriptionText(binding.textDoctorDesc)
+        }
         viewModel.daysDateList.observe(viewLifecycleOwner) {
             updateDateRecyclerview(it)
             layoutBinding.rvScheduleDate.adapter = appointmentDateAdapter
@@ -118,7 +129,8 @@ class BookAppointmentFragment :
                         dialog.dismiss()
                         try {
                             dateFormat = SimpleDateFormat(BOOKING_DATE_FORMAT)
-                            selectedDateTime = dateFormat.parse("${viewModel.dateStr.value} $timeStr")!!
+                            selectedDateTime =
+                                dateFormat.parse("${viewModel.dateStr.value} $timeStr")!!
                             viewModel.addBookingAppointmentData(selectedDateTime)
                         } catch (_: Exception) {
                         }
@@ -135,7 +147,26 @@ class BookAppointmentFragment :
                 findNavController().popBackStack()
             }
         }
+
+        viewModel.phoneClick.observe(viewLifecycleOwner) {
+            requireActivity().openPhoneDialer(it)
+        }
+        viewModel.emailClick.observe(viewLifecycleOwner) {
+            if (!it.isNullOrEmpty()) {
+                requireActivity().openEmailSender(it)
+            }
+        }
+
     }
+
+    private fun updateDescriptionText(descriptionTextView: TextView) {
+        if (isExpanded) {
+            descriptionTextView.maxLines = Int.MAX_VALUE // Expand description
+        } else {
+            descriptionTextView.maxLines = 2 // Collapse description to 2 lines
+        }
+    }
+
 
     private fun updateDateRecyclerview(dateList: ArrayList<DateSlotModel>) {
         appointmentDateAdapter = AppointmentDateAdapter(dateList,
@@ -144,7 +175,8 @@ class BookAppointmentFragment :
                     dateList.forEachIndexed { index, dateSlotModel ->
                         if (dateSlotModel.date == item.date) {
                             item.date?.let { viewModel.getAppointmentData(selectedDate = it) }
-                            viewModel.dateStr.value = dateFormatter(item.date, FORMATTED_DATE_MONTH_YEAR)
+                            viewModel.dateStr.value =
+                                dateFormatter(item.date, FORMATTED_DATE_MONTH_YEAR)
                             dateList[index].dateSelect = true
                             viewModel.isDateSelected.value = true
                             appointmentDateAdapter.notifyItemChanged(index)
