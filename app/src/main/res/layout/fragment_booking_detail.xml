@@ -270,10 +270,11 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvDoctorSpecilitiesValue"
                     style="@style/label_text2"
+                    android:layout_marginStart="@dimen/margin_50"
                     android:textAlignment="textEnd"
                     app:doctorSpecialization="@{viewModel.appointmentObj.doctorDetails !=null ? viewModel.appointmentObj.doctorDetails.specialities : null}"
-                    app:layout_constraintBottom_toBottomOf="@id/tvDoctorSpecialitiesLabel"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tvDoctorSpecialitiesLabel"
                     app:layout_constraintTop_toTopOf="@id/tvDoctorSpecialitiesLabel" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

@@ -43,27 +43,38 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="@dimen/margin_20"
-            android:paddingVertical="@dimen/margin_10">
+            android:layout_height="wrap_content">
 
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/profileImage"
                 android:layout_width="@dimen/dp_70"
                 android:layout_height="@dimen/dp_70"
+                android:layout_marginStart="@dimen/margin_20"
+                android:layout_marginTop="@dimen/margin_10"
+                android:layout_marginBottom="@dimen/margin_10"
                 android:elevation="@dimen/margin_5"
                 app:cardCornerRadius="@dimen/dp_20"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivDoctor"
-                    android:layout_width="@dimen/dp_70"
-                    android:layout_height="@dimen/dp_70"
-                    android:background="@drawable/ic_person_white"
-                    android:scaleType="center"
-                    app:imageUri="@{imgUrl}" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivDoctor"
+                        android:layout_width="@dimen/dp_70"
+                        android:layout_height="@dimen/dp_70"
+                        android:background="@drawable/ic_person_white"
+                        android:scaleType="centerCrop"
+                        app:imageUri="@{imgUrl}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
 
             </androidx.cardview.widget.CardView>
@@ -83,7 +94,6 @@
                 android:id="@+id/tvDoctorContact"
                 style="@style/label_text"
                 android:layout_marginStart="@dimen/margin_20"
-                android:layout_marginTop="@dimen/margin_5"
                 android:clickable="true"
                 android:drawableStart="@drawable/ic_phone_white"
                 android:drawablePadding="@dimen/margin_5"
@@ -91,12 +101,11 @@
                 android:onClick="@{()->onItemClickListener.onClick(bookingData.contactNumber)}"
                 android:text="@{bookingData.doctorDetails.contactNumber}"
                 app:layout_constraintStart_toEndOf="@id/profileImage"
-                app:layout_constraintTop_toBottomOf="@+id/tvDoctorName" />
+                app:layout_constraintTop_toTopOf="@id/statusLabel" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/statusLabel"
                 style="@style/label_text"
-                android:layout_marginTop="@dimen/margin_10"
                 android:textAlignment="center"
                 android:textColor="@color/pending"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -109,7 +118,7 @@
                 android:id="@+id/viewAll"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/margin_30"
-                android:layout_marginStart="@dimen/margin_10"
+                android:layout_marginEnd="@dimen/margin_20"
                 android:background="@drawable/rounded_btn"
                 android:onClick="@{()->onItemClickListener.onItemClick(bookingData,index)}"
                 android:text="@string/view"

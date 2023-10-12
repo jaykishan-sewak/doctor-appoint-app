@@ -60,7 +60,8 @@ class UserAppointmentViewModel @Inject constructor(
                         if (response.body.isNotEmpty()) {
                             items.value = response.body
                             tempData.value = items.value
-                        }
+                        } else
+                            dataFound.value = true
                     }
 
                     is ApiErrorResponse -> {
