@@ -115,9 +115,9 @@
     <string name="update">Update</string>
     <string name="delete">Delete</string>
     <string name="are_you_sure_want_to_delete">Are you sure you want to delete?</string>
-    <string name="title_appointment">Book Appointment</string>
+    <string name="title_appointment">Book an Appointment</string>
     <string name="title_schedule">Schedule</string>
-    <string name="title_select_time">Select Time</string>
+    <string name="title_select_time">Select a time slot</string>
     <string name="nearest_doctor">Nearest doctor</string>
     <string name="book_appointment">Book Appointment</string>
     <string name="specialist">Specialist :</string>
@@ -236,5 +236,6 @@
     <string name="my_feedback">My Feedback</string>
     <string name="desc">Description</string>
     <string name="valid_desc_desc">Description must have at least 15 characters</string>
+    <string name="title_select_day">Select Day</string>
 
 </resources>

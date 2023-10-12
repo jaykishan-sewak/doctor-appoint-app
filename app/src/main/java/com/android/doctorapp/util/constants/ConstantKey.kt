@@ -25,7 +25,7 @@ object ConstantKey {
         const val DOCTOR_PROFILE_FRAGMENT = "doctorProfileFragment"
         const val FROM_WHERE = "fromWhere"
         const val SELECTED_TAB = "selectedTab"
-
+        const val BOOK_APPOINTMENT_DATA = "bookAppointmentData"
 
     }
 
