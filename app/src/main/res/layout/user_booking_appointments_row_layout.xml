@@ -45,37 +45,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-
             <androidx.cardview.widget.CardView
                 android:id="@+id/profileImage"
                 android:layout_width="@dimen/dp_70"
                 android:layout_height="@dimen/dp_70"
-                android:layout_marginStart="@dimen/margin_20"
-                android:layout_marginTop="@dimen/margin_10"
-                android:layout_marginBottom="@dimen/margin_10"
+                android:layout_marginVertical="@dimen/margin_15"
+                android:layout_marginStart="@dimen/margin_15"
                 android:elevation="@dimen/margin_5"
-                app:cardCornerRadius="@dimen/dp_20"
+                app:cardCornerRadius="@dimen/margin_20"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivDoctor"
-                        android:layout_width="@dimen/dp_70"
-                        android:layout_height="@dimen/dp_70"
-                        android:background="@drawable/ic_person_white"
-                        android:scaleType="centerCrop"
-                        app:imageUri="@{imgUrl}"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivDoctor"
+                    android:layout_width="@dimen/dp_70"
+                    android:layout_height="@dimen/dp_70"
+                    android:background="@drawable/ic_person_white"
+                    android:scaleType="centerCrop"
+                    app:imageUri="@{imgUrl}" />
 
             </androidx.cardview.widget.CardView>
 

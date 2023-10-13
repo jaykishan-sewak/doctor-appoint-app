@@ -37,5 +37,8 @@
     <color name="btn_green_bg">#164E18</color>
     <color name="btn_red_bg">#A10303</color>
     <color name="light_blue_bg">#4cbbd9</color>
+    <color name="orange">#D66B45</color>
+    <color name="light_orange">#e4c0b3</color>
+    <color name="rating_bg">#f5bc6a</color>
 
 </resources>

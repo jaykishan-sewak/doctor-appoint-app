@@ -38,6 +38,7 @@ class HistoryViewModel @Inject constructor(
     }
 
     private fun getAppointmentHistoryList() {
+        dataFound.value = true
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 session.getString(USER_ID).collectLatest {

@@ -253,6 +253,7 @@ class UpdateDoctorProfileFragment :
                 viewModel.dob.value = dateFormatter(it.dob, DATE_MM_FORMAT)
                 viewModel.isProfileNavigation.value = true
                 viewModel.fees.value = it.doctorFees.toString()
+                viewModel.description.value = it.doctorDescription
             } else {
                 viewModel.name.value = it.name
                 viewModel.email.value = it.email
