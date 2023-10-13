@@ -83,7 +83,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/text_doctor_name"
                     app:string="@{viewModel.doctorDetails != null ? viewModel.doctorDetails.specialities : null}" />
 
-                <RatingBar
+                <androidx.appcompat.widget.AppCompatRatingBar
                     android:id="@+id/doctorRatingBar"
                     style="@style/Widget.AppCompat.RatingBar.Small"
                     android:layout_width="wrap_content"
