@@ -224,7 +224,7 @@
     <string name="update_feedback">Update feedback</string>
     <string name="upcoming">Upcoming</string>
     <string name="past">Past</string>
-    <string name="use_my_current_location">Use My Current Location</string>
+    <string name="use_my_current_location">Current Location</string>
     <string name="enter_address">Enter address</string>
     <string name="fees">Fees</string>
     <string name="email_label">Email</string>
@@ -235,7 +235,8 @@
     <string name="doctor_info">Doctor Info.</string>
     <string name="my_feedback">My Feedback</string>
     <string name="desc">Description</string>
-    <string name="valid_desc_desc">Description must have at least 15 characters</string>
+    <string name="valid_doc_desc">Description must have at least 15 characters</string>
     <string name="title_select_day">Select Day</string>
+    <string name="using_gps">Using GPS</string>
 
 </resources>

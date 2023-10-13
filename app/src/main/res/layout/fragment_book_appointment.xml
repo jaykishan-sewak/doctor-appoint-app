@@ -90,6 +90,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
                     android:max="5"
+                    android:progressTint="@color/rating_bg"
                     android:rating="@{viewModel.doctorDataObj.rating}"
                     app:layout_constraintStart_toStartOf="@+id/text_doctor_specialization"
                     app:layout_constraintTop_toBottomOf="@+id/text_doctor_specialization" />

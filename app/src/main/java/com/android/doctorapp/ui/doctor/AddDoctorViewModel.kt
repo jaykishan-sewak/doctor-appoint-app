@@ -356,7 +356,7 @@ class AddDoctorViewModel @Inject constructor(
 
     fun isValidDescription(text: CharSequence?) {
         if (text?.toString().isNullOrEmpty() || ((text?.toString()?.length ?: 0) < 15)) {
-            descriptionError.value = resourceProvider.getString(R.string.valid_address_desc)
+            descriptionError.value = resourceProvider.getString(R.string.valid_doc_desc)
         } else {
             descriptionError.value = null
         }
