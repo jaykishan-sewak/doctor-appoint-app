@@ -612,6 +612,17 @@ class UpdateDoctorProfileFragment :
                             ) == dateFormatter(
                                 selectedTime,
                                 HOUR_MIN_AM_PM_FORMAT
+                            ) || isTimeBetween(
+                                dateFormatter(
+                                    selectedTime,
+                                    HOUR_MIN_AM_PM_FORMAT
+                                ), dateFormatter(
+                                    it.startTime,
+                                    HOUR_MIN_AM_PM_FORMAT
+                                ), dateFormatter(
+                                    it.endTime,
+                                    HOUR_MIN_AM_PM_FORMAT
+                                )
                             )
                         } else
                             false
@@ -641,6 +652,18 @@ class UpdateDoctorProfileFragment :
 
         // Show the TimePickerDialog
         mTimePicker.show()
+    }
+
+    private fun isTimeBetween(targetTime: String, startTime: String, endTime: String): Boolean {
+        val sdf = SimpleDateFormat(HOUR_MIN_AM_PM_FORMAT, Locale.getDefault())
+        return try {
+            val target = sdf.parse(targetTime)
+
+            target.after(sdf.parse(startTime)) && target.before(sdf.parse(endTime))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
 
     private fun updateHolidayRecyclerview(newHolidayList: ArrayList<HolidayModel>) {

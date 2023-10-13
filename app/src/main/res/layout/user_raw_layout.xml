@@ -118,7 +118,7 @@
                 app:layout_constraintStart_toEndOf="@+id/tvFeesTextLabel"
                 app:layout_constraintTop_toTopOf="@+id/tvFeesTextLabel" />
 
-            <RatingBar
+            <androidx.appcompat.widget.AppCompatRatingBar
                 android:id="@+id/doctorRatingBar"
                 style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"

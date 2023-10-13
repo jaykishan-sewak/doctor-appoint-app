@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
@@ -60,7 +61,11 @@ class DoctorAddressFragment :
         return FragmentToolbar.Builder()
             .withId(R.id.toolbar)
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
-            .withTitle(R.string.title_profile)
+            .withTitle(R.string.address)
+            .withNavigationIcon(AppCompatResources.getDrawable(requireContext(),R.drawable.ic_back_white))
+            .withNavigationListener {
+                findNavController().popBackStack()
+            }
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
             .build()
     }
