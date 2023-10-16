@@ -105,7 +105,6 @@
                     android:layout_marginTop="@dimen/margin_10"
                     app:error="@{viewModel.contactNumberError}"
                     app:errorEnabled="@{viewModel.contactNumberError != null ? true : false}"
-                    app:errorTextColor="@color/purple_500"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/field_doctor_email">

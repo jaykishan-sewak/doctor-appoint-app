@@ -238,5 +238,7 @@
     <string name="valid_doc_desc">Description must have at least 15 characters</string>
     <string name="title_select_day">Select Day</string>
     <string name="using_gps">Using GPS</string>
+    <string name="address_label">Address</string>
+    <string name="book_label">Book</string>
 
 </resources>

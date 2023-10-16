@@ -48,18 +48,19 @@
                     android:id="@+id/profileImage"
                     android:layout_width="@dimen/dp_70"
                     android:layout_height="@dimen/dp_70"
+                    android:layout_marginStart="@dimen/margin_10"
                     android:layout_marginTop="@dimen/margin_10"
                     android:elevation="@dimen/margin_5"
-                    app:cardCornerRadius="250dp"
+                    app:cardCornerRadius="@dimen/dp_24"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivDoctorImage"
+                        android:id="@+id/ivDoctor"
                         android:layout_width="@dimen/dp_70"
                         android:layout_height="@dimen/dp_70"
                         android:background="@drawable/ic_person_white"
-                        android:scaleType="centerCrop"
+                        android:scaleType="center"
                         app:imageUri="@{viewModel.imageUri}" />
 
                 </androidx.cardview.widget.CardView>
@@ -119,6 +120,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvAppointmentDateLabel"
                     style="@style/label_text"
+                    android:layout_width="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
                     android:text="@string/date"
                     android:textAlignment="textStart"
@@ -139,6 +141,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvAppointmentTimeLabel"
                     style="@style/label_text"
+                    android:layout_width="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
                     android:text="@string/time"
                     android:textAlignment="textStart"
@@ -159,6 +162,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvAppointmentStatusLabel"
                     style="@style/label_text"
+                    android:layout_width="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
                     android:text="@string/status"
                     android:textAlignment="textStart"
@@ -199,6 +203,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvDoctorEmailLabel"
                     style="@style/label_text"
+                    android:layout_width="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
                     android:text="@string/email_label"
                     android:textAlignment="textStart"
@@ -219,6 +224,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvDoctorAgeLabel"
                     style="@style/label_text"
+                    android:layout_width="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
                     android:text="@string/age_label"
                     android:textAlignment="textStart"
@@ -239,6 +245,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvDoctorFeesLabel"
                     style="@style/label_text"
+                    android:layout_width="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
                     android:text="@string/fees"
                     android:textAlignment="textStart"
@@ -259,6 +266,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvDoctorSpecialitiesLabel"
                     style="@style/label_text"
+                    android:layout_width="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
                     android:text="@string/specialist_label"
                     android:textAlignment="textStart"

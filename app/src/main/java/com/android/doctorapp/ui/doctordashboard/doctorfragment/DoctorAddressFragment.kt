@@ -61,8 +61,13 @@ class DoctorAddressFragment :
         return FragmentToolbar.Builder()
             .withId(R.id.toolbar)
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
-            .withTitle(R.string.address)
-            .withNavigationIcon(AppCompatResources.getDrawable(requireContext(),R.drawable.ic_back_white))
+            .withTitle(R.string.address_label)
+            .withNavigationIcon(
+                AppCompatResources.getDrawable(
+                    requireContext(),
+                    R.drawable.ic_back_white
+                )
+            )
             .withNavigationListener {
                 findNavController().popBackStack()
             }
@@ -177,6 +182,7 @@ class DoctorAddressFragment :
                 )
                 fusedLocationClient.removeLocationUpdates(this)
                 findNavController().popBackStack()
+                viewModel.setShowProgress(false)
             }
         }
     }

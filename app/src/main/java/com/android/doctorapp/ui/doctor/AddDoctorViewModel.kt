@@ -970,6 +970,7 @@ class AddDoctorViewModel @Inject constructor(
     }
 
     fun currentLocation() {
+        setShowProgress(true)
         useMyCurrentLocation.value = true
     }
 
