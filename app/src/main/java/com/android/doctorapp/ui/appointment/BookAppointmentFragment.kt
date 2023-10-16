@@ -93,6 +93,11 @@ class BookAppointmentFragment :
                 )
             )
             .withNavigationListener {
+                val navController = findNavController()
+                navController.previousBackStackEntry?.savedStateHandle?.set(
+                    ConstantKey.BundleKeys.USER_FRAGMENT,
+                    false
+                )
                 findNavController().popBackStack()
             }
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
@@ -100,6 +105,7 @@ class BookAppointmentFragment :
     }
 
     private fun registerObserver(layoutBinding: FragmentBookAppointmentBinding) {
+
         binding.rvScheduleDate.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rvTime.layoutManager = GridLayoutManager(requireContext(), 4)

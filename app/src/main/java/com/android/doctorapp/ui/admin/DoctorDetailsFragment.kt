@@ -111,7 +111,7 @@ class DoctorDetailsFragment :
             )
         }
         viewModel.deleteId.observe(viewLifecycleOwner) {
-            if (it!!.isNotEmpty()) {
+            if (it?.isNotEmpty() == true) {
                 context?.alert {
                     setTitle(resources.getString(R.string.delete))
                     setMessage(resources.getString(R.string.are_you_sure_want_to_delete))

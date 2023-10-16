@@ -1,7 +1,9 @@
 package com.android.doctorapp.ui.userdashboard.userfragment
 
+import android.content.ContentValues.TAG
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,8 +43,8 @@ class UserAppointmentFragment :
     private lateinit var adapter: UserAppoitmentItemAdapter
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private var latitude: Double = 0.0
-    private var longitude: Double = 0.0
+//    private var latitude: Double = 0.0
+//    private var longitude: Double = 0.0
 
     override fun builder(): FragmentToolbar {
         return FragmentToolbar.Builder()
@@ -85,6 +87,19 @@ class UserAppointmentFragment :
         return layoutBinding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val navController = findNavController()
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(ConstantKey.BundleKeys.USER_FRAGMENT)
+            ?.observe(viewLifecycleOwner) {
+                Log.d(TAG, "onViewCreated: $it")
+                if (it) {
+//                    viewModel.getItems()
+                    viewModel.getItems(viewModel.latitude.value, viewModel.longitude.value)
+                }
+            }
+    }
+
 
     fun requestLocationUpdates() {
 
@@ -112,6 +127,7 @@ class UserAppointmentFragment :
                 locationCallback,
                 null // Looper can be provided for the callback thread
             )
+
         } else {
             GpsUtils(requireContext()).turnGPSOn(object : GpsUtils.onGpsListener {
                 override fun gpsStatus(isGPSEnable: Boolean) {
@@ -125,9 +141,9 @@ class UserAppointmentFragment :
         override fun onLocationResult(p0: LocationResult) {
             p0.lastLocation.let { location ->
                 // Handle the location update here
-                latitude = location!!.latitude
-                longitude = location.longitude
-                viewModel.getItems(latitude, longitude)
+                viewModel.latitude.value = location.latitude
+                viewModel.longitude.value = location.longitude
+                viewModel.getItems(viewModel.latitude.value, viewModel.longitude.value)
                 stopLocationUpdates()
             }
         }

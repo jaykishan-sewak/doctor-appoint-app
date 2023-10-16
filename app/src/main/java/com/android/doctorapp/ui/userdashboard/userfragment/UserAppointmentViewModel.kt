@@ -30,7 +30,12 @@ class UserAppointmentViewModel @Inject constructor(
     private val tempData = MutableLiveData<List<UserDataResponseModel>>()
     val locationCity: MutableLiveData<String> =
         MutableLiveData(resourceProvider.getString(R.string.nearest_doctor))
+    var latitude: MutableLiveData<Double> = MutableLiveData(0.0)
+    var longitude: MutableLiveData<Double> = MutableLiveData(0.0)
 
+    init {
+        getItems(latitude.value, longitude.value)
+    }
 
     fun lengthChecked(text: CharSequence) {
         if (text.toString().length >= 3) {
@@ -49,12 +54,12 @@ class UserAppointmentViewModel @Inject constructor(
         items.value = filterList!!
     }
 
-    fun getItems(latitude: Double, longitude: Double) {
+    fun getItems(latitude: Double?, longitude: Double?) {
         setShowProgress(true)
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 when (val response =
-                    appointmentRepository.getLatLngDoctorList(fireStore, latitude, longitude)) {
+                    appointmentRepository.getLatLngDoctorList(fireStore, latitude!!, longitude!!)) {
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
                         if (response.body.isNotEmpty()) {
