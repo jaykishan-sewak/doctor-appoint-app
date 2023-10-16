@@ -18,7 +18,9 @@ import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.ui.feedback.adapter.DoctorListAdapter
 import com.android.doctorapp.util.constants.ConstantKey
-import com.android.doctorapp.util.extension.toast
+import com.android.doctorapp.util.extension.alert
+import com.android.doctorapp.util.extension.negativeButton
+import com.android.doctorapp.util.extension.positiveButton
 import com.google.gson.Gson
 import javax.inject.Inject
 
@@ -105,9 +107,19 @@ class FeedbackFragment : BaseFragment<FragmentFeedbackBinding>(R.layout.fragment
                 }
 
                 override fun onDeleteClick(item: UserDataResponseModel, position: Int) {
-//
-                    viewModel.deleteFeedback(item, position)
-                    context!!.toast("onDeleteClick: Data deleted")
+                    context?.alert {
+                        setTitle(resources.getString(R.string.delete))
+                        setMessage(resources.getString(R.string.are_you_sure_want_to_delete))
+
+                        positiveButton(resources.getString(R.string.delete)) { dialog ->
+                            viewModel.deleteFeedback(item, position)
+                            dialog.dismiss()
+                        }
+                        negativeButton(resources.getString(R.string.cancel)) { dialog ->
+                            dialog.dismiss()
+                        }
+                    }
+
                 }
 
 

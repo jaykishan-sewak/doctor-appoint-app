@@ -125,7 +125,7 @@ class BookAppointmentFragment :
                 context?.alert {
                     setTitle(resources.getString(R.string.booking))
                     setMessage(resources.getString(R.string.dialog_appointment_desc))
-                    neutralButton { dialog ->
+                    neutralButton(resources.getString(R.string.book_label)) { dialog ->
                         dialog.dismiss()
                         try {
                             dateFormat = SimpleDateFormat(BOOKING_DATE_FORMAT)

@@ -627,21 +627,47 @@ class UpdateDoctorProfileFragment :
                         } else
                             false
                     }
-
                     if (timeContainsOrNot) {
                         context?.toast(getString(R.string.already_selected_time))
                     } else {
                         tempShiftTimeList[position].startTime = selectedTime
                     }
                     viewModel.validateAllUpdateField()
+
                 } else {
-                    if (calendar.after(startTimeCalendar)) {
+                    val endTimeContainsOrNot = tempShiftTimeList.any {
+                        if (it.endTime != null) {
+                            dateFormatter(
+                                it.endTime,
+                                HOUR_MIN_AM_PM_FORMAT
+                            ) == dateFormatter(
+                                selectedTime,
+                                HOUR_MIN_AM_PM_FORMAT
+                            ) || isTimeBetween(
+                                dateFormatter(
+                                    selectedTime,
+                                    HOUR_MIN_AM_PM_FORMAT
+                                ), dateFormatter(
+                                    it.startTime,
+                                    HOUR_MIN_AM_PM_FORMAT
+                                ), dateFormatter(
+                                    it.endTime,
+                                    HOUR_MIN_AM_PM_FORMAT
+                                )
+                            )
+                        } else
+                            false
+                    }
+                    if (endTimeContainsOrNot) {
+                        context?.toast(getString(R.string.already_selected_time))
+                    } else if (calendar.after(startTimeCalendar)) {
                         tempShiftTimeList[position].endTime = selectedTime
                         viewModel.validateAllUpdateField()
                     } else {
                         endTimeCalendar = startTimeCalendar.clone() as Calendar
                         context?.toast(getString(R.string.end_time_grater))
                     }
+
                 }
                 addDoctorTimeAdapter.notifyDataSetChanged()
             },
@@ -665,6 +691,7 @@ class UpdateDoctorProfileFragment :
             false
         }
     }
+
 
     private fun updateHolidayRecyclerview(newHolidayList: ArrayList<HolidayModel>) {
         addDoctorHolidayAdapter = AddDoctorHolidayAdapter(newHolidayList,

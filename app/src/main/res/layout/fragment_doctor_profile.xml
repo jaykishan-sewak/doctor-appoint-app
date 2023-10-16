@@ -293,14 +293,16 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvAddress"
-                    android:layout_width="wrap_content"
+                    android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
-                    android:drawablePadding="@dimen/margin_20"
+                    android:layout_marginEnd="@dimen/margin_10"
+                    android:ellipsize="end"
                     android:maxLines="2"
                     android:text="@{viewModel.userProfileDataResponse != null &amp;&amp; !viewModel.userProfileDataResponse.address.isEmpty() ? viewModel.userProfileDataResponse.address : `-`}"
                     android:textColor="@color/grey"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@id/ivAddress"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@id/tvContactNumber"
                     app:layout_constraintTop_toTopOf="@id/ivAddress" />
 

@@ -48,18 +48,19 @@
                     android:id="@+id/profileImage"
                     android:layout_width="@dimen/dp_70"
                     android:layout_height="@dimen/dp_70"
+                    android:layout_marginStart="@dimen/margin_10"
                     android:layout_marginTop="@dimen/margin_10"
                     android:elevation="@dimen/margin_5"
-                    app:cardCornerRadius="250dp"
+                    app:cardCornerRadius="@dimen/dp_24"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivUserImage"
+                        android:id="@+id/ivDoctor"
                         android:layout_width="@dimen/dp_70"
                         android:layout_height="@dimen/dp_70"
                         android:background="@drawable/ic_person_white"
-                        android:scaleType="centerCrop"
+                        android:scaleType="center"
                         app:imageUri="@{viewModel.imageUri}" />
 
                 </androidx.cardview.widget.CardView>
@@ -120,6 +121,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvAppointmentDateLabel"
                     style="@style/label_text"
+                    android:layout_width="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
                     android:text="@string/date"
                     android:textAlignment="textStart"
@@ -140,6 +142,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvAppointmentTimeLabel"
                     style="@style/label_text"
+                    android:layout_width="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
                     android:text="@string/time"
                     android:textAlignment="textStart"
@@ -160,6 +163,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvAppointmentStatusLabel"
                     style="@style/label_text"
+                    android:layout_width="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
                     android:text="@string/status"
                     android:textAlignment="textStart"
@@ -200,6 +204,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvPatientEmailLabel"
                     style="@style/label_text"
+                    android:layout_width="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
                     android:text="@string/email_label"
                     android:textAlignment="textStart"
@@ -220,6 +225,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvPatientAgeLabel"
                     style="@style/label_text"
+                    android:layout_width="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
                     android:text="@string/age_label"
                     android:textAlignment="textStart"
@@ -231,6 +237,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvPatientAgeValue"
                     style="@style/label_text2"
+                    android:layout_width="wrap_content"
                     android:textAlignment="textEnd"
                     app:age="@{viewModel.userDataResponse !=null ? viewModel.userDataResponse.dob : null}"
                     app:layout_constraintBottom_toBottomOf="@id/tvPatientAgeLabel"
@@ -240,6 +247,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvPatientSymptoms"
                     style="@style/label_text"
+                    android:layout_width="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
                     android:text="@string/symptoms_label"
                     android:textAlignment="textStart"
@@ -261,6 +269,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvPatientSuffer"
                     style="@style/label_text"
+                    android:layout_width="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
                     android:text="@string/suffering_days"
                     android:textAlignment="textStart"
@@ -273,6 +282,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvPatientSufferValue"
                     style="@style/label_text2"
+                    android:layout_width="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
                     android:text="@{viewModel.appointmentResponse != null  &amp;&amp; !viewModel.appointmentResponse.sufferingDay.isEmpty() ? viewModel.appointmentResponse.sufferingDay : `-`}"
                     android:textAlignment="textEnd"
@@ -283,6 +293,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvIsVisited"
                     style="@style/label_text"
+                    android:layout_width="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
                     android:text="@string/is_visited"
                     android:textAlignment="textStart"
@@ -352,8 +363,8 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnConfirm"
             style="@style/user_login_editText"
-            android:layout_width="167dp"
-            android:layout_height="52dp"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/margin_50"
             android:layout_marginHorizontal="@dimen/margin_16"
             android:layout_marginVertical="@dimen/margin_10"
             android:background="@drawable/confirm_btn_state_colors"
