@@ -257,7 +257,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvDoctorFeesValue"
                     style="@style/label_text2"
-                    android:text="@{viewModel.appointmentObj.doctorDetails.doctorFees !=null ? viewModel.appointmentObj.doctorDetails.doctorFees.toString() : `-`}"
+                    android:text="@{ viewModel.appointmentObj.doctorDetails.doctorFees !=null ? `₹`+viewModel.appointmentObj.doctorDetails.doctorFees.toString() : `-`}"
                     android:textAlignment="textEnd"
                     app:layout_constraintBottom_toBottomOf="@id/tvDoctorFeesLabel"
                     app:layout_constraintEnd_toEndOf="parent"
