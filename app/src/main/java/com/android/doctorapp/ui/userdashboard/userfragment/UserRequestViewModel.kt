@@ -79,7 +79,8 @@ class UserRequestViewModel @Inject constructor(
     }
 
     fun getPastAppointmentList() {
-        userAppointmentData.value = emptyList()
+        if (userAppointmentData.value != null && userAppointmentData.value?.size!! > 0)
+            userAppointmentData.value = emptyList()
         dataFound.value = true
         viewModelScope.launch {
             var recordId = ""

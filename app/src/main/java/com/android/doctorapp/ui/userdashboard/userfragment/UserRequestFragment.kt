@@ -124,6 +124,7 @@ class UserRequestFragment :
             ?.observe(viewLifecycleOwner) { result ->
                 if (result.equals(ConstantKey.PAST_LABEL)) {
                     viewModel.selectedTabPosition.postValue(1)
+                    viewModel.dataFound.postValue(true)
                 }
             }
     }

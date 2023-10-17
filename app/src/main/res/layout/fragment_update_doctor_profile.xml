@@ -42,19 +42,19 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/ic_update_doctor"
-                    android:layout_width="@dimen/dp_70"
-                    android:layout_height="@dimen/dp_70"
+                    android:layout_width="@dimen/dp_100"
+                    android:layout_height="@dimen/dp_100"
                     android:layout_marginTop="@dimen/margin_20"
                     android:elevation="@dimen/margin_5"
-                    app:cardCornerRadius="@dimen/dp_24"
+                    app:cardCornerRadius="@dimen/dp_32"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ivDoctor"
-                        android:layout_width="@dimen/dp_70"
-                        android:layout_height="@dimen/dp_70"
+                        android:layout_width="@dimen/dp_100"
+                        android:layout_height="@dimen/dp_100"
                         android:background="@drawable/ic_person_white"
                         android:scaleType="center"
                         app:imageUri="@{viewModel.imageUri}" />
