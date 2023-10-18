@@ -33,6 +33,7 @@ class SelectedDateAppointmentsViewModel @Inject constructor(
     var selectedDate: MutableLiveData<Date> = SingleLiveEvent()
     val isCalender: MutableLiveData<Boolean> = MutableLiveData(false)
     val dataFound: MutableLiveData<Boolean> = MutableLiveData(false)
+    val appointmentDetailsUpdated: MutableLiveData<Boolean> = MutableLiveData(false)
 
 
     fun getAppointmentList() {

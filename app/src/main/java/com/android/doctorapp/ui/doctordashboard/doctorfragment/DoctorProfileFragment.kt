@@ -67,7 +67,17 @@ class DoctorProfileFragment :
     }
 
     private fun registerObservers() {
-        viewModel.getUserProfileData()
+        val navController = findNavController()
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("profileUpdated")
+            ?.observe(viewLifecycleOwner) {
+                if (it == true) {
+                    viewModel.getUserProfileData()
+                }
+            }
+
+        if (viewModel.userProfileDataResponse.value == null)
+            viewModel.getUserProfileData()
+
         viewModel.isDoctorEdit.value = false
         viewModel.isDoctorEdit.observe(viewLifecycleOwner) {
             if (it) {

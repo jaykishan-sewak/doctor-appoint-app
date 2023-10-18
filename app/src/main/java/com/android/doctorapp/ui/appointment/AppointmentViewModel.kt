@@ -465,7 +465,7 @@ class AppointmentViewModel @Inject constructor(
 
     fun checkAppointmentDate(): Boolean {
         val currentDate = currentDate()
-        return appointmentObj.value?.bookingDateTime!! > currentDate
+        return appointmentObj.value?.bookingDateTime!! > currentDate && appointmentObj.value?.status != FIELD_REJECTED
     }
 
     private fun getUserSymptomDetails() {

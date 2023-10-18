@@ -72,8 +72,13 @@ class BookingDetailFragment :
         }
 
         viewModel.navigationListener.observe(viewLifecycleOwner) {
-            if (it)
+            if (it) {
+                findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                    "appointmentDetailsUpdated",
+                    true
+                )
                 findNavController().popBackStack()
+            }
         }
         viewModel.appointmentObj.observe(viewLifecycleOwner) {
             if (it.doctorDetails?.images != null)

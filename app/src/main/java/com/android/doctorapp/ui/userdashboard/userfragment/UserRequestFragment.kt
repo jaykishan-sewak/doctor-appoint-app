@@ -62,11 +62,25 @@ class UserRequestFragment :
     }
 
     private fun registerObserver(layoutBinding: FragmentUserRequestBinding) {
+
         binding.tabLayout.getTabAt(viewModel.selectedTabPosition.value!!)?.select()
-        if (binding.tabLayout.getTabAt(0)?.isSelected == true) {
-            callApiForTab2()
-        } else {
-            callApiForTab1()
+        val navController = findNavController()
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("appointmentDetailsUpdated")
+            ?.observe(viewLifecycleOwner) {
+                if (it == true) {
+                    if (binding.tabLayout.getTabAt(0)?.isSelected == true) {
+                        callApiForTab2()
+                    } else {
+                        callApiForTab1()
+                    }
+                }
+            }
+        if (viewModel.userAppointmentData.value == null) {
+            if (binding.tabLayout.getTabAt(0)?.isSelected == true) {
+                callApiForTab2()
+            } else {
+                callApiForTab1()
+            }
         }
 
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {

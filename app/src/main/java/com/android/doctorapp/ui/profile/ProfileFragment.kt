@@ -61,7 +61,18 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
 
 
     private fun registerObservers() {
-        viewModel.getUserProfileData()
+        val navController = findNavController()
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("profileUpdated")
+            ?.observe(viewLifecycleOwner) {
+                if (it == true) {
+                    viewModel.getUserProfileData()
+                }
+            }
+
+        if (viewModel.userProfileDataResponse.value == null)
+            viewModel.getUserProfileData()
+
+
         viewModel.phoneClick.observe(viewLifecycleOwner) {
             requireActivity().openPhoneDialer(it)
         }

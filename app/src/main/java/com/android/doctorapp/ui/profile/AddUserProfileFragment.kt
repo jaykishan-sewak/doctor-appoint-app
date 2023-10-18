@@ -169,6 +169,10 @@ class AddUserProfileFragment :
 
         viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
             if (viewModel.isProfileNavigation.value!!) {
+                findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                    "profileUpdated",
+                    true
+                )
                 findNavController().popBackStack()
             } else {
                 if (it.equals(ConstantKey.SUCCESS)) {

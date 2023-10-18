@@ -77,8 +77,22 @@ class SelectedDateAppointmentsFragment :
             LinearLayoutManager(requireContext())
         layoutBinding.selectedDateRecyclerView.adapter = adapter
 
+
         viewModel.selectedDate.observe(viewLifecycleOwner) {
-            viewModel.getAppointmentList()
+            val navController = findNavController()
+            navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("appointmentDetailsUpdated")
+                ?.observe(viewLifecycleOwner) {
+                    if (it == true) {
+                        viewModel.appointmentDetailsUpdated.value = it
+                        viewModel.getAppointmentList()
+                    }
+                }
+            if (viewModel.appointmentList.value == null)
+                viewModel.getAppointmentList()
+            else {
+                if (viewModel.isCalender.value!!)
+                    viewModel.getAppointmentList()
+            }
             viewModel.isCalender.value = false
         }
         viewModel.appointmentList.observe(viewLifecycleOwner) {
@@ -119,6 +133,10 @@ class SelectedDateAppointmentsFragment :
                 )
             )
             .withNavigationListener {
+                findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                    "appointmentDetailsUpdated",
+                    viewModel.appointmentDetailsUpdated.value
+                )
                 findNavController().popBackStack()
             }
             .withMenu(R.menu.doctor_calendar_menu)
@@ -151,6 +169,7 @@ class SelectedDateAppointmentsFragment :
                     val bundle = Bundle()
                     bundle.putBoolean(ConstantKey.BundleKeys.REQUEST_FRAGMENT, false)
                     bundle.putString(ConstantKey.BundleKeys.APPOINTMENT_DATA, Gson().toJson(item))
+                    bundle.putBoolean(ConstantKey.BundleKeys.FROM_SELECTED_APPOINTMENTS, true)
                     findNavController().navigate(
                         R.id.action_selected_date_to_appointment_details,
                         bundle

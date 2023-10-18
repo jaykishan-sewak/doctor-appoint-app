@@ -60,6 +60,14 @@ class AppointmentDoctorFragment :
         layoutBinding.recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         layoutBinding.recyclerView.adapter = adapter
 
+        val navController = findNavController()
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("appointmentDetailsUpdated")
+            ?.observe(viewLifecycleOwner) {
+                if (it == true) {
+                    viewModel.getAppointmentList()
+                }
+            }
+
         viewModel.finalAppointmentList.observe(viewLifecycleOwner) {
             if (it != null && it.isNotEmpty()) {
                 adapter.filterList(it)

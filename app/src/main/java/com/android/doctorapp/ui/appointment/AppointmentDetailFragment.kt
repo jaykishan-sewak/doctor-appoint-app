@@ -31,6 +31,7 @@ class AppointmentDetailFragment :
     lateinit var viewModelFactory: ViewModelProvider.Factory
     val viewModel: AppointmentViewModel by viewModels { viewModelFactory }
 
+
     override fun builder(): FragmentToolbar {
         return FragmentToolbar.Builder()
             .withId(R.id.toolbar)
@@ -122,8 +123,13 @@ class AppointmentDetailFragment :
             }
         }
         viewModel.navigationListener.observe(viewLifecycleOwner) {
-            if (it)
+            if (it) {
+                findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                    "appointmentDetailsUpdated",
+                    true
+                )
                 findNavController().popBackStack()
+            }
         }
 
         viewModel.updateClick.observe(viewLifecycleOwner) {

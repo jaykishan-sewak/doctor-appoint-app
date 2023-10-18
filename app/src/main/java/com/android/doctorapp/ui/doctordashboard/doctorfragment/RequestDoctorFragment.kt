@@ -57,7 +57,10 @@ class RequestDoctorFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        viewModel.requestSelectedDate.value = currentDate()
+
+        if (viewModel.requestSelectedDate.value == null) {
+            viewModel.requestSelectedDate.value = currentDate()
+        }
 
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
@@ -75,8 +78,22 @@ class RequestDoctorFragment :
         layoutBinding.requestDoctorRecyclerView.layoutManager =
             LinearLayoutManager(requireContext())
         layoutBinding.requestDoctorRecyclerView.adapter = adapter
+
+        val navController = findNavController()
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("appointmentDetailsUpdated")
+            ?.observe(viewLifecycleOwner) {
+                if (it == true) {
+                    viewModel.getRequestAppointmentList()
+                }
+            }
         viewModel.requestSelectedDate.observe(viewLifecycleOwner) {
-            viewModel.getRequestAppointmentList()
+
+            if (viewModel.requestAppointmentList.value == null)
+                viewModel.getRequestAppointmentList()
+            else {
+                if (viewModel.isRequestCalender.value!!)
+                    viewModel.getRequestAppointmentList()
+            }
             viewModel.isRequestCalender.value = false
         }
         viewModel.requestAppointmentList.observe(viewLifecycleOwner) {
@@ -109,6 +126,7 @@ class RequestDoctorFragment :
                     updateToolbarTitle(viewModel.rangeDate.value!!)
                     requestDatePicker.dismissNow()
                     viewModel.getRequestAppointmentList()
+                    viewModel.isRequestCalender.value = false
 
                 }
 
@@ -130,10 +148,11 @@ class RequestDoctorFragment :
             .withId(R.id.toolbar)
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             .withTitleString(
-                dateFormatter(
-                    viewModel.requestSelectedDate.value!!,
-                    ConstantKey.DATE_MM_FORMAT
-                )
+                (if (viewModel.rangeDate.value != null) viewModel.rangeDate.value else
+                    dateFormatter(
+                        viewModel.requestSelectedDate.value!!,
+                        ConstantKey.DATE_MM_FORMAT
+                    ))!!
             )
             .withMenu(R.menu.doctor_calendar_menu)
             .withMenuItems(generateMenuItems(), generateMenuClicks())
