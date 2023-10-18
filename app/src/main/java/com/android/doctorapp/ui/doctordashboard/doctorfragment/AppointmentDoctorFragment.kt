@@ -18,6 +18,7 @@ import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.Header
 import com.android.doctorapp.ui.doctordashboard.adapter.PatientListAdapter
+import com.android.doctorapp.util.constants.ConstantKey.APPOINTMENT_DETAILS_UPDATED
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DATE
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.REQUEST_FRAGMENT
 import com.google.gson.Gson
@@ -61,9 +62,9 @@ class AppointmentDoctorFragment :
         layoutBinding.recyclerView.adapter = adapter
 
         val navController = findNavController()
-        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("appointmentDetailsUpdated")
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(APPOINTMENT_DETAILS_UPDATED)
             ?.observe(viewLifecycleOwner) {
-                if (it == true) {
+                if (it) {
                     viewModel.getAppointmentList()
                 }
             }

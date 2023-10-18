@@ -18,6 +18,7 @@ import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.ui.feedback.adapter.DoctorListAdapter
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.FEEDBACK_SUBMITTED
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.negativeButton
 import com.android.doctorapp.util.extension.positiveButton
@@ -79,9 +80,9 @@ class FeedbackFragment : BaseFragment<FragmentFeedbackBinding>(R.layout.fragment
     private fun registerObserver() {
 
         val navController = findNavController()
-        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("feedbackSubmitted")
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(FEEDBACK_SUBMITTED)
             ?.observe(viewLifecycleOwner) {
-                if (it == true) {
+                if (it) {
                     viewModel.getUserDoctorList()
                 }
             }

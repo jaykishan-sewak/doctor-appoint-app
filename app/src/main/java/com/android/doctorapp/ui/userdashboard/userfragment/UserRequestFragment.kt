@@ -65,10 +65,10 @@ class UserRequestFragment :
 
         binding.tabLayout.getTabAt(viewModel.selectedTabPosition.value!!)?.select()
         val navController = findNavController()
-        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("appointmentDetailsUpdated")
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(ConstantKey.APPOINTMENT_DETAILS_UPDATED)
             ?.observe(viewLifecycleOwner) {
-                if (it == true) {
-                    if (binding.tabLayout.getTabAt(0)?.isSelected == true) {
+                if (it) {
+                    if (binding.tabLayout.getTabAt(0)?.isSelected!!) {
                         callApiForTab2()
                     } else {
                         callApiForTab1()

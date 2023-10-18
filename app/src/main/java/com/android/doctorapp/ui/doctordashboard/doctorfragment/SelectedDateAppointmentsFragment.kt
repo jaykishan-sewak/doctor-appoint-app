@@ -21,6 +21,7 @@ import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.ui.doctordashboard.adapter.SelectedDateAdapter
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.APPOINTMENT_DETAILS_UPDATED
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.extension.dateFormatter
@@ -80,9 +81,10 @@ class SelectedDateAppointmentsFragment :
 
         viewModel.selectedDate.observe(viewLifecycleOwner) {
             val navController = findNavController()
-            navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("appointmentDetailsUpdated")
+            navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
+                APPOINTMENT_DETAILS_UPDATED)
                 ?.observe(viewLifecycleOwner) {
-                    if (it == true) {
+                    if (it) {
                         viewModel.appointmentDetailsUpdated.value = it
                         viewModel.getAppointmentList()
                     }
@@ -134,7 +136,7 @@ class SelectedDateAppointmentsFragment :
             )
             .withNavigationListener {
                 findNavController().previousBackStackEntry?.savedStateHandle?.set(
-                    "appointmentDetailsUpdated",
+                    APPOINTMENT_DETAILS_UPDATED,
                     viewModel.appointmentDetailsUpdated.value
                 )
                 findNavController().popBackStack()

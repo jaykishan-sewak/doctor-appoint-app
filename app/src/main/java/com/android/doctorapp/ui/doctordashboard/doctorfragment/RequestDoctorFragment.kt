@@ -20,6 +20,7 @@ import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.ui.doctordashboard.adapter.RequestAppointmentsAdapter
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.APPOINTMENT_DETAILS_UPDATED
 import com.android.doctorapp.util.constants.ConstantKey.DATE_PICKER
 import com.android.doctorapp.util.constants.ConstantKey.DD_MM_FORMAT
 import com.android.doctorapp.util.extension.currentDate
@@ -80,9 +81,11 @@ class RequestDoctorFragment :
         layoutBinding.requestDoctorRecyclerView.adapter = adapter
 
         val navController = findNavController()
-        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("appointmentDetailsUpdated")
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
+            APPOINTMENT_DETAILS_UPDATED
+        )
             ?.observe(viewLifecycleOwner) {
-                if (it == true) {
+                if (it) {
                     viewModel.getRequestAppointmentList()
                 }
             }

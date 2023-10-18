@@ -40,6 +40,9 @@ object ConstantKey {
     const val FIELD_APPROVED = "APPROVED"
     const val FIELD_PENDING = "PENDING"
     const val FIELD_REJECTED = "REJECTED"
+    const val APPOINTMENT_DETAILS_UPDATED = "appointmentDetailsUpdated"
+    const val FEEDBACK_SUBMITTED = "feedbackSubmitted"
+    const val PROFILE_UPDATED = "profileUpdated"
 
 
     object DBKeys {

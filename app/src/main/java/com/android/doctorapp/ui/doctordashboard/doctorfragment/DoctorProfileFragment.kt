@@ -16,6 +16,7 @@ import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.ui.authentication.AuthenticationActivity
 import com.android.doctorapp.ui.profile.ProfileViewModel
+import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DOCTOR_PROFILE_FRAGMENT
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.FROM_WHERE
 import com.android.doctorapp.util.extension.fetchImageOrShowError
@@ -68,9 +69,9 @@ class DoctorProfileFragment :
 
     private fun registerObservers() {
         val navController = findNavController()
-        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("profileUpdated")
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(ConstantKey.PROFILE_UPDATED)
             ?.observe(viewLifecycleOwner) {
-                if (it == true) {
+                if (it) {
                     viewModel.getUserProfileData()
                 }
             }

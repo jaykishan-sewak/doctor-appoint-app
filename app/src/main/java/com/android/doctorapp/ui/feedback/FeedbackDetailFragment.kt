@@ -16,6 +16,7 @@ import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.FEEDBACK_SUBMITTED
 import com.google.gson.Gson
 import javax.inject.Inject
 
@@ -37,7 +38,7 @@ class FeedbackDetailFragment :
         )
         .withNavigationListener {
             findNavController().previousBackStackEntry?.savedStateHandle?.set(
-                "feedbackSubmitted",
+                FEEDBACK_SUBMITTED,
                 false
             )
             findNavController().popBackStack()
@@ -84,7 +85,7 @@ class FeedbackDetailFragment :
         viewModel.navigationListener.observe(viewLifecycleOwner) {
             if (it) {
                 findNavController().previousBackStackEntry?.savedStateHandle?.set(
-                    "feedbackSubmitted",
+                    FEEDBACK_SUBMITTED,
                     true
                 )
                 findNavController().popBackStack()
