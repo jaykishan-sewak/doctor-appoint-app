@@ -6,6 +6,8 @@
 
         <import type="android.view.View" />
 
+        <import type="android.net.Uri" />
+
         <variable
             name="userData"
             type="com.android.doctorapp.repository.models.UserDataResponseModel" />
@@ -18,6 +20,16 @@
         <variable
             name="index"
             type="Integer" />
+
+        <variable
+            name="imgUri"
+            type="Uri" />
+
+        <variable
+            name="viewModal"
+            type="com.android.doctorapp.ui.feedback.FeedbackViewModel" />
+
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,7 +39,7 @@
         android:onClick="@{()->onItemClickListener.onItemClick(userData,index)}">
 
         <androidx.cardview.widget.CardView
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/margin_10"
             android:background="@color/white"
@@ -40,33 +52,36 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:paddingVertical="@dimen/margin_10">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/ivDoctorImageView"
-                    android:layout_width="@dimen/dp_100"
-                    android:layout_height="@dimen/dp_100"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="@dimen/margin_10"
+                    android:layout_width="@dimen/dp_70"
+                    android:layout_height="@dimen/dp_70"
+                    android:layout_marginVertical="@dimen/margin_15"
+                    android:layout_marginStart="@dimen/margin_20"
                     android:elevation="@dimen/margin_5"
-                    app:cardCornerRadius="250dp"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:cardCornerRadius="@dimen/dp_24"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ivDoctorImage"
-                        android:layout_width="@dimen/dp_100"
-                        android:layout_height="@dimen/dp_100"
-                        android:scaleType="centerCrop"
-                        app:genderImage="@{userData.gender}" />
+                        android:layout_width="@dimen/dp_70"
+                        android:layout_height="@dimen/dp_70"
+                        android:background="@drawable/ic_person_white"
+                        android:scaleType="center"
+                        app:imageUri="@{imgUri}" />
+
 
                 </androidx.cardview.widget.CardView>
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvDoctorName"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_10"
                     android:layout_marginTop="@dimen/margin_20"
                     android:paddingHorizontal="@dimen/margin_10"
                     android:text="@{userData.name}"
@@ -74,13 +89,12 @@
                     android:textColor="@color/black"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivDoctorImageView" />
+                    app:layout_constraintStart_toEndOf="@+id/ivDoctorImageView"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvDoctorEmail"
-                    android:layout_width="0dp"
+                    android:id="@+id/tvDoctorContact"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_5"
                     android:paddingHorizontal="@dimen/margin_10"
@@ -89,36 +103,118 @@
                     android:textColor="@color/grey"
                     android:textFontWeight="@integer/m3_sys_motion_duration_extra_long1"
                     android:textSize="12sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tvDoctorName"
                     app:layout_constraintTop_toBottomOf="@id/tvDoctorName" />
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_edit_feedback"
-                    android:layout_width="@dimen/margin_20"
-                    android:layout_height="@dimen/margin_20"
-                    android:layout_marginHorizontal="@dimen/margin_10"
-                    android:layout_marginVertical="@dimen/margin_10"
-                    android:onClick="@{()->onItemClickListener.onEditClick(userData,index)}"
-                    android:src="@drawable/ic_blue_edit"
-                    android:visibility="@{userData.feedbackDetails != null ? View.VISIBLE : View.INVISIBLE}"
-                    app:layout_constraintBottom_toBottomOf="parent"
+
+                <androidx.appcompat.widget.AppCompatRatingBar
+                    android:id="@+id/doctorRatingBar"
+                    style="@style/Widget.AppCompat.RatingBar.Indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_4"
+                    android:layout_marginBottom="@dimen/margin_20"
+                    android:progressTint="@color/rating_bg"
+                    android:rating="@{userData.feedbackDetails.rating}"
+                    app:layout_constraintBottom_toTopOf="@+id/tvDoctorFeedbackMsg"
+                    app:layout_constraintStart_toStartOf="@+id/tvDoctorName"
+                    app:layout_constraintTop_toBottomOf="@+id/tvDoctorContact" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvFeedbackDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/margin_20"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/grey"
+                    android:textFontWeight="@integer/m3_sys_motion_duration_extra_long1"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:headerDate="@{userData.feedbackDetails.createdAt}"
+                    app:layout_constraintBottom_toBottomOf="@+id/doctorRatingBar"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/doctorRatingBar" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvDoctorFeedbackMsg"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:layout_marginEnd="@dimen/margin_20"
+                    android:paddingHorizontal="@dimen/margin_10"
+                    android:text="@{userData.feedbackDetails.feedbackMessage}"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/black"
+                    android:textFontWeight="@integer/m3_sys_motion_duration_extra_long1"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/ivDoctorImageView"
+                    app:layout_constraintTop_toBottomOf="@id/doctorRatingBar" />
+
+
+                <View
+                    android:id="@+id/horizontalBorder"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="@dimen/margin_2"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:background="#efefef"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvDoctorEmail" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvDoctorFeedbackMsg" />
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_delete_feedback"
-                    android:layout_width="@dimen/margin_20"
-                    android:layout_height="@dimen/margin_20"
-                    android:layout_marginHorizontal="@dimen/margin_30"
-                    android:layout_marginVertical="@dimen/margin_10"
-                    android:onClick="@{()->onItemClickListener.onDeleteClick(userData,index)}"
-                    android:src="@drawable/ic_blue_delete"
-                    android:visibility="@{userData.feedbackDetails != null ? View.VISIBLE : View.INVISIBLE}"
+                <View
+                    android:id="@+id/verticleBorder"
+                    android:layout_width="@dimen/margin_2"
+                    android:layout_height="@dimen/dp_0"
+                    android:layout_marginTop="@dimen/margin_4"
+                    android:background="#efefef"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/iv_edit_feedback"
-                    app:layout_constraintTop_toBottomOf="@+id/tvDoctorEmail" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/horizontalBorder" />
 
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/iv_edit_feedback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_10"
+                    android:layout_marginVertical="@dimen/margin_20"
+                    android:drawableStart="@drawable/ic_blue_edit"
+                    android:drawablePadding="@dimen/margin_10"
+                    android:gravity="center_vertical"
+                    android:onClick="@{()->onItemClickListener.onEditClick(userData,index)}"
+                    android:text="@string/edit_label"
+                    android:textColor="@color/colorPrimary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/verticleBorder"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/horizontalBorder" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/iv_delete_feedback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_30"
+                    android:layout_marginVertical="@dimen/margin_20"
+                    android:drawableStart="@drawable/ic_blue_delete"
+                    android:drawablePadding="@dimen/margin_10"
+                    android:gravity="center_vertical"
+                    android:onClick="@{()->onItemClickListener.onDeleteClick(userData,index)}"
+                    android:text="@string/delete"
+                    android:textColor="@color/colorPrimary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/verticleBorder"
+                    app:layout_constraintTop_toBottomOf="@+id/horizontalBorder" />
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/gpItems"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="@{userData.feedbackDetails != null ? View.VISIBLE : View.GONE}"
+                    app:constraint_referenced_ids="tvFeedbackDate,tvDoctorFeedbackMsg,horizontalBorder,verticleBorder, iv_delete_feedback, iv_edit_feedback" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
