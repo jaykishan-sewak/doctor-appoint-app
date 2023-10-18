@@ -14,9 +14,9 @@ import com.android.doctorapp.databinding.FragmentFeedbackDetailsBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
-import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.FEEDBACK_SUBMITTED
 import com.google.gson.Gson
 import javax.inject.Inject
 
@@ -37,6 +37,10 @@ class FeedbackDetailFragment :
             )
         )
         .withNavigationListener {
+            findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                FEEDBACK_SUBMITTED,
+                false
+            )
             findNavController().popBackStack()
         }
         .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
@@ -56,11 +60,12 @@ class FeedbackDetailFragment :
         val arguments: Bundle? = arguments
         if (arguments != null) {
             val userObj = arguments.getString(ConstantKey.BundleKeys.USER_DATA)
+            viewModel.isEditClick.value = arguments.getBoolean(ConstantKey.BundleKeys.IS_EDIT_CLICK)
             viewModel.userDataObj.value =
                 Gson().fromJson(userObj, UserDataResponseModel::class.java)
 //            viewModel.doctorId.value = appointmentObj
         }
-        viewModel.getUserFeedbackData()
+
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
             viewModal = this@FeedbackDetailFragment.viewModel
@@ -78,9 +83,21 @@ class FeedbackDetailFragment :
 
     private fun registerObserver() {
         viewModel.navigationListener.observe(viewLifecycleOwner) {
-            if (it)
+            if (it) {
+                findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                    FEEDBACK_SUBMITTED,
+                    true
+                )
                 findNavController().popBackStack()
+            }
         }
+
+        viewModel.isEditClick.observe(viewLifecycleOwner) {
+            if (it) {
+                viewModel.getUserFeedbackData()
+            }
+        }
+
 
     }
 

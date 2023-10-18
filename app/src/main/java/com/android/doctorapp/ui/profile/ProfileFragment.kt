@@ -15,6 +15,7 @@ import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.ui.authentication.AuthenticationActivity
+import com.android.doctorapp.util.constants.ConstantKey.PROFILE_UPDATED
 import com.android.doctorapp.util.extension.fetchImageOrShowError
 import com.android.doctorapp.util.extension.openEmailSender
 import com.android.doctorapp.util.extension.openPhoneDialer
@@ -61,7 +62,18 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
 
 
     private fun registerObservers() {
-        viewModel.getUserProfileData()
+        val navController = findNavController()
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(PROFILE_UPDATED)
+            ?.observe(viewLifecycleOwner) {
+                if (it) {
+                    viewModel.getUserProfileData()
+                }
+            }
+
+        if (viewModel.userProfileDataResponse.value == null)
+            viewModel.getUserProfileData()
+
+
         viewModel.phoneClick.observe(viewLifecycleOwner) {
             requireActivity().openPhoneDialer(it)
         }

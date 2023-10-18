@@ -21,6 +21,7 @@ import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.ui.doctordashboard.adapter.SelectedDateAdapter
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.APPOINTMENT_DETAILS_UPDATED
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.extension.dateFormatter
@@ -77,8 +78,23 @@ class SelectedDateAppointmentsFragment :
             LinearLayoutManager(requireContext())
         layoutBinding.selectedDateRecyclerView.adapter = adapter
 
+
         viewModel.selectedDate.observe(viewLifecycleOwner) {
-            viewModel.getAppointmentList()
+            val navController = findNavController()
+            navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
+                APPOINTMENT_DETAILS_UPDATED)
+                ?.observe(viewLifecycleOwner) {
+                    if (it) {
+                        viewModel.appointmentDetailsUpdated.value = it
+                        viewModel.getAppointmentList()
+                    }
+                }
+            if (viewModel.appointmentList.value == null)
+                viewModel.getAppointmentList()
+            else {
+                if (viewModel.isCalender.value!!)
+                    viewModel.getAppointmentList()
+            }
             viewModel.isCalender.value = false
         }
         viewModel.appointmentList.observe(viewLifecycleOwner) {
@@ -119,6 +135,10 @@ class SelectedDateAppointmentsFragment :
                 )
             )
             .withNavigationListener {
+                findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                    APPOINTMENT_DETAILS_UPDATED,
+                    viewModel.appointmentDetailsUpdated.value
+                )
                 findNavController().popBackStack()
             }
             .withMenu(R.menu.doctor_calendar_menu)
@@ -151,6 +171,7 @@ class SelectedDateAppointmentsFragment :
                     val bundle = Bundle()
                     bundle.putBoolean(ConstantKey.BundleKeys.REQUEST_FRAGMENT, false)
                     bundle.putString(ConstantKey.BundleKeys.APPOINTMENT_DATA, Gson().toJson(item))
+                    bundle.putBoolean(ConstantKey.BundleKeys.FROM_SELECTED_APPOINTMENTS, true)
                     findNavController().navigate(
                         R.id.action_selected_date_to_appointment_details,
                         bundle

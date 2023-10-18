@@ -45,6 +45,7 @@ import com.android.doctorapp.util.constants.ConstantKey.FEMALE_GENDER
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.constants.ConstantKey.HOUR_MIN_AM_PM_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.KEY_GEO_HASH
+import com.android.doctorapp.util.constants.ConstantKey.PROFILE_UPDATED
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.convertDateToFull
 import com.android.doctorapp.util.extension.convertDateToMonth
@@ -352,8 +353,13 @@ class UpdateDoctorProfileFragment :
         }
 
         viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
-            if (viewModel.isProfileNavigation.value!!)
+            if (viewModel.isProfileNavigation.value!!) {
+                findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                    PROFILE_UPDATED,
+                    true
+                )
                 findNavController().popBackStack()
+            }
             else {
                 if (it.equals(requireContext().resources.getString(R.string.success))) {
                     context?.toast(resources.getString(R.string.doctor_update_successfully))

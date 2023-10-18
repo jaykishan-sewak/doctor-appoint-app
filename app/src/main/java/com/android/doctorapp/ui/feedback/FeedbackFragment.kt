@@ -18,6 +18,7 @@ import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.ui.feedback.adapter.DoctorListAdapter
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.FEEDBACK_SUBMITTED
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.negativeButton
 import com.android.doctorapp.util.extension.positiveButton
@@ -61,7 +62,8 @@ class FeedbackFragment : BaseFragment<FragmentFeedbackBinding>(R.layout.fragment
             lifecycleOwner = viewLifecycleOwner
             viewModel = this@FeedbackFragment.viewModel
         }
-        viewModel.getUserDoctorList()
+
+
         setAdapter(emptyList())
         layoutBinding.doctorListRecyclerView.layoutManager = GridLayoutManager(requireActivity(), 2)
         layoutBinding.doctorListRecyclerView.adapter = adapter
@@ -76,6 +78,18 @@ class FeedbackFragment : BaseFragment<FragmentFeedbackBinding>(R.layout.fragment
     }
 
     private fun registerObserver() {
+
+        val navController = findNavController()
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(FEEDBACK_SUBMITTED)
+            ?.observe(viewLifecycleOwner) {
+                if (it) {
+                    viewModel.getUserDoctorList()
+                }
+            }
+
+        if (viewModel.doctorList.value == null)
+            viewModel.getUserDoctorList()
+
         viewModel.doctorList.observe(viewLifecycleOwner) {
             adapter.updateListData(it)
         }
@@ -101,6 +115,7 @@ class FeedbackFragment : BaseFragment<FragmentFeedbackBinding>(R.layout.fragment
                 override fun onEditClick(item: UserDataResponseModel, position: Int) {
                     val bundle = Bundle()
                     bundle.putString(ConstantKey.BundleKeys.USER_DATA, Gson().toJson(item))
+                    bundle.putBoolean(ConstantKey.BundleKeys.IS_EDIT_CLICK, true)
                     findNavController().navigate(
                         R.id.action_feedback_to_feedBack_details, bundle
                     )
@@ -113,6 +128,7 @@ class FeedbackFragment : BaseFragment<FragmentFeedbackBinding>(R.layout.fragment
 
                         positiveButton(resources.getString(R.string.delete)) { dialog ->
                             viewModel.deleteFeedback(item, position)
+                            viewModel.getUserDoctorList()
                             dialog.dismiss()
                         }
                         negativeButton(resources.getString(R.string.cancel)) { dialog ->

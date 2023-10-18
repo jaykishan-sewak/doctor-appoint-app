@@ -26,6 +26,8 @@ object ConstantKey {
         const val FROM_WHERE = "fromWhere"
         const val SELECTED_TAB = "selectedTab"
         const val BOOK_APPOINTMENT_DATA = "bookAppointmentData"
+        const val IS_EDIT_CLICK = "isEditClick"
+        const val FROM_SELECTED_APPOINTMENTS = "fromSelectedAppointments"
 
     }
 
@@ -38,6 +40,9 @@ object ConstantKey {
     const val FIELD_APPROVED = "APPROVED"
     const val FIELD_PENDING = "PENDING"
     const val FIELD_REJECTED = "REJECTED"
+    const val APPOINTMENT_DETAILS_UPDATED = "appointmentDetailsUpdated"
+    const val FEEDBACK_SUBMITTED = "feedbackSubmitted"
+    const val PROFILE_UPDATED = "profileUpdated"
 
 
     object DBKeys {

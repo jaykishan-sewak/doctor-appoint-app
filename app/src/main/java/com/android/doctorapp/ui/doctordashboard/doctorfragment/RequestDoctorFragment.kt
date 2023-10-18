@@ -20,6 +20,7 @@ import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.ui.doctordashboard.adapter.RequestAppointmentsAdapter
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.APPOINTMENT_DETAILS_UPDATED
 import com.android.doctorapp.util.constants.ConstantKey.DATE_PICKER
 import com.android.doctorapp.util.constants.ConstantKey.DD_MM_FORMAT
 import com.android.doctorapp.util.extension.currentDate
@@ -57,7 +58,10 @@ class RequestDoctorFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        viewModel.requestSelectedDate.value = currentDate()
+
+        if (viewModel.requestSelectedDate.value == null) {
+            viewModel.requestSelectedDate.value = currentDate()
+        }
 
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
@@ -75,8 +79,24 @@ class RequestDoctorFragment :
         layoutBinding.requestDoctorRecyclerView.layoutManager =
             LinearLayoutManager(requireContext())
         layoutBinding.requestDoctorRecyclerView.adapter = adapter
+
+        val navController = findNavController()
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
+            APPOINTMENT_DETAILS_UPDATED
+        )
+            ?.observe(viewLifecycleOwner) {
+                if (it) {
+                    viewModel.getRequestAppointmentList()
+                }
+            }
         viewModel.requestSelectedDate.observe(viewLifecycleOwner) {
-            viewModel.getRequestAppointmentList()
+
+            if (viewModel.requestAppointmentList.value == null)
+                viewModel.getRequestAppointmentList()
+            else {
+                if (viewModel.isRequestCalender.value!!)
+                    viewModel.getRequestAppointmentList()
+            }
             viewModel.isRequestCalender.value = false
         }
         viewModel.requestAppointmentList.observe(viewLifecycleOwner) {
@@ -109,6 +129,7 @@ class RequestDoctorFragment :
                     updateToolbarTitle(viewModel.rangeDate.value!!)
                     requestDatePicker.dismissNow()
                     viewModel.getRequestAppointmentList()
+                    viewModel.isRequestCalender.value = false
 
                 }
 
@@ -130,10 +151,11 @@ class RequestDoctorFragment :
             .withId(R.id.toolbar)
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             .withTitleString(
-                dateFormatter(
-                    viewModel.requestSelectedDate.value!!,
-                    ConstantKey.DATE_MM_FORMAT
-                )
+                (if (viewModel.rangeDate.value != null) viewModel.rangeDate.value else
+                    dateFormatter(
+                        viewModel.requestSelectedDate.value!!,
+                        ConstantKey.DATE_MM_FORMAT
+                    ))!!
             )
             .withMenu(R.menu.doctor_calendar_menu)
             .withMenuItems(generateMenuItems(), generateMenuClicks())

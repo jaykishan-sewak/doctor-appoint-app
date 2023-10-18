@@ -24,6 +24,7 @@ import com.android.doctorapp.ui.doctor.UpdateDoctorProfileFragment
 import com.android.doctorapp.ui.userdashboard.UserDashboardActivity
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.FEMALE_GENDER
+import com.android.doctorapp.util.constants.ConstantKey.PROFILE_UPDATED
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.neutralButton
@@ -169,6 +170,10 @@ class AddUserProfileFragment :
 
         viewModel.addDoctorResponse.observe(viewLifecycleOwner) {
             if (viewModel.isProfileNavigation.value!!) {
+                findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                    PROFILE_UPDATED,
+                    true
+                )
                 findNavController().popBackStack()
             } else {
                 if (it.equals(ConstantKey.SUCCESS)) {

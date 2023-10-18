@@ -32,7 +32,7 @@ class AppointmentDoctorViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     val finalAppointmentList = MutableLiveData<List<Any>>()
-    private val mainList = mutableListOf<Any>()
+    private var mainList = mutableListOf<Any>()
     private val appointmentList = MutableLiveData<List<AppointmentModel>?>()
     private val sortedAppointmentList = MutableLiveData<List<AppointmentModel>>()
 
@@ -98,7 +98,9 @@ class AppointmentDoctorViewModel @Inject constructor(
         finalAppointmentList.value = mainList
     }
 
-    private fun getAppointmentList() {
+    fun getAppointmentList() {
+        mainList = mutableListOf()
+        appointmentList.value = emptyList()
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 session.getString(USER_ID).collectLatest {

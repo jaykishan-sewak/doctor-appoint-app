@@ -80,7 +80,6 @@ class UserAppointmentFragment :
         }.onDenied {
             context?.toast(getString(R.string.location_permission))
         }.ask()
-
         registerObserver(layoutBinding)
         return layoutBinding.root
     }
@@ -106,7 +105,6 @@ class UserAppointmentFragment :
         }
 
         if (requireContext().isGPSEnabled()) {
-            viewModel.setShowProgress(true)
             fusedLocationClient.requestLocationUpdates(
                 GpsUtils(requireContext()).locationRequest,
                 locationCallback,
@@ -122,12 +120,16 @@ class UserAppointmentFragment :
     }
 
     private val locationCallback = object : LocationCallback() {
+
         override fun onLocationResult(p0: LocationResult) {
             p0.lastLocation.let { location ->
                 // Handle the location update here
                 latitude = location!!.latitude
                 longitude = location.longitude
-                viewModel.getItems(latitude, longitude)
+                if(viewModel.doctorList.value == null) {
+                    viewModel.setShowProgress(true)
+                    viewModel.getItems(latitude, longitude)
+                }
                 stopLocationUpdates()
             }
         }

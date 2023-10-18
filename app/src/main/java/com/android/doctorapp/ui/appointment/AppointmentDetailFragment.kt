@@ -17,6 +17,7 @@ import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.ui.appointment.dialog.CustomDialogFragment
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.APPOINTMENT_DETAILS_UPDATED
 import com.android.doctorapp.util.constants.ConstantKey.FIELD_APPROVED
 import com.android.doctorapp.util.constants.ConstantKey.FIELD_REJECTED
 import com.android.doctorapp.util.extension.alert
@@ -30,6 +31,7 @@ class AppointmentDetailFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     val viewModel: AppointmentViewModel by viewModels { viewModelFactory }
+
 
     override fun builder(): FragmentToolbar {
         return FragmentToolbar.Builder()
@@ -122,8 +124,13 @@ class AppointmentDetailFragment :
             }
         }
         viewModel.navigationListener.observe(viewLifecycleOwner) {
-            if (it)
+            if (it) {
+                findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                    APPOINTMENT_DETAILS_UPDATED,
+                    true
+                )
                 findNavController().popBackStack()
+            }
         }
 
         viewModel.updateClick.observe(viewLifecycleOwner) {

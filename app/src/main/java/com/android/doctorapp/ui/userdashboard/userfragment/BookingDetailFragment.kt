@@ -18,6 +18,7 @@ import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.ui.appointment.dialog.CustomDialogFragment
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.APPOINTMENT_DETAILS_UPDATED
 import com.google.gson.Gson
 import javax.inject.Inject
 
@@ -72,8 +73,13 @@ class BookingDetailFragment :
         }
 
         viewModel.navigationListener.observe(viewLifecycleOwner) {
-            if (it)
+            if (it) {
+                findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                    APPOINTMENT_DETAILS_UPDATED,
+                    true
+                )
                 findNavController().popBackStack()
+            }
         }
         viewModel.appointmentObj.observe(viewLifecycleOwner) {
             if (it.doctorDetails?.images != null)

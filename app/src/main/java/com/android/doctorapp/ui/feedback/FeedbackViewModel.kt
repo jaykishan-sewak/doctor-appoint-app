@@ -30,7 +30,8 @@ class FeedbackViewModel @Inject constructor(
     private val session: Session
 
 ) : BaseViewModel() {
-    val doctorList = MutableLiveData<List<UserDataResponseModel>?>()
+
+    var doctorList: MutableLiveData<List<UserDataResponseModel>?> = MutableLiveData()
     val rating: MutableLiveData<Float?> = MutableLiveData(0f)
     val feedbackMsg: MutableLiveData<String> = MutableLiveData()
     val doctorId = MutableLiveData("")
@@ -38,6 +39,7 @@ class FeedbackViewModel @Inject constructor(
     val navigationListener = _navigationListener.asLiveData()
     var userDataObj = MutableLiveData<UserDataResponseModel?>()
     var doctorFeedbackObj = MutableLiveData<UserDataResponseModel?>()
+    val isEditClick: MutableLiveData<Boolean> = MutableLiveData(false)
 
 
     fun getUserDoctorList() {
@@ -91,6 +93,7 @@ class FeedbackViewModel @Inject constructor(
                     )) {
                         is ApiSuccessResponse -> {
                             setShowProgress(false)
+                            doctorList.postValue(null)
                             rating.value = 0f
                             feedbackMsg.value = ""
                             _navigationListener.value = response.body.isNotEmpty()
