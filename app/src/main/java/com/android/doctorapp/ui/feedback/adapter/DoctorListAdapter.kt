@@ -1,8 +1,10 @@
 package com.android.doctorapp.ui.feedback.adapter
 
 import android.content.Context
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.doctorapp.R
@@ -16,11 +18,17 @@ class DoctorListAdapter(
 ) : RecyclerView.Adapter<DoctorListAdapter.ItemViewHolder>() {
     class ItemViewHolder(val view: FeedbackDoctorRowLayoutBinding) :
         RecyclerView.ViewHolder(view.root) {
-        fun bind(item: UserDataResponseModel?, listener: OnItemClickListener, position: Int) {
+        fun bind(
+            item: UserDataResponseModel?,
+            listener: OnItemClickListener,
+            position: Int,
+            imageUri: Uri?
+        ) {
             view.apply {
                 userData = item
                 index = position
                 onItemClickListener = listener
+                imgUri = imageUri
             }
         }
     }
@@ -48,7 +56,8 @@ class DoctorListAdapter(
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val objects = listData?.get(position)
-        holder.bind(objects, listener, position)
+        val imgUri = objects?.images?.toUri()
+        holder.bind(objects, listener, position, imgUri)
     }
 
     override fun getItemCount(): Int {

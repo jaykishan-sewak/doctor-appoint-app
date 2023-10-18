@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.FragmentFeedbackBinding
 import com.android.doctorapp.di.AppComponentProvider
@@ -65,7 +65,7 @@ class FeedbackFragment : BaseFragment<FragmentFeedbackBinding>(R.layout.fragment
 
 
         setAdapter(emptyList())
-        layoutBinding.doctorListRecyclerView.layoutManager = GridLayoutManager(requireActivity(), 2)
+        layoutBinding.doctorListRecyclerView.layoutManager = LinearLayoutManager(requireActivity())
         layoutBinding.doctorListRecyclerView.adapter = adapter
 
         return layoutBinding.root
@@ -80,7 +80,9 @@ class FeedbackFragment : BaseFragment<FragmentFeedbackBinding>(R.layout.fragment
     private fun registerObserver() {
 
         val navController = findNavController()
-        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(FEEDBACK_SUBMITTED)
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
+            FEEDBACK_SUBMITTED
+        )
             ?.observe(viewLifecycleOwner) {
                 if (it) {
                     viewModel.getUserDoctorList()
@@ -128,6 +130,7 @@ class FeedbackFragment : BaseFragment<FragmentFeedbackBinding>(R.layout.fragment
 
                         positiveButton(resources.getString(R.string.delete)) { dialog ->
                             viewModel.deleteFeedback(item, position)
+                            viewModel.setShowProgress(true)
                             viewModel.getUserDoctorList()
                             dialog.dismiss()
                         }
