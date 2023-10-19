@@ -624,6 +624,28 @@ class AppointmentViewModel @Inject constructor(
                                 }
                             }
                             _timeSlotList.value = timeList
+                            val currentDate = Date()
+                            if (dateFormatter(
+                                    selectedDate,
+                                    ConstantKey.DD_MM_FORMAT
+                                ) == dateFormatter(
+                                    currentDate,
+                                    ConstantKey.DD_MM_FORMAT
+                                )
+                            ) {
+                                response.body.forEachIndexed { index, appointmentModel ->
+                                    timeList.forEachIndexed { timeIndex, addShiftTimeModel ->
+                                        val currentTime = dateFormatter(Date(), FORMATTED_TIME)
+                                        if (currentTime > dateFormatter(
+                                                addShiftTimeModel.startTime,
+                                                FORMATTED_TIME
+                                            )
+                                        ) {
+                                            timeList.get(timeIndex).isTimeSlotBook = true
+                                        }
+                                    }
+                                }
+                            }
                             setShowProgress(false)
                         }
                     }
@@ -735,5 +757,6 @@ class AppointmentViewModel @Inject constructor(
     fun onClickEmailIcon(email: String) {
         emailClick.postValue(email)
     }
+
 
 }
