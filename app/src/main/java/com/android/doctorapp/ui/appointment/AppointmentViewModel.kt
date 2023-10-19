@@ -146,6 +146,13 @@ class AppointmentViewModel @Inject constructor(
                     currentDate
                 ) as Date
             ) {
+                timeList.forEachIndexed { timeIndex, addShiftTimeModel ->
+                    val currentTime = dateFormatter(Date(), FORMATTED_TIME)
+                    if (currentTime > dateFormatter(addShiftTimeModel.startTime, FORMATTED_TIME)
+                    ) {
+                        timeList.get(timeIndex).isTimeSlotBook = true
+                    }
+                }
                 dateStr.value = dateFormatter(currentDate(), ConstantKey.FORMATTED_DATE_MONTH_YEAR)
                 isDateSelected.value = true
                 daysList[index].dateSelect = true
