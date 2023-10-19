@@ -606,7 +606,8 @@ class AppointmentViewModel @Inject constructor(
                             getDoctorDataDetails(response.body)
                         } else {
                             timeList.forEachIndexed { index, addShiftTimeModel ->
-                                addShiftTimeModel.isTimeSlotBook = false
+                                addShiftTimeModel.isTimeSlotBook =
+                                    currentTime(selectedDate, addShiftTimeModel.startTime)
                             }
 
                             response.body.forEachIndexed { index, appointmentModel ->
@@ -617,35 +618,13 @@ class AppointmentViewModel @Inject constructor(
                                         ) == dateFormatter(
                                             addShiftTimeModel.startTime,
                                             FORMATTED_TIME
-                                        )
+                                        ) || currentTime(selectedDate, addShiftTimeModel.startTime)
                                     ) {
-                                        timeList.get(timeIndex).isTimeSlotBook = true
+                                        timeList[timeIndex].isTimeSlotBook = true
                                     }
                                 }
                             }
                             _timeSlotList.value = timeList
-                            val currentDate = Date()
-                            if (dateFormatter(
-                                    selectedDate,
-                                    ConstantKey.DD_MM_FORMAT
-                                ) == dateFormatter(
-                                    currentDate,
-                                    ConstantKey.DD_MM_FORMAT
-                                )
-                            ) {
-                                response.body.forEachIndexed { index, appointmentModel ->
-                                    timeList.forEachIndexed { timeIndex, addShiftTimeModel ->
-                                        val currentTime = dateFormatter(Date(), FORMATTED_TIME)
-                                        if (currentTime > dateFormatter(
-                                                addShiftTimeModel.startTime,
-                                                FORMATTED_TIME
-                                            )
-                                        ) {
-                                            timeList.get(timeIndex).isTimeSlotBook = true
-                                        }
-                                    }
-                                }
-                            }
                             setShowProgress(false)
                         }
                     }
@@ -756,6 +735,25 @@ class AppointmentViewModel @Inject constructor(
 
     fun onClickEmailIcon(email: String) {
         emailClick.postValue(email)
+    }
+
+    private fun currentTime(selectedDate: Date, time: Date?): Boolean {
+        val currentDate = Date()
+        val currentTime = dateFormatter(Date(), FORMATTED_TIME)
+        if (dateFormatter(
+                selectedDate,
+                ConstantKey.DD_MM_FORMAT
+            ) == dateFormatter(
+                currentDate,
+                ConstantKey.DD_MM_FORMAT
+            )
+        ) {
+            return (currentTime > dateFormatter(
+                time,
+                FORMATTED_TIME
+            ))
+        }
+        return false
     }
 
 
