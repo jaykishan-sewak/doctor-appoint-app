@@ -68,6 +68,9 @@ class LoginViewModel @Inject constructor(
     val authCredential: MutableLiveData<AuthCredential?> = MutableLiveData()
 
     val isUserVerified: MutableLiveData<String> = SingleLiveEvent()
+    val isResetDataValid: MutableLiveData<Boolean> = MutableLiveData(false)
+
+    val forgotPassEmailSend: MutableLiveData<Boolean> = MutableLiveData(false)
 
 
     init {
@@ -103,6 +106,7 @@ class LoginViewModel @Inject constructor(
             emailError.value = null
         }
         isAllValidate()
+        isResetAllValidate()
     }
 
     fun isValidPassword(text: CharSequence?) {
@@ -112,6 +116,11 @@ class LoginViewModel @Inject constructor(
             passwordError.value = null
         }
         isAllValidate()
+    }
+
+    private fun isResetAllValidate() {
+        isResetDataValid.value =
+            (!email.value.isNullOrEmpty() && emailError.value.isNullOrEmpty())
     }
 
 
@@ -329,12 +338,64 @@ class LoginViewModel @Inject constructor(
 
     }
 
+    fun onForgotPassClick() {
+        email.postValue("")
+        emailError.postValue(null)
+        password.postValue("")
+        passwordError.postValue(null)
+        _navigationListener.postValue(R.id.action_loginFragment_to_forgotPasswordFragment)
+
+    }
+
+    fun onLoginClick() {
+        _navigationListener.postValue(R.id.action_forgot_pass_to_login)
+
+    }
+
     /**
      * This method is used for googleSign image click or not.
      * Directly called in xml
      */
     fun onGoogleSignClick() {
         isGoogleClick.postValue(true)
+    }
+
+    private fun callForgotPassAPI() {
+        viewModelScope.launch {
+            setShowProgress(true)
+            when (val response = authRepository.forgotPassword(
+                firebaseAuth,
+                email.value.toString(),
+            )) {
+                is ApiSuccessResponse -> {
+                    setShowProgress(false)
+                    forgotPassEmailSend.postValue(true)
+                }
+
+                is ApiErrorResponse -> {
+                    setApiError(response.errorMessage)
+                    setShowProgress(false)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    setNoNetworkError(response.errorMessage)
+                    setShowProgress(false)
+                }
+
+                else -> {
+                    setShowProgress(false)
+                }
+            }
+        }
+    }
+
+    fun onResetPassClick() {
+        if (context.isNetworkAvailable()) {
+            callForgotPassAPI()
+        } else {
+            context.toast(resourceProvider.getString(R.string.check_internet_connection))
+        }
+
     }
 
 }

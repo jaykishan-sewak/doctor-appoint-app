@@ -362,4 +362,19 @@ class AuthRepository @Inject constructor(
             ApiResponse.create(e.fillInStackTrace())
         }
     }
+
+    suspend fun forgotPassword(
+        auth: FirebaseAuth,
+        email: String
+    ): ApiResponse<Boolean> {
+        return try {
+            val result = auth.sendPasswordResetEmail(
+                email,
+            ).await()
+            ApiResponse.create(response = Response.success(true))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
 }

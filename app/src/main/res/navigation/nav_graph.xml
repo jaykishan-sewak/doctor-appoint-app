@@ -37,6 +37,10 @@
             android:id="@+id/action_loginFragment_to_updateDoctorFragment"
             app:destination="@+id/UpdateDoctorFragment" />
 
+        <action
+            android:id="@+id/action_loginFragment_to_forgotPasswordFragment"
+            app:destination="@+id/ForgotPasswordFragment" />
+
 
     </fragment>
 
@@ -149,6 +153,17 @@
         android:id="@+id/navigation_doctor_address"
         android:name="com.android.doctorapp.ui.doctordashboard.doctorfragment.DoctorAddressFragment"
         tools:layout="@layout/fragment_doctor_address">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/ForgotPasswordFragment"
+        android:name="com.android.doctorapp.ui.authentication.login.ForgotPasswordFragment"
+        tools:layout="@layout/fragment_forgot_password">
+
+        <action
+            android:id="@+id/action_forgot_pass_to_login"
+            app:destination="@+id/LoginFragment" />
 
     </fragment>
 

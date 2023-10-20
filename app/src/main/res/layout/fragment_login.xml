@@ -109,6 +109,8 @@
                 android:id="@+id/tvForgetPass"
                 style="@style/login_textView"
                 android:layout_marginTop="@dimen/margin_10"
+                android:clickable="true"
+                android:onClick="@{view -> viewModel.onForgotPassClick()}"
                 android:text="@string/forgot_password"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/field_password" />
