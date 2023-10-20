@@ -7,6 +7,7 @@ import com.android.doctorapp.ui.admin.AdminProfileFragment
 import com.android.doctorapp.ui.admin.DoctorDetailsFragment
 import com.android.doctorapp.ui.appointment.AppointmentDetailFragment
 import com.android.doctorapp.ui.appointment.BookAppointmentFragment
+import com.android.doctorapp.ui.authentication.login.ForgotPasswordFragment
 import com.android.doctorapp.ui.authentication.login.LoginFragment
 import com.android.doctorapp.ui.authentication.register.RegisterFragment
 import com.android.doctorapp.ui.bottomsheet.BottomSheetDialog
@@ -69,5 +70,6 @@ interface AppComponent {
     fun inject(fragment: HistoryFragment)
 
     fun inject(fragment: DoctorAddressFragment)
+    fun inject(fragment: ForgotPasswordFragment)
 
 }
