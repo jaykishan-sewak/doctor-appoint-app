@@ -247,7 +247,8 @@
     <string name="forgot_pass_email_hint">Enter your email…</string>
     <string name="remember_password_label">You Remember your password</string>
     <string name="pass_reset_label">PassWord Reset</string>
-    <string name="pass_reset_msg">Password Reset email send Successfully...</string>
+    <string name="pass_reset_msg">We just send you an email with a link to reset your password.</string>
+    <string name="send_me_reset_inst">Send me reset instructions</string>
 
 
 </resources>

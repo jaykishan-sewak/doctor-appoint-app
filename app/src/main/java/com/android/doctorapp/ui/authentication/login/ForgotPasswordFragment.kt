@@ -38,7 +38,7 @@ class ForgotPasswordFragment :
         super.onCreateView(inflater, container, savedInstanceState)
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
-            viewModel1 = this@ForgotPasswordFragment.viewModel
+            viewModel = this@ForgotPasswordFragment.viewModel
         }
 
         return layoutBinding.root
