@@ -132,6 +132,7 @@ class BookAppointmentFragment :
                             selectedDateTime =
                                 dateFormat.parse("${viewModel.dateStr.value} $timeStr")!!
                             viewModel.addBookingAppointmentData(selectedDateTime)
+
                         } catch (_: Exception) {
                         }
                     }

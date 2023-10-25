@@ -9,6 +9,7 @@ import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AppointmentRepository
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.local.USER_ID
+import com.android.doctorapp.repository.local.USER_TOKEN
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
@@ -25,10 +26,10 @@ import java.util.Locale
 import javax.inject.Inject
 
 class AppointmentDoctorViewModel @Inject constructor(
-    private val resourceProvider: ResourceProvider,
-    private val appointmentRepository: AppointmentRepository,
-    private val session: Session,
-    private val context: Context
+    val resourceProvider: ResourceProvider,
+    val appointmentRepository: AppointmentRepository,
+    val session: Session,
+    val context: Context
 ) : BaseViewModel() {
 
     val finalAppointmentList = MutableLiveData<List<Any>>()
@@ -37,10 +38,22 @@ class AppointmentDoctorViewModel @Inject constructor(
     private val sortedAppointmentList = MutableLiveData<List<AppointmentModel>>()
 
     val dataFound: MutableLiveData<Boolean> = MutableLiveData(false)
+    private val fcmToken: MutableLiveData<String?> = MutableLiveData()
 
 
     init {
+        viewModelScope.launch {
+            isTokenEmpty()
+        }
         getAppointmentList()
+    }
+
+    private suspend fun isTokenEmpty() {
+        session.getString(USER_TOKEN).collectLatest {
+            if (it.isNullOrEmpty()) {
+                firebaseToken()
+            }
+        }
     }
 
     private fun addData() {
@@ -142,6 +155,45 @@ class AppointmentDoctorViewModel @Inject constructor(
             }
         }
     }
+
+    private fun firebaseToken() {
+        viewModelScope.launch {
+            if (context.isNetworkAvailable()) {
+                setShowProgress(true)
+                when (val response = appointmentRepository.fetchFCMToken()) {
+                    is ApiSuccessResponse -> {
+                        setShowProgress(false)
+                        if (response.body.isNotEmpty()) {
+                            session.putString(USER_TOKEN, response.body)
+                            fcmToken.value = response.body
+                            updateUserData(
+                                response.body,
+                                resourceProvider,
+                                session,
+                                context,
+                                appointmentRepository
+                            )
+                        }
+
+                    }
+
+                    is ApiErrorResponse -> {
+                        setShowProgress(false)
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        setShowProgress(false)
+                    }
+
+                    else -> {
+                        setShowProgress(false)
+                    }
+                }
+            } else
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
+        }
+    }
+
 
 }
 

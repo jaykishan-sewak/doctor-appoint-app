@@ -9,6 +9,7 @@ import com.android.doctorapp.R
 import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AppointmentRepository
+import com.android.doctorapp.repository.ItemsRepository
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.local.USER_ID
 import com.android.doctorapp.repository.models.AddShiftTimeModel
@@ -16,7 +17,9 @@ import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.AppointmentModel
+import com.android.doctorapp.repository.models.DataRequestModel
 import com.android.doctorapp.repository.models.DateSlotModel
+import com.android.doctorapp.repository.models.NotificationRequestModel
 import com.android.doctorapp.repository.models.SymptomModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey
@@ -45,6 +48,7 @@ import javax.inject.Inject
 
 
 class AppointmentViewModel @Inject constructor(
+    private val itemsRepository: ItemsRepository,
     private val appointmentRepository: AppointmentRepository,
     private val session: Session,
     private val context: Context,
@@ -115,6 +119,7 @@ class AppointmentViewModel @Inject constructor(
 
     init {
         emailClick.postValue("")
+        getUserData()
     }
 
     private fun get15DaysList() {
@@ -215,9 +220,7 @@ class AppointmentViewModel @Inject constructor(
                     appointmentRepository.addBookingAppointment(appointmentModel, fireStore)) {
                     is ApiSuccessResponse -> {
                         context.toast(resourceProvider.getString(R.string.appointment_booking_success))
-                        _navigationListener.value = true
-                        setShowProgress(false)
-
+                        sendBookedNotification()
                     }
 
                     is ApiErrorResponse -> {
@@ -331,8 +334,7 @@ class AppointmentViewModel @Inject constructor(
                         fireStore
                     )) {
                     is ApiSuccessResponse -> {
-                        setShowProgress(false)
-                        _navigationListener.value = true
+                        sendNotification()
                     }
 
                     is ApiErrorResponse -> {
@@ -445,8 +447,10 @@ class AppointmentViewModel @Inject constructor(
                         fireStore
                     )) {
                     is ApiSuccessResponse -> {
-                        setShowProgress(false)
-                        _navigationListener.value = true
+                        if (appointmentStatus == FIELD_REJECTED)
+                            sendNotification()
+                        else
+                            sendApprovedNotification()
                     }
 
                     is ApiErrorResponse -> {
@@ -756,5 +760,90 @@ class AppointmentViewModel @Inject constructor(
         return false
     }
 
+    private fun sendNotification() {
+        viewModelScope.launch {
+            setShowProgress(true)
+            val data =
+                DataRequestModel(" Booked appointment rejected by ${userName.value}", "Appointment")
+            val notificationRequest =
+                NotificationRequestModel(userDataResponse.value?.token!!, data)
+            when (val response = itemsRepository.sendNotification(notificationRequest)) {
+                is ApiSuccessResponse -> {
+                    context.toast("Rejected Notification send...")
+                    setShowProgress(false)
+                    _navigationListener.value = true
+                }
 
+                is ApiErrorResponse -> {
+                    setApiError(response.errorMessage)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    context.toast(response.errorMessage)
+                    setNoNetworkError(response.errorMessage)
+                }
+
+                else -> {}
+            }
+            setShowProgress(false)
+        }
+    }
+
+
+    private fun sendApprovedNotification() {
+        viewModelScope.launch {
+            setShowProgress(true)
+            val data = DataRequestModel(" Appointment approved by ${userName.value}", "Appointment")
+            val notificationRequest =
+                NotificationRequestModel(userDataResponse.value?.token!!, data)
+            when (val response = itemsRepository.sendNotification(notificationRequest)) {
+                is ApiSuccessResponse -> {
+                    context.toast("Approved Notification send...")
+                    _navigationListener.value = true
+                    setShowProgress(false)
+                }
+
+                is ApiErrorResponse -> {
+                    context.toast(response.errorMessage)
+                    setApiError(response.errorMessage)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    context.toast(response.errorMessage)
+                    setNoNetworkError(response.errorMessage)
+                }
+
+                else -> {}
+            }
+            setShowProgress(false)
+        }
+    }
+
+    fun sendBookedNotification() {
+        viewModelScope.launch {
+            setShowProgress(true)
+            val data = DataRequestModel(" Appointment booked by ${userName.value}", "Appointment")
+            val notificationRequest = NotificationRequestModel(doctorDataObj.value?.token!!, data)
+            when (val response = itemsRepository.sendNotification(notificationRequest)) {
+                is ApiSuccessResponse -> {
+                    context.toast("Booked Notification send...")
+                    _navigationListener.value = true
+                    setShowProgress(false)
+                }
+
+                is ApiErrorResponse -> {
+                    context.toast(response.errorMessage)
+                    setApiError(response.errorMessage)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    context.toast(response.errorMessage)
+                    setNoNetworkError(response.errorMessage)
+                }
+
+                else -> {}
+            }
+            setShowProgress(false)
+        }
+    }
 }

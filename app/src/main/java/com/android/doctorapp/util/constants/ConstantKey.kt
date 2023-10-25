@@ -89,4 +89,8 @@ object ConstantKey {
     const val DD_MM_FORMAT = "dd-MM-yyyy"
     const val PAST_LABEL = "Past"
     const val UPCOMING_LABEL = "Upcoming"
+
+    const val SERVER_KEY =
+        "AAAAjGR1U8c:APA91bHBkrHTp6UKnC8KWd4OjTtkUnxK0r6UL_r9rrr58MfxiampTgfX7jE79fcqcS5DWHicuK2k4GJByNuFf0qfmaG3oBkHLD8hgTDNxE8tK6xI_hTbBJnMa4HvV35Tv5O2aMf6ui_0"
+    const val CONTENT_TYPE = "application/json"
 }
