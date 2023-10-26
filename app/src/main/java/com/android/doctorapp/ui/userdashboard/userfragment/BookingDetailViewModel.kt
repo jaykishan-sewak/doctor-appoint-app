@@ -58,7 +58,7 @@ class BookingDetailViewModel @Inject constructor(
                         fireStore
                     )) {
                     is ApiSuccessResponse -> {
-                        sendRejectedNotification()
+                        sendRejectedNotification("Appointment rejected by")
                     }
 
                     is ApiErrorResponse -> {
@@ -89,18 +89,18 @@ class BookingDetailViewModel @Inject constructor(
         cancelClick.value = true
     }
 
-    fun sendRejectedNotification() {
+    private fun sendRejectedNotification(msg: String) {
         viewModelScope.launch {
             setShowProgress(true)
             val data = DataRequestModel(
-                " Appointment rejected by ${appointmentObj.value?.name}",
+                " $msg ${appointmentObj.value?.name}",
                 "Appointment"
             )
             val notificationRequest =
                 NotificationRequestModel(appointmentObj.value?.doctorDetails?.token!!, data)
             when (val response = itemsRepository.sendNotification(notificationRequest)) {
                 is ApiSuccessResponse -> {
-                    context.toast("Notification send...")
+                    context.toast(msg)
                     setShowProgress(false)
                     _navigationListener.value = true
                 }
