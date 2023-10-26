@@ -110,6 +110,7 @@ class AuthRepository @Inject constructor(
         }
     }
 
+
     /**
      * This method is used for google sign in
      * firebase authentication. It returns the result of <AuthResult> type.

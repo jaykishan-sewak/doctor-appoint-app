@@ -8,10 +8,14 @@ import com.android.doctorapp.R
 import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AppointmentRepository
+import com.android.doctorapp.repository.ItemsRepository
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.AppointmentModel
+import com.android.doctorapp.repository.models.DataRequestModel
+import com.android.doctorapp.repository.models.NotificationRequestModel
+import com.android.doctorapp.util.constants.ConstantKey.APPOINTMENT_REJECTED_BY
 import com.android.doctorapp.util.constants.ConstantKey.FIELD_REJECTED
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.currentDate
@@ -21,6 +25,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class BookingDetailViewModel @Inject constructor(
+    private val itemsRepository: ItemsRepository,
     private val resourceProvider: ResourceProvider,
     private val appointmentRepository: AppointmentRepository,
     private val context: Context
@@ -54,8 +59,7 @@ class BookingDetailViewModel @Inject constructor(
                         fireStore
                     )) {
                     is ApiSuccessResponse -> {
-                        setShowProgress(false)
-                        _navigationListener.value = true
+                        sendRejectedNotification(APPOINTMENT_REJECTED_BY)
                     }
 
                     is ApiErrorResponse -> {
@@ -84,5 +88,37 @@ class BookingDetailViewModel @Inject constructor(
 
     fun onCancelClick() {
         cancelClick.value = true
+    }
+
+    private fun sendRejectedNotification(msg: String) {
+        viewModelScope.launch {
+            setShowProgress(true)
+            val data = DataRequestModel(
+                " $msg ${appointmentObj.value?.name}",
+                "Appointment"
+            )
+            val notificationRequest =
+                NotificationRequestModel(appointmentObj.value?.doctorDetails?.token!!, data)
+            when (val response = itemsRepository.sendNotification(notificationRequest)) {
+                is ApiSuccessResponse -> {
+                    context.toast(msg)
+                    setShowProgress(false)
+                    _navigationListener.value = true
+                }
+
+                is ApiErrorResponse -> {
+                    setApiError(response.errorMessage)
+                    context.toast(response.errorMessage)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    setNoNetworkError(response.errorMessage)
+                    context.toast(response.errorMessage)
+                }
+
+                else -> {}
+            }
+            setShowProgress(false)
+        }
     }
 }

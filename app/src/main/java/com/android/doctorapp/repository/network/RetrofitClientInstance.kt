@@ -1,7 +1,6 @@
 package com.android.doctorapp.repository.network
 
 import android.content.Context
-import androidx.viewbinding.BuildConfig
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -28,15 +27,15 @@ object RetrofitClientInstance {
             .create()
 
         val httpLoggingInterceptor = HttpLoggingInterceptor()
-        httpLoggingInterceptor.level =
-            if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+//            if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
         val okHttpClient = OkHttpClient.Builder()
             .readTimeout(60, TimeUnit.SECONDS)
             .connectTimeout(60, TimeUnit.SECONDS)
             .addInterceptor(httpLoggingInterceptor)
             .build()
         return Retrofit.Builder()
-            .baseUrl("http://demo7625004.mockable.io/")
+            .baseUrl("https://fcm.googleapis.com/")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()

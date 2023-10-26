@@ -7,6 +7,8 @@ import com.android.doctorapp.R
 import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AppointmentRepository
+import com.android.doctorapp.repository.local.Session
+import com.android.doctorapp.repository.local.USER_TOKEN
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
@@ -14,12 +16,14 @@ import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class UserAppointmentViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val appointmentRepository: AppointmentRepository,
+    private val session: Session,
     private val context: Context
 ) : BaseViewModel() {
 
@@ -30,7 +34,22 @@ class UserAppointmentViewModel @Inject constructor(
     private val tempData = MutableLiveData<List<UserDataResponseModel>>()
     val locationCity: MutableLiveData<String> =
         MutableLiveData(resourceProvider.getString(R.string.nearest_doctor))
+    private val fcmToken: MutableLiveData<String?> = MutableLiveData()
 
+
+    init {
+        viewModelScope.launch {
+            isTokenEmpty()
+        }
+    }
+
+    private suspend fun isTokenEmpty() {
+        session.getString(USER_TOKEN).collectLatest {
+            if (it.isNullOrEmpty()) {
+                firebaseToken()
+            }
+        }
+    }
 
     fun lengthChecked(text: CharSequence) {
         if (text.toString().length >= 3) {
@@ -80,4 +99,36 @@ class UserAppointmentViewModel @Inject constructor(
                 context.toast(resourceProvider.getString(R.string.check_internet_connection))
         }
     }
+
+    private fun firebaseToken() {
+        viewModelScope.launch {
+            if (context.isNetworkAvailable()) {
+                setShowProgress(true)
+                when (val response = appointmentRepository.fetchFCMToken()) {
+                    is ApiSuccessResponse -> {
+                        setShowProgress(false)
+                        fcmToken.value = response.body
+                        session.putString(USER_TOKEN, response.body)
+                        updateUserData(response.body,resourceProvider,session,context,appointmentRepository)
+                    }
+
+                    is ApiErrorResponse -> {
+                        setShowProgress(false)
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        setShowProgress(false)
+                    }
+
+                    else -> {
+                        setShowProgress(false)
+                    }
+                }
+            } else
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
+        }
+    }
+
+
+
 }

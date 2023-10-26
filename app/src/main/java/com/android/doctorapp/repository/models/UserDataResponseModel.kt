@@ -28,5 +28,6 @@ data class UserDataResponseModel(
     var rating: Float? = null,
     var feedbackDetails: FeedbackResponseModel? = null,
     var addressLatLng: Map<String, Any>? = null,
-    var geohash: String? = null
+    var geohash: String? = null,
+    var token : String? = null
 )
