@@ -8,6 +8,8 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.ViewModelProvider
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.AppointmentDoctorViewModel
+import com.android.doctorapp.util.constants.ConstantKey.CHANNEL_ID
+import com.android.doctorapp.util.constants.ConstantKey.MY_CHANNEL
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
@@ -45,12 +47,12 @@ class PushNotificationService() : FirebaseMessagingService() {
         // Create the notification channel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel =
-                NotificationChannel("channelId", "myChannel", NotificationManager.IMPORTANCE_HIGH)
+                NotificationChannel(CHANNEL_ID, MY_CHANNEL, NotificationManager.IMPORTANCE_HIGH)
             notificationManager.createNotificationChannel(channel)
         }
 
         // Create a notification builder
-        val notificationBuilder = NotificationCompat.Builder(this, "channelId")
+        val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_menu_camera) // Set your notification icon
             .setContentTitle(title) // Set the title of the notification
             .setContentText(messageBody) // Set the message of the notification

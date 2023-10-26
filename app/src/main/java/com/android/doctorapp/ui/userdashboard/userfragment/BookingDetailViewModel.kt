@@ -15,6 +15,7 @@ import com.android.doctorapp.repository.models.ApiSuccessResponse
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.DataRequestModel
 import com.android.doctorapp.repository.models.NotificationRequestModel
+import com.android.doctorapp.util.constants.ConstantKey.APPOINTMENT_REJECTED_BY
 import com.android.doctorapp.util.constants.ConstantKey.FIELD_REJECTED
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.currentDate
@@ -58,7 +59,7 @@ class BookingDetailViewModel @Inject constructor(
                         fireStore
                     )) {
                     is ApiSuccessResponse -> {
-                        sendRejectedNotification("Appointment rejected by")
+                        sendRejectedNotification(APPOINTMENT_REJECTED_BY)
                     }
 
                     is ApiErrorResponse -> {

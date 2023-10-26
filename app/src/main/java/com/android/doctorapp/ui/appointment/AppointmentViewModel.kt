@@ -23,6 +23,9 @@ import com.android.doctorapp.repository.models.NotificationRequestModel
 import com.android.doctorapp.repository.models.SymptomModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey
+import com.android.doctorapp.util.constants.ConstantKey.APPOINTMENT_APPROVED_BY
+import com.android.doctorapp.util.constants.ConstantKey.APPOINTMENT_BOOKED_BY
+import com.android.doctorapp.util.constants.ConstantKey.APPOINTMENT_REJECTED_BY
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MONTH_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.DAY_NAME_FORMAT
@@ -220,7 +223,7 @@ class AppointmentViewModel @Inject constructor(
                     appointmentRepository.addBookingAppointment(appointmentModel, fireStore)) {
                     is ApiSuccessResponse -> {
                         context.toast(resourceProvider.getString(R.string.appointment_booking_success))
-                        sendNotification("Appointment booked by")
+                        sendNotification(APPOINTMENT_BOOKED_BY)
                     }
 
                     is ApiErrorResponse -> {
@@ -334,7 +337,7 @@ class AppointmentViewModel @Inject constructor(
                         fireStore
                     )) {
                     is ApiSuccessResponse -> {
-                        sendNotification("Booked appointment rejected by")
+                        sendNotification(APPOINTMENT_REJECTED_BY)
                     }
 
                     is ApiErrorResponse -> {
@@ -448,9 +451,9 @@ class AppointmentViewModel @Inject constructor(
                     )) {
                     is ApiSuccessResponse -> {
                         if (appointmentStatus == FIELD_REJECTED)
-                            sendNotification("Booked appointment rejected by")
+                            sendNotification(APPOINTMENT_REJECTED_BY)
                         else
-                            sendNotification("Appointment approved by")
+                            sendNotification(APPOINTMENT_APPROVED_BY)
                     }
 
                     is ApiErrorResponse -> {
