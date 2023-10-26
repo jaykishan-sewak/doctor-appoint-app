@@ -1,8 +1,8 @@
 package com.android.doctorapp.repository.models
 
 data class NotificationRequestModel(
-    var to: String ,
-    var data: DataRequestModel ,
+    var to: String?,
+    var data: DataRequestModel,
 )
 
 data class DataRequestModel(

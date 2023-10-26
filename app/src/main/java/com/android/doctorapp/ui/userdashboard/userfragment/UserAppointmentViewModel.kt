@@ -7,7 +7,9 @@ import com.android.doctorapp.R
 import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AppointmentRepository
+import com.android.doctorapp.repository.local.IS_NEW_USER_TOKEN
 import com.android.doctorapp.repository.local.Session
+import com.android.doctorapp.repository.local.USER_ID
 import com.android.doctorapp.repository.local.USER_TOKEN
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
@@ -23,7 +25,7 @@ import javax.inject.Inject
 class UserAppointmentViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val appointmentRepository: AppointmentRepository,
-    private val session: Session,
+    val session: Session,
     private val context: Context
 ) : BaseViewModel() {
 
@@ -109,7 +111,7 @@ class UserAppointmentViewModel @Inject constructor(
                         setShowProgress(false)
                         fcmToken.value = response.body
                         session.putString(USER_TOKEN, response.body)
-                        updateUserData(response.body,resourceProvider,session,context,appointmentRepository)
+                        updateUserData(response.body)
                     }
 
                     is ApiErrorResponse -> {
@@ -129,6 +131,36 @@ class UserAppointmentViewModel @Inject constructor(
         }
     }
 
+    fun updateUserData(token: String?) {
+        viewModelScope.launch {
+            session.getString(USER_ID).collectLatest {
+                if (context.isNetworkAvailable()) {
+                    setShowProgress(true)
+                    when (val response =
+                        appointmentRepository.updateUserData(token, it, fireStore)) {
+                        is ApiSuccessResponse -> {
+                            setShowProgress(false)
+                            context.toast("Token stored successfully")
+                            session.putBoolean(IS_NEW_USER_TOKEN, false)
+                        }
+
+                        is ApiErrorResponse -> {
+                            setShowProgress(false)
+                        }
+
+                        is ApiNoNetworkResponse -> {
+                            setShowProgress(false)
+                        }
+
+                        else -> {
+                            setShowProgress(false)
+                        }
+                    }
+                } else
+                    context.toast(resourceProvider.getString(R.string.check_internet_connection))
+            }
+        }
+    }
 
 
 }

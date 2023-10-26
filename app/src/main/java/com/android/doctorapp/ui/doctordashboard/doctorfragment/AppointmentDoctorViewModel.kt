@@ -7,6 +7,7 @@ import com.android.doctorapp.R
 import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AppointmentRepository
+import com.android.doctorapp.repository.local.IS_NEW_USER_TOKEN
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.local.USER_ID
 import com.android.doctorapp.repository.local.USER_TOKEN
@@ -167,12 +168,9 @@ class AppointmentDoctorViewModel @Inject constructor(
                             session.putString(USER_TOKEN, response.body)
                             fcmToken.value = response.body
                             updateUserData(
-                                response.body,
-                                resourceProvider,
-                                session,
-                                context,
-                                appointmentRepository
+                                response.body
                             )
+
                         }
 
                     }
@@ -191,6 +189,37 @@ class AppointmentDoctorViewModel @Inject constructor(
                 }
             } else
                 context.toast(resourceProvider.getString(R.string.check_internet_connection))
+        }
+    }
+
+    fun updateUserData(token: String?) {
+        viewModelScope.launch {
+            session.getString(USER_ID).collectLatest {
+                if (context.isNetworkAvailable()) {
+                    setShowProgress(true)
+                    when (val response =
+                        appointmentRepository.updateUserData(token, it, fireStore)) {
+                        is ApiSuccessResponse -> {
+                            setShowProgress(false)
+                            context.toast("Token stored successfully")
+                            session.putBoolean(IS_NEW_USER_TOKEN, false)
+                        }
+
+                        is ApiErrorResponse -> {
+                            setShowProgress(false)
+                        }
+
+                        is ApiNoNetworkResponse -> {
+                            setShowProgress(false)
+                        }
+
+                        else -> {
+                            setShowProgress(false)
+                        }
+                    }
+                } else
+                    context.toast(resourceProvider.getString(R.string.check_internet_connection))
+            }
         }
     }
 

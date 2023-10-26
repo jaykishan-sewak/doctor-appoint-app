@@ -180,6 +180,28 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/tvAppointmentStatusLabel" />
 
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvAppointmentReasonLabel"
+                    style="@style/label_text"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:text="@string/reason_label"
+                    android:textAlignment="textStart"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:visibility="@{viewModel.appointmentObj.status.equalsIgnoreCase(`REJECTED`) ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvAppointmentStatusLabel" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvAppointmentReasonValue"
+                    style="@style/label_text2"
+                    android:text="@{viewModel.appointmentObj != null  &amp;&amp; !viewModel.appointmentObj.reason.isEmpty() ? viewModel.appointmentObj.reason : `-`}"
+                    android:textAlignment="textEnd"
+                    android:visibility="@{viewModel.appointmentObj.status.equalsIgnoreCase(`REJECTED`) ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintBottom_toBottomOf="@id/tvAppointmentReasonLabel"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tvAppointmentReasonLabel" />
 
                 <View
                     android:id="@+id/scheduledAppointmentDivider"
@@ -189,7 +211,7 @@
                     android:background="@color/gray_border"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvAppointmentStatusLabel" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvAppointmentReasonLabel" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvDoctorInfoLabel"

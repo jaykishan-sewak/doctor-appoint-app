@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.doctorapp.R
@@ -16,12 +17,16 @@ import com.android.doctorapp.databinding.FragmentAppointmentDoctorBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.local.IS_NEW_USER_TOKEN
+import com.android.doctorapp.repository.local.USER_TOKEN
 import com.android.doctorapp.repository.models.Header
 import com.android.doctorapp.ui.doctordashboard.adapter.PatientListAdapter
 import com.android.doctorapp.util.constants.ConstantKey.APPOINTMENT_DETAILS_UPDATED
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DATE
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.REQUEST_FRAGMENT
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -77,7 +82,15 @@ class AppointmentDoctorFragment :
                 viewModel.dataFound.value = false
             }
         }
-
+        viewModel.viewModelScope.launch {
+            viewModel.session.getBoolean(IS_NEW_USER_TOKEN).collectLatest {
+                if (it == true) {
+                    viewModel.session.getString(USER_TOKEN).collectLatest {it1->
+                        viewModel.updateUserData(it1)
+                    }
+                }
+            }
+        }
     }
 
     override fun builder(): FragmentToolbar {

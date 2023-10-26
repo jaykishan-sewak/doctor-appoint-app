@@ -223,7 +223,7 @@ class AppointmentViewModel @Inject constructor(
                     appointmentRepository.addBookingAppointment(appointmentModel, fireStore)) {
                     is ApiSuccessResponse -> {
                         context.toast(resourceProvider.getString(R.string.appointment_booking_success))
-                        sendNotification(APPOINTMENT_BOOKED_BY)
+                        sendNotification(doctorDataObj.value?.token, APPOINTMENT_BOOKED_BY)
                     }
 
                     is ApiErrorResponse -> {
@@ -337,7 +337,9 @@ class AppointmentViewModel @Inject constructor(
                         fireStore
                     )) {
                     is ApiSuccessResponse -> {
-                        sendNotification(APPOINTMENT_REJECTED_BY)
+                        sendNotification(userDataResponse.value?.token, APPOINTMENT_REJECTED_BY)
+                        setShowProgress(false)
+                        _navigationListener.value = true
                     }
 
                     is ApiErrorResponse -> {
@@ -451,9 +453,9 @@ class AppointmentViewModel @Inject constructor(
                     )) {
                     is ApiSuccessResponse -> {
                         if (appointmentStatus == FIELD_REJECTED)
-                            sendNotification(APPOINTMENT_REJECTED_BY)
+                            sendNotification(userDataResponse.value?.token, APPOINTMENT_REJECTED_BY)
                         else
-                            sendNotification(APPOINTMENT_APPROVED_BY)
+                            sendNotification(userDataResponse.value?.token, APPOINTMENT_APPROVED_BY)
                     }
 
                     is ApiErrorResponse -> {
@@ -763,13 +765,13 @@ class AppointmentViewModel @Inject constructor(
         return false
     }
 
-    private fun sendNotification(msg: String) {
+    private fun sendNotification(token: String?, msg: String) {
         viewModelScope.launch {
             setShowProgress(true)
             val data =
                 DataRequestModel("$msg ${userName.value}", "Appointment")
             val notificationRequest =
-                NotificationRequestModel(userDataResponse.value?.token!!, data)
+                NotificationRequestModel(token, data)
             when (val response = itemsRepository.sendNotification(notificationRequest)) {
                 is ApiSuccessResponse -> {
                     context.toast(msg)
@@ -779,11 +781,12 @@ class AppointmentViewModel @Inject constructor(
 
                 is ApiErrorResponse -> {
                     setApiError(response.errorMessage)
+                    setShowProgress(false)
                 }
 
                 is ApiNoNetworkResponse -> {
-                    context.toast(response.errorMessage)
                     setNoNetworkError(response.errorMessage)
+                    setShowProgress(false)
                 }
 
                 else -> {}
