@@ -353,6 +353,26 @@
                     app:layout_constraintStart_toStartOf="@id/tvContactNumber"
                     app:layout_constraintTop_toTopOf="@id/ivAge" />
 
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txt_doctor_notification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_20"
+                    android:text="@string/doctor_notification_enable"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="@+id/ivAge"
+                    app:layout_constraintTop_toBottomOf="@+id/ivAge" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch_doctor_notification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="@={viewModel.notificationToggleData}"
+                    android:onClick="@{view -> viewModel.clickOnNotification()}"
+                    app:layout_constraintBottom_toBottomOf="@+id/txt_doctor_notification"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/txt_doctor_notification" />
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

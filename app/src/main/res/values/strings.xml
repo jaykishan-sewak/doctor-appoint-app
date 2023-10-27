@@ -250,6 +250,7 @@
     <string name="pass_reset_msg">We just send you an email with a link to reset your password.</string>
     <string name="send_me_reset_inst">Send me reset instructions</string>
     <string name="reason_label">Reason</string>
+    <string name="notification_enable">Notification Enable</string>
 
 
 </resources>
