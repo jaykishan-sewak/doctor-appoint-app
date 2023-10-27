@@ -31,6 +31,7 @@ class UserDashboardActivity :
             if (selectedTabId == currentTabId) {
                 navController.popBackStack(selectedTabId, inclusive = false)
             } else {
+                navController.popBackStack(currentTabId, inclusive = true)
                 navController.navigate(selectedTabId)
             }
             true

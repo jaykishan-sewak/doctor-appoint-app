@@ -6,36 +6,43 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.lifecycle.ViewModelProvider
-import com.android.doctorapp.ui.doctordashboard.doctorfragment.AppointmentDoctorViewModel
+import com.android.doctorapp.repository.local.IS_NEW_USER_TOKEN
+import com.android.doctorapp.repository.local.PreferenceDataStore
+import com.android.doctorapp.repository.local.USER_TOKEN
 import com.android.doctorapp.util.constants.ConstantKey.CHANNEL_ID
 import com.android.doctorapp.util.constants.ConstantKey.MY_CHANNEL
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class PushNotificationService() : FirebaseMessagingService() {
 
-
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        val pushNotificationViewModel = ViewModelProvider.AndroidViewModelFactory(application)
-            .create(AppointmentDoctorViewModel::class.java)
-        pushNotificationViewModel.updateUserData(
-            token,
-            pushNotificationViewModel.resourceProvider,
-            pushNotificationViewModel.session,
-            pushNotificationViewModel.context,
-            pushNotificationViewModel.appointmentRepository
-        )
+        storePushToken(token)
+    }
+
+    private fun storePushToken(token: String) {
+        val data = PreferenceDataStore(applicationContext)
+        CoroutineScope(Dispatchers.Main).launch {
+            val old = data.getString(USER_TOKEN)
+            if (!old.equals(token)) {
+                data.putString(USER_TOKEN, token)
+                data.putBoolean(IS_NEW_USER_TOKEN, true)
+            } else
+                data.putBoolean(IS_NEW_USER_TOKEN, false)
+
+        }
+
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
-
         if (message.data["title"]?.isNotEmpty() == true && message.data["body"]?.isNotEmpty() == true) {
             sendNotification(message.data["title"]!!, message.data["body"]!!)
         }
-
     }
 
     private fun sendNotification(title: String, messageBody: String) {
