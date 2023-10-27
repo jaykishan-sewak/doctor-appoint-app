@@ -140,7 +140,6 @@ class UserAppointmentViewModel @Inject constructor(
                         appointmentRepository.updateUserData(token, it, fireStore)) {
                         is ApiSuccessResponse -> {
                             setShowProgress(false)
-                            context.toast("Token stored successfully")
                             session.putBoolean(IS_NEW_USER_TOKEN, false)
                         }
 

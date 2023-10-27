@@ -19,15 +19,13 @@ val USER_TOKEN = stringPreferencesKey("user_token")
 val IS_NEW_USER_TOKEN = booleanPreferencesKey("is_user_token")
 
 
-
-
 private val Context.userPreferencesDataStore: DataStore<Preferences> by preferencesDataStore(
     name = "SESSION"
 )
 
 class PreferenceDataStore @Inject constructor(context: Context) : Session {
 
-     private val dataStore: DataStore<Preferences> = context.userPreferencesDataStore
+    private val dataStore: DataStore<Preferences> = context.userPreferencesDataStore
 
     override suspend fun putBoolean(key: Preferences.Key<Boolean>, value: Boolean) {
         dataStore.edit { it[key] = value }
