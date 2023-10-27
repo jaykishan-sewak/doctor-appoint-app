@@ -21,6 +21,7 @@ import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -46,14 +47,14 @@ class AppointmentDoctorViewModel @Inject constructor(
         viewModelScope.launch {
             isTokenEmpty()
         }
-        getAppointmentList()
     }
 
     private suspend fun isTokenEmpty() {
         session.getString(USER_TOKEN).collectLatest {
             if (it.isNullOrEmpty()) {
                 firebaseToken()
-            }
+            } else
+                getAppointmentList()
         }
     }
 
@@ -117,40 +118,40 @@ class AppointmentDoctorViewModel @Inject constructor(
         appointmentList.value = emptyList()
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
-                session.getString(USER_ID).collectLatest {
-                    if (it?.isNotEmpty() == true) {
-                        setShowProgress(true)
-                        when (val response =
-                            appointmentRepository.getAppointmentsList(it, fireStore)) {
-                            is ApiSuccessResponse -> {
-                                setShowProgress(false)
-                                if (response.body.isNotEmpty()) {
-                                    appointmentList.value = response.body
-                                    sortedAppointmentList.value =
-                                        appointmentList.value!!.sortedByDescending { it1 ->
-                                            it1.bookingDateTime
-                                        }
-                                    addData()
-                                }
+                val userId = session.getString(USER_ID).firstOrNull()
+                if (!userId.isNullOrEmpty()) {
+                    setShowProgress(true)
+                    when (val response =
+                        appointmentRepository.getAppointmentsList(userId, fireStore)) {
+                        is ApiSuccessResponse -> {
+                            setShowProgress(false)
+                            if (response.body.isNotEmpty()) {
+                                appointmentList.value = response.body
+                                sortedAppointmentList.value =
+                                    appointmentList.value!!.sortedByDescending { it1 ->
+                                        it1.bookingDateTime
+                                    }
+                                addData()
                             }
+                        }
 
-                            is ApiErrorResponse -> {
-                                context.toast(response.errorMessage)
-                                setShowProgress(false)
-                            }
+                        is ApiErrorResponse -> {
+                            context.toast(response.errorMessage)
+                            setShowProgress(false)
+                        }
 
-                            is ApiNoNetworkResponse -> {
-                                context.toast(response.errorMessage)
-                                setShowProgress(false)
-                            }
+                        is ApiNoNetworkResponse -> {
+                            context.toast(response.errorMessage)
+                            setShowProgress(false)
+                        }
 
-                            else -> {
-                                context.toast(context.getString(R.string.something_went_wrong))
-                                setShowProgress(false)
-                            }
+                        else -> {
+                            context.toast(context.getString(R.string.something_went_wrong))
+                            setShowProgress(false)
                         }
                     }
                 }
+
             } else {
                 context.toast(resourceProvider.getString(R.string.check_internet_connection))
             }
@@ -165,12 +166,11 @@ class AppointmentDoctorViewModel @Inject constructor(
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
                         if (response.body.isNotEmpty()) {
-                            session.putString(USER_TOKEN, response.body)
-                            fcmToken.value = response.body
                             updateUserData(
                                 response.body
                             )
-
+                            session.putString(USER_TOKEN, response.body)
+                            fcmToken.value = response.body
                         }
 
                     }

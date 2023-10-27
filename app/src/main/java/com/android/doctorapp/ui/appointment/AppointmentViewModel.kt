@@ -338,8 +338,6 @@ class AppointmentViewModel @Inject constructor(
                     )) {
                     is ApiSuccessResponse -> {
                         sendNotification(userDataResponse.value?.token, APPOINTMENT_REJECTED_BY)
-                        setShowProgress(false)
-                        _navigationListener.value = true
                     }
 
                     is ApiErrorResponse -> {
