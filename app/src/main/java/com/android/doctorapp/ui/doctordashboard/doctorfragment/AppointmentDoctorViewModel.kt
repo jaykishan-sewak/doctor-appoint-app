@@ -53,8 +53,7 @@ class AppointmentDoctorViewModel @Inject constructor(
         session.getString(USER_TOKEN).collectLatest {
             if (it.isNullOrEmpty()) {
                 firebaseToken()
-            } else
-                getAppointmentList()
+            } else getAppointmentList()
         }
     }
 
@@ -70,20 +69,19 @@ class AppointmentDoctorViewModel @Inject constructor(
                 )
             ) {
                 count++
-                if (count < 2)
-                    mainList.add(
-                        AppointmentModel(
-                            appointmentModel.id,
-                            appointmentModel.bookingDateTime,
-                            appointmentModel.isOnline,
-                            appointmentModel.reason,
-                            appointmentModel.status,
-                            appointmentModel.userId,
-                            appointmentModel.name,
-                            appointmentModel.contactNumber,
-                            appointmentModel.age
-                        )
+                if (count < 2) mainList.add(
+                    AppointmentModel(
+                        appointmentModel.id,
+                        appointmentModel.bookingDateTime,
+                        appointmentModel.isOnline,
+                        appointmentModel.reason,
+                        appointmentModel.status,
+                        appointmentModel.userId,
+                        appointmentModel.name,
+                        appointmentModel.contactNumber,
+                        appointmentModel.age
                     )
+                )
 
             } else {
                 mainList.add(
@@ -187,8 +185,7 @@ class AppointmentDoctorViewModel @Inject constructor(
                         setShowProgress(false)
                     }
                 }
-            } else
-                context.toast(resourceProvider.getString(R.string.check_internet_connection))
+            } else context.toast(resourceProvider.getString(R.string.check_internet_connection))
         }
     }
 
@@ -201,7 +198,6 @@ class AppointmentDoctorViewModel @Inject constructor(
                         appointmentRepository.updateUserData(token, it, fireStore)) {
                         is ApiSuccessResponse -> {
                             setShowProgress(false)
-                            context.toast("Token stored successfully")
                             session.putBoolean(IS_NEW_USER_TOKEN, false)
                         }
 
@@ -217,8 +213,7 @@ class AppointmentDoctorViewModel @Inject constructor(
                             setShowProgress(false)
                         }
                     }
-                } else
-                    context.toast(resourceProvider.getString(R.string.check_internet_connection))
+                } else context.toast(resourceProvider.getString(R.string.check_internet_connection))
             }
         }
     }
