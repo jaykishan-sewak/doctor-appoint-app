@@ -50,16 +50,20 @@ class BookingDetailViewModel @Inject constructor(
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 setShowProgress(true)
-                when (val response =
-                    appointmentRepository.updateAppointmentDataById(
-                        appointmentObj.value!!.apply {
-                            reason = text
-                            status = FIELD_REJECTED
-                        },
-                        fireStore
-                    )) {
+                when (val response = appointmentRepository.updateAppointmentDataById(
+                    appointmentObj.value!!.apply {
+                        reason = text
+                        status = FIELD_REJECTED
+                    }, fireStore
+                )) {
                     is ApiSuccessResponse -> {
-                        sendRejectedNotification(APPOINTMENT_REJECTED_BY)
+                        if (appointmentObj.value?.doctorDetails?.isNotificationEnable == true) sendRejectedNotification(
+                            APPOINTMENT_REJECTED_BY
+                        )
+                        else {
+                            setShowProgress(false)
+                            _navigationListener.value = true
+                        }
                     }
 
                     is ApiErrorResponse -> {
@@ -94,8 +98,7 @@ class BookingDetailViewModel @Inject constructor(
         viewModelScope.launch {
             setShowProgress(true)
             val data = DataRequestModel(
-                " $msg ${appointmentObj.value?.name}",
-                "Appointment"
+                " $msg ${appointmentObj.value?.name}", "Appointment"
             )
             val notificationRequest =
                 NotificationRequestModel(appointmentObj.value?.doctorDetails?.token!!, data)

@@ -51,6 +51,7 @@ class ProfileViewModel @Inject constructor(
     private val _navigationListener = SingleLiveEvent<Int>()
     val navigationListener = _navigationListener.asLiveData()
     val imageUri = MutableLiveData<Uri>()
+    val notificationToggleData: MutableLiveData<Boolean> = MutableLiveData(false)
 
     init {
         emailClick.postValue("")
@@ -67,6 +68,7 @@ class ProfileViewModel @Inject constructor(
                         profileRepository.getProfileRecordById(recordId, fireStore)) {
                         is ApiSuccessResponse -> {
                             userProfileDataResponse.value = response.body
+                            notificationToggleData.value = response.body.isNotificationEnable
                             imageUri.value = userProfileDataResponse.value!!.images?.toUri()
                             dateList.value = dateListFormatter(
                                 response.body.holidayList,
@@ -141,6 +143,39 @@ class ProfileViewModel @Inject constructor(
 
     fun clickOnHistory() {
         _navigationListener.value = R.id.action_user_profile_to_history
+    }
+
+    fun clickOnNotification() {
+        updateNotificationStatus(notificationToggleData.value!!)
+    }
+
+    private fun updateNotificationStatus(notificationEnable: Boolean) {
+        viewModelScope.launch {
+            session.getString(USER_ID).collectLatest {
+                if (context.isNetworkAvailable()) {
+                    setShowProgress(true)
+                    when (val response =
+                        profileRepository.updateUserData(notificationEnable, it, fireStore)) {
+                        is ApiSuccessResponse -> {
+                            setShowProgress(false)
+                        }
+
+                        is ApiErrorResponse -> {
+                            setShowProgress(false)
+                        }
+
+                        is ApiNoNetworkResponse -> {
+                            setShowProgress(false)
+                        }
+
+                        else -> {
+                            setShowProgress(false)
+                        }
+                    }
+                } else
+                    context.toast(resourceProvider.getString(R.string.check_internet_connection))
+            }
+        }
     }
 
 }

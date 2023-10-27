@@ -171,6 +171,47 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvSymptomHistory" />
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/notificationView"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_48"
+                android:layout_marginHorizontal="@dimen/margin_5"
+                android:layout_marginVertical="@dimen/margin_20"
+                android:background="@drawable/rounded_view_bg"
+                android:elevation="@dimen/margin_5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvFeedbackView">
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvNotificationEnable"
+                    style="@style/label_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/margin_10"
+                    android:text="@string/notification_enable"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch_doctor_notification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/margin_10"
+                    android:checked="@={viewModel.notificationToggleData}"
+                    android:onClick="@{view -> viewModel.clickOnNotification()}"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvNotificationEnable"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tvNotificationEnable" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvLogoutView"
                 style="@style/label_text"
@@ -188,7 +229,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvFeedbackView" />
+                app:layout_constraintTop_toBottomOf="@id/notificationView" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

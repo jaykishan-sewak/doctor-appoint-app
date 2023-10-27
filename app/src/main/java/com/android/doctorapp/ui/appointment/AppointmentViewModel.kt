@@ -223,7 +223,12 @@ class AppointmentViewModel @Inject constructor(
                     appointmentRepository.addBookingAppointment(appointmentModel, fireStore)) {
                     is ApiSuccessResponse -> {
                         context.toast(resourceProvider.getString(R.string.appointment_booking_success))
-                        sendNotification(doctorDataObj.value?.token, APPOINTMENT_BOOKED_BY)
+                        if (doctorDataObj.value?.isNotificationEnable == true)
+                            sendNotification(doctorDataObj.value?.token, APPOINTMENT_BOOKED_BY)
+                        else {
+                            setShowProgress(false)
+                            _navigationListener.value = true
+                        }
                     }
 
                     is ApiErrorResponse -> {
@@ -337,7 +342,13 @@ class AppointmentViewModel @Inject constructor(
                         fireStore
                     )) {
                     is ApiSuccessResponse -> {
-                        sendNotification(userDataResponse.value?.token, APPOINTMENT_REJECTED_BY)
+                        if (userDataResponse.value?.isNotificationEnable == true)
+                            sendNotification(userDataResponse.value?.token, APPOINTMENT_REJECTED_BY)
+                        else {
+                            setShowProgress(false)
+                            _navigationListener.value = true
+                        }
+
                     }
 
                     is ApiErrorResponse -> {
@@ -450,10 +461,21 @@ class AppointmentViewModel @Inject constructor(
                         fireStore
                     )) {
                     is ApiSuccessResponse -> {
-                        if (appointmentStatus == FIELD_REJECTED)
-                            sendNotification(userDataResponse.value?.token, APPOINTMENT_REJECTED_BY)
-                        else
-                            sendNotification(userDataResponse.value?.token, APPOINTMENT_APPROVED_BY)
+                        if (userDataResponse.value?.isNotificationEnable == true) {
+                            if (appointmentStatus == FIELD_REJECTED)
+                                sendNotification(
+                                    userDataResponse.value?.token,
+                                    APPOINTMENT_REJECTED_BY
+                                )
+                            else
+                                sendNotification(
+                                    userDataResponse.value?.token,
+                                    APPOINTMENT_APPROVED_BY
+                                )
+                        } else {
+                            setShowProgress(false)
+                            _navigationListener.value = true
+                        }
                     }
 
                     is ApiErrorResponse -> {
