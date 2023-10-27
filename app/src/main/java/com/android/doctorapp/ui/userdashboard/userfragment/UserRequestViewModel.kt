@@ -35,6 +35,7 @@ class UserRequestViewModel @Inject constructor(
     val dataFound: MutableLiveData<Boolean> = MutableLiveData(false)
     val upcomingOrPast: MutableLiveData<String> = MutableLiveData(ConstantKey.UPCOMING_LABEL)
     var selectedTabPosition: MutableLiveData<Int> = MutableLiveData(0)
+    private val toSortAppointmentList = MutableLiveData<List<AppointmentModel>?>()
 
     fun getUpcomingAppointmentList() {
         if (userAppointmentData.value != null && userAppointmentData.value?.size!! > 0)
@@ -53,7 +54,10 @@ class UserRequestViewModel @Inject constructor(
                         )) {
                         is ApiSuccessResponse -> {
                             setShowProgress(false)
-                            userAppointmentData.value = response.body
+                            toSortAppointmentList.value = response.body
+                            userAppointmentData.value = toSortAppointmentList.value!!.sortedByDescending {
+                                it.bookingDateTime
+                            }
                         }
 
                         is ApiErrorResponse -> {
@@ -95,7 +99,10 @@ class UserRequestViewModel @Inject constructor(
                         )) {
                         is ApiSuccessResponse -> {
                             setShowProgress(false)
-                            userAppointmentData.value = response.body
+                            toSortAppointmentList.value = response.body
+                            userAppointmentData.value = toSortAppointmentList.value!!.sortedByDescending {
+                                it.bookingDateTime
+                            }
                         }
 
                         is ApiErrorResponse -> {
