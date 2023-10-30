@@ -170,6 +170,46 @@ class FeedbackRepository @Inject constructor(
         }
     }
 
+    suspend fun getAllFeedbackList(
+        doctorId: String?, firestore: FirebaseFirestore
+    ): ApiResponse<List<FeedbackResponseModel>> {
+        return try {
+            val response =
+                firestore.collection(TABLE_USER_DATA).whereEqualTo(FIELD_USER_ID, doctorId)
+                    .get().await()
+
+            val feedBackList = arrayListOf<FeedbackResponseModel>()
+            for (document: DocumentSnapshot in response.documents) {
+                val user = document.toObject(UserDataResponseModel::class.java)
+                user?.let {
+                    it.docId = document.id
+                    val subCollectionRef = firestore.collection(TABLE_USER_DATA).document(it.docId)
+                        .collection(SUB_TABLE_FEEDBACK).get().await()
+
+                    var dataModel = FeedbackResponseModel()
+                    for (snapshot in subCollectionRef.documents) {
+                        dataModel = snapshot.toObject()!!
+                        dataModel.let { it1 ->
+                            val userData = firestore.collection(TABLE_USER_DATA).whereEqualTo(
+                                FIELD_USER_ID, it1.userId
+                            ).get().await()
+                            for (snapshot1 in userData) {
+                                val userDetails =
+                                    snapshot1.toObject(UserDataResponseModel::class.java)
+                                it1.userDetails = userDetails
+                            }
+                        }
+                        feedBackList.add(dataModel)
+                    }
+
+                }
+            }
+            ApiResponse.create(response = Response.success(feedBackList))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
 
 }
 

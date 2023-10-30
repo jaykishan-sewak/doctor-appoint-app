@@ -7,5 +7,6 @@ class FeedbackResponseModel(
     var userId: String = "",
     var rating: Float? = null,
     var feedbackMessage: String = "",
-    var createdAt: Date? = null
+    var createdAt: Date? = null,
+    var userDetails: UserDataResponseModel? = null
 )

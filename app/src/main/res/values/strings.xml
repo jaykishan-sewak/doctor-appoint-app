@@ -251,6 +251,9 @@
     <string name="send_me_reset_inst">Send me reset instructions</string>
     <string name="reason_label">Reason</string>
     <string name="notification_enable">Notification Enable</string>
+    <string name="patients_feedback_label">Patients Feedback</string>
+    <string name="no_reviews_found">No Reviews Found</string>
+    <string name="overall_rating">Overall Rating</string>
 
 
 </resources>

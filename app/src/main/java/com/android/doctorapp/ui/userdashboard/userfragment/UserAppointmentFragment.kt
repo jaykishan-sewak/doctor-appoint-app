@@ -203,6 +203,18 @@ class UserAppointmentFragment :
                     )
                     binding.searchEt.setText("")
                 }
+
+                override fun onRatingClick(item: UserDataResponseModel, position: Int) {
+                    val bundle = Bundle()
+                    bundle.putString(
+                        ConstantKey.BundleKeys.BOOK_APPOINTMENT_DATA,
+                        Gson().toJson(item)
+                    )
+                    findNavController().navigate(
+                        R.id.action_user_appointment_to_allFeedback,
+                        bundle
+                    )
+                }
             }
         )
     }

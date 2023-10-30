@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.android.doctorapp.ui.feedback.AllFeedbackViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/app_bg"
+        android:clickable="true"
+        android:focusable="true">
+
+        <include
+            android:id="@+id/toolbarContainer"
+            layout="@layout/custom_toolbar"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/noDataFound"
+            style="@style/label_text"
+            android:layout_width="wrap_content"
+            android:text="@string/no_reviews_found"
+            android:textAlignment="textStart"
+            android:textSize="16sp"
+            android:visibility="@{viewModel.dataFound ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0"
+            android:paddingVertical="@dimen/margin_20"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbarContainer">
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOverallRatingLabel"
+                style="@style/label_text"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="@dimen/margin_10"
+                android:text="@string/overall_rating"
+                android:textAlignment="textStart"
+                android:textSize="16sp"
+                android:visibility="@{viewModel.feedbackList.size != 0 ? View.VISIBLE : View.GONE}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOverallRatingValue"
+                style="@style/label_text"
+                android:layout_width="wrap_content"
+                android:text="@{viewModel.doctorDataObj.rating.toString()}"
+                android:textColor="@color/black"
+                android:textSize="50sp"
+                android:textStyle="bold"
+                android:visibility="@{viewModel.feedbackList.size != 0 ? View.VISIBLE : View.GONE}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvOverallRatingLabel" />
+
+            <androidx.appcompat.widget.AppCompatRatingBar
+                android:id="@+id/doctorRatingBar"
+                style="@style/Widget.AppCompat.RatingBar.Indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:progressTint="@color/rating_bg"
+                android:rating="@{viewModel.doctorDataObj.rating}"
+                android:visibility="@{viewModel.feedbackList.size != 0 ? View.VISIBLE : View.GONE}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvOverallRatingValue" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvTotalReviewsValue"
+                style="@style/label_text"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="@dimen/margin_5"
+                android:text="@{`Based on ` + viewModel.feedbackList.size + ` Reviews`}"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:visibility="@{viewModel.feedbackList.size != 0 ? View.VISIBLE : View.GONE}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/doctorRatingBar" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/allFeedbackRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_0"
+                android:paddingVertical="@dimen/margin_20"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvTotalReviewsValue"
+                tools:listitem="@layout/all_feedback_row_layout" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

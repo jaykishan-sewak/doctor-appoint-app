@@ -24,6 +24,10 @@
         <action
             android:id="@+id/action_user_appointment_to_bookAppointment"
             app:destination="@+id/BookAppointment" />
+
+        <action
+            android:id="@+id/action_user_appointment_to_allFeedback"
+            app:destination="@+id/AllFeedback" />
     </fragment>
 
     <fragment
@@ -96,6 +100,13 @@
         android:id="@+id/History"
         android:name="com.android.doctorapp.ui.profile.HistoryFragment"
         tools:layout="@layout/fragment_history">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/AllFeedback"
+        android:name="com.android.doctorapp.ui.feedback.AllFeedbackFragment"
+        tools:layout="@layout/fragment_all_feedback">
 
     </fragment>
 
