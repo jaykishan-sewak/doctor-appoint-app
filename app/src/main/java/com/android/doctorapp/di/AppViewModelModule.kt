@@ -10,6 +10,7 @@ import com.android.doctorapp.ui.doctor.AddDoctorViewModel
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.AppointmentDoctorViewModel
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.RequestDoctorViewModel
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.SelectedDateAppointmentsViewModel
+import com.android.doctorapp.ui.feedback.AllFeedbackViewModel
 import com.android.doctorapp.ui.feedback.FeedbackViewModel
 import com.android.doctorapp.ui.home.HomeViewModel
 import com.android.doctorapp.ui.otp.OtpVerificationViewModel
@@ -113,6 +114,11 @@ abstract class AppViewModelModule {
     @IntoMap
     @ViewModelMapKey(HistoryViewModel::class)
     abstract fun bindHistoryViewModel(viewModel: HistoryViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelMapKey(AllFeedbackViewModel::class)
+    abstract fun bindAllFeedbackViewModel(viewModel: AllFeedbackViewModel): ViewModel
 
 
 }

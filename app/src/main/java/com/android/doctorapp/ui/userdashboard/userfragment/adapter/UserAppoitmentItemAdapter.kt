@@ -34,12 +34,12 @@ class UserAppoitmentItemAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): UserAppoitmentItemAdapter.ItemViewHolder {
+    ): ItemViewHolder {
         val layoutInflater =
             LayoutInflater.from(parent.context)
         val itemView: UserRawLayoutBinding =
             DataBindingUtil.inflate(layoutInflater, R.layout.user_raw_layout, parent, false)
-        return UserAppoitmentItemAdapter.ItemViewHolder(itemView)
+        return ItemViewHolder(itemView)
     }
 
     override fun getItemCount(): Int {
@@ -51,7 +51,7 @@ class UserAppoitmentItemAdapter(
         notifyDataSetChanged()
     }
 
-    override fun onBindViewHolder(holder: UserAppoitmentItemAdapter.ItemViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val objects = userList[position]
         val imageUri = objects.images?.toUri()
         holder.bind(objects, listener, position, imageUri!!)
@@ -59,6 +59,6 @@ class UserAppoitmentItemAdapter(
 
     interface OnItemClickListener {
         fun onItemClick(item: UserDataResponseModel, position: Int)
-
+        fun onRatingClick(item: UserDataResponseModel, position: Int)
     }
 }

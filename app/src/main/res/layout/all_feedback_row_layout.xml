@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="android.net.Uri" />
+
+        <variable
+            name="userData"
+            type="com.android.doctorapp.repository.models.FeedbackResponseModel" />
+
+
+        <variable
+            name="index"
+            type="Integer" />
+
+        <variable
+            name="imgUri"
+            type="Uri" />
+
+        <variable
+            name="viewModal"
+            type="com.android.doctorapp.ui.feedback.AllFeedbackViewModel" />
+
+
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_16"
+        android:layout_marginVertical="@dimen/margin_10"
+        android:backgroundTint="@color/white"
+        android:elevation="@dimen/margin_5"
+        app:cardCornerRadius="@dimen/margin_20"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_10"
+            android:background="@color/all_feedback_bg"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/ivUserImageView"
+                android:layout_width="@dimen/dp_48"
+                android:layout_height="@dimen/dp_48"
+                android:layout_marginStart="@dimen/margin_20"
+                android:layout_marginTop="@dimen/margin_10"
+                android:elevation="@dimen/margin_5"
+                app:cardCornerRadius="@dimen/margin_15"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivUserImage"
+                    android:layout_width="@dimen/dp_48"
+                    android:layout_height="@dimen/dp_48"
+                    android:background="@drawable/ic_person_white"
+                    android:scaleType="center"
+                    app:imageUri="@{imgUri}" />
+
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvUserName"
+                style="@style/label_text3"
+                android:layout_marginStart="@dimen/margin_10"
+                android:text="@{userData.userDetails.name}"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@+id/ivUserImageView"
+                app:layout_constraintTop_toTopOf="@id/ivUserImageView" />
+
+
+            <androidx.appcompat.widget.AppCompatRatingBar
+                android:id="@+id/userRatingBar"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_4"
+                android:progressTint="@color/rating_bg"
+                android:rating="@{userData.rating}"
+                app:layout_constraintBottom_toTopOf="@+id/tvUserFeedbackMsg"
+                app:layout_constraintStart_toStartOf="@+id/tvUserName"
+                app:layout_constraintTop_toBottomOf="@+id/tvUserName" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvFeedbackDate"
+                style="@style/label_text3"
+                android:layout_marginEnd="@dimen/margin_20"
+                app:headerDate="@{userData.createdAt}"
+                app:layout_constraintBottom_toBottomOf="@+id/tvUserName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvUserName" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvUserFeedbackMsg"
+                style="@style/label_text3"
+                android:layout_width="@dimen/dp_0"
+                android:layout_marginTop="@dimen/margin_10"
+                android:layout_marginEnd="@dimen/margin_20"
+                android:layout_marginBottom="@dimen/margin_10"
+                android:paddingHorizontal="@dimen/margin_10"
+                android:text="@{userData.feedbackMessage}"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/ivUserImageView"
+                app:layout_constraintTop_toBottomOf="@id/userRatingBar" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</layout>
