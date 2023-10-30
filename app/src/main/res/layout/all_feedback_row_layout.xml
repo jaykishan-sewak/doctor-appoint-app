@@ -75,14 +75,11 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvUserName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/label_text3"
                 android:layout_marginStart="@dimen/margin_10"
                 android:text="@{userData.userDetails.name}"
-                android:textAlignment="textStart"
                 android:textColor="@color/black"
                 android:textSize="16sp"
-                android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/ivUserImageView"
                 app:layout_constraintTop_toTopOf="@id/ivUserImageView" />
 
@@ -101,14 +98,8 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvFeedbackDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/label_text3"
                 android:layout_marginEnd="@dimen/margin_20"
-                android:textAlignment="textStart"
-                android:textColor="@color/grey"
-                android:textFontWeight="@integer/m3_sys_motion_duration_extra_long1"
-                android:textSize="14sp"
-                android:textStyle="bold"
                 app:headerDate="@{userData.createdAt}"
                 app:layout_constraintBottom_toBottomOf="@+id/tvUserName"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -116,18 +107,15 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvUserFeedbackMsg"
+                style="@style/label_text3"
                 android:layout_width="@dimen/dp_0"
-                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_10"
                 android:layout_marginEnd="@dimen/margin_20"
                 android:layout_marginBottom="@dimen/margin_10"
                 android:paddingHorizontal="@dimen/margin_10"
                 android:text="@{userData.feedbackMessage}"
-                android:textAlignment="textStart"
                 android:textColor="@color/black"
-                android:textFontWeight="@integer/m3_sys_motion_duration_extra_long1"
                 android:textSize="14sp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/ivUserImageView"

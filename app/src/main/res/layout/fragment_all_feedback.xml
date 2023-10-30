@@ -52,12 +52,11 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOverallRatingLabel"
-                style="@style/label_text"
-                android:layout_width="wrap_content"
+                style="@style/label_text3"
                 android:layout_marginTop="@dimen/margin_10"
                 android:text="@string/overall_rating"
-                android:textAlignment="textStart"
                 android:textSize="16sp"
+                android:textStyle="normal"
                 android:visibility="@{viewModel.feedbackList.size != 0 ? View.VISIBLE : View.GONE}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -65,12 +64,10 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOverallRatingValue"
-                style="@style/label_text"
-                android:layout_width="wrap_content"
+                style="@style/label_text3"
                 android:text="@{viewModel.doctorDataObj.rating.toString()}"
                 android:textColor="@color/black"
                 android:textSize="50sp"
-                android:textStyle="bold"
                 android:visibility="@{viewModel.feedbackList.size != 0 ? View.VISIBLE : View.GONE}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -90,12 +87,9 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvTotalReviewsValue"
-                style="@style/label_text"
-                android:layout_width="wrap_content"
+                style="@style/label_text3"
                 android:layout_marginTop="@dimen/margin_5"
                 android:text="@{`Based on ` + viewModel.feedbackList.size + ` Reviews`}"
-                android:textSize="14sp"
-                android:textStyle="bold"
                 android:visibility="@{viewModel.feedbackList.size != 0 ? View.VISIBLE : View.GONE}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
