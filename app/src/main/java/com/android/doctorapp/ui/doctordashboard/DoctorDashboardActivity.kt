@@ -26,6 +26,17 @@ class DoctorDashboardActivity :
         binding.lifecycleOwner = this
         navController = findNavController(R.id.nav_host_fragment)
         binding.navView.setupWithNavController(navController)
+
+        val fragmentType = intent.extras?.getString("fragmentType")
+        val documentId = intent.extras?.getString("DocumentId")
+        val isBookAppointment = intent.extras?.getBoolean("IsBookAppointment")
+        if (fragmentType == "DoctorFragment") {
+            val bundle = Bundle()
+            bundle.putString("documentId", documentId)
+            bundle.putBoolean("isBookAppointment", isBookAppointment!!)
+            navController.navigate(R.id.AppointmentDetails, bundle)
+        }
+
         binding.navView.setOnItemSelectedListener { item ->
             val selectedTabId = item.itemId
             val currentTabId = navController.currentDestination?.id ?: 0

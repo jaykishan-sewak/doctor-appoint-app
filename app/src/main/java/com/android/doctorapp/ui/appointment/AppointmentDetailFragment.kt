@@ -1,6 +1,8 @@
 package com.android.doctorapp.ui.appointment
 
+import android.content.ContentValues
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -68,8 +70,17 @@ class AppointmentDetailFragment :
             viewModel.isShowBothButton.value =
                 arguments.getBoolean(ConstantKey.BundleKeys.REQUEST_FRAGMENT)
             val appointmentObj = arguments.getString(ConstantKey.BundleKeys.APPOINTMENT_DATA)
-            viewModel.appointmentObj.value =
-                Gson().fromJson(appointmentObj, AppointmentModel::class.java)
+            if (appointmentObj != null) {
+                viewModel.appointmentObj.value =
+                    Gson().fromJson(appointmentObj, AppointmentModel::class.java)
+                viewModel.getAppointmentDetails()
+            } else {
+                viewModel.documentId.value = requireArguments().getString("documentId")
+                viewModel.isShowBothButton.value =
+                    requireArguments().getBoolean("isBookAppointment")
+                Log.d(ContentValues.TAG, "onCreateView: ${viewModel.documentId.value}")
+                viewModel.getNotificationAppointmentDetails()
+            }
         }
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
@@ -81,7 +92,6 @@ class AppointmentDetailFragment :
     }
 
     private fun registerObserver() {
-        viewModel.getAppointmentDetails()
         viewModel.confirmClick.observe(viewLifecycleOwner) { it ->
             if (it) {
                 context?.alert {

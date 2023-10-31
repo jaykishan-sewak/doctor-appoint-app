@@ -1,7 +1,9 @@
 package com.android.doctorapp.ui.appointment
 
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -120,6 +122,8 @@ class AppointmentViewModel @Inject constructor(
     val emailClick: MutableLiveData<String> = MutableLiveData()
     var doctorDataObj = MutableLiveData<UserDataResponseModel>()
 
+    val documentId: MutableLiveData<String> = MutableLiveData()
+
     init {
         emailClick.postValue("")
         getUserData()
@@ -224,7 +228,13 @@ class AppointmentViewModel @Inject constructor(
                     is ApiSuccessResponse -> {
                         context.toast(resourceProvider.getString(R.string.appointment_booking_success))
                         if (doctorDataObj.value?.isNotificationEnable == true)
-                            sendNotification(doctorDataObj.value?.token, APPOINTMENT_BOOKED_BY)
+                            sendNotification(
+                                doctorDataObj.value?.token,
+                                APPOINTMENT_BOOKED_BY,
+                                doctorDataObj.value?.isDoctor,
+                                response.body,
+                                true
+                            )
                         else {
                             setShowProgress(false)
                             _navigationListener.value = true
@@ -343,7 +353,13 @@ class AppointmentViewModel @Inject constructor(
                     )) {
                     is ApiSuccessResponse -> {
                         if (userDataResponse.value?.isNotificationEnable == true)
-                            sendNotification(userDataResponse.value?.token, APPOINTMENT_REJECTED_BY)
+                            sendNotification(
+                                userDataResponse.value?.token,
+                                APPOINTMENT_REJECTED_BY,
+                                userDataResponse.value?.isDoctor,
+                                appointmentObj.value?.id,
+                                false
+                            )
                         else {
                             setShowProgress(false)
                             _navigationListener.value = true
@@ -465,12 +481,18 @@ class AppointmentViewModel @Inject constructor(
                             if (appointmentStatus == FIELD_REJECTED)
                                 sendNotification(
                                     userDataResponse.value?.token,
-                                    APPOINTMENT_REJECTED_BY
+                                    APPOINTMENT_REJECTED_BY,
+                                    userDataResponse.value?.isDoctor,
+                                    appointmentObj.value!!.id,
+                                    false
                                 )
                             else
                                 sendNotification(
                                     userDataResponse.value?.token,
-                                    APPOINTMENT_APPROVED_BY
+                                    APPOINTMENT_APPROVED_BY,
+                                    userDataResponse.value?.isDoctor,
+                                    appointmentObj.value!!.id,
+                                    false
                                 )
                         } else {
                             setShowProgress(false)
@@ -501,7 +523,10 @@ class AppointmentViewModel @Inject constructor(
 
     fun checkAppointmentDate(): Boolean {
         val currentDate = currentDate()
-        return appointmentObj.value?.bookingDateTime!! > currentDate && appointmentObj.value?.status != FIELD_REJECTED
+        return if (appointmentObj.value != null)
+            appointmentObj.value?.bookingDateTime!! > currentDate && appointmentObj.value?.status != FIELD_REJECTED
+        else
+            false
     }
 
     private fun getUserSymptomDetails() {
@@ -785,11 +810,11 @@ class AppointmentViewModel @Inject constructor(
         return false
     }
 
-    private fun sendNotification(token: String?, msg: String) {
+    private fun sendNotification(token: String?, msg: String, type: Boolean?, documentId: String?, isBookAppointment: Boolean) {
         viewModelScope.launch {
             setShowProgress(true)
             val data =
-                DataRequestModel("$msg ${userName.value}", "Appointment")
+                DataRequestModel("$msg ${userName.value}", "Appointment", type, documentId, isBookAppointment)
             val notificationRequest =
                 NotificationRequestModel(token, data)
             when (val response = itemsRepository.sendNotification(notificationRequest)) {
@@ -812,6 +837,45 @@ class AppointmentViewModel @Inject constructor(
                 else -> {}
             }
             setShowProgress(false)
+        }
+    }
+
+    fun getNotificationAppointmentDetails() {
+        viewModelScope.launch {
+            if (context.isNetworkAvailable()) {
+                when (val response =
+                    appointmentRepository.getNotificationAppointmentDetails(
+                        documentId.value!!,
+                        fireStore
+                    )) {
+                    is ApiSuccessResponse -> {
+                        appointmentResponse.postValue(response.body)
+                        appointmentObj.value = response.body!!
+                        checkAppointmentDate()
+                        isVisitedToggleData.postValue(response.body.isVisited)
+                        userDataResponse.postValue(response.body.doctorDetails)
+                        setShowProgress(false)
+                    }
+
+                    is ApiErrorResponse -> {
+                        context.toast(response.errorMessage)
+                        setShowProgress(false)
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        context.toast(response.errorMessage)
+                        setShowProgress(false)
+                    }
+
+                    else -> {
+                        context.toast(resourceProvider.getString(R.string.something_went_wrong))
+                        setShowProgress(false)
+                    }
+                }
+            } else {
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
+            }
+
         }
     }
 

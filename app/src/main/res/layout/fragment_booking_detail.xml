@@ -319,7 +319,7 @@
             android:layout_marginHorizontal="@dimen/margin_16"
             android:layout_marginVertical="@dimen/margin_10"
             android:background="@drawable/button_state_colors"
-            android:enabled="@{viewModel.checkAppointmentDate()}"
+            android:enabled="@{viewModel.isCancelEnabled}"
             android:onClick="@{()->viewModel.onCancelClick()}"
             android:text="@string/cancel"
             android:textAllCaps="false"
