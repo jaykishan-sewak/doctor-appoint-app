@@ -1,8 +1,6 @@
 package com.android.doctorapp.ui.appointment
 
-import android.content.ContentValues
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +18,8 @@ import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.ui.appointment.dialog.CustomDialogFragment
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.APPOINTMENT_DETAILS_UPDATED
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.APPOINTMENT_DOCUMENT_ID
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.IS_BOOK_APPOINTMENT
 import com.android.doctorapp.util.constants.ConstantKey.FIELD_APPROVED
 import com.android.doctorapp.util.constants.ConstantKey.FIELD_REJECTED
 import com.android.doctorapp.util.extension.alert
@@ -75,10 +75,9 @@ class AppointmentDetailFragment :
                     Gson().fromJson(appointmentObj, AppointmentModel::class.java)
                 viewModel.getAppointmentDetails()
             } else {
-                viewModel.documentId.value = requireArguments().getString("documentId")
+                viewModel.documentId.value = requireArguments().getString(APPOINTMENT_DOCUMENT_ID)
                 viewModel.isShowBothButton.value =
-                    requireArguments().getBoolean("isBookAppointment")
-                Log.d(ContentValues.TAG, "onCreateView: ${viewModel.documentId.value}")
+                    requireArguments().getBoolean(IS_BOOK_APPOINTMENT)
                 viewModel.getNotificationAppointmentDetails()
             }
         }

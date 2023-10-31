@@ -28,6 +28,12 @@ object ConstantKey {
         const val BOOK_APPOINTMENT_DATA = "bookAppointmentData"
         const val IS_EDIT_CLICK = "isEditClick"
         const val FROM_SELECTED_APPOINTMENTS = "fromSelectedAppointments"
+        const val FRAGMENT_TYPE = "fragmentType"
+        const val DOCTOR_FRAGMENT = "DoctorFragment"
+        const val DOCUMENT_ID = "DocumentId"
+        const val IS_BOOK_APPOINTMENT = "isBookAppointment"
+        const val USER_FRAGMENT = "UserFragment"
+        const val APPOINTMENT_DOCUMENT_ID = "documentId"
 
     }
 

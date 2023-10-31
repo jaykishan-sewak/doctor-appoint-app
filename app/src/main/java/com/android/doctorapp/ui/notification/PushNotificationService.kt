@@ -14,6 +14,11 @@ import com.android.doctorapp.repository.local.PreferenceDataStore
 import com.android.doctorapp.repository.local.USER_TOKEN
 import com.android.doctorapp.ui.doctordashboard.DoctorDashboardActivity
 import com.android.doctorapp.ui.userdashboard.UserDashboardActivity
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DOCTOR_FRAGMENT
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DOCUMENT_ID
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.FRAGMENT_TYPE
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.IS_BOOK_APPOINTMENT
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_FRAGMENT
 import com.android.doctorapp.util.constants.ConstantKey.CHANNEL_ID
 import com.android.doctorapp.util.constants.ConstantKey.MY_CHANNEL
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -81,11 +86,11 @@ class PushNotificationService() : FirebaseMessagingService() {
             // Add extras to the intent to specify which fragment to display
             val extras = Bundle()
             extras.putString(
-                "fragmentType",
-                "DoctorFragment"
+                FRAGMENT_TYPE,
+                DOCTOR_FRAGMENT
             ) // Replace with actual fragment identifier
-            extras.putString("DocumentId", documentId)
-            extras.putBoolean("IsBookAppointment", isBookAppointment)
+            extras.putString(DOCUMENT_ID, documentId)
+            extras.putBoolean(IS_BOOK_APPOINTMENT, isBookAppointment)
             intent.putExtras(extras)
         } else {
             intent = Intent(this, UserDashboardActivity::class.java)
@@ -93,10 +98,10 @@ class PushNotificationService() : FirebaseMessagingService() {
             // Add extras to the intent to specify which fragment to display
             val extras = Bundle()
             extras.putString(
-                "fragmentType",
-                "UserFragment"
+                FRAGMENT_TYPE,
+                USER_FRAGMENT
             ) // Replace with actual fragment identifier
-            extras.putString("DocumentId", documentId)
+            extras.putString(DOCUMENT_ID, documentId)
             intent.putExtras(extras)
         }
 
