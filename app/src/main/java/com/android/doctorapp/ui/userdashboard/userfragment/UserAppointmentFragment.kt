@@ -74,8 +74,6 @@ class UserAppointmentFragment :
             lifecycleOwner = viewLifecycleOwner
             viewModel = this@UserAppointmentFragment.viewModel
         }
-
-        setUpWithViewModel(viewModel)
         RuntimePermission.askPermission(
             this,
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -85,8 +83,13 @@ class UserAppointmentFragment :
         }.onDenied {
             context?.toast(getString(R.string.location_permission))
         }.ask()
-        registerObserver(layoutBinding)
         return layoutBinding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setUpWithViewModel(viewModel)
+        registerObserver(binding)
     }
 
 
@@ -201,7 +204,7 @@ class UserAppointmentFragment :
                         R.id.action_user_appointment_to_bookAppointment,
                         bundle
                     )
-                    binding.searchEt.setText("")
+                    binding.searchEt.text?.clear()
                 }
 
                 override fun onRatingClick(item: UserDataResponseModel, position: Int) {
