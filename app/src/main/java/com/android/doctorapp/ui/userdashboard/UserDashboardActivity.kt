@@ -22,9 +22,19 @@ class UserDashboardActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding.lifecycleOwner = this
         navController = findNavController(R.id.userNavHostFragment)
         binding.userNavView.setupWithNavController(navController)
+
+        val fragmentType = intent.extras?.getString("fragmentType")
+        val documentId = intent.extras?.getString("DocumentId")
+        if (fragmentType == "UserFragment") {
+            val bundle = Bundle()
+            bundle.putString("documentId", documentId)
+            navController.navigate(R.id.BookingDetail, bundle)
+        }
+
         binding.userNavView.setOnItemSelectedListener { item ->
             val selectedTabId = item.itemId
             val currentTabId = navController.currentDestination?.id ?: 0

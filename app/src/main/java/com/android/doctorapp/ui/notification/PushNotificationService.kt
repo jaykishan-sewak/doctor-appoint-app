@@ -3,12 +3,17 @@ package com.android.doctorapp.ui.notification
 import android.R
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import androidx.core.app.NotificationCompat
 import com.android.doctorapp.repository.local.IS_NEW_USER_TOKEN
 import com.android.doctorapp.repository.local.PreferenceDataStore
 import com.android.doctorapp.repository.local.USER_TOKEN
+import com.android.doctorapp.ui.doctordashboard.DoctorDashboardActivity
+import com.android.doctorapp.ui.userdashboard.UserDashboardActivity
 import com.android.doctorapp.util.constants.ConstantKey.CHANNEL_ID
 import com.android.doctorapp.util.constants.ConstantKey.MY_CHANNEL
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -41,12 +46,24 @@ class PushNotificationService() : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         if (message.data["title"]?.isNotEmpty() == true && message.data["body"]?.isNotEmpty() == true) {
-            sendNotification(message.data["title"]!!, message.data["body"]!!)
+            sendNotification(
+                message.data["title"]!!,
+                message.data["body"]!!,
+                message.data["type"].toBoolean(),
+                message.data["documentId"]!!,
+                message.data["isBookAppointment"].toBoolean()
+            )
         }
     }
 
-    private fun sendNotification(title: String, messageBody: String) {
-
+    private fun sendNotification(
+        title: String,
+        messageBody: String,
+        type: Boolean,
+        documentId: String,
+        isBookAppointment: Boolean
+    ) {
+        val intent: Intent
         // Get the system's notification service
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -58,12 +75,45 @@ class PushNotificationService() : FirebaseMessagingService() {
             notificationManager.createNotificationChannel(channel)
         }
 
+        if (type) {
+            intent = Intent(this, DoctorDashboardActivity::class.java)
+
+            // Add extras to the intent to specify which fragment to display
+            val extras = Bundle()
+            extras.putString(
+                "fragmentType",
+                "DoctorFragment"
+            ) // Replace with actual fragment identifier
+            extras.putString("DocumentId", documentId)
+            extras.putBoolean("IsBookAppointment", isBookAppointment)
+            intent.putExtras(extras)
+        } else {
+            intent = Intent(this, UserDashboardActivity::class.java)
+
+            // Add extras to the intent to specify which fragment to display
+            val extras = Bundle()
+            extras.putString(
+                "fragmentType",
+                "UserFragment"
+            ) // Replace with actual fragment identifier
+            extras.putString("DocumentId", documentId)
+            intent.putExtras(extras)
+        }
+
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
         // Create a notification builder
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_menu_camera) // Set your notification icon
             .setContentTitle(title) // Set the title of the notification
             .setContentText(messageBody) // Set the message of the notification
             .setAutoCancel(true) // Close the notification when tapped
+            .setContentIntent(pendingIntent)
             .build()
 
 

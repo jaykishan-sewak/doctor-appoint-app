@@ -31,18 +31,22 @@ class BookingDetailViewModel @Inject constructor(
     private val context: Context
 ) : BaseViewModel() {
 
-    var appointmentObj = MutableLiveData<AppointmentModel>()
+    var appointmentObj = MutableLiveData<AppointmentModel?>()
     var cancelClick = MutableLiveData(false)
     val imageUri = MutableLiveData<Uri?>()
     var selectedTab: MutableLiveData<String> = MutableLiveData()
+    val documentId: MutableLiveData<String?> = MutableLiveData()
 
     private val _navigationListener: MutableLiveData<Boolean> = MutableLiveData(false)
     val navigationListener = _navigationListener.asLiveData()
-
+    val isCancelEnabled: MutableLiveData<Boolean> = MutableLiveData(false)
 
     fun checkAppointmentDate(): Boolean {
         val currentDate = currentDate()
-        return appointmentObj.value?.bookingDateTime!! > currentDate && appointmentObj.value?.status != FIELD_REJECTED
+        return if (appointmentObj.value != null)
+            appointmentObj.value?.bookingDateTime!! > currentDate && appointmentObj.value?.status != FIELD_REJECTED
+        else
+            false
     }
 
 
@@ -58,7 +62,7 @@ class BookingDetailViewModel @Inject constructor(
                 )) {
                     is ApiSuccessResponse -> {
                         if (appointmentObj.value?.doctorDetails?.isNotificationEnable == true) sendRejectedNotification(
-                            APPOINTMENT_REJECTED_BY
+                            APPOINTMENT_REJECTED_BY, appointmentObj.value!!.id
                         )
                         else {
                             setShowProgress(false)
@@ -94,11 +98,13 @@ class BookingDetailViewModel @Inject constructor(
         cancelClick.value = true
     }
 
-    private fun sendRejectedNotification(msg: String) {
+    private fun sendRejectedNotification(msg: String, documentId: String) {
         viewModelScope.launch {
             setShowProgress(true)
             val data = DataRequestModel(
-                " $msg ${appointmentObj.value?.name}", "Appointment"
+                " $msg ${appointmentObj.value?.name}",
+                "Appointment",
+                appointmentObj.value?.doctorDetails?.isDoctor, documentId
             )
             val notificationRequest =
                 NotificationRequestModel(appointmentObj.value?.doctorDetails?.token!!, data)
@@ -124,4 +130,39 @@ class BookingDetailViewModel @Inject constructor(
             setShowProgress(false)
         }
     }
+
+    fun getAppointmentDetails() {
+        viewModelScope.launch {
+            setShowProgress(true)
+            when (val response =
+                appointmentRepository.getAppointmentDetails(
+                    documentId.value!!,
+                    fireStore
+                )) {
+                is ApiSuccessResponse -> {
+                    appointmentObj.value = response.body
+                    isCancelEnabled.value = checkAppointmentDate()
+                    setShowProgress(false)
+                }
+
+                is ApiErrorResponse -> {
+                    context.toast(response.errorMessage)
+                    setShowProgress(false)
+                }
+
+                is ApiNoNetworkResponse -> {
+                    context.toast(response.errorMessage)
+                    setShowProgress(false)
+                }
+
+                else -> {
+                    context.toast(resourceProvider.getString(R.string.something_went_wrong))
+                    setShowProgress(false)
+                }
+            }
+
+        }
+    }
+
+
 }

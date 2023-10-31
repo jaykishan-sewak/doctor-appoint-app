@@ -42,13 +42,19 @@ class BookingDetailFragment :
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
         if (arguments != null) {
-
             val appointmentObj =
                 requireArguments().getString(ConstantKey.BundleKeys.BOOKING_APPOINTMENT_DATA)
-            viewModel.appointmentObj.value =
-                Gson().fromJson(appointmentObj, AppointmentModel::class.java)
-            viewModel.selectedTab.value =
-                requireArguments().getString(ConstantKey.BundleKeys.SELECTED_TAB)
+            if (appointmentObj != null) {
+                viewModel.appointmentObj.value =
+                    Gson().fromJson(appointmentObj, AppointmentModel::class.java)
+                viewModel.selectedTab.value =
+                    requireArguments().getString(ConstantKey.BundleKeys.SELECTED_TAB)
+                viewModel.isCancelEnabled.value = viewModel.checkAppointmentDate()
+            } else {
+                viewModel.documentId.value = requireArguments().getString("documentId")
+                viewModel.getAppointmentDetails()
+            }
+
         }
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
@@ -82,7 +88,7 @@ class BookingDetailFragment :
             }
         }
         viewModel.appointmentObj.observe(viewLifecycleOwner) {
-            if (it.doctorDetails?.images != null)
+            if (it?.doctorDetails?.images != null)
                 viewModel.imageUri.value = it.doctorDetails?.images?.toUri()
         }
     }

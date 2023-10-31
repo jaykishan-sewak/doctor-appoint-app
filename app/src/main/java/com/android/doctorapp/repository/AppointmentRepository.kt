@@ -36,11 +36,11 @@ class AppointmentRepository @Inject constructor() {
 
     suspend fun addBookingAppointment(
         appointmentModel: AppointmentModel, fireStore: FirebaseFirestore
-    ): ApiResponse<AppointmentModel> {
+    ): ApiResponse<String> {
         return try {
             val bookingAppointmentResponse =
                 fireStore.collection(TABLE_APPOINTMENT).add(appointmentModel).await()
-            ApiResponse.create(response = Response.success(appointmentModel))
+            ApiResponse.create(response = Response.success(bookingAppointmentResponse.id))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
         }
@@ -175,6 +175,12 @@ class AppointmentRepository @Inject constructor() {
             val response =
                 fireStore.collection(TABLE_APPOINTMENT).document(documentId).get().await()
             val dataModel = response.toObject(AppointmentModel::class.java)
+            val data = fireStore.collection(TABLE_USER_DATA).whereEqualTo(FIELD_USER_ID,dataModel?.doctorId).get().await()
+            for (snapshot in data) {
+               dataModel.let {
+                   it?.doctorDetails = snapshot.toObject(UserDataResponseModel::class.java)
+               }
+            }
             ApiResponse.create(response = Response.success(dataModel))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
@@ -421,6 +427,34 @@ class AppointmentRepository @Inject constructor() {
                     .set(userData).await()
 
             ApiResponse.create(response = Response.success(true))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+    suspend fun getNotificationAppointmentDetails(
+        documentId: String, fireStore: FirebaseFirestore
+    ): ApiResponse<AppointmentModel> {
+        return try {
+            val response =
+                fireStore.collection(TABLE_APPOINTMENT).document(documentId).get().await()
+            val dataModel = response.toObject(AppointmentModel::class.java)
+            val data = fireStore.collection(TABLE_USER_DATA).whereEqualTo(FIELD_USER_ID,dataModel?.userId).get().await()
+            for (snapshot in data) {
+                dataModel.let {
+                    it?.doctorDetails = snapshot.toObject(UserDataResponseModel::class.java)
+                    it?.id = response.id
+                }
+            }
+            val symptom = fireStore.collection(TABLE_SYMPTOM).whereEqualTo(FIELD_USER_ID, dataModel?.userId).get().await()
+            for (symptomSnapshot in symptom) {
+                dataModel.let {
+                   val symptomObj = symptomSnapshot.toObject(SymptomModel::class.java)
+                    it?.symptomDetails = symptomObj.symptomDetails
+                    it?.sufferingDay = symptomObj.sufferingDay
+                }
+            }
+            ApiResponse.create(response = Response.success(dataModel))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
         }

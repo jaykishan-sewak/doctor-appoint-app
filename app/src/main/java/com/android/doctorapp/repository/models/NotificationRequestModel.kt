@@ -7,5 +7,8 @@ data class NotificationRequestModel(
 
 data class DataRequestModel(
     var body: String = "",
-    var title: String = ""
+    var title: String = "",
+    var type: Boolean? = null,
+    var documentId: String? = null,
+    var isBookAppointment: Boolean = false
 )
