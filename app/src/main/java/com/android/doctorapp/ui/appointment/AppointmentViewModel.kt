@@ -1,9 +1,7 @@
 package com.android.doctorapp.ui.appointment
 
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -810,11 +808,23 @@ class AppointmentViewModel @Inject constructor(
         return false
     }
 
-    private fun sendNotification(token: String?, msg: String, type: Boolean?, documentId: String?, isBookAppointment: Boolean) {
+    private fun sendNotification(
+        token: String?,
+        msg: String,
+        type: Boolean?,
+        documentId: String?,
+        isBookAppointment: Boolean
+    ) {
         viewModelScope.launch {
             setShowProgress(true)
             val data =
-                DataRequestModel("$msg ${userName.value}", "Appointment", type, documentId, isBookAppointment)
+                DataRequestModel(
+                    "$msg ${userName.value}",
+                    "Appointment",
+                    type,
+                    documentId,
+                    isBookAppointment
+                )
             val notificationRequest =
                 NotificationRequestModel(token, data)
             when (val response = itemsRepository.sendNotification(notificationRequest)) {

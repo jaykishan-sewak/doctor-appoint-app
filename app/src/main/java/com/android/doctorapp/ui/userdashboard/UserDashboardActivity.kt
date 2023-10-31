@@ -12,6 +12,10 @@ import com.android.doctorapp.R
 import com.android.doctorapp.databinding.ActivityUserDashboardBinding
 import com.android.doctorapp.di.base.BaseActivity
 import com.android.doctorapp.ui.userdashboard.userfragment.UserAppointmentFragment
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.APPOINTMENT_DOCUMENT_ID
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DOCUMENT_ID
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.FRAGMENT_TYPE
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_FRAGMENT
 import com.android.doctorapp.util.extension.toast
 
 
@@ -27,11 +31,11 @@ class UserDashboardActivity :
         navController = findNavController(R.id.userNavHostFragment)
         binding.userNavView.setupWithNavController(navController)
 
-        val fragmentType = intent.extras?.getString("fragmentType")
-        val documentId = intent.extras?.getString("DocumentId")
-        if (fragmentType == "UserFragment") {
+        val fragmentType = intent.extras?.getString(FRAGMENT_TYPE)
+        val documentId = intent.extras?.getString(DOCUMENT_ID)
+        if (fragmentType == USER_FRAGMENT) {
             val bundle = Bundle()
-            bundle.putString("documentId", documentId)
+            bundle.putString(APPOINTMENT_DOCUMENT_ID, documentId)
             navController.navigate(R.id.BookingDetail, bundle)
         }
 

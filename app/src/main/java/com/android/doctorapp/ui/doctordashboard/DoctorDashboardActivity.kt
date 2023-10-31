@@ -12,6 +12,11 @@ import com.android.doctorapp.R
 import com.android.doctorapp.databinding.ActivityDoctorDashboardBinding
 import com.android.doctorapp.di.base.BaseActivity
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.DoctorAddressFragment
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.APPOINTMENT_DOCUMENT_ID
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DOCTOR_FRAGMENT
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DOCUMENT_ID
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.FRAGMENT_TYPE
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.IS_BOOK_APPOINTMENT
 import com.android.doctorapp.util.constants.ConstantKey.GPS_REQUEST_CODE
 import com.android.doctorapp.util.extension.toast
 
@@ -27,13 +32,13 @@ class DoctorDashboardActivity :
         navController = findNavController(R.id.nav_host_fragment)
         binding.navView.setupWithNavController(navController)
 
-        val fragmentType = intent.extras?.getString("fragmentType")
-        val documentId = intent.extras?.getString("DocumentId")
-        val isBookAppointment = intent.extras?.getBoolean("IsBookAppointment")
-        if (fragmentType == "DoctorFragment") {
+        val fragmentType = intent.extras?.getString(FRAGMENT_TYPE)
+        val documentId = intent.extras?.getString(DOCUMENT_ID)
+        val isBookAppointment = intent.extras?.getBoolean(IS_BOOK_APPOINTMENT)
+        if (fragmentType == DOCTOR_FRAGMENT) {
             val bundle = Bundle()
-            bundle.putString("documentId", documentId)
-            bundle.putBoolean("isBookAppointment", isBookAppointment!!)
+            bundle.putString(APPOINTMENT_DOCUMENT_ID, documentId)
+            bundle.putBoolean(IS_BOOK_APPOINTMENT, isBookAppointment!!)
             navController.navigate(R.id.AppointmentDetails, bundle)
         }
 
