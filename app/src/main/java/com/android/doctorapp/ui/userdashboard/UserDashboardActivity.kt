@@ -2,6 +2,8 @@ package com.android.doctorapp.ui.userdashboard
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -35,8 +37,12 @@ class UserDashboardActivity :
         val documentId = intent.extras?.getString(DOCUMENT_ID)
         if (fragmentType == USER_FRAGMENT) {
             val bundle = Bundle()
-            bundle.putString(APPOINTMENT_DOCUMENT_ID, documentId)
-            navController.navigate(R.id.BookingDetail, bundle)
+            Handler(Looper.getMainLooper()).postDelayed({
+                // Code to be executed after a 2-second delay
+                bundle.putString(APPOINTMENT_DOCUMENT_ID, documentId)
+                navController.navigate(R.id.BookingDetail, bundle)
+            }, 1000)
+
         }
 
         binding.userNavView.setOnItemSelectedListener { item ->

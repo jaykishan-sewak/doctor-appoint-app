@@ -40,9 +40,11 @@ class FeedbackViewModel @Inject constructor(
     var userDataObj = MutableLiveData<UserDataResponseModel?>()
     var doctorFeedbackObj = MutableLiveData<UserDataResponseModel?>()
     val isEditClick: MutableLiveData<Boolean> = MutableLiveData(false)
+    val dataFound: MutableLiveData<Boolean> = MutableLiveData()
 
 
     fun getUserDoctorList() {
+        dataFound.value = true
         viewModelScope.launch {
             session.getString(USER_ID).collectLatest {
                 if (context.isNetworkAvailable()) {

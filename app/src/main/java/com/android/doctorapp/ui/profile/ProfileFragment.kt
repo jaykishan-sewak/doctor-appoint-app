@@ -1,5 +1,6 @@
 package com.android.doctorapp.ui.profile
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +20,6 @@ import com.android.doctorapp.util.constants.ConstantKey.PROFILE_UPDATED
 import com.android.doctorapp.util.extension.fetchImageOrShowError
 import com.android.doctorapp.util.extension.openEmailSender
 import com.android.doctorapp.util.extension.openPhoneDialer
-import com.android.doctorapp.util.extension.startActivityFinish
 import javax.inject.Inject
 
 class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_profile) {
@@ -83,8 +83,13 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
             }
         }
         viewModel.navigateToLogin.observe(viewLifecycleOwner) {
-            if (it)
-                startActivityFinish<AuthenticationActivity>()
+            if (it) {
+                val intent = Intent(requireActivity(), AuthenticationActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+            }
+//                startActivityFinish<AuthenticationActivity>()
+
         }
         viewModel.navigationListener.observe(viewLifecycleOwner) {
             findNavController().navigate(it)

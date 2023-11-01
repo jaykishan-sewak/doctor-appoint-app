@@ -55,6 +55,7 @@ class UserAppointmentViewModel @Inject constructor(
 
     fun lengthChecked(text: CharSequence) {
         if (text.toString().length >= 3) {
+            items.value = tempData.value
             searchStarts(text.toString().lowercase())
         } else
             items.value = tempData.value

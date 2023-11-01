@@ -93,7 +93,13 @@ class FeedbackFragment : BaseFragment<FragmentFeedbackBinding>(R.layout.fragment
             viewModel.getUserDoctorList()
 
         viewModel.doctorList.observe(viewLifecycleOwner) {
-            adapter.updateListData(it)
+            if (!it.isNullOrEmpty()) {
+                viewModel.dataFound.value = true
+                adapter.updateListData(it)
+            } else {
+                adapter.updateListData(emptyList())
+                viewModel.dataFound.value = false
+            }
         }
 
     }

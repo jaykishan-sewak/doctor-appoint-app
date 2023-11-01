@@ -1,5 +1,6 @@
 package com.android.doctorapp.ui.doctordashboard.doctorfragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +23,6 @@ import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.FROM_WHERE
 import com.android.doctorapp.util.extension.fetchImageOrShowError
 import com.android.doctorapp.util.extension.openEmailSender
 import com.android.doctorapp.util.extension.openPhoneDialer
-import com.android.doctorapp.util.extension.startActivityFinish
 import javax.inject.Inject
 
 
@@ -99,8 +99,12 @@ class DoctorProfileFragment :
             }
         }
         viewModel.navigateToLogin.observe(viewLifecycleOwner) {
-            if (it)
-                startActivityFinish<AuthenticationActivity>()
+            if (it) {
+                val intent = Intent(requireActivity(), AuthenticationActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+            }
+//                startActivityFinish<AuthenticationActivity>()
         }
     }
 
