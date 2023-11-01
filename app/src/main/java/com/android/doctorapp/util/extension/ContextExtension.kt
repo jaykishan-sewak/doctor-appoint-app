@@ -12,8 +12,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.android.doctorapp.BuildConfig
-import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DATE_AND_DAY_NAME_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MONTH_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.constants.ConstantKey.FULL_DATE_FORMAT
@@ -290,7 +290,7 @@ fun currentDate(): Date {
     } catch (ex: ParseException) {
         ex.printStackTrace()
         val defaultDate =
-            SimpleDateFormat(ConstantKey.DATE_MM_FORMAT, Locale.getDefault()).parse("2000-01-01")
+            SimpleDateFormat(DATE_MM_FORMAT, Locale.getDefault()).parse("2000-01-01")
         defaultDate!!
     }
 }
@@ -304,4 +304,16 @@ fun getCurrentDate(): String {
     val dateFormatFull = SimpleDateFormat(FORMATTED_DATE, Locale.getDefault())
     val currentCal = Calendar.getInstance()
     return dateFormatFull.format(currentCal.time)
+}
+
+fun parseDateOrDefault(dateString: String): Date {
+    val defaultDateString = "01-01-2000"
+    val dateFormat = SimpleDateFormat(DATE_MM_FORMAT, Locale.getDefault())
+
+    return try {
+        dateFormat.parse(dateString) ?: dateFormat.parse(defaultDateString)
+    } catch (ex: ParseException) {
+        ex.printStackTrace()
+        dateFormat.parse(defaultDateString) ?: Date()
+    }
 }

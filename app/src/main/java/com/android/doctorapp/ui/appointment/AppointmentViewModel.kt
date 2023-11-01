@@ -851,6 +851,7 @@ class AppointmentViewModel @Inject constructor(
     }
 
     fun getNotificationAppointmentDetails() {
+        setShowProgress(true)
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 when (val response =

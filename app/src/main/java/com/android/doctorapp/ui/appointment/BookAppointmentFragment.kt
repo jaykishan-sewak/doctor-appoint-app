@@ -28,6 +28,7 @@ import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE_MONTH_YEA
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_HOUR_MINUTE_SECOND
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.dateFormatter
+import com.android.doctorapp.util.extension.hideKeyboard
 import com.android.doctorapp.util.extension.negativeButton
 import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.openEmailSender
@@ -122,6 +123,7 @@ class BookAppointmentFragment :
 
         viewModel.isBookAppointmentClick.observe(viewLifecycleOwner) { it ->
             if (it) {
+                binding.buttonBookAppointment.hideKeyboard()
                 context?.alert {
                     setTitle(resources.getString(R.string.booking))
                     setMessage(resources.getString(R.string.dialog_appointment_desc))

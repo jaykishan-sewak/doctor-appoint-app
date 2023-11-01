@@ -254,6 +254,7 @@
     <string name="patients_feedback_label">Patients Feedback</string>
     <string name="no_reviews_found">No Reviews Found</string>
     <string name="overall_rating">Overall Rating</string>
+    <string name="no_feedback_found">No feedbacks found</string>
 
 
 </resources>

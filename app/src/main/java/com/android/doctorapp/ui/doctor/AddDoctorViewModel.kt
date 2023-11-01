@@ -1,7 +1,9 @@
 package com.android.doctorapp.ui.doctor
 
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.RadioGroup
@@ -37,6 +39,7 @@ import com.android.doctorapp.util.constants.ConstantKey.MALE_GENDER
 import com.android.doctorapp.util.extension.asLiveData
 import com.android.doctorapp.util.extension.isEmailAddressValid
 import com.android.doctorapp.util.extension.isNetworkAvailable
+import com.android.doctorapp.util.extension.parseDateOrDefault
 import com.android.doctorapp.util.extension.toast
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.flow.collectLatest
@@ -445,6 +448,7 @@ class AddDoctorViewModel @Inject constructor(
         viewModelScope.launch {
             session.getString(USER_ID).collectLatest {
                 val userData: UserDataRequestModel
+                Log.d(TAG, "updateUser: ${dob.value}")
                 if (isDoctor.value == true) {
                     userData = UserDataRequestModel(
                         userId = it.toString(),
@@ -472,10 +476,7 @@ class AddDoctorViewModel @Inject constructor(
                             } as ArrayList<AddShiftRequestModel>,
                         isAdmin = false,
                         isNotificationEnable = notificationToggleData.value == true,
-                        dob = SimpleDateFormat(
-                            DATE_MM_FORMAT,
-                            Locale.getDefault()
-                        ).parse(dob.value.toString()),
+                        dob = parseDateOrDefault(dob.value!!),
                         isUserVerified = true,
                         holidayList = if (holidayList.value?.isNotEmpty() == true) holidayList.value?.toList()
                             ?.map { holidayDate -> holidayDate.holidayDate } as ArrayList<Date> else null,
@@ -500,10 +501,7 @@ class AddDoctorViewModel @Inject constructor(
                         isEmailVerified = true,
                         isPhoneNumberVerified = true,
                         isAdmin = false,
-                        dob = SimpleDateFormat(
-                            DATE_MM_FORMAT,
-                            Locale.getDefault()
-                        ).parse(dob.value.toString()),
+                        dob = parseDateOrDefault(dob.value!!),
                         isUserVerified = true,
                         images = imageUrl
 
@@ -513,6 +511,16 @@ class AddDoctorViewModel @Inject constructor(
                 setShowProgress(true)
                 when (val response = authRepository.updateUserData(userData, fireStore)) {
                     is ApiSuccessResponse -> {
+                        Log.d(
+                            TAG,
+                            "updateUser: ${
+                                SimpleDateFormat(
+                                    DATE_MM_FORMAT,
+                                    Locale.getDefault()
+                                ).parse(dob.value.toString())
+                            }"
+                        )
+                        Log.d(TAG, "updateUser: ${dob.value}")
                         if (response.body.userId.isNotEmpty()) {
                             name.value = ""
                             email.value = ""
