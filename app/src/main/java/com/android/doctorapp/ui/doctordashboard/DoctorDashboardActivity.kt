@@ -2,8 +2,6 @@ package com.android.doctorapp.ui.doctordashboard
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -39,13 +37,9 @@ class DoctorDashboardActivity :
         val isBookAppointment = intent.extras?.getBoolean(IS_BOOK_APPOINTMENT)
         if (fragmentType == DOCTOR_FRAGMENT) {
             val bundle = Bundle()
-            Handler(Looper.getMainLooper()).postDelayed({
-                // Code to be executed after a 2-second delay
-                bundle.putString(APPOINTMENT_DOCUMENT_ID, documentId)
-                bundle.putBoolean(IS_BOOK_APPOINTMENT, isBookAppointment!!)
-                navController.navigate(R.id.AppointmentDetails, bundle)
-            }, 1000)
-
+            bundle.putString(APPOINTMENT_DOCUMENT_ID, documentId)
+            bundle.putBoolean(IS_BOOK_APPOINTMENT, isBookAppointment!!)
+            navController.navigate(R.id.AppointmentDetails, bundle)
         }
 
         binding.navView.setOnItemSelectedListener { item ->

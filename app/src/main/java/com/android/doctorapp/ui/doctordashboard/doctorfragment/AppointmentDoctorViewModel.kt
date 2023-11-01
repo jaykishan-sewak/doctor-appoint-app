@@ -112,6 +112,7 @@ class AppointmentDoctorViewModel @Inject constructor(
     }
 
     fun getAppointmentList() {
+        dataFound.value = true
         mainList = mutableListOf()
         appointmentList.value = emptyList()
         viewModelScope.launch {
@@ -130,7 +131,7 @@ class AppointmentDoctorViewModel @Inject constructor(
                                         it1.bookingDateTime
                                     }
                                 addData()
-                            }
+                            } else dataFound.value = false
                         }
 
                         is ApiErrorResponse -> {
@@ -139,7 +140,6 @@ class AppointmentDoctorViewModel @Inject constructor(
                         }
 
                         is ApiNoNetworkResponse -> {
-                            context.toast(response.errorMessage)
                             setShowProgress(false)
                         }
 
@@ -174,6 +174,7 @@ class AppointmentDoctorViewModel @Inject constructor(
                     }
 
                     is ApiErrorResponse -> {
+                        context.toast(response.errorMessage)
                         setShowProgress(false)
                     }
 
@@ -191,17 +192,19 @@ class AppointmentDoctorViewModel @Inject constructor(
 
     fun updateUserData(token: String?) {
         viewModelScope.launch {
-            session.getString(USER_ID).collectLatest {
+            val userId = session.getString(USER_ID).firstOrNull()
+            if (!userId.isNullOrEmpty()) {
                 if (context.isNetworkAvailable()) {
                     setShowProgress(true)
                     when (val response =
-                        appointmentRepository.updateUserData(token, it, fireStore)) {
+                        appointmentRepository.updateUserData(token, userId, fireStore)) {
                         is ApiSuccessResponse -> {
                             setShowProgress(false)
                             session.putBoolean(IS_NEW_USER_TOKEN, false)
                         }
 
                         is ApiErrorResponse -> {
+                            context.toast(response.errorMessage)
                             setShowProgress(false)
                         }
 

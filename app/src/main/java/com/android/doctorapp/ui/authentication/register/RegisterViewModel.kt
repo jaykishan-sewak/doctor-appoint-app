@@ -123,7 +123,7 @@ class RegisterViewModel @Inject constructor(
     private fun callRegisterApi() {
         viewModelScope.launch {
             setShowProgress(true)
-            when (authRepository.register(
+            when (val response = authRepository.register(
                 firebaseAuth,
                 email = email.value.toString(),
                 password = password.value.toString(),
@@ -134,6 +134,7 @@ class RegisterViewModel @Inject constructor(
 
                 is ApiErrorResponse -> {
                     setShowProgress(false)
+                    context.toast(response.errorMessage)
                 }
 
                 is ApiNoNetworkResponse -> {

@@ -359,8 +359,7 @@ class UpdateDoctorProfileFragment :
                     true
                 )
                 findNavController().popBackStack()
-            }
-            else {
+            } else {
                 if (it.equals(requireContext().resources.getString(R.string.success))) {
                     context?.toast(resources.getString(R.string.doctor_update_successfully))
                     if (isFromAdmin) {
@@ -419,7 +418,14 @@ class UpdateDoctorProfileFragment :
                     addItem(enteredDegreeText.uppercase())
                     bindingView.autoCompleteTextView.setText("")
                 } else {
-                    addChip(selectedItem!!)
+                    val degreeList = viewModel.degreeLiveList.value
+                    if (degreeList?.contains(selectedItem) == true) {
+                        // Item already exists in the list, show a message
+                        context?.toast(getString(R.string.degree_already_exist))
+                    } else {
+                        // Item doesn't exist, add it to the list
+                        addChip(selectedItem!!)
+                    }
                     bindingView.autoCompleteTextView.setText("")
                 }
             }
@@ -457,7 +463,14 @@ class UpdateDoctorProfileFragment :
                     addSpecializationItem(enteredSpecializationText.uppercase())
                     bindingView.autoCompleteTextViewSpec.setText("")
                 } else {
-                    addSpecChip(selectedItem!!)
+//                    val degreeList = viewModel.specializationLiveList.value
+                    if (viewModel.specializationLiveList.value?.contains(selectedItem) == true) {
+                        // Item already exists in the list, show a message
+                        context?.toast(getString(R.string.specialization_already_exist))
+                    } else {
+                        // Item doesn't exist, add it to the list
+                        addSpecChip(selectedItem!!)
+                    }
                     bindingView.autoCompleteTextViewSpec.setText("")
                 }
             }
