@@ -9,6 +9,7 @@ import com.android.doctorapp.R
 import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.ProfileRepository
+import com.android.doctorapp.repository.local.IS_NEW_USER_TOKEN
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.local.USER_ID
 import com.android.doctorapp.repository.models.ApiErrorResponse
@@ -23,6 +24,7 @@ import com.android.doctorapp.util.extension.dateListFormatter
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -103,9 +105,9 @@ class ProfileViewModel @Inject constructor(
 
     fun signOut() {
         viewModelScope.launch {
+            updateUserData("")
             profileRepository.clearLoggedInSession()
         }
-        _navigateToLogin.postValue(true)
     }
 
     fun editClick(isDoctor: Boolean) {
@@ -174,6 +176,38 @@ class ProfileViewModel @Inject constructor(
                     }
                 } else
                     context.toast(resourceProvider.getString(R.string.check_internet_connection))
+            }
+        }
+    }
+
+    private fun updateUserData(token: String?) {
+        viewModelScope.launch {
+            val userId = session.getString(USER_ID).firstOrNull()
+            if (!userId.isNullOrEmpty()) {
+                if (context.isNetworkAvailable()) {
+                    setShowProgress(true)
+                    when (val response =
+                        profileRepository.emptyUserToken(token, userId, fireStore)) {
+                        is ApiSuccessResponse -> {
+                            setShowProgress(false)
+                            session.putBoolean(IS_NEW_USER_TOKEN, false)
+                            _navigateToLogin.postValue(true)
+                        }
+
+                        is ApiErrorResponse -> {
+                            context.toast(response.errorMessage)
+                            setShowProgress(false)
+                        }
+
+                        is ApiNoNetworkResponse -> {
+                            setShowProgress(false)
+                        }
+
+                        else -> {
+                            setShowProgress(false)
+                        }
+                    }
+                } else context.toast(resourceProvider.getString(R.string.check_internet_connection))
             }
         }
     }

@@ -109,5 +109,29 @@ class ProfileRepository @Inject constructor(
         }
     }
 
+    suspend fun emptyUserToken(
+        tokenId: String?, userId: String?, fireStore: FirebaseFirestore
+    ): ApiResponse<Boolean> {
+        return try {
+
+            val updateUserResponse =
+                fireStore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
+                    .whereEqualTo(ConstantKey.DBKeys.FIELD_USER_ID, userId).limit(1)
+                    .get().await()
+
+            val userData: UserDataResponseModel =
+                updateUserResponse.documents[0].toObject(UserDataResponseModel::class.java)!!
+            userData.token = tokenId
+            val response =
+                fireStore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
+                    .document(updateUserResponse.documents[0].id)
+                    .set(userData).await()
+
+            ApiResponse.create(response = Response.success(true))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
 
 }

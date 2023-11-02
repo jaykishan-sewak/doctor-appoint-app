@@ -53,7 +53,9 @@ class AppointmentDoctorViewModel @Inject constructor(
         session.getString(USER_TOKEN).collectLatest {
             if (it.isNullOrEmpty()) {
                 firebaseToken()
-            } else getAppointmentList()
+            } else
+                if (appointmentList.value == null)
+                    getAppointmentList()
         }
     }
 
