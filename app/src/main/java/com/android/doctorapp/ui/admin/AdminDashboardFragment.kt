@@ -1,8 +1,6 @@
 package com.android.doctorapp.ui.admin
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -84,12 +82,9 @@ class AdminDashboardFragment :
         val navController = findNavController()
         navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(ADMIN_FRAGMENT)
             ?.observe(viewLifecycleOwner) {
-                if (it) {
-                    val handler = Handler(Looper.getMainLooper())
-                    handler.postDelayed({
-                        viewModel.getItems()
-                    },2000)
-                }
+                if (it)
+                    viewModel.getItems()
+
             }
     }
 
