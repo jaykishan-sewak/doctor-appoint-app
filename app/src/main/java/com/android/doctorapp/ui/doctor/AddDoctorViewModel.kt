@@ -43,6 +43,7 @@ import com.android.doctorapp.util.extension.parseDateOrDefault
 import com.android.doctorapp.util.extension.toast
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -446,12 +447,13 @@ class AddDoctorViewModel @Inject constructor(
 
     private fun updateUser(imageUrl: String) {
         viewModelScope.launch {
-            session.getString(USER_ID).collectLatest {
+            val userId = session.getString(USER_ID).firstOrNull()
+            if (!userId.isNullOrEmpty()) {
                 val userData: UserDataRequestModel
                 Log.d(TAG, "updateUser: ${dob.value}")
                 if (isDoctor.value == true) {
                     userData = UserDataRequestModel(
-                        userId = it.toString(),
+                        userId = userId.toString(),
                         isDoctor = true,
                         email = email.value.toString(),
                         name = name.value.toString(),
@@ -491,7 +493,7 @@ class AddDoctorViewModel @Inject constructor(
                 } else {
                     //Here Code for User Update
                     userData = UserDataRequestModel(
-                        userId = it.toString(),
+                        userId = userId.toString(),
                         isDoctor = false,
                         email = email.value.toString(),
                         name = name.value.toString(),
@@ -511,16 +513,6 @@ class AddDoctorViewModel @Inject constructor(
                 setShowProgress(true)
                 when (val response = authRepository.updateUserData(userData, fireStore)) {
                     is ApiSuccessResponse -> {
-                        Log.d(
-                            TAG,
-                            "updateUser: ${
-                                SimpleDateFormat(
-                                    DATE_MM_FORMAT,
-                                    Locale.getDefault()
-                                ).parse(dob.value.toString())
-                            }"
-                        )
-                        Log.d(TAG, "updateUser: ${dob.value}")
                         if (response.body.userId.isNotEmpty()) {
                             name.value = ""
                             email.value = ""
@@ -553,6 +545,7 @@ class AddDoctorViewModel @Inject constructor(
                         setShowProgress(false)
                     }
                 }
+
             }
         }
 

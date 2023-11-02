@@ -255,6 +255,8 @@
     <string name="no_reviews_found">No Reviews Found</string>
     <string name="overall_rating">Overall Rating</string>
     <string name="no_feedback_found">No feedbacks found</string>
+    <string name="degree_already_exist">Degree is already exist</string>
+    <string name="specialization_already_exist">Specialization is already exist</string>
 
 
 </resources>
