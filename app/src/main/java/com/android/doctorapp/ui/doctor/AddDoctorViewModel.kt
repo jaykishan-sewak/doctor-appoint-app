@@ -223,7 +223,8 @@ class AddDoctorViewModel @Inject constructor(
                             data.value = userObj
                             _dataResponse.value = response.body
                             if (!response.body.images.isNullOrEmpty()) {
-                                imageUri.value = response.body.images?.toUri()
+                                imageUri.value =
+                                    if (!response.body.images.isNullOrEmpty()) response.body.images?.toUri() else null
                             }
                             setShowProgress(false)
                         }
@@ -399,7 +400,10 @@ class AddDoctorViewModel @Inject constructor(
             if (imageUri.value != null && !imageUri.value.toString().startsWith("https:"))
                 uploadImage(imageUri.value!!)
             else
-                this.updateUser(imageUri.value.toString())
+                if (imageUri.value != null)
+                    this.updateUser(imageUri.value.toString())
+                else
+                    this.updateUser("")
         } else {
             context.toast(resourceProvider.getString(R.string.check_internet_connection))
         }
@@ -482,7 +486,7 @@ class AddDoctorViewModel @Inject constructor(
                             ?.filter { it.isWeekOff == true }
                             ?.map { weekOffModel -> weekOffModel.dayName }
                                 as ArrayList<String> else null,
-                        images = imageUrl,
+                        images = imageUrl.ifEmpty { null },
                         addressLatLng = addressLatLngList.value,
                         geohash = geoHash.value
                     )
@@ -501,9 +505,9 @@ class AddDoctorViewModel @Inject constructor(
                         isAdmin = false,
                         dob = parseDateOrDefault(dob.value!!),
                         isUserVerified = true,
-                        images = imageUrl
+                        images = imageUrl.ifEmpty { null },
 
-                    )
+                        )
 
                 }
                 setShowProgress(true)
