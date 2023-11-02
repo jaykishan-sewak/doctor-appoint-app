@@ -1,9 +1,7 @@
 package com.android.doctorapp.ui.doctor
 
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.RadioGroup
@@ -19,6 +17,7 @@ import com.android.doctorapp.repository.AuthRepository
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.local.USER_ID
 import com.android.doctorapp.repository.local.USER_IS_EMAIL_VERIFIED
+import com.android.doctorapp.repository.local.USER_TYPE
 import com.android.doctorapp.repository.models.AddShiftRequestModel
 import com.android.doctorapp.repository.models.AddShiftTimeModel
 import com.android.doctorapp.repository.models.ApiErrorResponse
@@ -31,9 +30,9 @@ import com.android.doctorapp.repository.models.UserDataRequestModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.repository.models.WeekOffModel
 import com.android.doctorapp.util.SingleLiveEvent
+import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.ADDRESS_FRAGMENT
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.OTP_FRAGMENT
-import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
 import com.android.doctorapp.util.constants.ConstantKey.FEMALE_GENDER
 import com.android.doctorapp.util.constants.ConstantKey.MALE_GENDER
 import com.android.doctorapp.util.extension.asLiveData
@@ -45,9 +44,7 @@ import com.google.android.material.chip.Chip
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 import javax.inject.Inject
 
 class AddDoctorViewModel @Inject constructor(
@@ -450,7 +447,6 @@ class AddDoctorViewModel @Inject constructor(
             val userId = session.getString(USER_ID).firstOrNull()
             if (!userId.isNullOrEmpty()) {
                 val userData: UserDataRequestModel
-                Log.d(TAG, "updateUser: ${dob.value}")
                 if (isDoctor.value == true) {
                     userData = UserDataRequestModel(
                         userId = userId.toString(),
@@ -522,9 +518,11 @@ class AddDoctorViewModel @Inject constructor(
                             isAvailableDate.value = ""
                             setShowProgress(false)
                             if (isDoctor.value == true) {
+                                session.putString(USER_TYPE, ConstantKey.USER_TYPE_DOCTOR)
                                 _addDoctorResponse.value =
                                     resourceProvider.getString(R.string.success)
                             } else {
+                                session.putString(USER_TYPE, ConstantKey.USER_TYPE_USER)
                                 _addDoctorResponse.value =
                                     resourceProvider.getString(R.string.success)
                             }

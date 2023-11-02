@@ -133,32 +133,37 @@ class BookingDetailViewModel @Inject constructor(
 
     fun getAppointmentDetails() {
         viewModelScope.launch {
-            setShowProgress(true)
-            when (val response =
-                appointmentRepository.getAppointmentDetails(
-                    documentId.value!!,
-                    fireStore
-                )) {
-                is ApiSuccessResponse -> {
-                    appointmentObj.value = response.body
-                    isCancelEnabled.value = checkAppointmentDate()
-                    setShowProgress(false)
-                }
+            if (context.isNetworkAvailable()) {
+                setShowProgress(true)
+                when (val response =
+                    appointmentRepository.getAppointmentDetails(
+                        documentId.value!!,
+                        fireStore
+                    )) {
+                    is ApiSuccessResponse -> {
+                        setShowProgress(false)
+                        appointmentObj.value = response.body
+                        isCancelEnabled.value = checkAppointmentDate()
+                    }
 
-                is ApiErrorResponse -> {
-                    context.toast(response.errorMessage)
-                    setShowProgress(false)
-                }
+                    is ApiErrorResponse -> {
+                        context.toast(response.errorMessage)
+                        setShowProgress(false)
+                    }
 
-                is ApiNoNetworkResponse -> {
-                    context.toast(response.errorMessage)
-                    setShowProgress(false)
-                }
+                    is ApiNoNetworkResponse -> {
+                        context.toast(response.errorMessage)
+                        setShowProgress(false)
+                    }
 
-                else -> {
-                    context.toast(resourceProvider.getString(R.string.something_went_wrong))
-                    setShowProgress(false)
+                    else -> {
+                        context.toast(resourceProvider.getString(R.string.something_went_wrong))
+                        setShowProgress(false)
+                    }
+
                 }
+            } else {
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
             }
 
         }

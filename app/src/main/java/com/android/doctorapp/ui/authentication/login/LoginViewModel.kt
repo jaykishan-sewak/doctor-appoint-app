@@ -172,20 +172,20 @@ class LoginViewModel @Inject constructor(
                 session.putString(USER_ID, response.body.userId)
                 session.putBoolean(USER_IS_EMAIL_VERIFIED, false)
                 if (response.body.isAdmin) {
-                    adminChecked.value = true
                     session.putString(USER_TYPE, USER_TYPE_ADMIN)
+                    adminChecked.value = true
                 } else if (response.body.isDoctor) {
 
                     if (response.body.isUserVerified) {
-                        doctorChecked.value = true
                         session.putString(USER_TYPE, USER_TYPE_DOCTOR)
+                        doctorChecked.value = true
                     } else {
                         isUserVerified.postValue(DOCTOR)
                     }
                 } else {
                     if (response.body.isUserVerified) {
-                        userChecked.value = true
                         session.putString(USER_TYPE, USER_TYPE_USER)
+                        userChecked.value = true
                     } else {
                         isUserVerified.postValue(USER)
                     }
