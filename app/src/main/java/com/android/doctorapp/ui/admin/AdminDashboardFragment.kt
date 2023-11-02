@@ -1,6 +1,8 @@
 package com.android.doctorapp.ui.admin
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -72,18 +74,21 @@ class AdminDashboardFragment :
             lifecycleOwner = viewLifecycleOwner
             viewModel = this@AdminDashboardFragment.viewModel
         }
-        setUpWithViewModel(viewModel)
-        registerObserver(layoutBinding)
         return layoutBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setUpWithViewModel(viewModel)
+        registerObserver(binding)
         val navController = findNavController()
         navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(ADMIN_FRAGMENT)
             ?.observe(viewLifecycleOwner) {
                 if (it) {
-                    viewModel.getItems()
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.postDelayed({
+                        viewModel.getItems()
+                    },2000)
                 }
             }
     }

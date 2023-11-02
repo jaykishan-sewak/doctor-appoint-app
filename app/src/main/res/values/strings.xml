@@ -132,8 +132,8 @@
     <string name="user_request_fragment">User Request fragment</string>
     <string name="add_holiday">Add Holiday</string>
     <string name="doctor_details">Doctor Details</string>
-    <string name="degree_label">Degree : </string>
-    <string name="specialization_label">Specialization : </string>
+    <string name="degree_label">Degree </string>
+    <string name="specialization_label">Specialization </string>
     <string name="booking">Booking</string>
     <string name="dialog_appointment_desc">Are you sure you want to Booking Appointment?</string>
     <string name="online_booking">Online Booking</string>
@@ -155,17 +155,17 @@
     <string name="reject_appointment_desc">Are you sure you want to reject appointment?</string>
     <string name="enter_reason">Enter reason</string>
     <string name="select_week_off">Select WeekOff</string>
-    <string name="name">Name :</string>
-    <string name="age">Age :</string>
-    <string name="address">Address :</string>
+    <string name="name">Name </string>
+    <string name="age">Age </string>
+    <string name="address">Address </string>
     <string name="search">Search</string>
     <string name="my_booking">My booking</string>
     <string name="years_old">Years old</string>
     <string name="approve">Approve</string>
-    <string name="email">Email :</string>
-    <string name="contact_no">Contact no :</string>
-    <string name="email_verified">Email Verified :</string>
-    <string name="phone_verified">Phone verified :</string>
+    <string name="email">Email </string>
+    <string name="contact_no">Contact no </string>
+    <string name="email_verified">Email Verified </string>
+    <string name="phone_verified">Phone verified </string>
     <string name="no_appointments_found">No Appointments Found</string>
 
     <string name="no_data_found">No Data Found</string>

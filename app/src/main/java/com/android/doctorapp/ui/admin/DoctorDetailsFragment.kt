@@ -110,19 +110,23 @@ class DoctorDetailsFragment :
                 it, bundle
             )
         }
+        viewModel.isDeletedSuccess.observe(viewLifecycleOwner) {
+            if (it) {
+                navController.previousBackStackEntry?.savedStateHandle?.set(
+                    ADMIN_FRAGMENT,
+                    true
+                )
+                navController.popBackStack()
+            }
+        }
         viewModel.deleteId.observe(viewLifecycleOwner) {
-            if (it!!.isNotEmpty()) {
+            if (!it.isNullOrEmpty()) {
                 context?.alert {
                     setTitle(resources.getString(R.string.delete))
                     setMessage(resources.getString(R.string.are_you_sure_want_to_delete))
 
                     positiveButton { dialog ->
                         viewModel.deleteDoctor(it)
-                        navController.previousBackStackEntry?.savedStateHandle?.set(
-                            ADMIN_FRAGMENT,
-                            true
-                        )
-                        navController.popBackStack()
                         dialog.dismiss()
                     }
                     negativeButton(resources.getString(R.string.cancel)) { dialog ->
