@@ -25,7 +25,9 @@ class AdminRepository @Inject constructor(
             val userList = arrayListOf<UserDataResponseModel>()
             for (document: DocumentSnapshot in response.documents) {
                 val user = document.toObject(UserDataResponseModel::class.java)
-                userList.add(user!!)
+                user?.let {
+                    userList.add(it)
+                }
             }
             ApiResponse.create(response = Response.success(userList))
         } catch (e: Exception) {
