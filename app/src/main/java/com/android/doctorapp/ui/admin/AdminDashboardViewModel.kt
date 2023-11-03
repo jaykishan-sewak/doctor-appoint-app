@@ -41,6 +41,7 @@ class AdminDashboardViewModel @Inject constructor(
     val navigateToLogin = _navigateToLogin.asLiveData()
 
     val isLogoutClick: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isDeletedSuccess: MutableLiveData<Boolean> = MutableLiveData(false)
 
     init {
         getItems()
@@ -50,7 +51,8 @@ class AdminDashboardViewModel @Inject constructor(
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 setShowProgress(true)
-                when (val response = adminRepository.getDoctorList(fireStore)) {
+                doctorList.value = emptyList()
+                when (val response = adminRepository.adminGetDoctorList(fireStore)) {
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
                         if (response.body.isNotEmpty()) {
@@ -87,6 +89,7 @@ class AdminDashboardViewModel @Inject constructor(
                             if (itemPosition.value in 0 until currentList.size) {
                                 currentList.removeAt(itemPosition.value!!)
                                 doctorList.postValue(currentList)
+                                isDeletedSuccess.postValue(true)
                             }
                         }
                     }

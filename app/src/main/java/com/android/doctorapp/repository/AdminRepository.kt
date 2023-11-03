@@ -2,12 +2,9 @@ package com.android.doctorapp.repository
 
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.models.ApiResponse
-import com.android.doctorapp.repository.models.FeedbackResponseModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_DOCTOR
-import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_DOCTOR_ID
-import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_FEEDBACK
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.TABLE_USER_DATA
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -20,28 +17,16 @@ class AdminRepository @Inject constructor(
     private val session: Session
 ) {
 
-    suspend fun getDoctorList(firestore: FirebaseFirestore): ApiResponse<List<UserDataResponseModel>> {
+    suspend fun adminGetDoctorList(fireStore: FirebaseFirestore): ApiResponse<List<UserDataResponseModel>> {
         return try {
-            val response = firestore.collection(TABLE_USER_DATA)
+            val response = fireStore.collection(TABLE_USER_DATA)
                 .whereEqualTo(FIELD_DOCTOR, true).get().await()
 
             val userList = arrayListOf<UserDataResponseModel>()
             for (document: DocumentSnapshot in response.documents) {
                 val user = document.toObject(UserDataResponseModel::class.java)
-                var total: Int
                 user?.let {
-                    it.docId = document.id
-                    val feedbackData = firestore.collection(TABLE_FEEDBACK)
-                        .whereEqualTo(FIELD_DOCTOR_ID, it.userId)
-                        .get()
-                        .await()
-                    var feedback = FeedbackResponseModel()
-                    for (snapshot in feedbackData) {
-                        feedback = snapshot.toObject()
-                    }
-                    it.rating = feedback.rating
                     userList.add(it)
-
                 }
             }
             ApiResponse.create(response = Response.success(userList))
@@ -52,12 +37,12 @@ class AdminRepository @Inject constructor(
 
 
     suspend fun deleteDoctor(
-        firestore: FirebaseFirestore,
+        fireStore: FirebaseFirestore,
         documentId: String
     ): ApiResponse<Boolean> {
         return try {
             val response =
-                firestore.collection(TABLE_USER_DATA).document(documentId)
+                fireStore.collection(TABLE_USER_DATA).document(documentId)
                     .delete().await()
             ApiResponse.create(response = Response.success(true))
         } catch (e: Exception) {

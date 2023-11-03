@@ -72,19 +72,19 @@ class AdminDashboardFragment :
             lifecycleOwner = viewLifecycleOwner
             viewModel = this@AdminDashboardFragment.viewModel
         }
-        setUpWithViewModel(viewModel)
-        registerObserver(layoutBinding)
         return layoutBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setUpWithViewModel(viewModel)
+        registerObserver(binding)
         val navController = findNavController()
         navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(ADMIN_FRAGMENT)
             ?.observe(viewLifecycleOwner) {
-                if (it) {
+                if (it)
                     viewModel.getItems()
-                }
+
             }
     }
 
