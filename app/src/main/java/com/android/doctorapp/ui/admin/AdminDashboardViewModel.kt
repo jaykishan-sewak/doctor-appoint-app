@@ -52,7 +52,7 @@ class AdminDashboardViewModel @Inject constructor(
             if (context.isNetworkAvailable()) {
                 setShowProgress(true)
                 doctorList.value = emptyList()
-                when (val response = adminRepository.getDoctorList(fireStore)) {
+                when (val response = adminRepository.adminGetDoctorList(fireStore)) {
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
                         if (response.body.isNotEmpty()) {
