@@ -3,10 +3,12 @@ package com.android.doctorapp.ui.admin.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.DoctorRowLayoutBinding
+import com.android.doctorapp.repository.models.ImageUriAndGender
 import com.android.doctorapp.repository.models.UserDataResponseModel
 
 class AdminDoctorItemAdapter(
@@ -15,11 +17,17 @@ class AdminDoctorItemAdapter(
     private val listener: OnItemClickListener
 ) : RecyclerView.Adapter<AdminDoctorItemAdapter.ItemViewHolder>() {
     class ItemViewHolder(val view: DoctorRowLayoutBinding) : RecyclerView.ViewHolder(view.root) {
-        fun bind(item: UserDataResponseModel, listener: OnItemClickListener, position: Int) {
+        fun bind(
+            item: UserDataResponseModel,
+            listener: OnItemClickListener,
+            position: Int,
+            imageUriAndGender: ImageUriAndGender
+        ) {
             view.apply {
                 userData = item
                 index = position
                 onItemClickListener = listener
+                imageGender = imageUriAndGender
             }
         }
     }
@@ -37,7 +45,11 @@ class AdminDoctorItemAdapter(
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val objects = userList[position]
-        holder.bind(objects, listener, position)
+        val imageAndGender = ImageUriAndGender(
+            if (!objects.images.isNullOrEmpty()) objects.images?.toUri() else null,
+            objects.gender
+        )
+        holder.bind(objects, listener, position, imageAndGender)
     }
 
     override fun getItemCount(): Int {

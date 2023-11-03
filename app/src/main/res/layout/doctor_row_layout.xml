@@ -4,7 +4,6 @@
 
     <data>
 
-
         <variable
             name="userData"
             type="com.android.doctorapp.repository.models.UserDataResponseModel" />
@@ -17,6 +16,10 @@
         <variable
             name="index"
             type="Integer" />
+
+        <variable
+            name="imageGender"
+            type="com.android.doctorapp.repository.models.ImageUriAndGender" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -58,7 +61,7 @@
                         android:layout_width="@dimen/dp_100"
                         android:layout_height="@dimen/dp_100"
                         android:scaleType="centerCrop"
-                        app:genderImage="@{userData.gender}" />
+                        app:imageUriAndGender="@{imageGender}"  />
 
                 </androidx.cardview.widget.CardView>
 

@@ -1,6 +1,7 @@
 package com.android.doctorapp.ui.admin
 
 import android.content.Context
+import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -12,6 +13,7 @@ import com.android.doctorapp.repository.local.USER_ID
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
+import com.android.doctorapp.repository.models.ImageUriAndGender
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.extension.asLiveData
@@ -42,6 +44,8 @@ class AdminDashboardViewModel @Inject constructor(
 
     val isLogoutClick: MutableLiveData<Boolean> = MutableLiveData(false)
     val isDeletedSuccess: MutableLiveData<Boolean> = MutableLiveData(false)
+
+    var imageOrGenderObj: MutableLiveData<ImageUriAndGender> = MutableLiveData()
 
     init {
         getItems()
@@ -126,6 +130,10 @@ class AdminDashboardViewModel @Inject constructor(
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
                         doctorDetails.value = response.body
+                        imageOrGenderObj.value = ImageUriAndGender(
+                            if (!response.body.images.isNullOrEmpty()) response.body.images?.toUri() else null,
+                            response.body.gender
+                        )
                     }
 
                     is ApiErrorResponse -> {
