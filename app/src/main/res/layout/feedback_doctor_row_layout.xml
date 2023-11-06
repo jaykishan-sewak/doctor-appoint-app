@@ -125,15 +125,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/margin_20"
+                    android:layout_marginTop="@dimen/margin_10"
                     android:textAlignment="textStart"
                     android:textColor="@color/grey"
                     android:textFontWeight="@integer/m3_sys_motion_duration_extra_long1"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     app:headerDate="@{userData.feedbackDetails.createdAt}"
-                    app:layout_constraintBottom_toBottomOf="@+id/doctorRatingBar"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/doctorRatingBar" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvDoctorFeedbackMsg"
