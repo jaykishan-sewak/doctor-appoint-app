@@ -78,19 +78,22 @@ class UserAppointmentViewModel @Inject constructor(
                 when (val response =
                     appointmentRepository.getLatLngDoctorList(fireStore, latitude, longitude)) {
                     is ApiSuccessResponse -> {
-                        setShowProgress(false)
                         if (response.body.isNotEmpty()) {
                             items.value = response.body
                             tempData.value = items.value
-                        } else
+                        } else {
+                            setShowProgress(false)
                             dataFound.value = true
+                        }
                     }
 
                     is ApiErrorResponse -> {
+                        context.toast(response.errorMessage)
                         setShowProgress(false)
                     }
 
                     is ApiNoNetworkResponse -> {
+                        context.toast(response.errorMessage)
                         setShowProgress(false)
                     }
 

@@ -175,11 +175,12 @@ class AppointmentRepository @Inject constructor() {
             val response =
                 fireStore.collection(TABLE_APPOINTMENT).document(documentId).get().await()
             val dataModel = response.toObject(AppointmentModel::class.java)
-            val data = fireStore.collection(TABLE_USER_DATA).whereEqualTo(FIELD_USER_ID,dataModel?.doctorId).get().await()
+            val data = fireStore.collection(TABLE_USER_DATA)
+                .whereEqualTo(FIELD_USER_ID, dataModel?.doctorId).get().await()
             for (snapshot in data) {
-               dataModel.let {
-                   it?.doctorDetails = snapshot.toObject(UserDataResponseModel::class.java)
-               }
+                dataModel.let {
+                    it?.doctorDetails = snapshot.toObject(UserDataResponseModel::class.java)
+                }
             }
             ApiResponse.create(response = Response.success(dataModel))
         } catch (e: Exception) {
@@ -298,7 +299,6 @@ class AppointmentRepository @Inject constructor() {
             val radiusInM = 50.0 * 1000.0
             val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInM)
             val userList = arrayListOf<UserDataResponseModel>()
-            var feedback = FeedbackResponseModel()
             for (b in bounds) {
                 val response =
                     firestore.collection(TABLE_USER_DATA).whereEqualTo(FIELD_DOCTOR, true)
@@ -439,17 +439,21 @@ class AppointmentRepository @Inject constructor() {
             val response =
                 fireStore.collection(TABLE_APPOINTMENT).document(documentId).get().await()
             val dataModel = response.toObject(AppointmentModel::class.java)
-            val data = fireStore.collection(TABLE_USER_DATA).whereEqualTo(FIELD_USER_ID,dataModel?.userId).get().await()
+            val data =
+                fireStore.collection(TABLE_USER_DATA).whereEqualTo(FIELD_USER_ID, dataModel?.userId)
+                    .get().await()
             for (snapshot in data) {
                 dataModel.let {
                     it?.doctorDetails = snapshot.toObject(UserDataResponseModel::class.java)
                     it?.id = response.id
                 }
             }
-            val symptom = fireStore.collection(TABLE_SYMPTOM).whereEqualTo(FIELD_USER_ID, dataModel?.userId).get().await()
+            val symptom =
+                fireStore.collection(TABLE_SYMPTOM).whereEqualTo(FIELD_USER_ID, dataModel?.userId)
+                    .get().await()
             for (symptomSnapshot in symptom) {
                 dataModel.let {
-                   val symptomObj = symptomSnapshot.toObject(SymptomModel::class.java)
+                    val symptomObj = symptomSnapshot.toObject(SymptomModel::class.java)
                     it?.symptomDetails = symptomObj.symptomDetails
                     it?.sufferingDay = symptomObj.sufferingDay
                 }

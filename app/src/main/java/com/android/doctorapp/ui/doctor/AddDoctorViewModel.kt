@@ -687,6 +687,7 @@ class AddDoctorViewModel @Inject constructor(
                 }
 
                 is ApiErrorResponse -> {
+                    isUserReload.postValue(false)
                     setApiError(response.errorMessage)
                     setShowProgress(false)
                 }

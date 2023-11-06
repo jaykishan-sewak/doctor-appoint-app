@@ -24,6 +24,7 @@ class AppProgressDialog {
         }
         mDialog = Dialog(activity)
         mDialog?.setContentView(R.layout.progressbar_layout)
+        mDialog?.setCanceledOnTouchOutside(false)
         mDialog?.show()
     }
 

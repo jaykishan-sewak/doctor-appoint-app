@@ -171,6 +171,7 @@ class UserAppointmentFragment :
             if (!it1.isNullOrEmpty()) {
                 adapter.filterList(it1)
                 viewModel.dataFound.value = false
+                viewModel.setShowProgress(false)
             } else {
                 viewModel.dataFound.value = true
                 adapter.filterList(emptyList())
