@@ -255,9 +255,9 @@ class AuthRepository @Inject constructor(
         }
     }
 
-    suspend fun userReload(firebaseUser: FirebaseUser): ApiResponse<Boolean> {
+    fun userReload(firebaseUser: FirebaseUser): ApiResponse<Boolean> {
         return try {
-            firebaseUser.reload().await()
+            val result = firebaseUser.reload()
             ApiResponse.create(response = Response.success(true))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
