@@ -651,7 +651,6 @@ class AddDoctorViewModel @Inject constructor(
 
     fun emailVerified() {
         viewModelScope.launch {
-            setShowProgress(true)
             when (val response = authRepository.emailVerified(firebaseUser)) {
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
@@ -679,7 +678,6 @@ class AddDoctorViewModel @Inject constructor(
 
     private fun userReload() {
         viewModelScope.launch {
-            setShowProgress(true)
             when (val response = authRepository.userReload(firebaseUser)) {
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
@@ -687,7 +685,6 @@ class AddDoctorViewModel @Inject constructor(
                 }
 
                 is ApiErrorResponse -> {
-                    isUserReload.postValue(false)
                     setApiError(response.errorMessage)
                     setShowProgress(false)
                 }
