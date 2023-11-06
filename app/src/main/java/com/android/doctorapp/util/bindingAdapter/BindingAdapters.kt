@@ -25,6 +25,7 @@ import androidx.lifecycle.lifecycleScope
 import com.android.doctorapp.R
 import com.android.doctorapp.repository.models.AddShiftTimeModel
 import com.android.doctorapp.repository.models.DateSlotModel
+import com.android.doctorapp.repository.models.ImageUriAndGender
 import com.android.doctorapp.util.ImageUtils
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DATE_MM_FORMAT
@@ -330,4 +331,22 @@ fun loadImageFromUri(imageView: ImageView, imageUri: Uri?) {
             .load(it)
             .into(imageView)
     }
+}
+
+@BindingAdapter("app:imageUriAndGender")
+fun loadImageFromUriAndGender(imageView: AppCompatImageView, imageUriAndGender: ImageUriAndGender?) {
+    val gender = imageUriAndGender?.gender
+    if (imageUriAndGender?.imageUri != null) {
+            Glide.with(imageView.context)
+                .load(imageUriAndGender.imageUri)
+                .into(imageView)
+
+    } else {
+        if (gender != null) {
+            val drawableRes =
+                if (gender.isNotEmpty() && gender == MALE_GENDER) R.drawable.ic_male_placeholder else R.drawable.ic_female_placeholder
+            imageView.setImageResource(drawableRes)
+        }
+    }
+
 }

@@ -80,7 +80,6 @@ class UpdateDoctorProfileFragment :
     lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
     lateinit var mTimePicker: TimePickerDialog
     val handler = Handler(Looper.getMainLooper())
-    var isFromAdmin: Boolean = false
     var isNotFromAdmin: Boolean = false
     private val runnable = object : Runnable {
         override fun run() {
@@ -119,10 +118,10 @@ class UpdateDoctorProfileFragment :
         return FragmentToolbar.Builder()
             .withId(R.id.toolbar)
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
-            .withTitle(if (isFromAdmin) R.string.update_doctor else R.string.title_profile)
+            .withTitle(if (viewModel.isAdminUpdatedProfile.value == true) R.string.update_doctor else R.string.title_profile)
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
             .withNavigationIcon(
-                if (isFromAdmin || !isNotFromAdmin) AppCompatResources.getDrawable(
+                if (viewModel.isAdminUpdatedProfile.value == true || !isNotFromAdmin) AppCompatResources.getDrawable(
                     requireContext(),
                     R.drawable.ic_back_white
                 ) else null
@@ -143,11 +142,11 @@ class UpdateDoctorProfileFragment :
 
         val arguments: Bundle? = arguments
         if (arguments != null) {
-            isFromAdmin = arguments.getBoolean(ADMIN_FRAGMENT)
+            viewModel.isAdminUpdatedProfile.value = arguments.getBoolean(ADMIN_FRAGMENT)
             fromFragment = arguments.getString(FROM_WHERE)
         }
 
-        isNotFromAdmin = isFromAdmin
+        isNotFromAdmin = viewModel.isAdminUpdatedProfile.value == true
 
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             override fun onCodeAutoRetrievalTimeOut(str: String) {
@@ -362,7 +361,7 @@ class UpdateDoctorProfileFragment :
             } else {
                 if (it.equals(requireContext().resources.getString(R.string.success))) {
                     context?.toast(resources.getString(R.string.doctor_update_successfully))
-                    if (isFromAdmin) {
+                    if (viewModel.isAdminUpdatedProfile.value == true) {
                         findNavController().popBackStack()
                     } else
                         startActivityFinish<DoctorDashboardActivity> { }

@@ -143,6 +143,7 @@ class AddDoctorViewModel @Inject constructor(
     var isFromWhere: MutableLiveData<String?> = MutableLiveData()
     val description: MutableLiveData<String> = MutableLiveData("")
     val descriptionError: MutableLiveData<String?> = MutableLiveData()
+    val isAdminUpdatedProfile: MutableLiveData<Boolean> = MutableLiveData(false)
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
         this.binding = binding
@@ -522,9 +523,14 @@ class AddDoctorViewModel @Inject constructor(
                             isAvailableDate.value = ""
                             setShowProgress(false)
                             if (isDoctor.value == true) {
-                                session.putString(USER_TYPE, ConstantKey.USER_TYPE_DOCTOR)
-                                _addDoctorResponse.value =
-                                    resourceProvider.getString(R.string.success)
+                                if (isAdminUpdatedProfile.value == true)
+                                    _addDoctorResponse.value =
+                                        resourceProvider.getString(R.string.success)
+                                else {
+                                    session.putString(USER_TYPE, ConstantKey.USER_TYPE_DOCTOR)
+                                    _addDoctorResponse.value =
+                                        resourceProvider.getString(R.string.success)
+                                }
                             } else {
                                 session.putString(USER_TYPE, ConstantKey.USER_TYPE_USER)
                                 _addDoctorResponse.value =
