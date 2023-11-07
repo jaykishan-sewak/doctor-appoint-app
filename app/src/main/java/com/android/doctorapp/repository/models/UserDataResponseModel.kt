@@ -18,7 +18,7 @@ data class UserDataResponseModel(
     var isEmailVerified: Boolean = false,
     var isPhoneNumberVerified: Boolean = false,
     var availableTime: ArrayList<AddShiftRequestModel>? = null,
-    var images: String ?= "",
+    var images: String? = "",
     var isAdmin: Boolean = false,
     var isNotificationEnable: Boolean = false,
     var dob: Date? = null,
@@ -29,5 +29,6 @@ data class UserDataResponseModel(
     var feedbackDetails: FeedbackResponseModel? = null,
     var addressLatLng: Map<String, Any>? = null,
     var geohash: String? = null,
-    var token : String? = null
+    var token: String? = null,
+    var numberOfFeedbacks: Int = 0
 )

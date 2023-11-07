@@ -64,9 +64,10 @@
             app:layout_constraintTop_toBottomOf="@+id/text_otp_verification_desc"
             app:password="false"
             app:pinBackground="@drawable/blue_border_drawable"
-            app:pinHeight="@dimen/margin_35"
+            app:pinHeight="@dimen/dp_48"
             app:pinLength="6"
-            app:pinWidth="@dimen/margin_35" />
+            app:pinWidth="@dimen/margin_50"
+            app:splitWidth="@dimen/margin_4" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

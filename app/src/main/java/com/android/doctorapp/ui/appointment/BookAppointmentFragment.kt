@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
@@ -33,6 +32,7 @@ import com.android.doctorapp.util.extension.negativeButton
 import com.android.doctorapp.util.extension.neutralButton
 import com.android.doctorapp.util.extension.openEmailSender
 import com.android.doctorapp.util.extension.openPhoneDialer
+import com.android.doctorapp.util.setResizableText
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -107,9 +107,10 @@ class BookAppointmentFragment :
 
         viewModel.getDoctorData()
 
-        binding.textDoctorDesc.setOnClickListener {
-            isExpanded = !isExpanded
-            updateDescriptionText(binding.textDoctorDesc)
+        viewModel.doctorDetails.observe(viewLifecycleOwner) {
+            if (it != null) {
+                binding.textDoctorDesc.setResizableText(it.doctorDescription, 2, true)
+            }
         }
         viewModel.daysDateList.observe(viewLifecycleOwner) {
             updateDateRecyclerview(it)
@@ -160,14 +161,6 @@ class BookAppointmentFragment :
             }
         }
 
-    }
-
-    private fun updateDescriptionText(descriptionTextView: TextView) {
-        if (isExpanded) {
-            descriptionTextView.maxLines = Int.MAX_VALUE // Expand description
-        } else {
-            descriptionTextView.maxLines = 2 // Collapse description to 2 lines
-        }
     }
 
 

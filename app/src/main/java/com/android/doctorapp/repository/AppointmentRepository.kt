@@ -328,7 +328,7 @@ class AppointmentRepository @Inject constructor() {
                         it.rating = if (numberOfFeedbacks > 0) {
                             total / numberOfFeedbacks
                         } else 0F
-
+                        it.numberOfFeedbacks = numberOfFeedbacks
                         userList.add(it)
                     }
                 }

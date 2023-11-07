@@ -478,7 +478,7 @@ class AddDoctorViewModel @Inject constructor(
                                 )
                             } as ArrayList<AddShiftRequestModel>,
                         isAdmin = false,
-                        isNotificationEnable = notificationToggleData.value == true,
+                        isNotificationEnable = (if (isProfileNavigation.value == true) notificationToggleData.value else true)!!,
                         dob = parseDateOrDefault(dob.value!!),
                         isUserVerified = true,
                         holidayList = if (holidayList.value?.isNotEmpty() == true) holidayList.value?.toList()
@@ -504,6 +504,7 @@ class AddDoctorViewModel @Inject constructor(
                         isEmailVerified = true,
                         isPhoneNumberVerified = true,
                         isAdmin = false,
+                        isNotificationEnable = (if (isProfileNavigation.value == true) notificationToggleData.value else true)!!,
                         dob = parseDateOrDefault(dob.value!!),
                         isUserVerified = true,
                         images = imageUrl.ifEmpty { null },
@@ -566,7 +567,7 @@ class AddDoctorViewModel @Inject constructor(
             email = email.value!!,
             name = name.value!!,
             contactNumber = contactNumber.value!!,
-            isNotificationEnable = notificationToggleData.value == true
+            isNotificationEnable = true
         )
 
         when (val response = authRepository.addDoctorData(userData, fireStore)) {
@@ -836,7 +837,7 @@ class AddDoctorViewModel @Inject constructor(
                     email = email.value!!,
                     name = name.value!!,
                     contactNumber = contactNumber.value!!,
-                    isNotificationEnable = notificationToggleData.value == true
+                    isNotificationEnable = true
                 )
 
                 when (val response = authRepository.updateDoctorData(userData, fireStore)) {

@@ -118,17 +118,6 @@
                 app:layout_constraintStart_toEndOf="@+id/tvFeesTextLabel"
                 app:layout_constraintTop_toTopOf="@+id/tvFeesTextLabel" />
 
-
-            <View
-                android:id="@+id/ratingBarContainer"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:onClick="@{()->onItemClickListener.onRatingClick(userData,index)}"
-                app:layout_constraintBottom_toBottomOf="@id/doctorRatingBar"
-                app:layout_constraintEnd_toEndOf="@id/doctorRatingBar"
-                app:layout_constraintStart_toStartOf="@id/doctorRatingBar"
-                app:layout_constraintTop_toTopOf="@id/doctorRatingBar" />
-
             <androidx.appcompat.widget.AppCompatRatingBar
                 android:id="@+id/doctorRatingBar"
                 style="@style/Widget.AppCompat.RatingBar.Small"
@@ -137,7 +126,21 @@
                 android:layout_marginTop="@dimen/margin_4"
                 android:progressTint="@color/rating_bg"
                 android:rating="@{userData.rating}"
-                app:layout_constraintStart_toStartOf="@+id/tvDoctorName"
+                app:layout_constraintStart_toStartOf="@+id/profileImage"
+                app:layout_constraintTop_toBottomOf="@+id/tvFeesTextLabel" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvNumberOfRatings"
+                style="@style/doctor_text_view"
+                android:layout_marginStart="@dimen/margin_5"
+                android:layout_marginTop="@dimen/margin_4"
+                android:onClick="@{()->onItemClickListener.onRatingClick(userData,index)}"
+                android:text='@{userData.numberOfFeedbacks + " Ratings"}'
+                android:textColor="@color/colorPrimary"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/doctorRatingBar"
                 app:layout_constraintTop_toBottomOf="@+id/tvFeesTextLabel" />
 
 
