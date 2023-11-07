@@ -153,7 +153,8 @@ class RegisterViewModel @Inject constructor(
         val userData = UserDataRequestModel(
             userId = firebaseUser.uid,
             isDoctor = false,
-            email = firebaseUser.email!!
+            email = firebaseUser.email!!,
+            isNotificationEnable = true
         )
 
         viewModelScope.launch {

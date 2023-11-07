@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.android.doctorapp.ui.admin.AdminDashboardViewModel" />
@@ -13,8 +14,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/app_bg"
-        android:focusable="true"
-        android:clickable="true">
+        android:clickable="true"
+        android:focusable="true">
+
         <include
             android:id="@+id/toolbarContainer"
             layout="@layout/custom_toolbar"
@@ -24,6 +26,23 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/searchEt"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_48"
+            android:layout_margin="@dimen/margin_20"
+            android:afterTextChanged="@{(text) -> viewModel.lengthChecked(text)}"
+            android:background="@drawable/search_bg"
+            android:drawableStart="@drawable/baseline_search_24"
+            android:drawablePadding="@dimen/padding_10"
+            android:hint="@string/search_doctor"
+            android:paddingStart="@dimen/padding_10"
+            android:textColorHint="@color/edittext_bg_grey"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbarContainer" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="0dp"
@@ -32,22 +51,21 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:listitem="@layout/doctor_row_layout"
-            app:layout_constraintTop_toBottomOf="@id/toolbarContainer" />
+            app:layout_constraintTop_toBottomOf="@id/searchEt"
+            tools:listitem="@layout/doctor_row_layout" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/fab"
-            android:layout_marginBottom="@dimen/margin_32"
             android:layout_marginEnd="@dimen/margin_32"
+            android:layout_marginBottom="@dimen/margin_32"
             android:onClick="@{() -> viewModel.addDoctor()}"
+            app:backgroundTint="@color/colorAccent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/baseline_add_24"
-            app:tint="@color/white"
-            app:backgroundTint="@color/colorAccent"
-            />
+            app:tint="@color/white" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

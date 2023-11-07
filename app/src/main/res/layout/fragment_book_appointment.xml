@@ -122,15 +122,13 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_doctor_desc"
                     style="@style/label_text2"
+                    android:layout_width="@dimen/dp_0"
                     android:layout_marginTop="@dimen/margin_15"
-                    android:ellipsize="end"
                     android:lineSpacingExtra="4sp"
-                    android:maxLines="2"
-                    android:text="@{viewModel.doctorDetails.doctorDescription}"
                     android:textColor="@color/grey"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/profileImage"
+                    app:layout_constraintStart_toStartOf="@id/profileImage"
                     app:layout_constraintTop_toBottomOf="@+id/profileImage" />
 
                 <androidx.appcompat.widget.AppCompatTextView

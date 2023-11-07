@@ -30,7 +30,7 @@ class AdminDashboardViewModel @Inject constructor(
     private val session: Session
 
 ) : BaseViewModel() {
-    val doctorList = MutableLiveData<List<UserDataResponseModel>?>()
+
 
     val _navigationListener = SingleLiveEvent<Int>()
     val navigationListener = _navigationListener.asLiveData()
@@ -47,20 +47,43 @@ class AdminDashboardViewModel @Inject constructor(
 
     var imageOrGenderObj: MutableLiveData<ImageUriAndGender> = MutableLiveData()
 
+    private val items = MutableLiveData<List<UserDataResponseModel>?>()
+    private val tempData = MutableLiveData<List<UserDataResponseModel>>()
+    var doctorList = items.asLiveData()
+
     init {
         getItems()
+    }
+
+    fun lengthChecked(text: CharSequence) {
+        if (text.toString().length >= 3) {
+            items.value = tempData.value
+            searchStarts(text.toString().lowercase())
+        } else
+            items.value = tempData.value
+    }
+
+    private fun searchStarts(text: String) {
+        val filterList = doctorList.value?.filter { data ->
+            data.name.lowercase().contains(text) || data.gender.lowercase()
+                .contains(text) || (data.degree != null && data.degree!!.contains(
+                text.uppercase()
+            ))
+        }
+        items.value = filterList!!
     }
 
     fun getItems() {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 setShowProgress(true)
-                doctorList.value = emptyList()
+                items.value = emptyList()
                 when (val response = adminRepository.adminGetDoctorList(fireStore)) {
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
                         if (response.body.isNotEmpty()) {
-                            doctorList.value = response.body
+                            items.value = response.body
+                            tempData.value = items.value
                         }
                     }
 
@@ -89,10 +112,10 @@ class AdminDashboardViewModel @Inject constructor(
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
                         if (response.body) {
-                            val currentList = doctorList.value?.toMutableList() ?: mutableListOf()
+                            val currentList = items.value?.toMutableList() ?: mutableListOf()
                             if (itemPosition.value in 0 until currentList.size) {
                                 currentList.removeAt(itemPosition.value!!)
-                                doctorList.postValue(currentList)
+                                items.postValue(currentList)
                                 isDeletedSuccess.postValue(true)
                             }
                         }

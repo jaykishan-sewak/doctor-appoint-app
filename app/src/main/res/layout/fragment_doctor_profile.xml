@@ -358,8 +358,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_20"
-                    android:text="@string/doctor_notification_enable"
+                    android:text="@string/appointment_notification"
                     android:textColor="@color/black"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@+id/ivAge"
                     app:layout_constraintTop_toBottomOf="@+id/ivAge" />
 

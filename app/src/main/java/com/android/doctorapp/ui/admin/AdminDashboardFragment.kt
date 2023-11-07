@@ -121,6 +121,7 @@ class AdminDashboardFragment :
                     findNavController().navigate(
                         R.id.admin_to_doctor_details, bundle
                     )
+                    binding.searchEt.text?.clear()
                 }
             })
     }
