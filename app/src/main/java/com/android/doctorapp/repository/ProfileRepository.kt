@@ -1,5 +1,7 @@
 package com.android.doctorapp.repository
 
+import android.net.Uri
+import android.util.Log
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.models.ApiResponse
 import com.android.doctorapp.repository.models.ProfileResponseModel
@@ -10,6 +12,7 @@ import com.android.doctorapp.util.constants.ConstantKey
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
 import retrofit2.Response
 import javax.inject.Inject
@@ -126,6 +129,50 @@ class ProfileRepository @Inject constructor(
                 fireStore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
                     .document(updateUserResponse.documents[0].id)
                     .set(userData).await()
+
+            ApiResponse.create(response = Response.success(true))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+    suspend fun uploadImage(
+        imageURI: Uri,
+        storage: FirebaseStorage
+    ): ApiResponse<String> {
+        return try {
+            val timestamp = System.currentTimeMillis().toString()
+            val response =
+                storage.reference.child("images").child("$timestamp.jpg").putFile(imageURI).await()
+            val imageUrl = response.storage.downloadUrl.await()
+            Log.d("response.storage.downloadUrl---", imageUrl.toString())
+            ApiResponse.create(response = Response.success(imageUrl.toString()))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
+
+    suspend fun updateClinicImgById(
+        clinicImgList: ArrayList<String>?, fireStore: FirebaseFirestore, userId: String?
+    ): ApiResponse<Boolean> {
+        return try {
+
+            val updateUserResponse =
+                fireStore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
+                    .whereEqualTo(ConstantKey.DBKeys.FIELD_USER_ID, userId).limit(1)
+                    .get().await()
+
+            val userData: UserDataResponseModel =
+                updateUserResponse.documents[0].toObject(UserDataResponseModel::class.java)!!
+            userData.apply {
+                clinicImg = if (clinicImgList?.isNotEmpty() == true) clinicImgList.toList()
+                    .map { clinicImg -> clinicImg } as ArrayList<String> else null
+            }
+            val response =
+                fireStore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
+                    .document(updateUserResponse.documents[0].id)
+                    .set(userData).await()
+
 
             ApiResponse.create(response = Response.success(true))
         } catch (e: Exception) {

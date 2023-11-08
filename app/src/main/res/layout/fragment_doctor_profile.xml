@@ -4,6 +4,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.android.doctorapp.ui.profile.ProfileViewModel" />
@@ -121,6 +123,32 @@
 
         </androidx.cardview.widget.CardView>
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/addClinicImg"
+            android:layout_width="@dimen/dp_70"
+            android:layout_height="@dimen/dp_70"
+            android:layout_marginTop="@dimen/margin_16"
+            android:src="@drawable/add_post"
+            android:visibility="@{viewModel.clinicImgList.size >= 3 ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toTopOf="@id/scrollView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@+id/rv_clinic_images"
+            app:layout_constraintTop_toBottomOf="@+id/cardView1" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_clinic_images"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_16"
+            android:orientation="horizontal"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toTopOf="@id/scrollView"
+            app:layout_constraintEnd_toStartOf="@+id/addClinicImg"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@+id/cardView1"
+            app:layout_constraintTop_toBottomOf="@+id/cardView1" />
+
         <ScrollView
             android:id="@+id/scrollView"
             android:layout_width="@dimen/dp_0"
@@ -128,20 +156,20 @@
             app:layout_constraintBottom_toTopOf="@id/btnSignOut"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cardView1">
+            app:layout_constraintTop_toBottomOf="@id/rv_clinic_images">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_16"
-                android:paddingBottom="@dimen/margin_20">
+                android:layout_marginHorizontal="@dimen/margin_16"
+                android:layout_marginVertical="@dimen/margin_10">
 
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivContact"
                     android:layout_width="@dimen/dp_32"
                     android:layout_height="@dimen/dp_32"
-                    android:layout_marginTop="@dimen/margin_30"
+                    android:layout_marginTop="@dimen/margin_10"
                     android:background="@drawable/blue_round_background"
                     android:onClick="@{()->viewModel.onClickPhoneIcon(viewModel.userProfileDataResponse.contactNumber)}"
                     android:padding="@dimen/margin_5"
@@ -357,10 +385,11 @@
                     android:id="@+id/txt_doctor_notification"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_20"
+
                     android:text="@string/appointment_notification"
                     android:textColor="@color/black"
                     android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/ivAge"
                     app:layout_constraintTop_toBottomOf="@+id/ivAge" />
 
@@ -382,7 +411,7 @@
             android:id="@+id/btnSignOut"
             android:layout_width="@dimen/dp_150"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/margin_20"
+            android:layout_marginVertical="@dimen/margin_10"
             android:background="@drawable/rounded_btn"
             android:onClick="@{view -> viewModel.signOut()}"
             android:text="@string/sign_out"

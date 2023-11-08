@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.android.doctorapp.ui.profile.ProfileViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/mainView"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_150"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvCamera"
+            style="@style/label_text"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginHorizontal="@dimen/margin_20"
+            android:layout_marginTop="@dimen/margin_10"
+            android:drawableStart="@drawable/baseline_camera_alt_24"
+            android:drawablePadding="@dimen/margin_10"
+            android:elevation="@dimen/margin_5"
+            android:gravity="center_vertical"
+            android:onClick="@{()->viewModel.clickOnCamera()}"
+            android:text="@string/camera"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/mainView"
+            app:layout_constraintStart_toStartOf="@id/mainView"
+            app:layout_constraintTop_toTopOf="@id/mainView" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/divider"
+            app:layout_constraintEnd_toEndOf="@id/mainView"
+            app:layout_constraintStart_toStartOf="@id/mainView"
+            app:layout_constraintTop_toBottomOf="@id/tvCamera" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvGallery"
+            style="@style/label_text"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginHorizontal="@dimen/margin_20"
+            android:layout_marginTop="@dimen/margin_10"
+            android:drawableStart="@drawable/baseline_browse_gallery_24"
+            android:drawablePadding="@dimen/margin_10"
+            android:elevation="@dimen/margin_5"
+            android:gravity="center_vertical"
+            android:onClick="@{()->viewModel.clickOnGallery()}"
+            android:text="@string/gallery"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/mainView"
+            app:layout_constraintStart_toStartOf="@id/mainView"
+            app:layout_constraintTop_toBottomOf="@id/divider" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

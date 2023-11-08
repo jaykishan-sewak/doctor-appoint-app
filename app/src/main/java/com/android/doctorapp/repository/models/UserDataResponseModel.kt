@@ -30,5 +30,6 @@ data class UserDataResponseModel(
     var addressLatLng: Map<String, Any>? = null,
     var geohash: String? = null,
     var token: String? = null,
-    var numberOfFeedbacks: Int = 0
+    var numberOfFeedbacks: Int = 0,
+    var clinicImg: ArrayList<String>? = null
 )
