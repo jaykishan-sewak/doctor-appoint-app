@@ -11,6 +11,7 @@ import com.android.doctorapp.ui.authentication.login.ForgotPasswordFragment
 import com.android.doctorapp.ui.authentication.login.LoginFragment
 import com.android.doctorapp.ui.authentication.register.RegisterFragment
 import com.android.doctorapp.ui.bottomsheet.BottomSheetDialog
+import com.android.doctorapp.ui.bottomsheet.ClinicImgBottomSheetDialog
 import com.android.doctorapp.ui.doctor.AddDoctorFragment
 import com.android.doctorapp.ui.doctor.UpdateDoctorProfileFragment
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.AppointmentDoctorFragment
@@ -73,5 +74,7 @@ interface AppComponent {
     fun inject(fragment: DoctorAddressFragment)
     fun inject(fragment: ForgotPasswordFragment)
     fun inject(fragment: AllFeedbackFragment)
+
+    fun inject(fragment: ClinicImgBottomSheetDialog)
 
 }

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.net.Uri" />
+
+        <variable
+            name="onItemClickListener"
+            type="com.android.doctorapp.ui.doctordashboard.adapter.ClinicImgAdapter.OnItemClickListener" />
+
+        <variable
+            name="index"
+            type="Integer" />
+
+        <variable
+            name="clinicImgUri"
+            type="Uri" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="@dimen/dp_70"
+        android:layout_height="@dimen/dp_70"
+        android:layout_margin="@dimen/margin_4">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/profileImage"
+            android:layout_width="@dimen/dp_70"
+            android:layout_height="@dimen/dp_70"
+            android:elevation="@dimen/margin_5"
+            app:cardCornerRadius="@dimen/dp_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivDoctor"
+                android:layout_width="@dimen/dp_70"
+                android:layout_height="@dimen/dp_70"
+                android:onClick="@{()->onItemClickListener.onItemClick(clinicImgUri,index)}"
+                android:scaleType="center"
+                app:imageUri="@{clinicImgUri}" />
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

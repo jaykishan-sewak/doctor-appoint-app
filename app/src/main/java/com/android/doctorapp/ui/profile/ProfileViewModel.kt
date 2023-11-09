@@ -1,7 +1,9 @@
 package com.android.doctorapp.ui.profile
 
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -55,6 +57,12 @@ class ProfileViewModel @Inject constructor(
     val imageUri = MutableLiveData<Uri>()
     val notificationToggleData: MutableLiveData<Boolean> = MutableLiveData(false)
 
+    val isCameraClick: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isGalleryClick: MutableLiveData<Boolean> = MutableLiveData(false)
+    val clinicImgList = MutableLiveData<ArrayList<String>?>()
+    private val clinicImgArrayList = ArrayList<String>()
+
+
     init {
         emailClick.postValue("")
     }
@@ -76,11 +84,13 @@ class ProfileViewModel @Inject constructor(
                                 response.body.holidayList,
                                 ConstantKey.DATE_MM_FORMAT
                             )
+                            clinicImgList.value = response.body.clinicImg
                             setShowProgress(false)
                         }
 
                         is ApiErrorResponse -> {
                             context.toast(response.errorMessage)
+                            Log.d(TAG, "getUserProfileData: ${response.errorMessage}")
                             setShowProgress(false)
                         }
 
@@ -212,4 +222,81 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun clickOnCamera() {
+        isCameraClick.value = true
+    }
+
+    fun clickOnGallery() {
+        isGalleryClick.value = true
+    }
+
+    fun uploadImage(image: Uri) {
+        viewModelScope.launch {
+            if (context.isNetworkAvailable()) {
+                setShowProgress(true)
+                when (val response = profileRepository.uploadImage(image, storage)) {
+                    is ApiSuccessResponse -> {
+                        setShowProgress(false)
+                        context.toast("Clinic Image Uploaded successfully")
+                        if (response.body.isNotEmpty()) {
+                            clinicImgArrayList.add(response.body)
+                            clinicImgList.value = clinicImgArrayList
+                            updateClinicImageList(clinicImgList.value)
+                        }
+                    }
+
+                    is ApiErrorResponse -> {
+                        setShowProgress(false)
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        setShowProgress(false)
+                    }
+
+                    else -> {
+                        setShowProgress(false)
+                    }
+                }
+            } else
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
+
+        }
+    }
+
+    fun updateClinicImageList(clinicImgList: ArrayList<String>?) {
+        viewModelScope.launch {
+            if (context.isNetworkAvailable()) {
+                setShowProgress(true)
+                when (val response =
+                    profileRepository.updateClinicImgById(
+                        clinicImgList,
+                        fireStore,
+                        userProfileDataResponse.value?.userId
+                    )) {
+                    is ApiSuccessResponse -> {
+                        setShowProgress(false)
+                        context.toast("ImageList updated successfully")
+                    }
+
+                    is ApiErrorResponse -> {
+                        context.toast(response.errorMessage)
+                        setShowProgress(false)
+                    }
+
+                    is ApiNoNetworkResponse -> {
+                        context.toast(response.errorMessage)
+                        setShowProgress(false)
+                    }
+
+                    else -> {
+                        context.toast(resourceProvider.getString(R.string.something_went_wrong))
+                        setShowProgress(false)
+                    }
+                }
+            } else {
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
+            }
+
+        }
+    }
 }
