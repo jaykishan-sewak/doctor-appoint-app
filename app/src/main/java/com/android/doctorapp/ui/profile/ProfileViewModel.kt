@@ -59,8 +59,9 @@ class ProfileViewModel @Inject constructor(
 
     val isCameraClick: MutableLiveData<Boolean> = MutableLiveData(false)
     val isGalleryClick: MutableLiveData<Boolean> = MutableLiveData(false)
+    private var clinicImgArrayList = ArrayList<String>()
     val clinicImgList = MutableLiveData<ArrayList<String>?>()
-    private val clinicImgArrayList = ArrayList<String>()
+
 
 
     init {
@@ -84,7 +85,8 @@ class ProfileViewModel @Inject constructor(
                                 response.body.holidayList,
                                 ConstantKey.DATE_MM_FORMAT
                             )
-                            clinicImgList.value = response.body.clinicImg
+                            clinicImgArrayList = response.body.clinicImg ?: ArrayList()
+                            clinicImgList.value = clinicImgArrayList
                             setShowProgress(false)
                         }
 
@@ -236,13 +238,12 @@ class ProfileViewModel @Inject constructor(
                 setShowProgress(true)
                 when (val response = profileRepository.uploadImage(image, storage)) {
                     is ApiSuccessResponse -> {
-                        setShowProgress(false)
-                        context.toast("Clinic Image Uploaded successfully")
                         if (response.body.isNotEmpty()) {
                             clinicImgArrayList.add(response.body)
                             clinicImgList.value = clinicImgArrayList
                             updateClinicImageList(clinicImgList.value)
-                        }
+                        } else
+                            setShowProgress(false)
                     }
 
                     is ApiErrorResponse -> {
@@ -263,7 +264,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun updateClinicImageList(clinicImgList: ArrayList<String>?) {
+    private fun updateClinicImageList(clinicImgList: ArrayList<String>?) {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 setShowProgress(true)
@@ -275,7 +276,6 @@ class ProfileViewModel @Inject constructor(
                     )) {
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
-                        context.toast("ImageList updated successfully")
                     }
 
                     is ApiErrorResponse -> {

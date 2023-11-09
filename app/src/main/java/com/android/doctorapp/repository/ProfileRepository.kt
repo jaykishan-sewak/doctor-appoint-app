@@ -145,7 +145,6 @@ class ProfileRepository @Inject constructor(
             val response =
                 storage.reference.child("images").child("$timestamp.jpg").putFile(imageURI).await()
             val imageUrl = response.storage.downloadUrl.await()
-            Log.d("response.storage.downloadUrl---", imageUrl.toString())
             ApiResponse.create(response = Response.success(imageUrl.toString()))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
