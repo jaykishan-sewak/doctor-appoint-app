@@ -123,6 +123,20 @@
 
         </androidx.cardview.widget.CardView>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_clinic_images"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_16"
+            android:orientation="horizontal"
+            android:scrollbars="none"
+            android:visibility="@{viewModel.clinicImgList.size > 0 ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintBottom_toTopOf="@id/scrollView"
+            app:layout_constraintEnd_toStartOf="@+id/addClinicImg"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@+id/cardView1"
+            app:layout_constraintTop_toBottomOf="@+id/cardView1" />
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/addClinicImg"
             android:layout_width="@dimen/dp_70"
@@ -131,22 +145,9 @@
             android:src="@drawable/add_post"
             android:visibility="@{viewModel.clinicImgList.size >= 3 ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toTopOf="@id/scrollView"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/cardView1"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toEndOf="@+id/rv_clinic_images"
-            app:layout_constraintTop_toBottomOf="@+id/cardView1" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_clinic_images"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_16"
-            android:orientation="horizontal"
-            android:scrollbars="none"
-            app:layout_constraintBottom_toTopOf="@id/scrollView"
-            app:layout_constraintEnd_toStartOf="@+id/addClinicImg"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="@+id/cardView1"
             app:layout_constraintTop_toBottomOf="@+id/cardView1" />
 
         <ScrollView
