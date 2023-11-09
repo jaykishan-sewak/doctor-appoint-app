@@ -144,6 +144,7 @@ class AddDoctorViewModel @Inject constructor(
     val description: MutableLiveData<String> = MutableLiveData("")
     val descriptionError: MutableLiveData<String?> = MutableLiveData()
     val isAdminUpdatedProfile: MutableLiveData<Boolean> = MutableLiveData(false)
+    private var clinicImgArrayList = ArrayList<String>()
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
         this.binding = binding
@@ -172,6 +173,7 @@ class AddDoctorViewModel @Inject constructor(
                                 isNotificationEnable = response.body.isNotificationEnable
                             )
                             isDoctor.value = response.body.isDoctor
+                            clinicImgArrayList = response.body.clinicImg ?: ArrayList()
                             isPhoneVerify.value = response.body.isPhoneNumberVerified
                             if (!response.body.isPhoneNumberVerified) {
                                 if (firebaseAuth.currentUser?.phoneNumber.isNullOrEmpty()) {
@@ -489,7 +491,9 @@ class AddDoctorViewModel @Inject constructor(
                                 as ArrayList<String> else null,
                         images = imageUrl.ifEmpty { null },
                         addressLatLng = addressLatLngList.value,
-                        geohash = geoHash.value
+                        geohash = geoHash.value,
+                        clinicImg = if (clinicImgArrayList.isNotEmpty()) clinicImgArrayList.toList()
+                            .map { clinicImg -> clinicImg } as ArrayList<String> else null
                     )
                 } else {
                     //Here Code for User Update

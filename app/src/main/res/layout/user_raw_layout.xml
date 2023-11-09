@@ -135,9 +135,9 @@
                 style="@style/doctor_text_view"
                 android:layout_marginStart="@dimen/margin_5"
                 android:layout_marginTop="@dimen/margin_4"
+                android:enabled="@{userData.numberOfFeedbacks == 0 ? false : true}"
                 android:onClick="@{()->onItemClickListener.onRatingClick(userData,index)}"
-                android:text='@{userData.numberOfFeedbacks + " Ratings"}'
-                android:textColor="@color/colorPrimary"
+                android:text='@{userData.numberOfFeedbacks == 0 ? "No Ratings" : userData.numberOfFeedbacks + " Ratings"}'
                 android:textSize="13sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/doctorRatingBar"
