@@ -67,7 +67,7 @@
                     style="@style/label_text2"
                     android:layout_marginStart="@dimen/margin_20"
                     android:layout_marginTop="@dimen/margin_10"
-                    android:text="@{`Dr. ` + viewModel.doctorName}"
+                    android:text="@{viewModel.doctorName != null ? `Dr. ` + viewModel.doctorName : ` `}"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"

@@ -26,6 +26,7 @@ data class UserDataRequestModel(
     var weekOffList: ArrayList<String>? = null,
     var addressLatLng: Map<String, Any>? = null,
     var geohash: String? = null,
-    var token : String? = null
+    var token: String? = null,
+    var clinicImg: ArrayList<String>? = null
 )
 

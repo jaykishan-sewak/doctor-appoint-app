@@ -54,6 +54,11 @@ class UserAppoitmentItemAdapter(
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val objects = userList[position]
         val imageUri = objects.images?.toUri()
+
+        if (objects.numberOfFeedbacks == 0)
+            holder.view.tvNumberOfRatings.setTextColor(holder.itemView.context.getColor(R.color.light_grey))
+        else
+            holder.view.tvNumberOfRatings.setTextColor(holder.itemView.context.getColor(R.color.colorPrimary))
         holder.bind(objects, listener, position, imageUri)
     }
 
