@@ -17,8 +17,10 @@ import com.android.doctorapp.ui.doctor.UpdateDoctorProfileFragment
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.AppointmentDoctorFragment
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.DoctorAddressFragment
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.DoctorProfileFragment
+import com.android.doctorapp.ui.doctordashboard.doctorfragment.PreviewClinicImgFragment
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.RequestDoctorFragment
 import com.android.doctorapp.ui.doctordashboard.doctorfragment.SelectedDateAppointmentsFragment
+import com.android.doctorapp.ui.doctordashboard.doctorfragment.ViewClinicFragment
 import com.android.doctorapp.ui.feedback.AllFeedbackFragment
 import com.android.doctorapp.ui.feedback.FeedbackDetailFragment
 import com.android.doctorapp.ui.feedback.FeedbackFragment
@@ -76,5 +78,7 @@ interface AppComponent {
     fun inject(fragment: AllFeedbackFragment)
 
     fun inject(fragment: ClinicImgBottomSheetDialog)
+    fun inject(fragment: ViewClinicFragment)
+    fun inject(fragment: PreviewClinicImgFragment)
 
 }

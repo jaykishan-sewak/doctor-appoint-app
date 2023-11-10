@@ -67,7 +67,8 @@
             app:pinHeight="@dimen/dp_48"
             app:pinLength="6"
             app:pinWidth="@dimen/margin_50"
-            app:splitWidth="@dimen/margin_4" />
+            app:splitWidth="@dimen/margin_4"
+            app:textSize="8sp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

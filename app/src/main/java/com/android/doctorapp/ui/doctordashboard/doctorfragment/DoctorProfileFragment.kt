@@ -1,10 +1,7 @@
 package com.android.doctorapp.ui.doctordashboard.doctorfragment
 
-import android.content.ContentValues.TAG
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,15 +10,12 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.FragmentDoctorProfileBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.ui.authentication.AuthenticationActivity
-import com.android.doctorapp.ui.bottomsheet.ClinicImgBottomSheetDialog
-import com.android.doctorapp.ui.doctordashboard.adapter.ClinicImgAdapter
 import com.android.doctorapp.ui.profile.ProfileViewModel
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DOCTOR_PROFILE_FRAGMENT
@@ -38,9 +32,7 @@ class DoctorProfileFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel by viewModels<ProfileViewModel> { viewModelFactory }
-    lateinit var clinicBottomSheetFragment: ClinicImgBottomSheetDialog
     private lateinit var bindingView: FragmentDoctorProfileBinding
-    private lateinit var clinicImgAdapter: ClinicImgAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,21 +51,6 @@ class DoctorProfileFragment :
             lifecycleOwner = viewLifecycleOwner
         }
 
-        binding.rvClinicImages.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-
-        binding.addClinicImg.setOnClickListener {
-            clinicBottomSheetFragment =
-                ClinicImgBottomSheetDialog(object : ClinicImgBottomSheetDialog.DialogListener {
-                    override fun getImageUri(uri: Uri) {
-                        viewModel.uploadImage(uri)
-                    }
-                })
-            clinicBottomSheetFragment.show(
-                requireActivity().supportFragmentManager,
-                "BSDialogFragment"
-            )
-        }
         setUpWithViewModel(viewModel)
         registerObservers()
         return bindingView.root
@@ -96,7 +73,6 @@ class DoctorProfileFragment :
 
     private fun registerObservers() {
 
-        updateHolidayRecyclerview(arrayListOf())
         val navController = findNavController()
         navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(ConstantKey.PROFILE_UPDATED)
             ?.observe(viewLifecycleOwner) {
@@ -135,12 +111,10 @@ class DoctorProfileFragment :
 //                startActivityFinish<AuthenticationActivity>()
         }
 
-        viewModel.clinicImgList.observe(viewLifecycleOwner) {
-            if (!it.isNullOrEmpty()) {
-                Log.d(TAG, "registerObservers: $it")
-                clinicImgAdapter.updateClinicImgList(it)
-            }
+        viewModel.navigationListener.observe(viewLifecycleOwner) {
+            findNavController().navigate(it)
         }
+
     }
 
     private val startForProfileImageResult =
@@ -149,15 +123,6 @@ class DoctorProfileFragment :
                 viewModel.setImage(it)
             }
         }
-
-    private fun updateHolidayRecyclerview(newClinicImgList: ArrayList<String>) {
-        clinicImgAdapter = ClinicImgAdapter(newClinicImgList,
-            object : ClinicImgAdapter.OnItemClickListener {
-                override fun onItemClick(imageUrl: Uri, position: Int) {
-                }
-            })
-        binding.rvClinicImages.adapter = clinicImgAdapter
-    }
 
 
 }

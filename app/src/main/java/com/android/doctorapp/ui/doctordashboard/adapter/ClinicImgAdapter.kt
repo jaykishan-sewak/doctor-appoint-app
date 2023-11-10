@@ -54,6 +54,7 @@ class ClinicImgAdapter(
 
     interface OnItemClickListener {
         fun onItemClick(imageUrl: Uri, position: Int)
+        fun onItemDelete(imageUrl: Uri, position: Int)
     }
 
 }

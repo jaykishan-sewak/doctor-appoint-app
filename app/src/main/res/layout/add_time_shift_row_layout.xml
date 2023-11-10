@@ -70,7 +70,8 @@
             android:onClick="@{() -> onItemClickListener.removeShiftClick(addShitTimeModel, index)}"
             app:layout_constraintBottom_toBottomOf="@+id/btn_start_time"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btn_start_time" />
+            app:layout_constraintTop_toTopOf="@+id/btn_start_time"
+            app:layout_constraintVertical_bias="1.0" />
 
         <View
             android:id="@+id/add_time_divider"

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View"/>
+
+        <variable
+            name="viewModel"
+            type="com.android.doctorapp.ui.profile.ProfileViewModel" />
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.doctordashboard.doctorfragment.ViewClinicFragment">
+
+
+        <include
+            android:id="@+id/toolbarContainer"
+            layout="@layout/custom_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_clinic_images"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
+            android:scrollbars="none"
+            android:visibility="@{viewModel.clinicImgList.size > 0 ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintBottom_toTopOf="@+id/addClinicImg"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbarContainer"
+            app:layout_constraintVertical_chainStyle="packed"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/addClinicImg"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_100"
+            android:layout_marginTop="@dimen/margin_16"
+            android:src="@drawable/add_post"
+            android:visibility="@{viewModel.clinicImgList.size >= 5 ? View.GONE : View.VISIBLE}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
+
+
+
