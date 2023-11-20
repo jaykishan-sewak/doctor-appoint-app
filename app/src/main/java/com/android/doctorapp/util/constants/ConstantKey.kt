@@ -34,6 +34,9 @@ object ConstantKey {
         const val IS_BOOK_APPOINTMENT = "isBookAppointment"
         const val USER_FRAGMENT = "UserFragment"
         const val APPOINTMENT_DOCUMENT_ID = "documentId"
+        const val VIEW_CLINIC_IMAGE_URL = "viewClinicImageUrl"
+        const val GET_CLINIC_IMAGE_LIST_KEY = "getClinicImageList"
+        const val OPEN_IMAGE_POSITION_KEY = "openImagePosition"
 
     }
 

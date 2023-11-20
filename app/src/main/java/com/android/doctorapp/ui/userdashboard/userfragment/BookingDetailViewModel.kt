@@ -116,11 +116,13 @@ class BookingDetailViewModel @Inject constructor(
                 }
 
                 is ApiErrorResponse -> {
+                    setShowProgress(false)
                     setApiError(response.errorMessage)
                     context.toast(response.errorMessage)
                 }
 
                 is ApiNoNetworkResponse -> {
+                    setShowProgress(false)
                     setNoNetworkError(response.errorMessage)
                     context.toast(response.errorMessage)
                 }

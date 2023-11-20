@@ -34,6 +34,11 @@
             android:id="@+id/action_doctor_profile_to_updateDoctorProfile"
             app:destination="@+id/UpdateDoctorProfileFragment" />
 
+        <action
+            android:id="@+id/action_doctor_profile_to_viewClinic"
+            app:destination="@+id/navigation_view_clinic" />
+
+
     </fragment>
 
     <fragment
@@ -69,6 +74,24 @@
         android:id="@+id/navigation_doctor_address"
         android:name="com.android.doctorapp.ui.doctordashboard.doctorfragment.DoctorAddressFragment"
         tools:layout="@layout/fragment_doctor_address">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_view_clinic"
+        android:name="com.android.doctorapp.ui.doctordashboard.doctorfragment.ViewClinicFragment"
+        tools:layout="@layout/fragment_view_clinic">
+
+        <action
+            android:id="@+id/action_viewClinic_to_previewClinic"
+            app:destination="@+id/navigation_preview_clinic" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_preview_clinic"
+        android:name="com.android.doctorapp.ui.doctordashboard.doctorfragment.PreviewClinicImgFragment"
+        tools:layout="@layout/fragment_preview_clinic_img">
 
     </fragment>
 

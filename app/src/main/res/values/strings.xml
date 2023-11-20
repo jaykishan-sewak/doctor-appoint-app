@@ -259,6 +259,9 @@
     <string name="specialization_already_exist">Specialization is already exist</string>
     <string name="read_more">Read more</string>
     <string name="read_less">Read less</string>
+    <string name="view_clinic">View clinic</string>
+    <string name="preview">Preview</string>
+    <string name="are_you_sure_you_want_to_Delete_image">Are you sure you want to delete Image</string>
 
 
 </resources>

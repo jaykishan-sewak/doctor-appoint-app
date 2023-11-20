@@ -41,5 +41,6 @@
     <color name="light_orange">#e4c0b3</color>
     <color name="rating_bg">#f5bc6a</color>
     <color name="all_feedback_bg">#fffeff</color>
+    <color name="bg_light_grey">#f9f9f9</color>
 
 </resources>

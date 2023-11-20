@@ -123,32 +123,20 @@
 
         </androidx.cardview.widget.CardView>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_clinic_images"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_16"
-            android:orientation="horizontal"
-            android:scrollbars="none"
-            android:visibility="@{viewModel.clinicImgList.size > 0 ? View.VISIBLE : View.INVISIBLE}"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnViewClinic"
+            android:layout_width="@dimen/dp_150"
+            android:layout_height="@dimen/margin_40"
+            android:layout_marginVertical="@dimen/margin_10"
+            android:background="@drawable/rounded_btn"
+            android:onClick="@{view -> viewModel.viewClinicClicked()}"
+            android:text="@string/view_clinic"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toTopOf="@id/scrollView"
-            app:layout_constraintEnd_toStartOf="@+id/addClinicImg"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="@+id/cardView1"
-            app:layout_constraintTop_toBottomOf="@+id/cardView1" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/addClinicImg"
-            android:layout_width="@dimen/dp_70"
-            android:layout_height="@dimen/dp_70"
-            android:layout_marginTop="@dimen/margin_16"
-            android:src="@drawable/add_post"
-            android:visibility="@{viewModel.clinicImgList.size >= 3 ? View.GONE : View.VISIBLE}"
-            app:layout_constraintBottom_toTopOf="@id/scrollView"
-            app:layout_constraintEnd_toEndOf="@id/cardView1"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toEndOf="@+id/rv_clinic_images"
-            app:layout_constraintTop_toBottomOf="@+id/cardView1" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView1"/>
 
         <ScrollView
             android:id="@+id/scrollView"
@@ -157,7 +145,7 @@
             app:layout_constraintBottom_toTopOf="@id/btnSignOut"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rv_clinic_images">
+            app:layout_constraintTop_toBottomOf="@id/btnViewClinic">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
