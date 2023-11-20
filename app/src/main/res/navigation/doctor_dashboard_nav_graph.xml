@@ -82,6 +82,17 @@
         android:name="com.android.doctorapp.ui.doctordashboard.doctorfragment.ViewClinicFragment"
         tools:layout="@layout/fragment_view_clinic">
 
+        <action
+            android:id="@+id/action_viewClinic_to_previewClinic"
+            app:destination="@+id/navigation_preview_clinic" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_preview_clinic"
+        android:name="com.android.doctorapp.ui.doctordashboard.doctorfragment.PreviewClinicImgFragment"
+        tools:layout="@layout/fragment_preview_clinic_img">
+
     </fragment>
 
 </navigation>

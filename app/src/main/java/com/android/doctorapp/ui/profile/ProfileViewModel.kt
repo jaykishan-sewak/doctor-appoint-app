@@ -1,9 +1,7 @@
 package com.android.doctorapp.ui.profile
 
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -59,9 +57,8 @@ class ProfileViewModel @Inject constructor(
 
     val isCameraClick: MutableLiveData<Boolean> = MutableLiveData(false)
     val isGalleryClick: MutableLiveData<Boolean> = MutableLiveData(false)
-    private var clinicImgArrayList = ArrayList<String>()
+    var clinicImgArrayList = ArrayList<String>()
     val clinicImgList = MutableLiveData<ArrayList<String>?>()
-
 
 
     init {
@@ -92,7 +89,6 @@ class ProfileViewModel @Inject constructor(
 
                         is ApiErrorResponse -> {
                             context.toast(response.errorMessage)
-                            Log.d(TAG, "getUserProfileData: ${response.errorMessage}")
                             setShowProgress(false)
                         }
 
@@ -299,4 +295,15 @@ class ProfileViewModel @Inject constructor(
 
         }
     }
+
+    fun viewClinicClicked() {
+        _navigationListener.value = R.id.action_doctor_profile_to_viewClinic
+    }
+
+    fun deleteImage(position: Int) {
+        clinicImgArrayList.removeAt(position)
+        clinicImgList.value = clinicImgArrayList
+        updateClinicImageList(clinicImgArrayList)
+    }
+
 }

@@ -5,7 +5,7 @@
 
     <data>
 
-        <import type="android.view.View"/>
+        <import type="android.view.View" />
 
         <variable
             name="viewModel"
@@ -35,22 +35,24 @@
             android:scrollbars="none"
             android:visibility="@{viewModel.clinicImgList.size > 0 ? View.VISIBLE : View.INVISIBLE}"
             app:layout_constraintBottom_toTopOf="@+id/addClinicImg"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbarContainer"
-            app:layout_constraintVertical_chainStyle="packed"/>
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/addClinicImg"
-            android:layout_width="@dimen/dp_100"
-            android:layout_height="@dimen/dp_100"
+            android:layout_width="@dimen/dp_70"
+            android:layout_height="@dimen/dp_70"
             android:layout_marginTop="@dimen/margin_16"
-            android:src="@drawable/add_post"
+            android:layout_marginBottom="@dimen/margin_10"
+            android:backgroundTint="@color/white"
+            android:src="@drawable/background_circle_dot_pattern"
             android:visibility="@{viewModel.clinicImgList.size >= 5 ? View.GONE : View.VISIBLE}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
