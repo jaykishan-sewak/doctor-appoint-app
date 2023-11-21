@@ -161,6 +161,22 @@ class BookAppointmentFragment :
             }
         }
 
+        viewModel.viewClinicClicked.observe(viewLifecycleOwner) {
+            if (it) {
+                val bundle = Bundle()
+                val imageList: MutableList<String>? = viewModel.clinicImageList.value
+                if (!imageList.isNullOrEmpty()) {
+                    bundle.putStringArrayList(
+                        ConstantKey.BundleKeys.GET_CLINIC_IMAGE_LIST_KEY, ArrayList(
+                            imageList
+                        )
+                    )
+                }
+                findNavController().navigate(R.id.action_book_appointment_to_viewClinic, bundle)
+                viewModel.viewClinicClicked.value = false
+            }
+        }
+
     }
 
 

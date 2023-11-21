@@ -33,7 +33,6 @@ class ViewClinicFragment : BaseFragment<FragmentViewClinicBinding>(R.layout.frag
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel by viewModels<ProfileViewModel> { viewModelFactory }
-    private lateinit var bindingView: FragmentViewClinicBinding
     lateinit var clinicBottomSheetFragment: ClinicImgBottomSheetDialog
     private lateinit var clinicImgAdapter: ClinicImgAdapter
 
@@ -47,9 +46,16 @@ class ViewClinicFragment : BaseFragment<FragmentViewClinicBinding>(R.layout.frag
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-
+        val arguments: Bundle? = arguments
+        if (arguments != null) {
+            viewModel.isUserViewClinicImg.value = true
+            viewModel.clinicImgList.value =
+                requireArguments().getStringArrayList(GET_CLINIC_IMAGE_LIST_KEY)
+        } else {
+            viewModel.isUserViewClinicImg.value = false
+        }
         // Inflate the layout for this fragment
-        bindingView = binding {
+        val bindingView = binding {
             viewModel = this@ViewClinicFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
         }
@@ -75,15 +81,24 @@ class ViewClinicFragment : BaseFragment<FragmentViewClinicBinding>(R.layout.frag
     }
 
     private fun registerObservers() {
-
-        if (viewModel.userProfileDataResponse.value == null)
-            viewModel.getUserProfileData()
+        viewModel.isUserViewClinicImg.observe(viewLifecycleOwner) {
+            if (it) {
+                binding.addClinicImg.visibility = if (it) View.GONE else View.VISIBLE
+            } else {
+                if (viewModel.userProfileDataResponse.value == null)
+                    viewModel.getUserProfileData()
+            }
+        }
 
         updateHolidayRecyclerview(arrayListOf())
         viewModel.clinicImgList.observe(viewLifecycleOwner) {
             if (!it.isNullOrEmpty()) {
-                clinicImgAdapter.updateClinicImgList(it)
-            }
+                clinicImgAdapter.updateClinicImgList(
+                    it,
+                    viewModel.isUserViewClinicImg.value == true
+                )
+            } else
+                viewModel.noClinicImgFound.value = true
         }
     }
 

@@ -6,6 +6,12 @@
 
         <import type="android.net.Uri" />
 
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.android.doctorapp.ui.profile.ProfileViewModel" />
+
         <variable
             name="onItemClickListener"
             type="com.android.doctorapp.ui.doctordashboard.adapter.ClinicImgAdapter.OnItemClickListener" />

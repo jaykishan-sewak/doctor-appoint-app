@@ -59,6 +59,8 @@ class ProfileViewModel @Inject constructor(
     val isGalleryClick: MutableLiveData<Boolean> = MutableLiveData(false)
     var clinicImgArrayList = ArrayList<String>()
     val clinicImgList = MutableLiveData<ArrayList<String>?>()
+    var isUserViewClinicImg = MutableLiveData<Boolean>()
+    val noClinicImgFound: MutableLiveData<Boolean> = MutableLiveData(false)
 
 
     init {
