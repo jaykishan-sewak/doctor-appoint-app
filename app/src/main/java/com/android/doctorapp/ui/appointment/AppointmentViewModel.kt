@@ -118,6 +118,8 @@ class AppointmentViewModel @Inject constructor(
 
     val phoneClick: MutableLiveData<String> = MutableLiveData()
     val emailClick: MutableLiveData<String> = MutableLiveData()
+    val isDirectionClick: MutableLiveData<Boolean> = MutableLiveData(false)
+
     var doctorDataObj = MutableLiveData<UserDataResponseModel>()
 
     val documentId: MutableLiveData<String> = MutableLiveData()
@@ -791,6 +793,10 @@ class AppointmentViewModel @Inject constructor(
 
     fun onClickEmailIcon(email: String) {
         emailClick.postValue(email)
+    }
+
+    fun onClickDirectionIcon() {
+        isDirectionClick.postValue(true)
     }
 
     private fun currentTime(selectedDate: Date, time: Date?): Boolean {

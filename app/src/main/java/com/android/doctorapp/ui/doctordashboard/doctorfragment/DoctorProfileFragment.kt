@@ -95,11 +95,15 @@ class DoctorProfileFragment :
             }
         }
         viewModel.phoneClick.observe(viewLifecycleOwner) {
-            requireActivity().openPhoneDialer(it)
+            if (!it.isNullOrEmpty()) {
+                requireActivity().openPhoneDialer(it)
+                viewModel.phoneClick.value = ""
+            }
         }
         viewModel.emailClick.observe(viewLifecycleOwner) {
             if (!it.isNullOrEmpty()) {
                 requireActivity().openEmailSender(it)
+                viewModel.emailClick.value = ""
             }
         }
         viewModel.navigateToLogin.observe(viewLifecycleOwner) {
