@@ -23,13 +23,17 @@ import com.android.doctorapp.ui.appointment.adapter.AppointmentDateAdapter
 import com.android.doctorapp.ui.appointment.adapter.AppointmentTimeAdapter
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.BOOKING_DATE_FORMAT
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_CURRENT_LOCATION_KEY
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE_MONTH_YEAR
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_HOUR_MINUTE_SECOND
+import com.android.doctorapp.util.constants.ConstantKey.KEY_LATITUDE
+import com.android.doctorapp.util.constants.ConstantKey.KEY_LONGITUDE
 import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.hideKeyboard
 import com.android.doctorapp.util.extension.negativeButton
 import com.android.doctorapp.util.extension.neutralButton
+import com.android.doctorapp.util.extension.openDirectionMap
 import com.android.doctorapp.util.extension.openEmailSender
 import com.android.doctorapp.util.extension.openPhoneDialer
 import com.android.doctorapp.util.setResizableText
@@ -52,6 +56,7 @@ class BookAppointmentFragment :
     //    private lateinit var dateStr: String
     private lateinit var timeStr: String
     private var isExpanded = false
+    private var userCurrentAddress: String? = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,6 +77,7 @@ class BookAppointmentFragment :
                 requireArguments().getString(ConstantKey.BundleKeys.BOOK_APPOINTMENT_DATA)
             viewModel.doctorDataObj.value =
                 Gson().fromJson(doctorDataObj, UserDataResponseModel::class.java)
+            userCurrentAddress = requireArguments().getString(USER_CURRENT_LOCATION_KEY)
         }
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
@@ -153,11 +159,42 @@ class BookAppointmentFragment :
         }
 
         viewModel.phoneClick.observe(viewLifecycleOwner) {
-            requireActivity().openPhoneDialer(it)
+            if (!it.isNullOrEmpty()) {
+                requireActivity().openPhoneDialer(it)
+                viewModel.phoneClick.value = ""
+            }
         }
         viewModel.emailClick.observe(viewLifecycleOwner) {
             if (!it.isNullOrEmpty()) {
                 requireActivity().openEmailSender(it)
+                viewModel.emailClick.value = ""
+            }
+        }
+
+        viewModel.isDirectionClick.observe(viewLifecycleOwner) {
+            if (it) {
+                if (userCurrentAddress == "${viewModel.doctorDataObj.value?.addressLatLng!![KEY_LATITUDE].toString()},${viewModel.doctorDataObj.value?.addressLatLng!![KEY_LONGITUDE].toString()}") {
+                    val smallValue = 0.0001
+                    val originalLatitude =
+                        viewModel.doctorDataObj.value?.addressLatLng!![KEY_LATITUDE].toString()
+                            .toDoubleOrNull() ?: 0.0
+                    val originalLongitude =
+                        viewModel.doctorDataObj.value?.addressLatLng!![KEY_LONGITUDE].toString()
+                            .toDoubleOrNull() ?: 0.0
+
+                    val formattedAdjustedLatitude = "%f".format(originalLatitude + smallValue)
+                    val formattedAdjustedLongitude = "%f".format(originalLongitude + smallValue)
+
+                    requireActivity().openDirectionMap(
+                        userCurrentAddress,
+                        "$formattedAdjustedLatitude,$formattedAdjustedLongitude"
+                    )
+                } else
+                    requireActivity().openDirectionMap(
+                        userCurrentAddress,
+                        "${viewModel.doctorDataObj.value?.addressLatLng!![KEY_LATITUDE].toString()},${viewModel.doctorDataObj.value?.addressLatLng!![KEY_LONGITUDE].toString()}"
+                    )
+                viewModel.isDirectionClick.value = false
             }
         }
 
@@ -222,5 +259,13 @@ class BookAppointmentFragment :
                     viewModel.validateDateTime()
                 }
             })
+    }
+
+    private fun String?.toDoubleOrNull(): Double? {
+        return try {
+            this?.toDouble()
+        } catch (e: NumberFormatException) {
+            null
+        }
     }
 }

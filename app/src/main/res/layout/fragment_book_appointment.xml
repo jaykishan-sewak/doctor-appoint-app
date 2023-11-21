@@ -67,7 +67,6 @@
                     style="@style/label_text2"
                     android:layout_width="wrap_content"
                     android:layout_marginStart="@dimen/margin_20"
-                    android:layout_marginTop="@dimen/margin_10"
                     android:text="@{viewModel.doctorName != null ? `Dr. ` + viewModel.doctorName : ``}"
                     android:textSize="24sp"
                     android:textStyle="bold"
@@ -129,6 +128,18 @@
                     android:padding="@dimen/margin_8"
                     android:src="@drawable/ic_email_white"
                     app:layout_constraintStart_toEndOf="@+id/ivContact"
+                    app:layout_constraintTop_toTopOf="@id/ivContact" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivDirection"
+                    android:layout_width="@dimen/dp_32"
+                    android:layout_height="@dimen/dp_32"
+                    android:layout_marginStart="@dimen/margin_10"
+                    android:background="@drawable/light_blue_round_background"
+                    android:onClick="@{()->viewModel.onClickDirectionIcon()}"
+                    android:padding="@dimen/margin_5"
+                    android:src="@drawable/ic_direction_white"
+                    app:layout_constraintStart_toEndOf="@id/ivEmail"
                     app:layout_constraintTop_toTopOf="@id/ivContact" />
 
                 <androidx.appcompat.widget.AppCompatTextView

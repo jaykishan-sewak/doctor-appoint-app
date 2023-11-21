@@ -279,6 +279,21 @@ fun Context.openEmailSender(email: String?) {
     }
 }
 
+
+fun Context.openDirectionMap(userAddress: String?, doctorAddress: String?) {
+    try {
+        if (!userAddress.isNullOrEmpty() && !doctorAddress.isNullOrEmpty()) {
+            val uri = Uri.parse("https://www.google.co.in/maps/dir/$userAddress/$doctorAddress")
+            val i = Intent(Intent.ACTION_VIEW, uri)
+            i.setPackage("com.google.android.apps.maps")
+            startActivity(i)
+        }
+    } catch (e: java.lang.Exception) {
+        e.printStackTrace()
+        ""
+    }
+}
+
 fun currentDate(): Date {
     return try {
         val currentDate = Calendar.getInstance()

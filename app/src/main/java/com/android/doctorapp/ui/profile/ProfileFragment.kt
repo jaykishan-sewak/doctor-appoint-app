@@ -75,13 +75,18 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
 
 
         viewModel.phoneClick.observe(viewLifecycleOwner) {
-            requireActivity().openPhoneDialer(it)
+            if (!it.isNullOrEmpty()) {
+                requireActivity().openPhoneDialer(it)
+                viewModel.phoneClick.value = ""
+            }
         }
         viewModel.emailClick.observe(viewLifecycleOwner) {
             if (!it.isNullOrEmpty()) {
                 requireActivity().openEmailSender(it)
+                viewModel.emailClick.value = ""
             }
         }
+
         viewModel.navigateToLogin.observe(viewLifecycleOwner) {
             if (it) {
                 val intent = Intent(requireActivity(), AuthenticationActivity::class.java)
