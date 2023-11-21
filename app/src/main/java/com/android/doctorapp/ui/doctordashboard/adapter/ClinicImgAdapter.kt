@@ -2,6 +2,7 @@ package com.android.doctorapp.ui.doctordashboard.adapter
 
 import android.net.Uri
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
@@ -13,6 +14,8 @@ class ClinicImgAdapter(
     private var clinicImagesList: List<String>,
     private val listener: OnItemClickListener
 ) : RecyclerView.Adapter<ClinicImgAdapter.ItemViewHolder>() {
+
+    var isUserViewClinicImg = false
 
     class ItemViewHolder(val view: ClinicImagesrowLayoutBinding) :
         RecyclerView.ViewHolder(view.root) {
@@ -33,6 +36,7 @@ class ClinicImgAdapter(
             parent,
             false
         )
+        itemView.ivDeleteClinicImg.visibility = if (isUserViewClinicImg) View.GONE else View.VISIBLE
         return ItemViewHolder(itemView)
     }
 
@@ -46,7 +50,8 @@ class ClinicImgAdapter(
 
     }
 
-    fun updateClinicImgList(filterList: ArrayList<String>) {
+    fun updateClinicImgList(filterList: ArrayList<String>, isUserViewImages: Boolean) {
+        isUserViewClinicImg = isUserViewImages
         clinicImagesList = filterList
         notifyDataSetChanged()
     }

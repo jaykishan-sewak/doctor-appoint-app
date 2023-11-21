@@ -122,6 +122,9 @@ class AppointmentViewModel @Inject constructor(
 
     val documentId: MutableLiveData<String> = MutableLiveData()
 
+    val viewClinicClicked: MutableLiveData<Boolean> = MutableLiveData(false)
+    val clinicImageList = MutableLiveData<ArrayList<String>?>()
+
     init {
         emailClick.postValue("")
         getUserData()
@@ -712,6 +715,7 @@ class AppointmentViewModel @Inject constructor(
 
                     is ApiSuccessResponse -> {
                         doctorName.value = doctorResponse.body.name
+                        clinicImageList.value = doctorResponse.body.clinicImg
                         val weekOffDbList = doctorResponse.body.weekOffList
                         weekOffDbList?.forEachIndexed { index, s ->
                             weekOfDayList.add(s)
@@ -888,6 +892,10 @@ class AppointmentViewModel @Inject constructor(
             }
 
         }
+    }
+
+    fun viewClinicClicked() {
+        viewClinicClicked.value = true
     }
 
 

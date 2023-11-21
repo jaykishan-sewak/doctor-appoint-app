@@ -65,14 +65,26 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_doctor_name"
                     style="@style/label_text2"
+                    android:layout_width="wrap_content"
                     android:layout_marginStart="@dimen/margin_20"
                     android:layout_marginTop="@dimen/margin_10"
                     android:text="@{viewModel.doctorName != null ? `Dr. ` + viewModel.doctorName : ``}"
                     android:textSize="24sp"
                     android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/profileImage"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnViewClinic"
+                    android:layout_width="@dimen/dp_100"
+                    android:layout_height="@dimen/margin_30"
+                    android:background="@drawable/rounded_btn"
+                    android:onClick="@{view -> viewModel.viewClinicClicked()}"
+                    android:text="@string/view_clinic"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/text_doctor_name" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_doctor_specialization"
