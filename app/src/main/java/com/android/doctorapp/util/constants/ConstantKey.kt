@@ -37,7 +37,6 @@ object ConstantKey {
         const val VIEW_CLINIC_IMAGE_URL = "viewClinicImageUrl"
         const val GET_CLINIC_IMAGE_LIST_KEY = "getClinicImageList"
         const val OPEN_IMAGE_POSITION_KEY = "openImagePosition"
-        const val USER_CURRENT_LOCATION_KEY = "userCurrentLocation"
 
     }
 

@@ -280,10 +280,10 @@ fun Context.openEmailSender(email: String?) {
 }
 
 
-fun Context.openDirectionMap(userAddress: String?, doctorAddress: String?) {
+fun Context.openDirectionMap(doctorAddress: String?) {
     try {
-        if (!userAddress.isNullOrEmpty() && !doctorAddress.isNullOrEmpty()) {
-            val uri = Uri.parse("https://www.google.co.in/maps/dir/$userAddress/$doctorAddress")
+        if (!doctorAddress.isNullOrEmpty()) {
+            val uri = Uri.parse("https://www.google.co.in/maps/dir//$doctorAddress")
             val i = Intent(Intent.ACTION_VIEW, uri)
             i.setPackage("com.google.android.apps.maps")
             startActivity(i)

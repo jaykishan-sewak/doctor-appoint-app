@@ -1,9 +1,9 @@
 package com.android.doctorapp.repository
 
 import android.net.Uri
-import android.util.Log
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.models.ApiResponse
+import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.ProfileResponseModel
 import com.android.doctorapp.repository.models.SymptomModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
@@ -15,6 +15,7 @@ import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
 import retrofit2.Response
+import java.util.Date
 import javax.inject.Inject
 
 class ProfileRepository @Inject constructor(
@@ -179,5 +180,47 @@ class ProfileRepository @Inject constructor(
         }
     }
 
+
+    suspend fun getMyDoctorsList(
+        userId: String?, currentDate: Date, fireStore: FirebaseFirestore
+    ): ApiResponse<ArrayList<UserDataResponseModel?>> {
+        return try {
+            val myDoctorsList = ArrayList<UserDataResponseModel?>()
+            val appointmentList = ArrayList<AppointmentModel>()
+            val appointmentResponse =
+                fireStore.collection(ConstantKey.DBKeys.TABLE_APPOINTMENT)
+                    .whereEqualTo(ConstantKey.DBKeys.FIELD_USER_ID, userId)
+                    .whereLessThan(ConstantKey.DBKeys.FIELD_SELECTED_DATE, currentDate).get()
+                    .await()
+            for (appointmentSnapshot in appointmentResponse) {
+                val appointmentModel = appointmentSnapshot.toObject((AppointmentModel::class.java))
+                appointmentList.add(appointmentModel)
+            }
+            for (appointmentModel in appointmentList) {
+                val doctorIdsInMyDoctors = myDoctorsList.map { it?.userId }
+                if (appointmentModel.doctorId !in doctorIdsInMyDoctors) {
+                    appointmentModel.let {
+                        val doctorDetails =
+                            fireStore.collection(ConstantKey.DBKeys.TABLE_USER_DATA)
+                                .whereEqualTo(ConstantKey.DBKeys.FIELD_USER_ID, it.doctorId)
+                                .limit(1)
+                                .get()
+                                .await()
+
+                        for (document in doctorDetails.documents) {
+                            val dataModel = document.toObject(UserDataResponseModel::class.java)
+                            dataModel?.let { it1 ->
+                                it1.docId = document.id
+                            }
+                            myDoctorsList.add(dataModel)
+                        }
+                    }
+                }
+            }
+            ApiResponse.create(response = Response.success(myDoctorsList))
+        } catch (e: Exception) {
+            ApiResponse.create(e.fillInStackTrace())
+        }
+    }
 
 }
