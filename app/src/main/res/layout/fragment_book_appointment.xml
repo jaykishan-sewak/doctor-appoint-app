@@ -73,17 +73,19 @@
                     app:layout_constraintStart_toEndOf="@+id/profileImage"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btnViewClinic"
-                    android:layout_width="@dimen/dp_100"
-                    android:layout_height="@dimen/margin_30"
-                    android:background="@drawable/rounded_btn"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvViewClinic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:onClick="@{view -> viewModel.viewClinicClicked()}"
                     android:text="@string/view_clinic"
                     android:textAllCaps="false"
-                    android:textColor="@color/white"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/text_doctor_name" />
+                    app:layout_constraintTop_toTopOf="@id/doctorRatingBar"
+                    app:layout_constraintBottom_toBottomOf="@id/doctorRatingBar"/>
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_doctor_specialization"

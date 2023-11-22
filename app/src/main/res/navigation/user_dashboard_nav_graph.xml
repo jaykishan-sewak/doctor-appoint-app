@@ -50,6 +50,10 @@
             android:id="@+id/action_user_profile_to_history"
             app:destination="@+id/History" />
 
+        <action
+            android:id="@+id/action_user_profile_to_myDoctors"
+            app:destination="@+id/MyDoctors" />
+
 
     </fragment>
 
@@ -108,6 +112,17 @@
     </fragment>
 
     <fragment
+        android:id="@+id/MyDoctors"
+        android:name="com.android.doctorapp.ui.profile.MyDoctorsFragment"
+        tools:layout="@layout/fragment_my_doctors">
+
+        <action
+            android:id="@+id/action_my_doctors_to_bookAppointment"
+            app:destination="@+id/BookAppointment" />
+
+    </fragment>
+
+    <fragment
         android:id="@+id/AllFeedback"
         android:name="com.android.doctorapp.ui.feedback.AllFeedbackFragment"
         tools:layout="@layout/fragment_all_feedback">
@@ -131,4 +146,5 @@
         tools:layout="@layout/fragment_preview_clinic_img">
 
     </fragment>
+
 </navigation>

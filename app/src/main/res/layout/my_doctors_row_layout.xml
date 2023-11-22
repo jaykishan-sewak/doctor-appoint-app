@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.net.Uri" />
+
+        <variable
+            name="doctorData"
+            type="com.android.doctorapp.repository.models.UserDataResponseModel" />
+
+        <variable
+            name="onItemClickListener"
+            type="com.android.doctorapp.ui.profile.adapter.MyDoctorsItemAdapter.OnItemClickListener" />
+
+        <variable
+            name="index"
+            type="Integer" />
+
+        <variable
+            name="doctorImageUri"
+            type="Uri" />
+    </data>
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_20"
+        android:layout_marginVertical="@dimen/margin_10"
+        android:backgroundTint="@color/white"
+        android:elevation="@dimen/margin_5"
+        app:cardCornerRadius="@dimen/margin_20"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/padding_10">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/profileImage"
+                android:layout_width="@dimen/dp_70"
+                android:layout_height="@dimen/dp_70"
+                android:layout_marginStart="@dimen/margin_15"
+                android:layout_marginTop="@dimen/margin_15"
+                android:elevation="@dimen/margin_5"
+                app:cardCornerRadius="@dimen/margin_20"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivDoctor"
+                    android:layout_width="@dimen/dp_70"
+                    android:layout_height="@dimen/dp_70"
+                    android:background="@drawable/ic_person_white"
+                    android:scaleType="centerCrop"
+                    app:imageUri="@{doctorImageUri}" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvDoctorName"
+                style="@style/doctor_text_view"
+                android:layout_marginStart="@dimen/margin_15"
+                android:layout_marginTop="@dimen/dp_10"
+                android:text="@{doctorData.name}"
+                android:textColor="@color/dark_grey"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/profileImage"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvDoctorDegree"
+                style="@style/doctor_text_view"
+                android:layout_width="@dimen/dp_0"
+                android:layout_marginTop="@dimen/dp_1"
+                android:maxLines="2"
+                android:textColor="@color/light_grey"
+                android:textSize="13sp"
+                app:doctorSpecialization="@{doctorData.degree}"
+                app:layout_constraintStart_toStartOf="@+id/tvDoctorName"
+                app:layout_constraintTop_toBottomOf="@+id/tvDoctorName" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvGenderText"
+                style="@style/doctor_text_view"
+                android:layout_marginTop="@dimen/dp_1"
+                android:text="@{doctorData.gender}"
+                android:textColor="@color/light_grey"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="@+id/tvDoctorName"
+                app:layout_constraintTop_toBottomOf="@+id/tvDoctorDegree" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvFeesTextLabel"
+                style="@style/doctor_text_view"
+                android:layout_marginTop="@dimen/dp_1"
+                android:text="@string/fees"
+                android:textColor="@color/light_grey"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="@+id/tvDoctorName"
+                app:layout_constraintTop_toBottomOf="@+id/tvGenderText" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvFeesTextValue"
+                style="@style/doctor_text_view"
+                android:layout_marginStart="@dimen/margin_5"
+                android:layout_marginTop="@dimen/dp_1"
+                android:text="@{`₹`+doctorData.doctorFees}"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/tvFeesTextLabel"
+                app:layout_constraintStart_toEndOf="@+id/tvFeesTextLabel"
+                app:layout_constraintTop_toTopOf="@+id/tvFeesTextLabel" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnView"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/margin_30"
+                android:layout_marginEnd="@dimen/margin_20"
+                android:background="@drawable/rounded_btn"
+                android:onClick="@{()->onItemClickListener.onItemClick(doctorData,index)}"
+                android:paddingHorizontal="@dimen/margin_10"
+                android:text="@string/book_appointment"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/tvFeesTextValue"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvFeesTextValue" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>

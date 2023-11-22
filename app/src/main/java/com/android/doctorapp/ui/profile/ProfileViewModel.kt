@@ -26,6 +26,7 @@ import com.android.doctorapp.util.extension.toast
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
@@ -62,6 +63,8 @@ class ProfileViewModel @Inject constructor(
     var isUserViewClinicImg = MutableLiveData<Boolean>()
     val noClinicImgFound: MutableLiveData<Boolean> = MutableLiveData(false)
 
+    val myDoctorsList: MutableLiveData<List<UserDataResponseModel?>?> = MutableLiveData()
+    val dataNotFound: MutableLiveData<Boolean> = MutableLiveData(false)
 
     init {
         emailClick.postValue("")
@@ -159,6 +162,10 @@ class ProfileViewModel @Inject constructor(
 
     fun clickOnNotification() {
         updateNotificationStatus(notificationToggleData.value!!)
+    }
+
+    fun clickOnMyDoctors() {
+        _navigationListener.value = R.id.action_user_profile_to_myDoctors
     }
 
     private fun updateNotificationStatus(notificationEnable: Boolean) {
@@ -306,6 +313,42 @@ class ProfileViewModel @Inject constructor(
         clinicImgArrayList.removeAt(position)
         clinicImgList.value = clinicImgArrayList
         updateClinicImageList(clinicImgArrayList)
+    }
+
+    fun getMyDoctors(currentDate: Date) {
+        viewModelScope.launch {
+            session.getString(USER_ID).collectLatest {
+                if (context.isNetworkAvailable()) {
+                    setShowProgress(true)
+                    when (val response =
+                        profileRepository.getMyDoctorsList(it, currentDate, fireStore)) {
+                        is ApiSuccessResponse -> {
+                            if (response.body.isNotEmpty()) {
+                                myDoctorsList.value = response.body
+                                setShowProgress(false)
+                            } else {
+                                setShowProgress(false)
+                                dataNotFound.value = true
+                            }
+
+                        }
+
+                        is ApiErrorResponse -> {
+                            setShowProgress(false)
+                        }
+
+                        is ApiNoNetworkResponse -> {
+                            setShowProgress(false)
+                        }
+
+                        else -> {
+                            setShowProgress(false)
+                        }
+                    }
+                } else
+                    context.toast(resourceProvider.getString(R.string.check_internet_connection))
+            }
+        }
     }
 
 }

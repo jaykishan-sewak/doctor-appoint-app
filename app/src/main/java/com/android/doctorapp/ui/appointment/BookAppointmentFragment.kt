@@ -23,7 +23,6 @@ import com.android.doctorapp.ui.appointment.adapter.AppointmentDateAdapter
 import com.android.doctorapp.ui.appointment.adapter.AppointmentTimeAdapter
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.BOOKING_DATE_FORMAT
-import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_CURRENT_LOCATION_KEY
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE_MONTH_YEAR
 import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_HOUR_MINUTE_SECOND
 import com.android.doctorapp.util.constants.ConstantKey.KEY_LATITUDE
@@ -56,7 +55,6 @@ class BookAppointmentFragment :
     //    private lateinit var dateStr: String
     private lateinit var timeStr: String
     private var isExpanded = false
-    private var userCurrentAddress: String? = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,7 +75,6 @@ class BookAppointmentFragment :
                 requireArguments().getString(ConstantKey.BundleKeys.BOOK_APPOINTMENT_DATA)
             viewModel.doctorDataObj.value =
                 Gson().fromJson(doctorDataObj, UserDataResponseModel::class.java)
-            userCurrentAddress = requireArguments().getString(USER_CURRENT_LOCATION_KEY)
         }
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
@@ -173,27 +170,20 @@ class BookAppointmentFragment :
 
         viewModel.isDirectionClick.observe(viewLifecycleOwner) {
             if (it) {
-                if (userCurrentAddress == "${viewModel.doctorDataObj.value?.addressLatLng!![KEY_LATITUDE].toString()},${viewModel.doctorDataObj.value?.addressLatLng!![KEY_LONGITUDE].toString()}") {
-                    val smallValue = 0.0001
-                    val originalLatitude =
-                        viewModel.doctorDataObj.value?.addressLatLng!![KEY_LATITUDE].toString()
-                            .toDoubleOrNull() ?: 0.0
-                    val originalLongitude =
-                        viewModel.doctorDataObj.value?.addressLatLng!![KEY_LONGITUDE].toString()
-                            .toDoubleOrNull() ?: 0.0
+                val smallValue = 0.0001
+                val originalLatitude =
+                    viewModel.doctorDataObj.value?.addressLatLng?.get(KEY_LATITUDE).toString()
+                        .toDoubleOrNull() ?: 0.0
+                val originalLongitude =
+                    viewModel.doctorDataObj.value?.addressLatLng?.get(KEY_LONGITUDE).toString()
+                        .toDoubleOrNull() ?: 0.0
 
-                    val formattedAdjustedLatitude = "%f".format(originalLatitude + smallValue)
-                    val formattedAdjustedLongitude = "%f".format(originalLongitude + smallValue)
+                val formattedAdjustedLatitude = "%f".format(originalLatitude + smallValue)
+                val formattedAdjustedLongitude = "%f".format(originalLongitude + smallValue)
 
-                    requireActivity().openDirectionMap(
-                        userCurrentAddress,
-                        "$formattedAdjustedLatitude,$formattedAdjustedLongitude"
-                    )
-                } else
-                    requireActivity().openDirectionMap(
-                        userCurrentAddress,
-                        "${viewModel.doctorDataObj.value?.addressLatLng!![KEY_LATITUDE].toString()},${viewModel.doctorDataObj.value?.addressLatLng!![KEY_LONGITUDE].toString()}"
-                    )
+                requireActivity().openDirectionMap(
+                    "$formattedAdjustedLatitude,$formattedAdjustedLongitude"
+                )
                 viewModel.isDirectionClick.value = false
             }
         }
@@ -261,11 +251,4 @@ class BookAppointmentFragment :
             })
     }
 
-    private fun String?.toDoubleOrNull(): Double? {
-        return try {
-            this?.toDouble()
-        } catch (e: NumberFormatException) {
-            null
-        }
-    }
 }
