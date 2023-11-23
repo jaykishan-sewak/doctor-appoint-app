@@ -23,7 +23,7 @@
             android:id="@+id/cardView1"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin_16"
+            android:layout_marginHorizontal="@dimen/margin_10"
             android:layout_marginVertical="@dimen/margin_10"
             android:backgroundTint="@color/white"
             android:elevation="@dimen/margin_5"
@@ -37,7 +37,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/margin_20"
+                android:paddingHorizontal="@dimen/margin_10"
                 android:paddingVertical="@dimen/margin_10">
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -48,7 +48,7 @@
                     android:drawablePadding="@dimen/margin_10"
                     android:text="@{userData.name}"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -74,8 +74,9 @@
                     android:id="@+id/tvPatientAge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_5"
                     android:layout_marginTop="@dimen/margin_10"
+                    android:drawableStart="@drawable/ic_age_blue"
+                    android:drawablePadding="@dimen/margin_10"
                     android:text="@{userData.age}"
                     android:textColor="@color/black"
                     android:textSize="16sp"
