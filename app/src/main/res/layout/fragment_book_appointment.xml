@@ -39,14 +39,16 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/margin_20"
-                android:paddingVertical="@dimen/margin_20">
+                android:layout_marginEnd="@dimen/margin_20"
+                android:layout_marginBottom="@dimen/margin_20">
 
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/profileImage"
                     android:layout_width="@dimen/dp_120"
-                    android:layout_height="@dimen/dp_150"
+                    android:layout_height="@dimen/dp_130"
+                    android:layout_marginStart="@dimen/margin_20"
+                    android:layout_marginTop="@dimen/margin_20"
                     android:elevation="@dimen/margin_5"
                     app:cardCornerRadius="@dimen/dp_10"
                     app:layout_constraintStart_toStartOf="parent"
@@ -55,7 +57,7 @@
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ivDoctor"
                         android:layout_width="@dimen/dp_120"
-                        android:layout_height="@dimen/dp_150"
+                        android:layout_height="@dimen/dp_130"
                         android:background="@drawable/ic_person_white"
                         android:scaleType="center"
                         app:imageUri="@{viewModel.imageUri}" />
@@ -71,7 +73,7 @@
                     android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@+id/profileImage"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="@id/profileImage" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvViewClinic"
@@ -81,18 +83,20 @@
                     android:text="@string/view_clinic"
                     android:textAllCaps="false"
                     android:textColor="@color/colorPrimary"
+                    android:textSize="14sp"
                     android:textStyle="bold"
-                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="@id/doctorRatingBar"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/doctorRatingBar"
-                    app:layout_constraintBottom_toBottomOf="@id/doctorRatingBar"/>
+                    app:layout_constraintTop_toTopOf="@id/doctorRatingBar" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_doctor_specialization"
                     style="@style/label_text"
+                    android:layout_width="@dimen/dp_0"
                     android:layout_marginTop="@dimen/dp_10"
-                    app:layout_constraintEnd_toEndOf="@+id/text_doctor_name"
-                    app:layout_constraintStart_toStartOf="@+id/text_doctor_name"
+                    android:layout_marginEnd="@dimen/margin_20"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/text_doctor_name"
                     app:layout_constraintTop_toBottomOf="@+id/text_doctor_name"
                     app:string="@{viewModel.doctorDetails != null ? viewModel.doctorDetails.specialities : null}" />
 

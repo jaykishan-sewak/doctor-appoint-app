@@ -1,6 +1,5 @@
 package com.android.doctorapp.repository
 
-import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.models.ApiResponse
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.FeedbackRequestModel
@@ -18,9 +17,7 @@ import kotlinx.coroutines.tasks.await
 import retrofit2.Response
 import javax.inject.Inject
 
-class FeedbackRepository @Inject constructor(
-    private val session: Session
-) {
+class FeedbackRepository @Inject constructor() {
 
     suspend fun getUserDoctorList(
         fireStore: FirebaseFirestore,

@@ -58,6 +58,7 @@ class RequestDoctorViewModel @Inject constructor(
                             nextDate.add(Calendar.DATE, 1)
                             endDate.value = nextDate.time
                         }
+                        dataFound.value = true
                         setShowProgress(true)
                         when (val response =
                             appointmentRepository.getAppointmentsProgressList(
