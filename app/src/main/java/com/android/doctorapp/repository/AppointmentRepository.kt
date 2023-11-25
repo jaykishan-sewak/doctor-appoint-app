@@ -3,12 +3,14 @@ package com.android.doctorapp.repository
 import com.android.doctorapp.repository.models.ApiResponse
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.FeedbackResponseModel
+import com.android.doctorapp.repository.models.PaginatedResponse
 import com.android.doctorapp.repository.models.SymptomModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_APPROVED_KEY
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_DOCTOR
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_DOCTOR_ID
+import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_DOC_ID_KEY
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_SELECTED_DATE
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_USER_ID
 import com.android.doctorapp.util.constants.ConstantKey.DBKeys.FIELD_VISITED_KEY
@@ -24,6 +26,7 @@ import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.tasks.await
@@ -341,13 +344,23 @@ class AppointmentRepository @Inject constructor() {
 
 
     suspend fun getUpcomingBookAppointmentDetailsList(
-        userId: String, fireStore: FirebaseFirestore
-    ): ApiResponse<List<AppointmentModel>> {
+        userId: String, fireStore: FirebaseFirestore,
+        lastDocument: DocumentSnapshot? = null
+    ): ApiResponse<PaginatedResponse> {
         return try {
             val currentDate = currentDate()
-            val response =
-                fireStore.collection(TABLE_APPOINTMENT).whereEqualTo(FIELD_USER_ID, userId)
-                    .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, currentDate).get().await()
+
+            // Initialize the query
+            val response = fireStore.collection(TABLE_APPOINTMENT)
+                .whereEqualTo(FIELD_USER_ID, userId)
+                .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, currentDate)
+                .let { query ->
+                    lastDocument?.let { query.startAfter(it) } ?: query
+                }
+                .limit(10)
+                .get()
+                .await()
+
             val bookedAppointmentList = arrayListOf<AppointmentModel>()
 
             for (document: DocumentSnapshot in response.documents) {
@@ -364,21 +377,36 @@ class AppointmentRepository @Inject constructor() {
                     bookedAppointmentList.add(it)
                 }
             }
-            ApiResponse.create(response = Response.success(bookedAppointmentList))
+            val paginatedResponse = PaginatedResponse(
+                data = bookedAppointmentList,
+                lastDocument = response.documents.lastOrNull() // Return the last document in the response
+            )
+            ApiResponse.create(response = Response.success(paginatedResponse))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
         }
     }
 
-
     suspend fun getPastBookAppointmentDetailsList(
-        userId: String, fireStore: FirebaseFirestore
-    ): ApiResponse<List<AppointmentModel>> {
+        userId: String, fireStore: FirebaseFirestore,
+        lastDocument: DocumentSnapshot? = null
+    ): ApiResponse<PaginatedResponse> {
         return try {
             val currentDate = currentDate()
-            val response =
-                fireStore.collection(TABLE_APPOINTMENT).whereEqualTo(FIELD_USER_ID, userId)
-                    .whereLessThan(FIELD_SELECTED_DATE, currentDate).get().await()
+
+            // Initialize the query
+            val response = fireStore.collection(TABLE_APPOINTMENT)
+                .whereEqualTo(FIELD_USER_ID, userId)
+                .whereLessThan(FIELD_SELECTED_DATE, currentDate)
+//                .orderBy(FIELD_SELECTED_DATE, Query.Direction.DESCENDING)
+                .let { query ->
+                    lastDocument?.let { query.startAfter(it) } ?: query
+                }
+
+                .limit(10)
+                .get()
+                .await()
+
             val bookedAppointmentList = arrayListOf<AppointmentModel>()
 
             for (document: DocumentSnapshot in response.documents) {
@@ -387,15 +415,20 @@ class AppointmentRepository @Inject constructor() {
                     it.id = document.id
                     val doctorDetails = fireStore.collection(TABLE_USER_DATA)
                         .whereEqualTo(FIELD_USER_ID, it.doctorId).get().await()
-                    var dataModel = UserDataResponseModel()
+//                    var dataModel = UserDataResponseModel()
                     for (snapshot in doctorDetails) {
-                        dataModel = snapshot.toObject()
+                        val dataModel = snapshot.toObject(UserDataResponseModel::class.java)
+                        it.doctorDetails = dataModel
+                        bookedAppointmentList.add(it)
                     }
-                    it.doctorDetails = dataModel
-                    bookedAppointmentList.add(it)
+
                 }
             }
-            ApiResponse.create(response = Response.success(bookedAppointmentList))
+            val paginatedResponse = PaginatedResponse(
+                data = bookedAppointmentList,
+                lastDocument = response.documents.lastOrNull() // Return the last document in the response
+            )
+            ApiResponse.create(response = Response.success(paginatedResponse))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
         }

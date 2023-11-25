@@ -1,6 +1,8 @@
 package com.android.doctorapp.ui.userdashboard.userfragment.adapter
 
+import android.content.ContentValues.TAG
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.net.toUri
@@ -15,6 +17,8 @@ class BookingAppointmentsAdapter(
     private val listener: OnItemClickListener
 ) : RecyclerView.Adapter<BookingAppointmentsAdapter.ItemViewHolder>() {
 
+    private var bookAppointmentList: MutableList<AppointmentModel> = mutableListOf()
+
     class ItemViewHolder(val view: UserBookingAppointmentsRowLayoutBinding) :
         RecyclerView.ViewHolder(view.root) {
         fun bind(
@@ -23,6 +27,10 @@ class BookingAppointmentsAdapter(
             position: Int,
             imageUrl: Uri?
         ) {
+            Log.d("Item", item.doctorDetails?.name ?: "")
+            Log.d("Item", "${item.bookingDateTime}")
+            Log.d("Item", item.status)
+            Log.d("Item", "$imageUrl")
             view.apply {
                 bookingData = item
                 index = position
@@ -32,11 +40,26 @@ class BookingAppointmentsAdapter(
         }
     }
 
-    fun filterList(filterList: List<AppointmentModel>) {
-        bookingAppointmentList = filterList
-//        notifyItemRangeChanged(0, userList.size)
+    private fun updatedList(updateList: List<AppointmentModel>) {
+        bookAppointmentList.addAll(updateList)
+        bookingAppointmentList = bookAppointmentList.sortedByDescending {
+            it.bookingDateTime
+        }
+        Log.d(TAG, "updatedList: ${bookingAppointmentList.size}")
         notifyDataSetChanged()
     }
+    fun filterList(filterList: List<AppointmentModel>) {
+        Log.d(TAG, "filterList: ${filterList.size}")
+        if (bookingAppointmentList.isEmpty()) {
+            bookAppointmentList = filterList.sortedByDescending {
+                it.bookingDateTime
+            }.toMutableList()
+            bookingAppointmentList = bookAppointmentList
+            notifyItemRangeChanged(0, filterList.size)
+        } else
+            updatedList(filterList)
+    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val layoutInflater =
@@ -65,4 +88,18 @@ class BookingAppointmentsAdapter(
         fun onItemClick(item: AppointmentModel, position: Int)
         fun onClick(contact: String)
     }
+
+
+//     class AppointmentDiffCallback : DiffUtil.ItemCallback<AppointmentModel>() {
+//        override fun areItemsTheSame(oldItem: AppointmentModel, newItem: AppointmentModel): Boolean {
+//            // Check if the unique identifier of the items is the same
+//            return oldItem.id == newItem.id
+//        }
+//
+//        override fun areContentsTheSame(oldItem: AppointmentModel, newItem: AppointmentModel): Boolean {
+//            // Check if the contents of the items are the same
+//            return oldItem == newItem
+//        }
+//    }
+
 }

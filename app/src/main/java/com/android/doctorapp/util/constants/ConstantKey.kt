@@ -69,6 +69,7 @@ object ConstantKey {
         const val TABLE_FEEDBACK = "feedback"
         const val FIELD_VISITED_KEY = "visited"
         const val SUB_TABLE_FEEDBACK = "sub_feedback"
+        const val FIELD_DOC_ID_KEY = "id"
 
 
     }
