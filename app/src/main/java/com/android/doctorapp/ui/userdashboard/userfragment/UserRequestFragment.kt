@@ -1,14 +1,18 @@
 package com.android.doctorapp.ui.userdashboard.userfragment
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.FragmentUserRequestBinding
 import com.android.doctorapp.di.AppComponentProvider
@@ -38,6 +42,7 @@ class UserRequestFragment :
     lateinit var adapter: BookingAppointmentsAdapter
     private val myCalender: Calendar = Calendar.getInstance()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (requireActivity().application as AppComponentProvider).getAppComponent().inject(this)
@@ -50,6 +55,7 @@ class UserRequestFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+
         viewModel.requestSelectedDate.value = currentDate()
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
@@ -62,6 +68,21 @@ class UserRequestFragment :
     }
 
     private fun registerObserver(layoutBinding: FragmentUserRequestBinding) {
+        setAdapter(emptyList())
+        binding.requestUserRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.requestUserRecyclerView.adapter = adapter
+
+        binding.nestedSV.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            if (scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight) {
+                // in this method we are incrementing page number,
+                // making progress bar visible and calling get data method.
+                viewModel.loadingPB.value = true
+                if (binding.tabLayout.getTabAt(0)?.isSelected == true)
+                    viewModel.getUpcomingAppointmentList()
+                else
+                    viewModel.getPastAppointmentList()
+            }
+        })
 
         binding.tabLayout.getTabAt(viewModel.selectedTabPosition.value!!)?.select()
         val navController = findNavController()
@@ -75,7 +96,7 @@ class UserRequestFragment :
                     }
                 }
             }
-        if (viewModel.userAppointmentData.value == null) {
+        if (viewModel.pastAppointments.value == null) {
             if (binding.tabLayout.getTabAt(0)?.isSelected == true) {
                 callApiForTab2()
             } else {
@@ -85,6 +106,8 @@ class UserRequestFragment :
 
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
+                viewModel._pastAppointments.value = emptyList()
+                viewModel.lastDocument = null
                 viewModel.selectedTabPosition.value = tab?.position ?: return
                 when (viewModel.selectedTabPosition.value) {
                     0 -> callApiForTab2()
@@ -102,15 +125,13 @@ class UserRequestFragment :
             }
         })
 
-        setAdapter(emptyList())
-        binding.requestUserRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.requestUserRecyclerView.adapter = adapter
-
         viewModel.requestSelectedDate.observe(viewLifecycleOwner) {
             viewModel.isDoctorRequestCalendar.value = false
         }
-        viewModel.userAppointmentData.observe(viewLifecycleOwner) {
+
+        viewModel.pastAppointments.observe(viewLifecycleOwner) {
             if (!it.isNullOrEmpty()) {
+                viewModel.loadingPB.value = false
                 adapter.filterList(it)
                 viewModel.dataFound.value = true
             } else {
@@ -144,11 +165,13 @@ class UserRequestFragment :
     }
 
     fun callApiForTab1() {
+        viewModel.setShowProgress(true)
         viewModel.upcomingOrPast.value = ConstantKey.PAST_LABEL
         viewModel.getPastAppointmentList()
     }
 
     fun callApiForTab2() {
+        viewModel.setShowProgress(true)
         viewModel.upcomingOrPast.value = ConstantKey.UPCOMING_LABEL
         viewModel.getUpcomingAppointmentList()
     }

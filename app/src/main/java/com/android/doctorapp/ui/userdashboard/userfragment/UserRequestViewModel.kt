@@ -3,7 +3,6 @@ package com.android.doctorapp.ui.userdashboard.userfragment
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.doctorapp.R
@@ -45,62 +44,63 @@ class UserRequestViewModel @Inject constructor(
     var selectedTabPosition: MutableLiveData<Int> = MutableLiveData(0)
     private val toSortAppointmentList = MutableLiveData<List<AppointmentModel>?>()
 
-    private var lastDocument: DocumentSnapshot? = null
+    var lastDocument: DocumentSnapshot? = null
     val loadingPB: MutableLiveData<Boolean> = MutableLiveData(false)
+    var lastAppointment: MutableLiveData<AppointmentModel?> = MutableLiveData()
 
-    fun getUpcomingAppointmentList(pageSize: Int, limit: Int) {
-        if (_pastAppointments.value != null && _pastAppointments.value?.size!! > 0)
-            _pastAppointments.value = emptyList()
+    fun getUpcomingAppointmentList() {
         dataFound.value = true
         viewModelScope.launch {
             var recordId = ""
             session.getString(USER_ID).collectLatest {
                 recordId = it.orEmpty()
                 if (context.isNetworkAvailable()) {
-                    if (pageSize > limit) {
-                        // checking if the page number is greater than limit.
-                        // displaying toast message in this case when page>limit.
-                        context.toast("That's all the data..")
-                        // hiding our progress bar.
-                        loadingPB.value = false
-                    } else {
-                        when (val response =
-                            appointmentRepository.getUpcomingBookAppointmentDetailsList(
-                                recordId,
-                                fireStore,
-                                lastDocument
-                            )) {
-                            is ApiSuccessResponse -> {
-                                setShowProgress(false)
-//                            toSortAppointmentList.value = response.body.data
+                    when (val response =
+                        appointmentRepository.getUpcomingBookAppointmentDetailsList(
+                            recordId,
+                            fireStore,
+                            lastDocument
+                        )) {
+                        is ApiSuccessResponse -> {
+                            setShowProgress(false)
+                            if (response.body.data.isNotEmpty()) {
                                 val newList = response.body.data
-//                            Log.d(TAG, "getPastAppointmentList: ${Gson().toJson(response.body.data)}")
+                                Log.d(
+                                    TAG,
+                                    "getUpcomingAppointmentList: ${Gson().toJson(response.body.data)}"
+                                )
                                 _pastAppointments.value = newList
                                 lastDocument = response.body.lastDocument
-//                            userAppointmentData.value = toSortAppointmentList.value!!.sortedByDescending {
-//                                it.bookingDateTime
-//                            }
+                            } else {
+                                if (!_pastAppointments.value.isNullOrEmpty()) {
+                                    context.toast("That's all the data..")
+                                    loadingPB.value = false
+                                } else
+                                    _pastAppointments.value = response.body.data
+
                             }
 
-                            is ApiErrorResponse -> {
-                                Log.d(TAG, "getPastAppointmentList: ${response.errorMessage}")
-                                context.toast(response.errorMessage)
-                                loadingPB.value = false
-                                setShowProgress(false)
-                            }
+                        }
 
-                            is ApiNoNetworkResponse -> {
-                                context.toast(response.errorMessage)
-                                loadingPB.value = false
-                                setShowProgress(false)
-                            }
+                        is ApiErrorResponse -> {
+                            Log.d(TAG, "getPastAppointmentList: ${response.errorMessage}")
+                            context.toast(response.errorMessage)
+                            loadingPB.value = false
+                            setShowProgress(false)
+                        }
 
-                            else -> {
-                                context.toast(resourceProvider.getString(R.string.something_went_wrong))
-                                setShowProgress(false)
-                            }
+                        is ApiNoNetworkResponse -> {
+                            context.toast(response.errorMessage)
+                            loadingPB.value = false
+                            setShowProgress(false)
+                        }
+
+                        else -> {
+                            context.toast(resourceProvider.getString(R.string.something_went_wrong))
+                            setShowProgress(false)
                         }
                     }
+//                    }
                 } else {
                     context.toast(resourceProvider.getString(R.string.check_internet_connection))
                 }
@@ -108,31 +108,30 @@ class UserRequestViewModel @Inject constructor(
         }
     }
 
-    fun getPastAppointmentList(pageSize: Int, limit: Int) {
-//        if (_pastAppointments.value != null && _pastAppointments.value?.size!! > 0)
-//            _pastAppointments.value = emptyList()
+    fun getPastAppointmentList() {
         dataFound.value = true
         viewModelScope.launch {
             var recordId = ""
             session.getString(USER_ID).collectLatest {
                 recordId = it.orEmpty()
                 if (context.isNetworkAvailable()) {
-                    if (pageSize > limit) {
-                        // checking if the page number is greater than limit.
-                        // displaying toast message in this case when page>limit.
-                        context.toast("That's all the data..")
-                        // hiding our progress bar.
-                        loadingPB.value = false
-                    } else {
-                        when (val response =
-                            appointmentRepository.getPastBookAppointmentDetailsList(
-                                recordId,
-                                fireStore,
-                                lastDocument
-                            )) {
-                            is ApiSuccessResponse -> {
-                                setShowProgress(false)
+//                    if (lastAppointment.value?.id == lastDocument?.id) {
+//                        // checking if the page number is greater than limit.
+//                        // displaying toast message in this case when page>limit.
+//                        context.toast("That's all the data..")
+//                        // hiding our progress bar.
+//                        loadingPB.value = false
+//                    } else {
+                    when (val response =
+                        appointmentRepository.getPastBookAppointmentDetailsList(
+                            recordId,
+                            fireStore,
+                            lastDocument
+                        )) {
+                        is ApiSuccessResponse -> {
+                            setShowProgress(false)
 //                                toSortAppointmentList.value = response.body.data
+                            if (response.body.data.isNotEmpty()) {
                                 val newList = response.body.data
                                 Log.d(
                                     TAG,
@@ -147,30 +146,75 @@ class UserRequestViewModel @Inject constructor(
 //                            userAppointmentData.value = toSortAppointmentList.value!!.sortedByDescending {
 //                                it.bookingDateTime
 //                            }
+                            } else {
+                                if (!_pastAppointments.value.isNullOrEmpty()) {
+                                    context.toast("That's all the data..")
+                                    loadingPB.value = false
+                                } else
+                                    _pastAppointments.value = response.body.data
+
+                            }
+                        }
+
+                        is ApiErrorResponse -> {
+                            Log.d(TAG, "getPastAppointmentList: ${response.errorMessage}")
+                            context.toast(response.errorMessage)
+                            loadingPB.value = false
+                            setShowProgress(false)
+                        }
+
+                        is ApiNoNetworkResponse -> {
+                            context.toast(response.errorMessage)
+                            loadingPB.value = false
+                            setShowProgress(false)
+                        }
+
+                        else -> {
+                            context.toast(resourceProvider.getString(R.string.something_went_wrong))
+                            setShowProgress(false)
+                        }
+                    }
+//                    }
+                } else {
+                    context.toast(resourceProvider.getString(R.string.check_internet_connection))
+                }
+            }
+        }
+    }
+
+    fun getLastPastAppointment() {
+        viewModelScope.launch {
+            if (context.isNetworkAvailable()) {
+                session.getString(USER_ID).collectLatest {
+                    if (it?.isNotEmpty() == true) {
+                        setShowProgress(true)
+                        when (val response =
+                            appointmentRepository.getLastElementOfPastList(
+                                it,
+                                fireStore
+                            )) {
+                            is ApiSuccessResponse -> {
+                                setShowProgress(false)
+                                lastAppointment.value = response.body
+                                Log.d(TAG, "getLastPastAppointment: ${response.body}")
                             }
 
                             is ApiErrorResponse -> {
-                                Log.d(TAG, "getPastAppointmentList: ${response.errorMessage}")
-                                context.toast(response.errorMessage)
-                                loadingPB.value = false
                                 setShowProgress(false)
                             }
 
                             is ApiNoNetworkResponse -> {
-                                context.toast(response.errorMessage)
-                                loadingPB.value = false
                                 setShowProgress(false)
                             }
 
                             else -> {
-                                context.toast(resourceProvider.getString(R.string.something_went_wrong))
                                 setShowProgress(false)
                             }
                         }
                     }
-                } else {
-                    context.toast(resourceProvider.getString(R.string.check_internet_connection))
                 }
+            } else {
+                context.toast(resourceProvider.getString(R.string.check_internet_connection))
             }
         }
     }

@@ -31,6 +31,7 @@ class BookingAppointmentsAdapter(
             Log.d("Item", "${item.bookingDateTime}")
             Log.d("Item", item.status)
             Log.d("Item", "$imageUrl")
+            Log.d("Item", item.name)
             view.apply {
                 bookingData = item
                 index = position
@@ -42,22 +43,25 @@ class BookingAppointmentsAdapter(
 
     private fun updatedList(updateList: List<AppointmentModel>) {
         bookAppointmentList.addAll(updateList)
-        bookingAppointmentList = bookAppointmentList.sortedByDescending {
-            it.bookingDateTime
-        }
+        bookingAppointmentList = bookAppointmentList
         Log.d(TAG, "updatedList: ${bookingAppointmentList.size}")
         notifyDataSetChanged()
     }
+
     fun filterList(filterList: List<AppointmentModel>) {
         Log.d(TAG, "filterList: ${filterList.size}")
-        if (bookingAppointmentList.isEmpty()) {
-            bookAppointmentList = filterList.sortedByDescending {
-                it.bookingDateTime
-            }.toMutableList()
-            bookingAppointmentList = bookAppointmentList
-            notifyItemRangeChanged(0, filterList.size)
-        } else
-            updatedList(filterList)
+        if(filterList.isEmpty()) {
+            bookingAppointmentList = emptyList()
+            bookAppointmentList.clear()
+            notifyDataSetChanged()
+        }else {
+            if (bookingAppointmentList.isEmpty()) {
+                bookAppointmentList = filterList.toMutableList()
+                bookingAppointmentList = bookAppointmentList
+                notifyItemRangeChanged(0, filterList.size)
+            } else
+                updatedList(filterList)
+        }
     }
 
 
