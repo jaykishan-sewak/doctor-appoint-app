@@ -76,11 +76,14 @@ class UserRequestFragment :
             if (scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight) {
                 // in this method we are incrementing page number,
                 // making progress bar visible and calling get data method.
-                viewModel.loadingPB.value = true
-                if (binding.tabLayout.getTabAt(0)?.isSelected == true)
-                    viewModel.getUpcomingAppointmentList()
-                else
-                    viewModel.getPastAppointmentList()
+                if (viewModel.dataLoaded.value == true) {
+                    viewModel.dataLoaded.value = false
+                    viewModel.loadingPB.value = true
+                    if (binding.tabLayout.getTabAt(0)?.isSelected == true)
+                        viewModel.getUpcomingAppointmentList()
+                    else
+                        viewModel.getPastAppointmentList()
+                }
             }
         })
 

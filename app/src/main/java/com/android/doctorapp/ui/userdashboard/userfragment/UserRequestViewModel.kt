@@ -47,6 +47,7 @@ class UserRequestViewModel @Inject constructor(
     var lastDocument: DocumentSnapshot? = null
     val loadingPB: MutableLiveData<Boolean> = MutableLiveData(false)
     var lastAppointment: MutableLiveData<AppointmentModel?> = MutableLiveData()
+    val dataLoaded: MutableLiveData<Boolean> = MutableLiveData(false)
 
     fun getUpcomingAppointmentList() {
         dataFound.value = true
@@ -71,6 +72,7 @@ class UserRequestViewModel @Inject constructor(
                                 )
                                 _pastAppointments.value = newList
                                 lastDocument = response.body.lastDocument
+                                dataLoaded.postValue(true)
                             } else {
                                 if (!_pastAppointments.value.isNullOrEmpty()) {
                                     context.toast("That's all the data..")
@@ -143,6 +145,7 @@ class UserRequestViewModel @Inject constructor(
 //                                    }
                                 _pastAppointments.value = newList
                                 lastDocument = response.body.lastDocument
+                                dataLoaded.postValue(true)
 //                            userAppointmentData.value = toSortAppointmentList.value!!.sortedByDescending {
 //                                it.bookingDateTime
 //                            }
