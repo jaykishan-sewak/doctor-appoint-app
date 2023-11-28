@@ -33,7 +33,7 @@ class UserRequestViewModel @Inject constructor(
     private val context: Context
 ) : BaseViewModel() {
 
-    val userAppointmentData = MutableLiveData<List<AppointmentModel>?>()
+    val userAppointmentData: MutableList<AppointmentModel> = mutableListOf()
     val _pastAppointments = MutableLiveData<List<AppointmentModel>?>()
     val pastAppointments: MutableLiveData<List<AppointmentModel>?> get() = _pastAppointments
 
@@ -70,6 +70,7 @@ class UserRequestViewModel @Inject constructor(
                                     TAG,
                                     "getUpcomingAppointmentList: ${Gson().toJson(response.body.data)}"
                                 )
+                                userAppointmentData.addAll(newList)
                                 _pastAppointments.value = newList
                                 lastDocument = response.body.lastDocument
                                 dataLoaded.postValue(true)
@@ -77,8 +78,10 @@ class UserRequestViewModel @Inject constructor(
                                 if (!_pastAppointments.value.isNullOrEmpty()) {
                                     context.toast("That's all the data..")
                                     loadingPB.value = false
-                                } else
+                                } else {
                                     _pastAppointments.value = response.body.data
+                                    userAppointmentData.addAll(response.body.data)
+                                }
 
                             }
 
@@ -143,6 +146,7 @@ class UserRequestViewModel @Inject constructor(
 //                                    toSortAppointmentList.value!!.sortedByDescending {
 //                                        it.bookingDateTime
 //                                    }
+                                userAppointmentData.addAll(newList)
                                 _pastAppointments.value = newList
                                 lastDocument = response.body.lastDocument
                                 dataLoaded.postValue(true)
@@ -153,9 +157,10 @@ class UserRequestViewModel @Inject constructor(
                                 if (!_pastAppointments.value.isNullOrEmpty()) {
                                     context.toast("That's all the data..")
                                     loadingPB.value = false
-                                } else
+                                } else {
                                     _pastAppointments.value = response.body.data
-
+                                    userAppointmentData.addAll(response.body.data)
+                                }
                             }
                         }
 

@@ -1,8 +1,6 @@
 package com.android.doctorapp.ui.userdashboard.userfragment
 
-import android.content.ContentValues.TAG
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +10,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.FragmentUserRequestBinding
 import com.android.doctorapp.di.AppComponentProvider
@@ -57,6 +54,21 @@ class UserRequestFragment :
         super.onCreateView(inflater, container, savedInstanceState)
 
         viewModel.requestSelectedDate.value = currentDate()
+        binding.tabLayout.getTabAt(viewModel.selectedTabPosition.value!!)?.select()
+        val navController = findNavController()
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(ConstantKey.APPOINTMENT_DETAILS_UPDATED)
+            ?.observe(viewLifecycleOwner) {
+                if (it) {
+                    if (binding.tabLayout.getTabAt(0)?.isSelected!!) {
+                        viewModel.lastDocument = null
+                        callApiForTab2()
+                    } else {
+                        viewModel.lastDocument = null
+                        callApiForTab1()
+                    }
+                }
+            }
+
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
             viewModel = this@UserRequestFragment.viewModel
@@ -87,18 +99,21 @@ class UserRequestFragment :
             }
         })
 
-        binding.tabLayout.getTabAt(viewModel.selectedTabPosition.value!!)?.select()
-        val navController = findNavController()
-        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(ConstantKey.APPOINTMENT_DETAILS_UPDATED)
-            ?.observe(viewLifecycleOwner) {
-                if (it) {
-                    if (binding.tabLayout.getTabAt(0)?.isSelected!!) {
-                        callApiForTab2()
-                    } else {
-                        callApiForTab1()
-                    }
+
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("tabValue")
+            ?.observe(viewLifecycleOwner) { result ->
+                if (result.equals(ConstantKey.PAST_LABEL)) {
+                    viewModel.selectedTabPosition.postValue(1)
+                    viewModel.dataFound.postValue(true)
+                    viewModel._pastAppointments.value = viewModel.userAppointmentData
+                } else {
+                    viewModel.dataFound.postValue(true)
+                    viewModel._pastAppointments.value = viewModel.userAppointmentData
                 }
             }
+
+
+
         if (viewModel.pastAppointments.value == null) {
             if (binding.tabLayout.getTabAt(0)?.isSelected == true) {
                 callApiForTab2()
@@ -158,23 +173,18 @@ class UserRequestFragment :
             }
         }
 
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("tabValue")
-            ?.observe(viewLifecycleOwner) { result ->
-                if (result.equals(ConstantKey.PAST_LABEL)) {
-                    viewModel.selectedTabPosition.postValue(1)
-                    viewModel.dataFound.postValue(true)
-                }
-            }
     }
 
     fun callApiForTab1() {
         viewModel.setShowProgress(true)
+        viewModel.userAppointmentData.clear()
         viewModel.upcomingOrPast.value = ConstantKey.PAST_LABEL
         viewModel.getPastAppointmentList()
     }
 
     fun callApiForTab2() {
         viewModel.setShowProgress(true)
+        viewModel.userAppointmentData.clear()
         viewModel.upcomingOrPast.value = ConstantKey.UPCOMING_LABEL
         viewModel.getUpcomingAppointmentList()
     }
@@ -203,6 +213,7 @@ class UserRequestFragment :
                         ConstantKey.BundleKeys.SELECTED_TAB,
                         viewModel.upcomingOrPast.value
                     )
+                    viewModel._pastAppointments.value = emptyList()
                     findNavController().navigate(
                         R.id.action_user_booking_to_bookingDetail,
                         bundle
