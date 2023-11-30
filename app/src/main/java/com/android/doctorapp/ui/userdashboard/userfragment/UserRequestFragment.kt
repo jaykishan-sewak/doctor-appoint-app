@@ -1,11 +1,11 @@
 package com.android.doctorapp.ui.userdashboard.userfragment
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -40,10 +40,17 @@ class UserRequestFragment :
     private val myCalender: Calendar = Calendar.getInstance()
 
 
+    private var currentPage = PaginationScrollListener.PAGE_START
+    private var isLastPage = false
+    private var totalPage = 10
+    private var isLoading = false
+    private var itemCount = 0
+    private var bookAppointmentList: MutableList<AppointmentModel> = mutableListOf()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (requireActivity().application as AppComponentProvider).getAppComponent().inject(this)
-
     }
 
     override fun onCreateView(
@@ -52,6 +59,24 @@ class UserRequestFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+
+        val layoutBinding = binding {
+            lifecycleOwner = viewLifecycleOwner
+            viewModel = this@UserRequestFragment.viewModel
+        }
+
+        setUpWithViewModel(viewModel)
+        registerObserver(layoutBinding)
+        return layoutBinding.root
+    }
+
+    private fun registerObserver(layoutBinding: FragmentUserRequestBinding) {
+
+        val layoutManager = LinearLayoutManager(requireContext())
+        setAdapter(mutableListOf())
+        binding.requestUserRecyclerView.layoutManager = layoutManager
+        binding.requestUserRecyclerView.adapter = adapter
+
 
         viewModel.requestSelectedDate.value = currentDate()
         binding.tabLayout.getTabAt(viewModel.selectedTabPosition.value!!)?.select()
@@ -69,33 +94,23 @@ class UserRequestFragment :
                 }
             }
 
-        val layoutBinding = binding {
-            lifecycleOwner = viewLifecycleOwner
-            viewModel = this@UserRequestFragment.viewModel
-        }
+        binding.requestUserRecyclerView.addOnScrollListener(object :
+            PaginationScrollListener(layoutManager) {
+            override fun loadMoreItems() {
+                if (binding.tabLayout.getTabAt(0)?.isSelected == true)
+                    viewModel.getUpcomingAppointmentList()
+                else
+                    viewModel.getPastAppointmentList()
+                isLoading = true
+                currentPage++
+            }
 
-        setUpWithViewModel(viewModel)
-        registerObserver(layoutBinding)
-        return layoutBinding.root
-    }
+            override fun isLastPage(): Boolean {
+                return isLastPage
+            }
 
-    private fun registerObserver(layoutBinding: FragmentUserRequestBinding) {
-        setAdapter(emptyList())
-        binding.requestUserRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.requestUserRecyclerView.adapter = adapter
-
-        binding.nestedSV.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-            if (scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight) {
-                // in this method we are incrementing page number,
-                // making progress bar visible and calling get data method.
-                if (viewModel.dataLoaded.value == true) {
-                    viewModel.dataLoaded.value = false
-                    viewModel.loadingPB.value = true
-                    if (binding.tabLayout.getTabAt(0)?.isSelected == true)
-                        viewModel.getUpcomingAppointmentList()
-                    else
-                        viewModel.getPastAppointmentList()
-                }
+            override fun isLoading(): Boolean {
+                return isLoading
             }
         })
 
@@ -105,8 +120,10 @@ class UserRequestFragment :
                 if (result.equals(ConstantKey.PAST_LABEL)) {
                     viewModel.selectedTabPosition.postValue(1)
                     viewModel.dataFound.postValue(true)
+                    isLastPage = false
                     viewModel._pastAppointments.value = viewModel.userAppointmentData
                 } else {
+                    isLastPage = false
                     viewModel.dataFound.postValue(true)
                     viewModel._pastAppointments.value = viewModel.userAppointmentData
                 }
@@ -126,6 +143,7 @@ class UserRequestFragment :
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 viewModel._pastAppointments.value = emptyList()
                 viewModel.lastDocument = null
+                adapter.clear()
                 viewModel.selectedTabPosition.value = tab?.position ?: return
                 when (viewModel.selectedTabPosition.value) {
                     0 -> callApiForTab2()
@@ -149,12 +167,15 @@ class UserRequestFragment :
 
         viewModel.pastAppointments.observe(viewLifecycleOwner) {
             if (!it.isNullOrEmpty()) {
-                viewModel.loadingPB.value = false
-                adapter.filterList(it)
+                bookAppointmentList = it as MutableList<AppointmentModel>
+                itemCount += bookAppointmentList.size
+                doApiCall(bookAppointmentList)
                 viewModel.dataFound.value = true
             } else {
-                adapter.filterList(emptyList())
-                viewModel.dataFound.value = false
+                if (bookAppointmentList.isNotEmpty()) {
+                    isLastPage = true
+                    adapter.removeLoading()
+                }
             }
         }
         viewModel.isDoctorRequestCalendar.observe(viewLifecycleOwner) {
@@ -176,16 +197,16 @@ class UserRequestFragment :
     }
 
     fun callApiForTab1() {
-        viewModel.setShowProgress(true)
-        viewModel.userAppointmentData.clear()
+        reAssignValues()
         viewModel.upcomingOrPast.value = ConstantKey.PAST_LABEL
+        currentPage = PaginationScrollListener.PAGE_START
         viewModel.getPastAppointmentList()
     }
 
     fun callApiForTab2() {
-        viewModel.setShowProgress(true)
-        viewModel.userAppointmentData.clear()
+        reAssignValues()
         viewModel.upcomingOrPast.value = ConstantKey.UPCOMING_LABEL
+        currentPage = PaginationScrollListener.PAGE_START
         viewModel.getUpcomingAppointmentList()
     }
 
@@ -198,7 +219,7 @@ class UserRequestFragment :
             .build()
     }
 
-    private fun setAdapter(items: List<AppointmentModel>) {
+    private fun setAdapter(items: MutableList<AppointmentModel>) {
         adapter = BookingAppointmentsAdapter(
             items,
             object : BookingAppointmentsAdapter.OnItemClickListener {
@@ -227,4 +248,32 @@ class UserRequestFragment :
         )
     }
 
+    private fun doApiCall(list: MutableList<AppointmentModel>) {
+        val items = ArrayList<AppointmentModel>()
+
+        Handler().postDelayed({
+            items.addAll(list)
+            if (currentPage != PaginationScrollListener.PAGE_START) adapter.removeLoading()
+
+            viewModel.setShowProgress(false)
+            adapter.addItems(items)
+
+            if (currentPage < totalPage && list.size >= totalPage) {
+                adapter.addLoading()
+            } else {
+                isLastPage = true
+            }
+            isLoading = false
+        }, 1500)
+    }
+
+
+    fun reAssignValues() {
+        viewModel.userAppointmentData.clear()
+        isLastPage = false
+        viewModel.dataFound.value = true
+        viewModel.setShowProgress(true)
+        bookAppointmentList.clear()
+        itemCount = 0
+    }
 }

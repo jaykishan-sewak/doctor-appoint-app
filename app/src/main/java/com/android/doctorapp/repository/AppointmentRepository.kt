@@ -1,7 +1,5 @@
 package com.android.doctorapp.repository
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import com.android.doctorapp.repository.models.ApiResponse
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.repository.models.FeedbackResponseModel
@@ -31,7 +29,6 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.messaging.FirebaseMessaging
-import com.google.gson.Gson
 import kotlinx.coroutines.tasks.await
 import retrofit2.Response
 import java.util.Calendar
@@ -352,7 +349,6 @@ class AppointmentRepository @Inject constructor() {
     ): ApiResponse<PaginatedResponse> {
         return try {
             val currentDate = currentDate()
-            Log.d(TAG, "lastUpcomingDocument: ${lastDocument?.id}")
             // Initialize the query
 
             val query: QuerySnapshot = if (lastDocument == null) {
@@ -360,14 +356,14 @@ class AppointmentRepository @Inject constructor() {
                     .whereEqualTo(FIELD_USER_ID, userId)
                     .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, currentDate)
                     .orderBy(FIELD_SELECTED_DATE, Query.Direction.DESCENDING)
-                    .limit(5).get().await()
+                    .limit(10).get().await()
             } else {
                 fireStore.collection(TABLE_APPOINTMENT)
                     .whereEqualTo(FIELD_USER_ID, userId)
                     .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, currentDate)
                     .orderBy(FIELD_SELECTED_DATE, Query.Direction.DESCENDING)
                     .startAfter(lastDocument)
-                    .limit(5).get().await()
+                    .limit(10).get().await()
             }
 
 
@@ -379,28 +375,19 @@ class AppointmentRepository @Inject constructor() {
                     it.id = document.id
                     val doctorDetails = fireStore.collection(TABLE_USER_DATA)
                         .whereEqualTo(FIELD_USER_ID, it.doctorId).get().await()
-//                    var dataModel = UserDataResponseModel()
+                    var dataModel = UserDataResponseModel()
                     for (snapshot in doctorDetails) {
-                        val dataModel = snapshot.toObject(UserDataResponseModel::class.java)
-                        it.doctorDetails = dataModel
-                        bookedAppointmentList.add(it)
+                        dataModel = snapshot.toObject()
                     }
-
+                    it.doctorDetails = dataModel
+                    bookedAppointmentList.add(it)
                 }
             }
-            Log.d(TAG, "getUpcomingBookAppointmentDetailsList: ${Gson().toJson(bookedAppointmentList)}")
-            val idList = query.documents.map { it.id }
-            val appointmentsIdList = bookedAppointmentList.map { it.id }
-            Log.d(TAG, "documentUpcomingSnapshotsList: $idList")
-            Log.d(TAG, "appointmentsUpcomingDocumentSnapshotsLis: $appointmentsIdList")
-
 
             val paginatedResponse = PaginatedResponse(
                 data = bookedAppointmentList,
                 lastDocument = query.documents.lastOrNull() // Return the last document in the response
             )
-
-            Log.d(TAG, "documentIdUpcoming: ${query.documents.lastOrNull()}")
             ApiResponse.create(response = Response.success(paginatedResponse))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
@@ -413,7 +400,6 @@ class AppointmentRepository @Inject constructor() {
     ): ApiResponse<PaginatedResponse> {
         return try {
             val currentDate = currentDate()
-            Log.d(TAG, "lastDocument: ${lastDocument?.id}")
             // Initialize the query
 
             val query: QuerySnapshot = if (lastDocument == null) {
@@ -421,14 +407,14 @@ class AppointmentRepository @Inject constructor() {
                     .whereEqualTo(FIELD_USER_ID, userId)
                     .whereLessThan(FIELD_SELECTED_DATE, currentDate)
                     .orderBy(FIELD_SELECTED_DATE, Query.Direction.DESCENDING)
-                    .limit(5).get().await()
+                    .limit(10).get().await()
             } else {
                 fireStore.collection(TABLE_APPOINTMENT)
                     .whereEqualTo(FIELD_USER_ID, userId)
                     .whereLessThan(FIELD_SELECTED_DATE, currentDate)
                     .orderBy(FIELD_SELECTED_DATE, Query.Direction.DESCENDING)
                     .startAfter(lastDocument)
-                    .limit(5).get().await()
+                    .limit(10).get().await()
             }
 
 
@@ -440,28 +426,19 @@ class AppointmentRepository @Inject constructor() {
                     it.id = document.id
                     val doctorDetails = fireStore.collection(TABLE_USER_DATA)
                         .whereEqualTo(FIELD_USER_ID, it.doctorId).get().await()
-//                    var dataModel = UserDataResponseModel()
+                    var dataModel = UserDataResponseModel()
                     for (snapshot in doctorDetails) {
-                        val dataModel = snapshot.toObject(UserDataResponseModel::class.java)
-                        it.doctorDetails = dataModel
-                        bookedAppointmentList.add(it)
+                        dataModel = snapshot.toObject()
                     }
-
+                    it.doctorDetails = dataModel
+                    bookedAppointmentList.add(it)
                 }
             }
-            Log.d(TAG, "getPastBookAppointmentDetailsList: ${Gson().toJson(bookedAppointmentList)}")
-            val idList = query.documents.map { it.id }
-            val appointmentsIdList = bookedAppointmentList.map { it.id }
-            Log.d(TAG, "documentSnapshotsList: $idList")
-            Log.d(TAG, "appointmentsDocumentSnapshotsLis: $appointmentsIdList")
-
 
             val paginatedResponse = PaginatedResponse(
                 data = bookedAppointmentList,
                 lastDocument = query.documents.lastOrNull() // Return the last document in the response
             )
-
-            Log.d(TAG, "documentId: ${query.documents.lastOrNull()}")
             ApiResponse.create(response = Response.success(paginatedResponse))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
@@ -526,45 +503,6 @@ class AppointmentRepository @Inject constructor() {
                 }
             }
             ApiResponse.create(response = Response.success(dataModel))
-        } catch (e: Exception) {
-            ApiResponse.create(e.fillInStackTrace())
-        }
-    }
-
-
-    suspend fun getLastElementOfPastList(
-        userId: String, fireStore: FirebaseFirestore
-    ): ApiResponse<AppointmentModel> {
-        return try {
-            val currentDate = currentDate()
-
-            // Initialize the query
-            val query = fireStore.collection(TABLE_APPOINTMENT)
-                .whereEqualTo(FIELD_USER_ID, userId)
-                .whereLessThan(FIELD_SELECTED_DATE, currentDate)
-                .limit(1) // Limit to only one result
-                .orderBy(
-                    FIELD_SELECTED_DATE,
-                    Query.Direction.DESCENDING
-                ) // Order by date descending
-
-            val response = query.get().await()
-
-            val document = response.documents[0]
-            val user = document.toObject(AppointmentModel::class.java)
-
-            user?.let {
-                it.id = document.id
-                val doctorDetails = fireStore.collection(TABLE_USER_DATA)
-                    .whereEqualTo(FIELD_USER_ID, it.doctorId).get().await()
-
-                for (snapshot in doctorDetails) {
-                    val dataModel = snapshot.toObject(UserDataResponseModel::class.java)
-                    it.doctorDetails = dataModel
-                }
-
-            }
-            ApiResponse.create(response = Response.success(user))
         } catch (e: Exception) {
             ApiResponse.create(e.fillInStackTrace())
         }
