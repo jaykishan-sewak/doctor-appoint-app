@@ -20,6 +20,7 @@ import com.android.doctorapp.util.constants.ConstantKey.FIELD_APPROVED
 import com.android.doctorapp.util.constants.ConstantKey.FIELD_PENDING
 import com.android.doctorapp.util.constants.ConstantKey.FIELD_REJECTED
 import com.android.doctorapp.util.constants.ConstantKey.KEY_GEO_HASH
+import com.android.doctorapp.util.constants.ConstantKey.PAGINATION_LIMIT_KEY
 import com.android.doctorapp.util.extension.currentDate
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
@@ -356,14 +357,14 @@ class AppointmentRepository @Inject constructor() {
                     .whereEqualTo(FIELD_USER_ID, userId)
                     .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, currentDate)
                     .orderBy(FIELD_SELECTED_DATE, Query.Direction.DESCENDING)
-                    .limit(10).get().await()
+                    .limit(PAGINATION_LIMIT_KEY).get().await()
             } else {
                 fireStore.collection(TABLE_APPOINTMENT)
                     .whereEqualTo(FIELD_USER_ID, userId)
                     .whereGreaterThanOrEqualTo(FIELD_SELECTED_DATE, currentDate)
                     .orderBy(FIELD_SELECTED_DATE, Query.Direction.DESCENDING)
                     .startAfter(lastDocument)
-                    .limit(10).get().await()
+                    .limit(PAGINATION_LIMIT_KEY).get().await()
             }
 
 
@@ -407,14 +408,14 @@ class AppointmentRepository @Inject constructor() {
                     .whereEqualTo(FIELD_USER_ID, userId)
                     .whereLessThan(FIELD_SELECTED_DATE, currentDate)
                     .orderBy(FIELD_SELECTED_DATE, Query.Direction.DESCENDING)
-                    .limit(10).get().await()
+                    .limit(PAGINATION_LIMIT_KEY).get().await()
             } else {
                 fireStore.collection(TABLE_APPOINTMENT)
                     .whereEqualTo(FIELD_USER_ID, userId)
                     .whereLessThan(FIELD_SELECTED_DATE, currentDate)
                     .orderBy(FIELD_SELECTED_DATE, Query.Direction.DESCENDING)
                     .startAfter(lastDocument)
-                    .limit(10).get().await()
+                    .limit(PAGINATION_LIMIT_KEY).get().await()
             }
 
 
