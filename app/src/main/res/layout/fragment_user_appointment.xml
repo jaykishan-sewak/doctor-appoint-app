@@ -16,7 +16,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/app_bg"
         android:clickable="true"
         android:focusable="true">
 
@@ -52,7 +51,6 @@
             android:drawablePadding="@dimen/padding_10"
             android:hint="@string/search_doctor"
             android:paddingStart="@dimen/padding_10"
-            android:textColorHint="@color/edittext_bg_grey"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

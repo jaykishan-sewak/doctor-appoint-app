@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -57,11 +58,23 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpWithViewModel(viewModel)
-        registerObservers()
+        registerObservers(binding)
     }
 
 
-    private fun registerObservers() {
+    private fun registerObservers(layoutBinding : FragmentProfileBinding) {
+
+        layoutBinding.changeTheme.setOnCheckedChangeListener { checkedButton, isChecked ->
+            if(layoutBinding.changeTheme.isChecked){
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                layoutBinding.tvThemeEnable.text = "Disable dark mode"
+            }else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                layoutBinding.tvThemeEnable.text = "Enable dark mode"
+            }
+
+        }
+
         val navController = findNavController()
         navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(PROFILE_UPDATED)
             ?.observe(viewLifecycleOwner) {

@@ -43,4 +43,13 @@
     <color name="all_feedback_bg">#fffeff</color>
     <color name="bg_light_grey">#f9f9f9</color>
 
+
+    <color name="aap_bg_dark_grey">#303030</color>
+    <color name="card_view_bg_dark">#424242</color>
+    <color name="dark_text_color">#c7c7c7</color>
+    <color name="dark_color">#424242</color>
+    <color name="dark_background_tint">#3A3B3C</color>
+
+
+
 </resources>
