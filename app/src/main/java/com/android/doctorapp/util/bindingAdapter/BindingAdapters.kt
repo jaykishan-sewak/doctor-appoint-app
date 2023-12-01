@@ -313,13 +313,20 @@ fun setAge(textView: AppCompatTextView, dateOfBirth: Date?) {
 
 @BindingAdapter("app:status")
 fun setStatus(textView: AppCompatTextView, text: String) {
-    textView.text = "${text[0].uppercase()}${text.substring(1).lowercase()}"
-    if (text.lowercase() == "rejected") {
-        textView.setTextColor(Color.parseColor("#e60000"))
-    } else if (text.lowercase() == "pending") {
-        textView.setTextColor(Color.parseColor("#f1c232"))
+    if (text.isNotEmpty()) {
+        textView.text = "${text[0].uppercase()}${text.substring(1).lowercase()}"
+
+        if (text.lowercase() == "rejected") {
+            textView.setTextColor(Color.parseColor("#e60000"))
+        } else if (text.lowercase() == "pending") {
+            textView.setTextColor(Color.parseColor("#f1c232"))
+        } else {
+            textView.setTextColor(Color.parseColor("#247A28"))
+        }
     } else {
-        textView.setTextColor(Color.parseColor("#247A28"))
+        // Handle the case when the input text is empty
+        textView.text = ""
+        textView.setTextColor(Color.BLACK)  // Or set to a default color
     }
 }
 
@@ -334,12 +341,15 @@ fun loadImageFromUri(imageView: ImageView, imageUri: Uri?) {
 }
 
 @BindingAdapter("app:imageUriAndGender")
-fun loadImageFromUriAndGender(imageView: AppCompatImageView, imageUriAndGender: ImageUriAndGender?) {
+fun loadImageFromUriAndGender(
+    imageView: AppCompatImageView,
+    imageUriAndGender: ImageUriAndGender?
+) {
     val gender = imageUriAndGender?.gender
     if (imageUriAndGender?.imageUri != null) {
-            Glide.with(imageView.context)
-                .load(imageUriAndGender.imageUri)
-                .into(imageView)
+        Glide.with(imageView.context)
+            .load(imageUriAndGender.imageUri)
+            .into(imageView)
 
     } else {
         if (gender != null) {

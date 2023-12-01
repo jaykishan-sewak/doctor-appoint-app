@@ -52,6 +52,7 @@ object ConstantKey {
     const val APPOINTMENT_DETAILS_UPDATED = "appointmentDetailsUpdated"
     const val FEEDBACK_SUBMITTED = "feedbackSubmitted"
     const val PROFILE_UPDATED = "profileUpdated"
+    const val PAGINATION_LIMIT_KEY = 10.toLong()
 
 
     object DBKeys {
@@ -69,6 +70,7 @@ object ConstantKey {
         const val TABLE_FEEDBACK = "feedback"
         const val FIELD_VISITED_KEY = "visited"
         const val SUB_TABLE_FEEDBACK = "sub_feedback"
+        const val FIELD_DOC_ID_KEY = "id"
 
 
     }

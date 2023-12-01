@@ -17,6 +17,7 @@ import com.android.doctorapp.util.SingleLiveEvent
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.extension.isNetworkAvailable
 import com.android.doctorapp.util.extension.toast
+import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -29,7 +30,10 @@ class UserRequestViewModel @Inject constructor(
     private val context: Context
 ) : BaseViewModel() {
 
-    val userAppointmentData = MutableLiveData<List<AppointmentModel>?>()
+    val userAppointmentData: MutableList<AppointmentModel> = mutableListOf()
+    val _pastAppointments = MutableLiveData<List<AppointmentModel>?>()
+    val pastAppointments: MutableLiveData<List<AppointmentModel>?> get() = _pastAppointments
+
     val isDoctorRequestCalendar: MutableLiveData<Boolean> = MutableLiveData(false)
     var requestSelectedDate: MutableLiveData<Date> = SingleLiveEvent()
     val dataFound: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -37,27 +41,38 @@ class UserRequestViewModel @Inject constructor(
     var selectedTabPosition: MutableLiveData<Int> = MutableLiveData(0)
     private val toSortAppointmentList = MutableLiveData<List<AppointmentModel>?>()
 
+    var lastDocument: DocumentSnapshot? = null
+    val dataLoaded: MutableLiveData<Boolean> = MutableLiveData(false)
+
     fun getUpcomingAppointmentList() {
-        if (userAppointmentData.value != null && userAppointmentData.value?.size!! > 0)
-            userAppointmentData.value = emptyList()
-        dataFound.value = true
         viewModelScope.launch {
             var recordId = ""
             session.getString(USER_ID).collectLatest {
                 recordId = it.orEmpty()
                 if (context.isNetworkAvailable()) {
-                    setShowProgress(true)
                     when (val response =
                         appointmentRepository.getUpcomingBookAppointmentDetailsList(
                             recordId,
-                            fireStore
+                            fireStore,
+                            lastDocument
                         )) {
                         is ApiSuccessResponse -> {
-                            setShowProgress(false)
-                            toSortAppointmentList.value = response.body
-                            userAppointmentData.value = toSortAppointmentList.value!!.sortedByDescending {
-                                it.bookingDateTime
+                            if (response.body.data.isNotEmpty()) {
+                                val newList = response.body.data
+                                userAppointmentData.addAll(newList)
+                                _pastAppointments.value = newList
+                                lastDocument = response.body.lastDocument
+                                dataLoaded.postValue(true)
+                            } else {
+                                if (userAppointmentData.isEmpty()) {
+                                    setShowProgress(false)
+                                    dataFound.value = false
+                                } else {
+                                    _pastAppointments.value = response.body.data
+                                    userAppointmentData.addAll(response.body.data)
+                                }
                             }
+
                         }
 
                         is ApiErrorResponse -> {
@@ -75,6 +90,7 @@ class UserRequestViewModel @Inject constructor(
                             setShowProgress(false)
                         }
                     }
+//                    }
                 } else {
                     context.toast(resourceProvider.getString(R.string.check_internet_connection))
                 }
@@ -83,25 +99,27 @@ class UserRequestViewModel @Inject constructor(
     }
 
     fun getPastAppointmentList() {
-        if (userAppointmentData.value != null && userAppointmentData.value?.size!! > 0)
-            userAppointmentData.value = emptyList()
-        dataFound.value = true
         viewModelScope.launch {
             var recordId = ""
             session.getString(USER_ID).collectLatest {
                 recordId = it.orEmpty()
                 if (context.isNetworkAvailable()) {
-                    setShowProgress(true)
                     when (val response =
                         appointmentRepository.getPastBookAppointmentDetailsList(
                             recordId,
-                            fireStore
+                            fireStore,
+                            lastDocument
                         )) {
                         is ApiSuccessResponse -> {
-                            setShowProgress(false)
-                            toSortAppointmentList.value = response.body
-                            userAppointmentData.value = toSortAppointmentList.value!!.sortedByDescending {
-                                it.bookingDateTime
+                            if (response.body.data.isNotEmpty()) {
+                                val newList = response.body.data
+                                userAppointmentData.addAll(newList)
+                                lastDocument = response.body.lastDocument
+                                dataLoaded.postValue(true)
+                                _pastAppointments.value = newList
+                            } else {
+                                _pastAppointments.value = response.body.data
+                                userAppointmentData.addAll(response.body.data)
                             }
                         }
 

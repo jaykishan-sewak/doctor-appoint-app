@@ -110,6 +110,11 @@ class BookingDetailFragment :
                     "tabValue",
                     viewModel.selectedTab.value
                 )
+
+                findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                    APPOINTMENT_DETAILS_UPDATED,
+                    false
+                )
                 findNavController().popBackStack()
             }
             .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
