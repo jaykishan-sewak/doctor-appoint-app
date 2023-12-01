@@ -1,6 +1,8 @@
 package com.android.doctorapp.ui.userdashboard.userfragment
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,10 +40,18 @@ class UserRequestFragment :
     lateinit var adapter: BookingAppointmentsAdapter
     private val myCalender: Calendar = Calendar.getInstance()
 
+
+    private var currentPage = PaginationScrollListener.PAGE_START
+    private var isLastPage = false
+    private var totalPage = 10
+    private var isLoading = false
+    private var itemCount = 0
+    private var bookAppointmentList: MutableList<AppointmentModel> = mutableListOf()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (requireActivity().application as AppComponentProvider).getAppComponent().inject(this)
-
     }
 
     override fun onCreateView(
@@ -50,7 +60,7 @@ class UserRequestFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        viewModel.requestSelectedDate.value = currentDate()
+
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
             viewModel = this@UserRequestFragment.viewModel
@@ -63,19 +73,66 @@ class UserRequestFragment :
 
     private fun registerObserver(layoutBinding: FragmentUserRequestBinding) {
 
+        val layoutManager = LinearLayoutManager(requireContext())
+        setAdapter(mutableListOf())
+        binding.requestUserRecyclerView.layoutManager = layoutManager
+        binding.requestUserRecyclerView.adapter = adapter
+
+
+        viewModel.requestSelectedDate.value = currentDate()
         binding.tabLayout.getTabAt(viewModel.selectedTabPosition.value!!)?.select()
         val navController = findNavController()
         navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(ConstantKey.APPOINTMENT_DETAILS_UPDATED)
             ?.observe(viewLifecycleOwner) {
                 if (it) {
                     if (binding.tabLayout.getTabAt(0)?.isSelected!!) {
+                        viewModel.lastDocument = null
                         callApiForTab2()
                     } else {
+                        viewModel.lastDocument = null
                         callApiForTab1()
                     }
                 }
             }
-        if (viewModel.userAppointmentData.value == null) {
+
+        binding.requestUserRecyclerView.addOnScrollListener(object :
+            PaginationScrollListener(layoutManager) {
+            override fun loadMoreItems() {
+                if (binding.tabLayout.getTabAt(0)?.isSelected == true)
+                    viewModel.getUpcomingAppointmentList()
+                else
+                    viewModel.getPastAppointmentList()
+                isLoading = true
+                currentPage++
+            }
+
+            override fun isLastPage(): Boolean {
+                return isLastPage
+            }
+
+            override fun isLoading(): Boolean {
+                return isLoading
+            }
+        })
+
+
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("tabValue")
+            ?.observe(viewLifecycleOwner) { result ->
+                if (result.equals(ConstantKey.PAST_LABEL)) {
+                    viewModel.selectedTabPosition.postValue(1)
+                    viewModel.dataFound.postValue(true)
+                    isLastPage = false
+                    viewModel._pastAppointments.value = viewModel.userAppointmentData
+                } else {
+                    isLastPage = false
+                    viewModel.dataFound.postValue(true)
+                    viewModel._pastAppointments.value = viewModel.userAppointmentData
+                }
+            }
+
+
+
+        if (viewModel.pastAppointments.value == null) {
             if (binding.tabLayout.getTabAt(0)?.isSelected == true) {
                 callApiForTab2()
             } else {
@@ -85,6 +142,9 @@ class UserRequestFragment :
 
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
+                viewModel._pastAppointments.value = emptyList()
+                viewModel.lastDocument = null
+                adapter.clear()
                 viewModel.selectedTabPosition.value = tab?.position ?: return
                 when (viewModel.selectedTabPosition.value) {
                     0 -> callApiForTab2()
@@ -102,20 +162,21 @@ class UserRequestFragment :
             }
         })
 
-        setAdapter(emptyList())
-        binding.requestUserRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.requestUserRecyclerView.adapter = adapter
-
         viewModel.requestSelectedDate.observe(viewLifecycleOwner) {
             viewModel.isDoctorRequestCalendar.value = false
         }
-        viewModel.userAppointmentData.observe(viewLifecycleOwner) {
+
+        viewModel.pastAppointments.observe(viewLifecycleOwner) {
             if (!it.isNullOrEmpty()) {
-                adapter.filterList(it)
+                bookAppointmentList = it as MutableList<AppointmentModel>
+                itemCount += bookAppointmentList.size
+                doApiCall(bookAppointmentList)
                 viewModel.dataFound.value = true
             } else {
-                adapter.filterList(emptyList())
-                viewModel.dataFound.value = false
+                if (bookAppointmentList.isNotEmpty()) {
+                    isLastPage = true
+                    adapter.removeLoading()
+                }
             }
         }
         viewModel.isDoctorRequestCalendar.observe(viewLifecycleOwner) {
@@ -134,22 +195,19 @@ class UserRequestFragment :
             }
         }
 
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("tabValue")
-            ?.observe(viewLifecycleOwner) { result ->
-                if (result.equals(ConstantKey.PAST_LABEL)) {
-                    viewModel.selectedTabPosition.postValue(1)
-                    viewModel.dataFound.postValue(true)
-                }
-            }
     }
 
     fun callApiForTab1() {
+        reAssignValues()
         viewModel.upcomingOrPast.value = ConstantKey.PAST_LABEL
+        currentPage = PaginationScrollListener.PAGE_START
         viewModel.getPastAppointmentList()
     }
 
     fun callApiForTab2() {
+        reAssignValues()
         viewModel.upcomingOrPast.value = ConstantKey.UPCOMING_LABEL
+        currentPage = PaginationScrollListener.PAGE_START
         viewModel.getUpcomingAppointmentList()
     }
 
@@ -162,7 +220,7 @@ class UserRequestFragment :
             .build()
     }
 
-    private fun setAdapter(items: List<AppointmentModel>) {
+    private fun setAdapter(items: MutableList<AppointmentModel>) {
         adapter = BookingAppointmentsAdapter(
             items,
             object : BookingAppointmentsAdapter.OnItemClickListener {
@@ -177,6 +235,7 @@ class UserRequestFragment :
                         ConstantKey.BundleKeys.SELECTED_TAB,
                         viewModel.upcomingOrPast.value
                     )
+                    viewModel._pastAppointments.value = emptyList()
                     findNavController().navigate(
                         R.id.action_user_booking_to_bookingDetail,
                         bundle
@@ -190,4 +249,32 @@ class UserRequestFragment :
         )
     }
 
+    private fun doApiCall(list: MutableList<AppointmentModel>) {
+        val items = ArrayList<AppointmentModel>()
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed({
+            items.addAll(list)
+            if (currentPage != PaginationScrollListener.PAGE_START) adapter.removeLoading()
+
+            viewModel.setShowProgress(false)
+            adapter.addItems(items)
+
+            if (list.size >= totalPage) {
+                adapter.addLoading()
+            } else {
+                isLastPage = true
+            }
+            isLoading = false
+        }, 1500)
+    }
+
+
+    fun reAssignValues() {
+        viewModel.userAppointmentData.clear()
+        isLastPage = false
+        viewModel.dataFound.value = true
+        viewModel.setShowProgress(true)
+        bookAppointmentList.clear()
+        itemCount = 0
+    }
 }
