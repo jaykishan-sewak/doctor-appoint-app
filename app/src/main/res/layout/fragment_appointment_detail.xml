@@ -356,6 +356,7 @@
             android:background="@drawable/button_state_colors"
             android:onClick="@{()->viewModel.onUpdateClick()}"
             android:text="@string/update"
+            android:textColor="@color/white"
             android:textAllCaps="false"
             android:visibility="@{viewModel.appointmentResponse.status.equalsIgnoreCase(`APPROVED`) ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toTopOf="@+id/btnCancel"

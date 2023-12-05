@@ -8,16 +8,20 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.FragmentFeedbackDetailsBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.local.IS_ENABLED_DARK_MODE
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.FEEDBACK_SUBMITTED
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class FeedbackDetailFragment :
@@ -57,6 +61,20 @@ class FeedbackDetailFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+        lifecycleScope.launch {
+            viewModel.session.getBoolean(IS_ENABLED_DARK_MODE).collectLatest {
+                if (it == true)
+                    binding.etFeedBackMsg.background = AppCompatResources.getDrawable(
+                        requireActivity(),
+                        R.drawable.custom_edittext_bg_dark
+                    )
+                else
+                    binding.etFeedBackMsg.background = AppCompatResources.getDrawable(
+                        requireActivity(),
+                        R.drawable.custom_edittext_bg
+                    )
+            }
+        }
         val arguments: Bundle? = arguments
         if (arguments != null) {
             val userObj = arguments.getString(ConstantKey.BundleKeys.USER_DATA)

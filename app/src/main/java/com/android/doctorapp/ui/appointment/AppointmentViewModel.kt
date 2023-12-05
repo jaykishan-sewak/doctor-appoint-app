@@ -229,7 +229,6 @@ class AppointmentViewModel @Inject constructor(
                 when (val response =
                     appointmentRepository.addBookingAppointment(appointmentModel, fireStore)) {
                     is ApiSuccessResponse -> {
-                        context.toast(resourceProvider.getString(R.string.appointment_booking_success))
                         if (doctorDataObj.value?.isNotificationEnable == true)
                             sendNotification(
                                 doctorDataObj.value?.token,
@@ -839,9 +838,9 @@ class AppointmentViewModel @Inject constructor(
                 NotificationRequestModel(token, data)
             when (val response = itemsRepository.sendNotification(notificationRequest)) {
                 is ApiSuccessResponse -> {
-                    context.toast(msg)
                     setShowProgress(false)
                     _navigationListener.value = true
+                    context.toast(resourceProvider.getString(R.string.appointment_booking_success))
                 }
 
                 is ApiErrorResponse -> {

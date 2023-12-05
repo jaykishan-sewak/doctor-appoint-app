@@ -110,7 +110,6 @@ class BookingDetailViewModel @Inject constructor(
                 NotificationRequestModel(appointmentObj.value?.doctorDetails?.token!!, data)
             when (val response = itemsRepository.sendNotification(notificationRequest)) {
                 is ApiSuccessResponse -> {
-                    context.toast(msg)
                     setShowProgress(false)
                     _navigationListener.value = true
                 }
