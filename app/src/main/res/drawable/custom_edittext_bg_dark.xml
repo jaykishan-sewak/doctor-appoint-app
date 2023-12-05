@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <solid android:color="@color/aap_bg_dark_grey" />
+
+    <stroke
+        android:width="@dimen/margin_1"
+        android:color="@color/edittext_bg_grey" />
+
+    <padding
+        android:bottom="@dimen/padding_10"
+        android:left="@dimen/padding_10"
+        android:right="@dimen/padding_10"
+        android:top="@dimen/padding_10" />
+
+    <corners android:radius="@dimen/radius_10" />
+
+
+</shape>

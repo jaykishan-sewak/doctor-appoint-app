@@ -8,6 +8,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.doctorapp.R
@@ -15,10 +16,13 @@ import com.android.doctorapp.databinding.FragmentAllFeedbackBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.local.IS_ENABLED_DARK_MODE
 import com.android.doctorapp.repository.models.UserDataResponseModel
 import com.android.doctorapp.ui.feedback.adapter.AllFeedbackReviewsAdapter
 import com.android.doctorapp.util.constants.ConstantKey
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -39,7 +43,14 @@ class AllFeedbackFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-
+        lifecycleScope.launch {
+            viewModel.session.getBoolean(IS_ENABLED_DARK_MODE).collectLatest {
+                if (it == true)
+                    binding.feedbackLayout.setBackgroundColor(requireActivity().getColor(R.color.aap_bg_dark_grey))
+                else
+                    binding.feedbackLayout.setBackgroundColor(requireActivity().getColor(R.color.app_bg))
+            }
+        }
         val arguments: Bundle? = arguments
         if (arguments != null) {
             val doctorDataObj =

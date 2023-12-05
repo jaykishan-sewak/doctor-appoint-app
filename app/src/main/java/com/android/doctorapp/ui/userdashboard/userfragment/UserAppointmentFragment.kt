@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,6 +20,7 @@ import com.android.doctorapp.databinding.FragmentUserAppointmentBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.local.IS_ENABLED_DARK_MODE
 import com.android.doctorapp.repository.local.IS_NEW_USER_TOKEN
 import com.android.doctorapp.repository.local.USER_TOKEN
 import com.android.doctorapp.repository.models.UserDataResponseModel
@@ -70,6 +73,17 @@ class UserAppointmentFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+        lifecycleScope.launch {
+            viewModel.session.getBoolean(IS_ENABLED_DARK_MODE).collectLatest {
+                if (it == true)
+                    binding.searchEt.background =
+                        AppCompatResources.getDrawable(requireActivity(), R.drawable.search_dark_bg)
+                else
+                    binding.searchEt.background =
+                        AppCompatResources.getDrawable(requireActivity(), R.drawable.search_bg)
+            }
+        }
+
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
             viewModel = this@UserAppointmentFragment.viewModel
@@ -94,7 +108,7 @@ class UserAppointmentFragment :
 
 
     fun requestLocationUpdates() {
-
+        viewModel.setShowProgress(true)
         if (ActivityCompat.checkSelfPermission(
                 requireActivity(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -135,9 +149,9 @@ class UserAppointmentFragment :
                 latitude = location!!.latitude
                 longitude = location.longitude
                 if (viewModel.doctorList.value == null) {
-                    viewModel.setShowProgress(true)
                     viewModel.getItems(latitude, longitude)
-                }
+                } else
+                    viewModel.setShowProgress(false)
                 stopLocationUpdates()
             }
         }

@@ -11,9 +11,9 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/otpVerificationLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/app_bg">
+        android:layout_height="match_parent">
 
         <include
             android:id="@+id/toolbarContainer"
@@ -44,7 +44,6 @@
             android:layout_marginTop="@dimen/margin_15"
             android:gravity="center"
             android:text="@{viewModel.userContactNumber}"
-            android:textColor="@color/black"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -68,7 +67,7 @@
             app:pinLength="6"
             app:pinWidth="@dimen/margin_50"
             app:splitWidth="@dimen/margin_4"
-            app:textSize="8sp"/>
+            app:textSize="8sp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

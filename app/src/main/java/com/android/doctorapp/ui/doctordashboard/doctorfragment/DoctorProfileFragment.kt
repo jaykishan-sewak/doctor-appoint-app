@@ -9,12 +9,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.FragmentDoctorProfileBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.local.IS_ENABLED_DARK_MODE
 import com.android.doctorapp.ui.authentication.AuthenticationActivity
 import com.android.doctorapp.ui.profile.ProfileViewModel
 import com.android.doctorapp.util.constants.ConstantKey
@@ -23,6 +25,8 @@ import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.FROM_WHERE
 import com.android.doctorapp.util.extension.fetchImageOrShowError
 import com.android.doctorapp.util.extension.openEmailSender
 import com.android.doctorapp.util.extension.openPhoneDialer
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -46,13 +50,19 @@ class DoctorProfileFragment :
     ): View {
         // Inflate the layout for this fragment
         super.onCreateView(inflater, container, savedInstanceState)
+
+        viewModel.viewModelScope.launch {
+            viewModel.session.getBoolean(IS_ENABLED_DARK_MODE).collectLatest {
+                viewModel.isDarkThemeClicked.value = it
+            }
+        }
         bindingView = binding {
             viewModel = this@DoctorProfileFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
         }
 
         setUpWithViewModel(viewModel)
-        registerObservers()
+        registerObservers(bindingView)
         return bindingView.root
     }
 
@@ -71,7 +81,17 @@ class DoctorProfileFragment :
 
     }
 
-    private fun registerObservers() {
+    private fun registerObservers(binding: FragmentDoctorProfileBinding) {
+
+        viewModel.isDarkThemeClicked.observe(viewLifecycleOwner) {
+            if (it == true) {
+                binding.txtDarkModeEnable.text =
+                    requireActivity().getString(R.string.disable_dark_theme)
+            } else {
+                binding.txtDarkModeEnable.text =
+                    requireActivity().getString(R.string.enable_dark_theme)
+            }
+        }
 
         val navController = findNavController()
         navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(ConstantKey.PROFILE_UPDATED)

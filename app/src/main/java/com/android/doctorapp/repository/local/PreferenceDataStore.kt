@@ -17,6 +17,7 @@ val USER_ID = stringPreferencesKey("user_id")
 val USER_TYPE = stringPreferencesKey("user_type")
 val USER_TOKEN = stringPreferencesKey("user_token")
 val IS_NEW_USER_TOKEN = booleanPreferencesKey("is_user_token")
+val IS_ENABLED_DARK_MODE = booleanPreferencesKey("is_enabled_dark_mode")
 
 
 private val Context.userPreferencesDataStore: DataStore<Preferences> by preferencesDataStore(

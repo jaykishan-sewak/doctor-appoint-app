@@ -166,7 +166,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_20"
                     android:text="@string/title_select_day"
-                    android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@+id/profileImage"
@@ -187,7 +186,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
                     android:text="@string/title_select_time"
-                    android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@+id/rv_schedule_date"
@@ -209,7 +207,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
                     android:text="@string/symptoms"
-                    android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@+id/rv_time"
@@ -267,7 +264,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_30"
                     android:text="@string/have_you_consult_any_doctor"
-                    android:textColor="@color/black"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="@+id/profileImage"
                     app:layout_constraintTop_toBottomOf="@+id/fieldNumberOfDays" />
@@ -363,11 +359,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/online_booking"
-                    android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/switch_online_booking"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/text_select_time"
                     app:layout_constraintTop_toTopOf="@+id/switch_online_booking" />
 
                 <androidx.appcompat.widget.SwitchCompat
@@ -390,7 +385,8 @@
                     android:paddingHorizontal="@dimen/margin_40"
                     android:text="@string/title_appointment"
                     android:textAllCaps="false"
-                    android:textColor="@color/white"
+                    android:textColor="@{viewModel.isBookAppointmentDataValid ? @color/white : @color/black}"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/switch_online_booking" />

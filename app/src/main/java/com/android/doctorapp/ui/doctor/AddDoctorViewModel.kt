@@ -51,7 +51,7 @@ class AddDoctorViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val authRepository: AuthRepository,
     private val context: Context,
-    private val session: Session
+    val session: Session
 
 ) : BaseViewModel() {
 
@@ -145,6 +145,7 @@ class AddDoctorViewModel @Inject constructor(
     val descriptionError: MutableLiveData<String?> = MutableLiveData()
     val isAdminUpdatedProfile: MutableLiveData<Boolean> = MutableLiveData(false)
     private var clinicImgArrayList = ArrayList<String>()
+    val isDarkThemeEnable: MutableLiveData<Boolean?> = MutableLiveData(false)
 
     fun setBindingData(binding: FragmentUpdateDoctorProfileBinding) {
         this.binding = binding

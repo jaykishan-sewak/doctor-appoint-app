@@ -25,7 +25,6 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_10"
             android:layout_marginVertical="@dimen/margin_10"
-            android:backgroundTint="@color/white"
             android:elevation="@dimen/margin_5"
             android:paddingHorizontal="@dimen/margin_10"
             app:cardCornerRadius="@dimen/margin_10"
@@ -47,7 +46,6 @@
                     android:drawableStart="@drawable/ic_person_white"
                     android:drawablePadding="@dimen/margin_10"
                     android:text="@{userData.name}"
-                    android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +62,6 @@
                     android:focusable="true"
                     android:onClick="@{()->onClickListener.onClick(userData.contactNumber)}"
                     android:text="@{userData.contactNumber}"
-                    android:textColor="@color/black"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvPatientName" />
@@ -78,7 +75,6 @@
                     android:drawableStart="@drawable/ic_age_blue"
                     android:drawablePadding="@dimen/margin_10"
                     android:text="@{userData.age}"
-                    android:textColor="@color/black"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvPatientContact" />

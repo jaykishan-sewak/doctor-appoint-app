@@ -15,8 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?android:attr/actionBarSize"
-        app:popupTheme="@style/Theme.InfusionTemplate.PopupOverlay"
-        app:theme="@style/ToolbarStyle.White">
+        app:popupTheme="@style/Theme.InfusionTemplate.PopupOverlay">
 
         <TextView
             android:id="@+id/tvTitle"

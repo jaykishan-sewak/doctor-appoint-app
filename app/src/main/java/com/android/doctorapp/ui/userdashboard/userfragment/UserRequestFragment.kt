@@ -6,9 +6,11 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.doctorapp.R
@@ -16,6 +18,7 @@ import com.android.doctorapp.databinding.FragmentUserRequestBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.local.IS_ENABLED_DARK_MODE
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.ui.userdashboard.userfragment.adapter.BookingAppointmentsAdapter
 import com.android.doctorapp.util.constants.ConstantKey
@@ -25,6 +28,8 @@ import com.android.doctorapp.util.extension.openPhoneDialer
 import com.android.doctorapp.util.extension.selectDate
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -60,7 +65,17 @@ class UserRequestFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+        lifecycleScope.launch {
+            viewModel.session.getBoolean(IS_ENABLED_DARK_MODE).collectLatest {
+                if (it == true)
+                    binding.tabLayout.background =
+                        AppCompatResources.getDrawable(requireActivity(), R.drawable.tab_shape_dark)
+                else
+                    binding.tabLayout.background =
+                        AppCompatResources.getDrawable(requireActivity(), R.drawable.tab_shape)
 
+            }
+        }
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
             viewModel = this@UserRequestFragment.viewModel

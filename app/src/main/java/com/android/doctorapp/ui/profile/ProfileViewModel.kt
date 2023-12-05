@@ -2,6 +2,7 @@ package com.android.doctorapp.ui.profile
 
 import android.content.Context
 import android.net.Uri
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -9,6 +10,7 @@ import com.android.doctorapp.R
 import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.ProfileRepository
+import com.android.doctorapp.repository.local.IS_ENABLED_DARK_MODE
 import com.android.doctorapp.repository.local.IS_NEW_USER_TOKEN
 import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.local.USER_ID
@@ -33,7 +35,7 @@ class ProfileViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val profileRepository: ProfileRepository,
     private val context: Context,
-    private val session: Session
+    val session: Session
 ) : BaseViewModel() {
 
     private val _profileResponse = SingleLiveEvent<ProfileResponseModel?>()
@@ -65,6 +67,7 @@ class ProfileViewModel @Inject constructor(
 
     val myDoctorsList: MutableLiveData<List<UserDataResponseModel?>?> = MutableLiveData()
     val dataNotFound: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isDarkThemeClicked: MutableLiveData<Boolean?> = MutableLiveData(false)
 
     init {
         emailClick.postValue("")
@@ -167,6 +170,21 @@ class ProfileViewModel @Inject constructor(
     fun clickOnMyDoctors() {
         _navigationListener.value = R.id.action_user_profile_to_myDoctors
     }
+
+    fun clickedOnDarkTheme() {
+        if (isDarkThemeClicked.value == true) {
+            viewModelScope.launch {
+                session.putBoolean(IS_ENABLED_DARK_MODE, true)
+            }
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        } else {
+            viewModelScope.launch {
+                session.putBoolean(IS_ENABLED_DARK_MODE, false)
+            }
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+    }
+
 
     private fun updateNotificationStatus(notificationEnable: Boolean) {
         viewModelScope.launch {

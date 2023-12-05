@@ -43,4 +43,10 @@
     <color name="all_feedback_bg">#fffeff</color>
     <color name="bg_light_grey">#f9f9f9</color>
 
+
+    <color name="aap_bg_dark_grey">#303030</color>
+    <color name="background">#FAFAFA</color>
+    <color name="rounded_view_bg_color">#212231</color>
+
+
 </resources>

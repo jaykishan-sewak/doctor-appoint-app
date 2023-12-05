@@ -43,7 +43,6 @@
             android:layout_height="@dimen/margin_40"
             android:layout_marginHorizontal="@dimen/margin_40"
             android:layout_marginVertical="@dimen/margin_20"
-            android:background="@drawable/tab_shape"
             app:layout_constraintBottom_toTopOf="@+id/requestUserRecyclerView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -53,8 +52,7 @@
             app:tabIndicatorGravity="stretch"
             app:tabRippleColor="@null"
             app:tabSelectedTextColor="@color/white"
-            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-            app:tabTextColor="@color/edittext_bg_grey">
+            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget">
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"

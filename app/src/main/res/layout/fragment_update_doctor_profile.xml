@@ -79,7 +79,6 @@
                         android:imeOptions="actionNext"
                         android:singleLine="true"
                         android:text="@={viewModel.name}"
-                        android:textColor="@color/black"
                         android:textSize="14sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -87,6 +86,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_email"
                     style="@style/custom_edit_text_bg"
+                    android:background="@{viewModel.isDarkThemeEnable ? @drawable/custom_edittext_bg_dark : @drawable/custom_edittext_bg}"
                     android:paddingEnd="@dimen/margin_55"
                     android:text="@={viewModel.email}"
                     app:layout_constraintEnd_toEndOf="@+id/field_update_name"
@@ -125,7 +125,6 @@
                         android:imeOptions="actionNext"
                         android:singleLine="true"
                         android:text="@={viewModel.address}"
-                        android:textColor="@color/black"
                         android:textSize="14sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -147,7 +146,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_15"
                     android:text="@string/gender"
-                    android:textColor="@color/black"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/field_update_address" />
 
@@ -182,8 +180,8 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_contact_number"
                     style="@style/custom_edit_text_bg"
+                    android:background="@{viewModel.isDarkThemeEnable ? @drawable/custom_edittext_bg_dark : @drawable/custom_edittext_bg}"
                     android:text="@={viewModel.contactNumber}"
-                    android:textColor="@color/black"
                     android:visibility="@{viewModel.isDoctor ? View.VISIBLE : View.INVISIBLE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -210,12 +208,12 @@
                         android:layout_height="match_parent"
                         android:afterTextChanged="@{(text) -> viewModel.isValidContact(text)}"
                         android:background="@null"
+                        android:enabled="@{!viewModel.isPhoneVerify}"
                         android:imeOptions="actionNext"
                         android:inputType="phone"
                         android:maxLength="10"
                         android:singleLine="true"
                         android:text="@={viewModel.contactNumber}"
-                        android:textColor="@color/black"
                         android:textSize="14sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -260,14 +258,13 @@
                         style="@style/user_login_editText"
                         android:afterTextChanged="@{(text) -> viewModel.isValidDob(text)}"
                         android:clickable="true"
-                        android:drawableRight="@drawable/ic_calendar"
+                        android:drawableEnd="@{viewModel.isDarkThemeEnable ? @drawable/ic_calender_white : @drawable/ic_calendar}"
                         android:focusable="false"
                         android:hint="@string/select_dob"
                         android:imeOptions="actionNext"
                         android:onClick="@{(text_dob) -> viewModel.calenderClick(text_dob)}"
                         android:singleLine="true"
                         android:text="@{viewModel.dob}"
-                        android:textColor="@color/black"
                         android:textSize="14sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -293,7 +290,6 @@
                         android:inputType="number"
                         android:singleLine="true"
                         android:text="@={viewModel.fees}"
-                        android:textColor="@color/black"
                         android:textSize="14sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -303,7 +299,7 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginTop="@dimen/margin_10"
-                    android:background="@drawable/rounded_bg"
+                    android:background="@{viewModel.isDarkThemeEnable ? @drawable/rounded_bg_dark : @drawable/rounded_bg}"
                     app:layout_constraintBottom_toBottomOf="@id/chipGroup"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -357,7 +353,7 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginTop="@dimen/margin_10"
-                    android:background="@drawable/rounded_bg"
+                    android:background="@{viewModel.isDarkThemeEnable ? @drawable/rounded_bg_dark : @drawable/rounded_bg}"
                     app:layout_constraintBottom_toBottomOf="@id/chipGroupSpec"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -471,7 +467,6 @@
                         android:inputType="textMultiLine"
                         android:maxLines="5"
                         android:text="@={viewModel.description}"
-                        android:textColor="@color/black"
                         android:textSize="14sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -487,7 +482,7 @@
                     android:onClick="@{view -> viewModel.onUpdateClick()}"
                     android:text="@string/update_profile_title"
                     android:textAllCaps="false"
-                    android:textColor="@color/white"
+                    android:textColor="@{viewModel.isUpdateDataValid ? @color/white : @color/black }"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/field_update_description" />

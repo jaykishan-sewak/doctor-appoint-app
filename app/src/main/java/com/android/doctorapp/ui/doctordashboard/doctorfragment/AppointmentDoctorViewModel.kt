@@ -41,6 +41,7 @@ class AppointmentDoctorViewModel @Inject constructor(
 
     val dataFound: MutableLiveData<Boolean> = MutableLiveData(false)
     private val fcmToken: MutableLiveData<String?> = MutableLiveData()
+    val isDarkThemeEnable: MutableLiveData<Boolean?> = MutableLiveData(false)
 
 
     init {

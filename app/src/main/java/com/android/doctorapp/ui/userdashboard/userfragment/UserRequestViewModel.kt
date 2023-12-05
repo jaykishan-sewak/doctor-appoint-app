@@ -26,7 +26,7 @@ import javax.inject.Inject
 class UserRequestViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val appointmentRepository: AppointmentRepository,
-    private val session: Session,
+    val session: Session,
     private val context: Context
 ) : BaseViewModel() {
 
