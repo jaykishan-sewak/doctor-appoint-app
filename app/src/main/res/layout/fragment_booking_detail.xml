@@ -322,7 +322,7 @@
             android:onClick="@{()->viewModel.onCancelClick()}"
             android:text="@string/cancel"
             android:textAllCaps="false"
-            android:textColor="@color/white"
+            android:textColor="@{viewModel.isCancelEnabled ? @color/white : @color/black}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
