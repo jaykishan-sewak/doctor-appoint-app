@@ -1,6 +1,7 @@
 package com.android.doctorapp.ui.otp
 
 import android.content.Context
+import com.android.doctorapp.repository.local.Session
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.android.doctorapp.R
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 
 class OtpVerificationViewModel @Inject constructor(
-    private val context: Context
+    private val context: Context,
+    val session: Session
 ) : BaseViewModel() {
 
     val _otpDigit = MutableLiveData<String>()

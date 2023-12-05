@@ -24,7 +24,7 @@ class AllFeedbackViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val feedRepository: FeedbackRepository,
     private val context: Context,
-    private val session: Session
+    val session: Session
 
 ) : BaseViewModel() {
 

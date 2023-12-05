@@ -13,9 +13,9 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/feedbackLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/app_bg"
         android:clickable="true"
         android:focusable="true">
 
@@ -55,6 +55,7 @@
                 style="@style/label_text3"
                 android:layout_marginTop="@dimen/margin_10"
                 android:text="@string/overall_rating"
+                android:textColor="@color/grey"
                 android:textSize="16sp"
                 android:textStyle="normal"
                 android:visibility="@{viewModel.feedbackList.size != 0 ? View.VISIBLE : View.GONE}"
@@ -66,7 +67,6 @@
                 android:id="@+id/tvOverallRatingValue"
                 style="@style/label_text3"
                 android:text="@{viewModel.doctorDataObj.rating.toString()}"
-                android:textColor="@color/black"
                 android:textSize="50sp"
                 android:visibility="@{viewModel.feedbackList.size != 0 ? View.VISIBLE : View.GONE}"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -90,6 +90,7 @@
                 style="@style/label_text3"
                 android:layout_marginTop="@dimen/margin_5"
                 android:text="@{`Based on ` + viewModel.feedbackList.size + ` Reviews`}"
+                android:textColor="@color/grey"
                 android:visibility="@{viewModel.feedbackList.size != 0 ? View.VISIBLE : View.GONE}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

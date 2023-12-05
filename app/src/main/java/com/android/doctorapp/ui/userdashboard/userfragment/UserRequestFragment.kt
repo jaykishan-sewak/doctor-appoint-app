@@ -67,10 +67,10 @@ class UserRequestFragment :
         super.onCreateView(inflater, container, savedInstanceState)
         lifecycleScope.launch {
             viewModel.session.getBoolean(IS_ENABLED_DARK_MODE).collectLatest {
-                if (it == true) {
+                if (it == true)
                     binding.tabLayout.background =
                         AppCompatResources.getDrawable(requireActivity(), R.drawable.tab_shape_dark)
-                } else
+                else
                     binding.tabLayout.background =
                         AppCompatResources.getDrawable(requireActivity(), R.drawable.tab_shape)
 
