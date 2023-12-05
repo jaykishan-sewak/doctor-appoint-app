@@ -42,7 +42,6 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_24"
             android:layout_marginTop="@dimen/dp_24"
-            android:backgroundTint="@color/white"
             android:elevation="@dimen/margin_5"
             android:paddingHorizontal="@dimen/margin_10"
             app:cardCornerRadius="@dimen/margin_20"
@@ -85,7 +84,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
                     android:text="@{viewModel.userProfileDataResponse.name}"
-                    android:textColor="@color/colorPrimary"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -136,7 +134,7 @@
             app:layout_constraintBottom_toTopOf="@id/scrollView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardView1"/>
+            app:layout_constraintTop_toBottomOf="@+id/cardView1" />
 
         <ScrollView
             android:id="@+id/scrollView"
@@ -173,7 +171,6 @@
                     android:layout_marginStart="@dimen/margin_10"
                     android:onClick="@{()->viewModel.onClickPhoneIcon(viewModel.userProfileDataResponse.contactNumber)}"
                     android:text="@{viewModel.userProfileDataResponse != null &amp;&amp; !viewModel.userProfileDataResponse.contactNumber.isEmpty() ? viewModel.userProfileDataResponse.contactNumber : `-`}"
-                    android:textColor="@color/grey"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/ivContact"
                     app:layout_constraintStart_toEndOf="@+id/ivContact"
@@ -194,7 +191,6 @@
                     android:id="@+id/tvDegree"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/grey"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@id/ivDegree"
                     app:layout_constraintStart_toStartOf="@+id/tvContactNumber"
@@ -218,7 +214,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/margin_20"
-                    android:textColor="@color/grey"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@id/ivSpecilities"
                     app:layout_constraintStart_toStartOf="@+id/tvContactNumber"
@@ -242,7 +237,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/margin_20"
-                    android:textColor="@color/grey"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@id/ivHolidays"
                     app:layout_constraintStart_toStartOf="@id/tvContactNumber"
@@ -266,7 +260,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/margin_20"
-                    android:textColor="@color/grey"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@id/ivWeekOff"
                     app:layout_constraintStart_toStartOf="@id/tvContactNumber"
@@ -291,7 +284,6 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/margin_20"
                     android:text="@{viewModel.userProfileDataResponse != null &amp;&amp; !viewModel.userProfileDataResponse.gender.isEmpty() ? viewModel.userProfileDataResponse.gender : `-`}"
-                    android:textColor="@color/grey"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@id/ivGender"
                     app:layout_constraintStart_toStartOf="@id/tvContactNumber"
@@ -316,7 +308,6 @@
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:text="@{viewModel.userProfileDataResponse != null &amp;&amp; !viewModel.userProfileDataResponse.address.isEmpty() ? viewModel.userProfileDataResponse.address : `-`}"
-                    android:textColor="@color/grey"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@id/ivAddress"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -340,7 +331,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/margin_20"
-                    android:textColor="@color/grey"
                     android:textStyle="bold"
                     app:headerDate="@{viewModel.userProfileDataResponse.dob}"
                     app:layout_constraintBottom_toBottomOf="@id/ivDOB"
@@ -363,7 +353,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/margin_20"
-                    android:textColor="@color/grey"
                     android:textStyle="bold"
                     app:age="@{viewModel.userProfileDataResponse.dob}"
                     app:layout_constraintBottom_toBottomOf="@id/ivAge"
@@ -374,9 +363,7 @@
                     android:id="@+id/txt_doctor_notification"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:text="@string/appointment_notification"
-                    android:textColor="@color/black"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/ivAge"
@@ -391,6 +378,27 @@
                     app:layout_constraintBottom_toBottomOf="@+id/txt_doctor_notification"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/txt_doctor_notification" />
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txt_dark_mode_enable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/enable_dark_theme"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/txt_doctor_notification"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_doctor_notification" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch_dark_mode_theme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="@={viewModel.isDarkThemeClicked}"
+                    android:onClick="@{view -> viewModel.clickedOnDarkTheme()}"
+                    app:layout_constraintBottom_toBottomOf="@+id/txt_dark_mode_enable"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/txt_dark_mode_enable" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

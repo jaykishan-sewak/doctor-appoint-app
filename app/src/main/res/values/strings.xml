@@ -265,5 +265,7 @@
     <string name="does_not_have_any_clinic_img">Does not have any clinic images yet</string>
     <string name="my_doctors">My Doctors</string>
     <string name="enter_valid_Reason">Enter Valid Reason</string>
+    <string name="enable_dark_theme">Enable dark theme</string>
+    <string name="disable_dark_theme">Disable dark theme</string>
 
 </resources>

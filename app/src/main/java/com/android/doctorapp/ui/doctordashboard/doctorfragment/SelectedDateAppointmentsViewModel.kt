@@ -24,7 +24,7 @@ import javax.inject.Inject
 class SelectedDateAppointmentsViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val appointmentRepository: AppointmentRepository,
-    private val session: Session,
+    val session: Session,
     private val context: Context,
 ) : BaseViewModel() {
 
@@ -34,7 +34,7 @@ class SelectedDateAppointmentsViewModel @Inject constructor(
     val isCalender: MutableLiveData<Boolean> = MutableLiveData(false)
     val dataFound: MutableLiveData<Boolean> = MutableLiveData(false)
     val appointmentDetailsUpdated: MutableLiveData<Boolean> = MutableLiveData(false)
-
+    val isDarkThemeEnable: MutableLiveData<Boolean?> = MutableLiveData(false)
 
     fun getAppointmentList() {
         viewModelScope.launch {

@@ -45,11 +45,8 @@
 
 
     <color name="aap_bg_dark_grey">#303030</color>
-    <color name="card_view_bg_dark">#424242</color>
-    <color name="dark_text_color">#c7c7c7</color>
-    <color name="dark_color">#424242</color>
-    <color name="dark_background_tint">#3A3B3C</color>
-
+    <color name="background">#FAFAFA</color>
+    <color name="rounded_view_bg_color">#212231</color>
 
 
 </resources>

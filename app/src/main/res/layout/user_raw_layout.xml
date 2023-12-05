@@ -78,6 +78,7 @@
                 android:layout_width="@dimen/dp_0"
                 android:layout_marginTop="@dimen/dp_1"
                 android:maxLines="2"
+                android:textColor="@color/light_grey"
                 android:textSize="13sp"
                 app:doctorSpecialization="@{userData.degree}"
                 app:layout_constraintStart_toStartOf="@+id/tvDoctorName"
@@ -88,6 +89,7 @@
                 style="@style/doctor_text_view"
                 android:layout_marginTop="@dimen/dp_1"
                 android:text="@{userData.gender}"
+                android:textColor="@color/light_grey"
                 android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="@+id/tvDoctorName"
                 app:layout_constraintTop_toBottomOf="@+id/tvDoctorDegree" />
@@ -97,6 +99,7 @@
                 style="@style/doctor_text_view"
                 android:layout_marginTop="@dimen/dp_1"
                 android:text="@string/fees"
+                android:textColor="@color/light_grey"
                 android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="@+id/tvDoctorName"
                 app:layout_constraintTop_toBottomOf="@+id/tvGenderText" />
@@ -133,6 +136,7 @@
                 android:enabled="@{userData.numberOfFeedbacks == 0 ? false : true}"
                 android:onClick="@{()->onItemClickListener.onRatingClick(userData,index)}"
                 android:text='@{userData.numberOfFeedbacks == 0 ? "No Ratings" : userData.numberOfFeedbacks + " Ratings"}'
+                android:textColor="@color/light_grey"
                 android:textSize="13sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/doctorRatingBar"

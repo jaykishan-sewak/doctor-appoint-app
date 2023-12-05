@@ -11,6 +11,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.doctorapp.R
@@ -18,6 +19,7 @@ import com.android.doctorapp.databinding.FragmentSelectedDateAppointmentsBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.local.IS_ENABLED_DARK_MODE
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.ui.doctordashboard.adapter.SelectedDateAdapter
 import com.android.doctorapp.util.constants.ConstantKey
@@ -27,6 +29,8 @@ import com.android.doctorapp.util.constants.ConstantKey.FORMATTED_DATE
 import com.android.doctorapp.util.extension.dateFormatter
 import com.android.doctorapp.util.extension.selectDate
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -55,7 +59,11 @@ class SelectedDateAppointmentsFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-
+        lifecycleScope.launch {
+            viewModel.session.getBoolean(IS_ENABLED_DARK_MODE).collectLatest {
+                viewModel.isDarkThemeEnable.value = it == true
+            }
+        }
         val arguments: Bundle? = arguments
         if (arguments != null) {
             date =
@@ -82,7 +90,8 @@ class SelectedDateAppointmentsFragment :
         viewModel.selectedDate.observe(viewLifecycleOwner) {
             val navController = findNavController()
             navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
-                APPOINTMENT_DETAILS_UPDATED)
+                APPOINTMENT_DETAILS_UPDATED
+            )
                 ?.observe(viewLifecycleOwner) {
                     if (it) {
                         viewModel.appointmentDetailsUpdated.value = it

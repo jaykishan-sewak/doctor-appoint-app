@@ -6,21 +6,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.FragmentProfileBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.local.IS_ENABLED_DARK_MODE
 import com.android.doctorapp.ui.authentication.AuthenticationActivity
 import com.android.doctorapp.util.constants.ConstantKey.PROFILE_UPDATED
 import com.android.doctorapp.util.extension.fetchImageOrShowError
 import com.android.doctorapp.util.extension.openEmailSender
 import com.android.doctorapp.util.extension.openPhoneDialer
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_profile) {
@@ -49,6 +52,11 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+        viewModel.viewModelScope.launch {
+            viewModel.session.getBoolean(IS_ENABLED_DARK_MODE).collectLatest {
+                viewModel.isDarkThemeClicked.value = it
+            }
+        }
         return binding {
             viewModel = this@ProfileFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
@@ -62,17 +70,16 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
     }
 
 
-    private fun registerObservers(layoutBinding : FragmentProfileBinding) {
+    private fun registerObservers(layoutBinding: FragmentProfileBinding) {
 
-        layoutBinding.changeTheme.setOnCheckedChangeListener { checkedButton, isChecked ->
-            if(layoutBinding.changeTheme.isChecked){
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                layoutBinding.tvThemeEnable.text = "Disable dark mode"
-            }else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                layoutBinding.tvThemeEnable.text = "Enable dark mode"
+        viewModel.isDarkThemeClicked.observe(viewLifecycleOwner) {
+            if (it == true) {
+                layoutBinding.tvThemeEnable.text =
+                    requireActivity().getString(R.string.disable_dark_theme)
+            } else {
+                layoutBinding.tvThemeEnable.text =
+                    requireActivity().getString(R.string.enable_dark_theme)
             }
-
         }
 
         val navController = findNavController()

@@ -5,27 +5,6 @@
 
     <style name="Theme.InfusionTemplate.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="Theme.InfusionTemplate.Starting" parent="Theme.SplashScreen">
-        // Set the splash screen background, animated icon, and animation duration.
-        <item name="windowSplashScreenBackground">@color/white</item>
-
-        // Use windowSplashScreenAnimatedIcon to add either a drawable or an
-        // animated drawable. One of these is required.
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_illustration_login</item>
-        <item name="windowSplashScreenAnimationDuration">2000</item>
-        # Required for
-        # animated icons
-
-        // Set the theme of the Activity that directly follows your splash screen.
-        <item name="postSplashScreenTheme">@style/Theme.InfusionTemplate.NoActionBar</item>
-        # Required.
-
-    </style>
-
-    <style name="ToolbarStyle.White" parent="@style/ThemeOverlay.AppCompat.ActionBar">
-        <!-- Customize color of navigation drawer icon and back arrow -->
-        <item name="colorControlNormal">@color/transparent</item>
-    </style>
 
     <style name="user_login_editText">
         <item name="android:layout_width">match_parent</item>
@@ -46,7 +25,6 @@
     <style name="login_textView">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/grey</item>
     </style>
 
     <style name="custom_edit_text_bg">
@@ -77,14 +55,12 @@
         <item name="android:layout_width">@dimen/dp_0</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/grey</item>
     </style>
 
     <style name="label_text2">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="doctor_text_view">

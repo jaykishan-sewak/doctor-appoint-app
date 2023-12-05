@@ -70,7 +70,6 @@
                     style="@style/label_text"
                     android:layout_marginStart="@dimen/margin_20"
                     android:text="@{viewModel.appointmentObj.doctorDetails.name}"
-                    android:textColor="@color/black"
                     android:textSize="18sp"
                     app:layout_constraintStart_toEndOf="@id/profileImage"
                     app:layout_constraintTop_toTopOf="@+id/profileImage" />

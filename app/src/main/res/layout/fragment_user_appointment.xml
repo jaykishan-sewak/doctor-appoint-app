@@ -46,7 +46,6 @@
             android:layout_height="@dimen/dp_48"
             android:layout_margin="@dimen/margin_20"
             android:afterTextChanged="@{(text) -> viewModel.lengthChecked(text)}"
-            android:background="@drawable/search_bg"
             android:drawableStart="@drawable/baseline_search_24"
             android:drawablePadding="@dimen/padding_10"
             android:hint="@string/search_doctor"

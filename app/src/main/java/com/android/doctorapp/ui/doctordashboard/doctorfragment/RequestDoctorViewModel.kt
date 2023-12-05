@@ -30,7 +30,7 @@ class RequestDoctorViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val appointmentRepository: AppointmentRepository,
     private val context: Context,
-    private val session: Session,
+    val session: Session,
 
     ) : BaseViewModel() {
 
@@ -42,6 +42,7 @@ class RequestDoctorViewModel @Inject constructor(
     val endDate: MutableLiveData<Date?> = MutableLiveData()
     private val currentDate: String = getCurrentDate()
     val rangeDate: MutableLiveData<String> = MutableLiveData()
+    val isDarkThemeEnable: MutableLiveData<Boolean?> = MutableLiveData(false)
 
     fun getRequestAppointmentList() {
         viewModelScope.launch {

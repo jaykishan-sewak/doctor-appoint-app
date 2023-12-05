@@ -29,7 +29,6 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_20"
         android:layout_marginVertical="@dimen/margin_10"
-        android:backgroundTint="@color/white"
         android:elevation="@dimen/margin_5"
         app:cardCornerRadius="@dimen/margin_20"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -69,7 +68,6 @@
                 android:layout_marginStart="@dimen/margin_15"
                 android:layout_marginTop="@dimen/dp_10"
                 android:text="@{doctorData.name}"
-                android:textColor="@color/dark_grey"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/profileImage"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -80,7 +78,7 @@
                 android:layout_width="@dimen/dp_0"
                 android:layout_marginTop="@dimen/dp_1"
                 android:maxLines="2"
-                android:textColor="@color/light_grey"
+                android:textColor="@color/grey"
                 android:textSize="13sp"
                 app:doctorSpecialization="@{doctorData.degree}"
                 app:layout_constraintStart_toStartOf="@+id/tvDoctorName"
@@ -91,7 +89,7 @@
                 style="@style/doctor_text_view"
                 android:layout_marginTop="@dimen/dp_1"
                 android:text="@{doctorData.gender}"
-                android:textColor="@color/light_grey"
+                android:textColor="@color/grey"
                 android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="@+id/tvDoctorName"
                 app:layout_constraintTop_toBottomOf="@+id/tvDoctorDegree" />
@@ -101,7 +99,7 @@
                 style="@style/doctor_text_view"
                 android:layout_marginTop="@dimen/dp_1"
                 android:text="@string/fees"
-                android:textColor="@color/light_grey"
+                android:textColor="@color/grey"
                 android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="@+id/tvDoctorName"
                 app:layout_constraintTop_toBottomOf="@+id/tvGenderText" />

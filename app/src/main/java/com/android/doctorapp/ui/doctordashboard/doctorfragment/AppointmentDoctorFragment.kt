@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +18,7 @@ import com.android.doctorapp.databinding.FragmentAppointmentDoctorBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.local.IS_ENABLED_DARK_MODE
 import com.android.doctorapp.repository.local.IS_NEW_USER_TOKEN
 import com.android.doctorapp.repository.local.USER_TOKEN
 import com.android.doctorapp.repository.models.Header
@@ -50,6 +52,11 @@ class AppointmentDoctorFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+        lifecycleScope.launch {
+            viewModel.session.getBoolean(IS_ENABLED_DARK_MODE).collectLatest {
+                viewModel.isDarkThemeEnable.value = it == true
+            }
+        }
         val layoutBinding = binding {
             lifecycleOwner = viewLifecycleOwner
             viewModel = this@AppointmentDoctorFragment.viewModel
@@ -67,7 +74,9 @@ class AppointmentDoctorFragment :
         layoutBinding.recyclerView.adapter = adapter
 
         val navController = findNavController()
-        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(APPOINTMENT_DETAILS_UPDATED)
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
+            APPOINTMENT_DETAILS_UPDATED
+        )
             ?.observe(viewLifecycleOwner) {
                 if (it) {
                     viewModel.getAppointmentList()
@@ -85,7 +94,7 @@ class AppointmentDoctorFragment :
         viewModel.viewModelScope.launch {
             viewModel.session.getBoolean(IS_NEW_USER_TOKEN).collectLatest {
                 if (it == true) {
-                    viewModel.session.getString(USER_TOKEN).collectLatest {it1->
+                    viewModel.session.getString(USER_TOKEN).collectLatest { it1 ->
                         viewModel.updateUserData(it1)
                     }
                 }
