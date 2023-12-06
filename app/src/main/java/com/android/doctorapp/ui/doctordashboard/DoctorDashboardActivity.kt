@@ -40,6 +40,11 @@ class DoctorDashboardActivity :
             bundle.putString(APPOINTMENT_DOCUMENT_ID, documentId)
             bundle.putBoolean(IS_BOOK_APPOINTMENT, isBookAppointment!!)
             navController.navigate(R.id.AppointmentDetails, bundle)
+            intent.putExtras(Bundle().apply {
+                putString(DOCUMENT_ID, documentId)
+                putBoolean(IS_BOOK_APPOINTMENT, isBookAppointment)
+                putString(FRAGMENT_TYPE, "")
+            })
         }
 
         binding.navView.setOnItemSelectedListener { item ->
