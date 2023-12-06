@@ -37,6 +37,10 @@ class UserDashboardActivity :
             val bundle = Bundle()
             bundle.putString(APPOINTMENT_DOCUMENT_ID, documentId)
             navController.navigate(R.id.BookingDetail, bundle)
+            intent.putExtras(Bundle().apply {
+                putString(DOCUMENT_ID, documentId)
+                putString(FRAGMENT_TYPE, "")
+            })
         }
 
         binding.userNavView.setOnItemSelectedListener { item ->
