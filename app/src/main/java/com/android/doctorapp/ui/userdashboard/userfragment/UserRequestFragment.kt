@@ -1,8 +1,6 @@
 package com.android.doctorapp.ui.userdashboard.userfragment
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -266,25 +264,22 @@ class UserRequestFragment :
 
     private fun doApiCall(list: MutableList<AppointmentModel>) {
         val items = ArrayList<AppointmentModel>()
-        val handler = Handler(Looper.getMainLooper())
-        handler.postDelayed({
-            items.addAll(list)
-            if (currentPage != PaginationScrollListener.PAGE_START) adapter.removeLoading()
+        items.addAll(list)
+        if (currentPage != PaginationScrollListener.PAGE_START) adapter.removeLoading()
 
-            viewModel.setShowProgress(false)
-            adapter.addItems(items)
+        viewModel.setShowProgress(false)
+        adapter.addItems(items)
 
-            if (list.size >= totalPage) {
-                adapter.addLoading()
-            } else {
-                isLastPage = true
-            }
-            isLoading = false
-        }, 1500)
+        if (list.size >= totalPage) {
+            adapter.addLoading()
+        } else {
+            isLastPage = true
+        }
+        isLoading = false
     }
 
 
-    fun reAssignValues() {
+    private fun reAssignValues() {
         viewModel.userAppointmentData.clear()
         isLastPage = false
         viewModel.dataFound.value = true

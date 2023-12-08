@@ -1,14 +1,19 @@
 package com.android.doctorapp.ui.doctor.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.AddTimeShiftRowLayoutBinding
 import com.android.doctorapp.repository.models.AddShiftTimeModel
+import com.android.doctorapp.ui.doctor.AddDoctorViewModel
 
 class AddDoctorTimeAdapter(
+    private var context: Context,
+    private var viewModel: AddDoctorViewModel,
     private var shiftTimeList: ArrayList<AddShiftTimeModel>,
     private val listener: OnItemClickListener
 ) : RecyclerView.Adapter<AddDoctorTimeAdapter.ItemViewHolder>() {
@@ -39,6 +44,24 @@ class AddDoctorTimeAdapter(
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+        if (viewModel.isDarkThemeEnable.value == true) {
+            holder.view.btnStartTime.background =
+                AppCompatResources.getDrawable(context, R.drawable.white_border_drawable)
+            holder.view.btnEndTime.background =
+                AppCompatResources.getDrawable(context, R.drawable.white_border_drawable)
+            holder.view.addTimeDivider.setBackgroundColor(context.getColor(R.color.white))
+            holder.view.imageShiftDelete.background =
+                AppCompatResources.getDrawable(context, R.drawable.baseline_delete_white_outline)
+
+        } else {
+            holder.view.btnStartTime.background =
+                AppCompatResources.getDrawable(context, R.drawable.blue_border_drawable)
+            holder.view.btnEndTime.background =
+                AppCompatResources.getDrawable(context, R.drawable.blue_border_drawable)
+            holder.view.addTimeDivider.setBackgroundColor(context.getColor(R.color.white))
+            holder.view.imageShiftDelete.background =
+                AppCompatResources.getDrawable(context, R.drawable.baseline_delete_outline_24)
+        }
         val objects = shiftTimeList[position]
         holder.bind(objects, listener, position)
 
