@@ -154,7 +154,7 @@
                     android:onClick="@{()->viewModal.updateFeedback()}"
                     android:text="@string/update_feedback"
                     android:textAllCaps="false"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:visibility="@{viewModal.doctorFeedbackObj.feedbackDetails != null ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

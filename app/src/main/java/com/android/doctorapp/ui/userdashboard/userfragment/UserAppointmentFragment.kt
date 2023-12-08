@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
@@ -75,12 +74,7 @@ class UserAppointmentFragment :
         super.onCreateView(inflater, container, savedInstanceState)
         lifecycleScope.launch {
             viewModel.session.getBoolean(IS_ENABLED_DARK_MODE).collectLatest {
-                if (it == true)
-                    binding.searchEt.background =
-                        AppCompatResources.getDrawable(requireActivity(), R.drawable.search_dark_bg)
-                else
-                    binding.searchEt.background =
-                        AppCompatResources.getDrawable(requireActivity(), R.drawable.search_bg)
+                viewModel.isDarkThemeEnable.value = it == true
             }
         }
 

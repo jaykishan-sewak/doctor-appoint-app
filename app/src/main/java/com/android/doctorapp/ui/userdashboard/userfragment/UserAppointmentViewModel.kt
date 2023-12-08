@@ -37,6 +37,7 @@ class UserAppointmentViewModel @Inject constructor(
     val locationCity: MutableLiveData<String> =
         MutableLiveData(resourceProvider.getString(R.string.nearest_doctor))
     private val fcmToken: MutableLiveData<String?> = MutableLiveData()
+    val isDarkThemeEnable: MutableLiveData<Boolean?> = MutableLiveData(false)
 
 
     init {

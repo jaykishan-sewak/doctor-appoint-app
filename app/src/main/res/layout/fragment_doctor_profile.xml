@@ -98,6 +98,7 @@
                     android:drawableStart="@drawable/ic_email_blue"
                     android:drawablePadding="@dimen/margin_10"
                     android:focusable="true"
+                    android:gravity="center_vertical"
                     android:onClick="@{()->viewModel.onClickEmailIcon(viewModel.userProfileDataResponse.email)}"
                     android:text="@{viewModel.userProfileDataResponse.email}"
                     android:textColor="@color/grey"

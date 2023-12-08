@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +24,7 @@ import com.android.doctorapp.databinding.FragmentUpdateDoctorProfileBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.local.IS_ENABLED_DARK_MODE
 import com.android.doctorapp.repository.models.AddShiftTimeModel
 import com.android.doctorapp.repository.models.HolidayModel
 import com.android.doctorapp.repository.models.WeekOffModel
@@ -59,6 +61,7 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -138,6 +141,12 @@ class UpdateDoctorProfileFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+
+        lifecycleScope.launch {
+            viewModel.session.getBoolean(IS_ENABLED_DARK_MODE).collectLatest {
+                viewModel.isDarkThemeEnable.value = it
+            }
+        }
         handler.postDelayed(runnable, 1000)
 
         val arguments: Bundle? = arguments
@@ -540,6 +549,10 @@ class UpdateDoctorProfileFragment :
     private fun addChip(text: String) {
         val chip = Chip(requireContext())
         chip.text = text
+        if (viewModel.isDarkThemeEnable.value == true) {
+            val backgroundColor = ContextCompat.getColorStateList(requireActivity(), R.color.black)
+            chip.chipBackgroundColor = backgroundColor
+        }
         chip.isCloseIconVisible = true
         chip.setOnCloseIconClickListener {
             bindingView.chipGroup.removeView(chip)
@@ -552,6 +565,10 @@ class UpdateDoctorProfileFragment :
     private fun addSpecChip(text: String) {
         val chip = Chip(requireContext())
         chip.text = text
+        if (viewModel.isDarkThemeEnable.value == true) {
+            val backgroundColor = ContextCompat.getColorStateList(requireActivity(), R.color.black)
+            chip.chipBackgroundColor = backgroundColor
+        }
         chip.isCloseIconVisible = true
         chip.setOnCloseIconClickListener {
             bindingView.chipGroupSpec.removeView(chip)
@@ -712,20 +729,21 @@ class UpdateDoctorProfileFragment :
 
 
     private fun updateHolidayRecyclerview(newHolidayList: ArrayList<HolidayModel>) {
-        addDoctorHolidayAdapter = AddDoctorHolidayAdapter(newHolidayList,
-            object : AddDoctorHolidayAdapter.OnItemClickListener {
-                override fun onItemDelete(item: HolidayModel, position: Int) {
-                    tempHolidayList.remove(item)
-                    addDoctorHolidayAdapter.notifyDataSetChanged()
+        addDoctorHolidayAdapter =
+            AddDoctorHolidayAdapter(requireActivity(), viewModel, newHolidayList,
+                object : AddDoctorHolidayAdapter.OnItemClickListener {
+                    override fun onItemDelete(item: HolidayModel, position: Int) {
+                        tempHolidayList.remove(item)
+                        addDoctorHolidayAdapter.notifyDataSetChanged()
 
-                }
-            })
+                    }
+                })
         viewModel.holidayList.value = tempHolidayList
         binding.rvHoliday.adapter = addDoctorHolidayAdapter
     }
 
     private fun updateAddShiftTimeAdapter(addShitTimeList: ArrayList<AddShiftTimeModel>) {
-        addDoctorTimeAdapter = AddDoctorTimeAdapter(addShitTimeList,
+        addDoctorTimeAdapter = AddDoctorTimeAdapter(requireActivity(), viewModel, addShitTimeList,
             object : AddDoctorTimeAdapter.OnItemClickListener {
                 override fun startTimeClick(addShiftTimeModel: AddShiftTimeModel, position: Int) {
                     showTimePickerDialog(true, position)

@@ -39,10 +39,8 @@ class UserRequestViewModel @Inject constructor(
     val dataFound: MutableLiveData<Boolean> = MutableLiveData(false)
     val upcomingOrPast: MutableLiveData<String> = MutableLiveData(ConstantKey.UPCOMING_LABEL)
     var selectedTabPosition: MutableLiveData<Int> = MutableLiveData(0)
-    private val toSortAppointmentList = MutableLiveData<List<AppointmentModel>?>()
 
     var lastDocument: DocumentSnapshot? = null
-    val dataLoaded: MutableLiveData<Boolean> = MutableLiveData(false)
 
     fun getUpcomingAppointmentList() {
         viewModelScope.launch {
@@ -60,9 +58,8 @@ class UserRequestViewModel @Inject constructor(
                             if (response.body.data.isNotEmpty()) {
                                 val newList = response.body.data
                                 userAppointmentData.addAll(newList)
-                                _pastAppointments.value = newList
                                 lastDocument = response.body.lastDocument
-                                dataLoaded.postValue(true)
+                                _pastAppointments.value = newList
                             } else {
                                 if (userAppointmentData.isEmpty()) {
                                     setShowProgress(false)
@@ -90,7 +87,6 @@ class UserRequestViewModel @Inject constructor(
                             setShowProgress(false)
                         }
                     }
-//                    }
                 } else {
                     context.toast(resourceProvider.getString(R.string.check_internet_connection))
                 }
@@ -115,7 +111,6 @@ class UserRequestViewModel @Inject constructor(
                                 val newList = response.body.data
                                 userAppointmentData.addAll(newList)
                                 lastDocument = response.body.lastDocument
-                                dataLoaded.postValue(true)
                                 _pastAppointments.value = newList
                             } else {
                                 _pastAppointments.value = response.body.data

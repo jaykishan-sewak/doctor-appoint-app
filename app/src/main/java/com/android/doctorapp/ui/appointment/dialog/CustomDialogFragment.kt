@@ -46,6 +46,7 @@ class CustomDialogFragment(context: Context, private val listener: OnButtonClick
             false
         } else {
             binding.etReason.error = null
+            binding.btnReasonSubmit.setTextColor(context.getColor(R.color.white))
             true
         }
     }
