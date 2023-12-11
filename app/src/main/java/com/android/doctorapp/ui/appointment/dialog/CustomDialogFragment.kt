@@ -9,7 +9,7 @@ import com.android.doctorapp.R
 import com.android.doctorapp.databinding.CustomDialogBinding
 
 class CustomDialogFragment(
-    var isDarkTheme: Boolean,
+    var isDarkTheme: Boolean?,
     context: Context,
     private val listener: OnButtonClickListener
 ) :
@@ -25,7 +25,7 @@ class CustomDialogFragment(
         val binding = CustomDialogBinding.inflate(LayoutInflater.from(context))
         setContentView(binding.root)
         binding.btnReasonSubmit.isEnabled = false
-        if (isDarkTheme) {
+        if (isDarkTheme == true) {
             binding.btnReasonSubmit.setTextColor(context.getColor(R.color.black))
         } else
             binding.btnReasonSubmit.setTextColor(context.getColor(R.color.white))
@@ -41,7 +41,7 @@ class CustomDialogFragment(
                     listener.oClick(binding.etReason.text.toString())
                 }
             } else {
-                if (isDarkTheme) {
+                if (isDarkTheme == true) {
                     binding.btnReasonSubmit.setTextColor(context.getColor(R.color.black))
                 } else
                     binding.btnReasonSubmit.setTextColor(context.getColor(R.color.white))
