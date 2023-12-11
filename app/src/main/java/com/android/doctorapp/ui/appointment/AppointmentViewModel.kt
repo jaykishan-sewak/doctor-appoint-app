@@ -53,7 +53,7 @@ import javax.inject.Inject
 class AppointmentViewModel @Inject constructor(
     private val itemsRepository: ItemsRepository,
     private val appointmentRepository: AppointmentRepository,
-    private val session: Session,
+    val session: Session,
     private val context: Context,
     private val resourceProvider: ResourceProvider
 ) : BaseViewModel() {
@@ -126,6 +126,9 @@ class AppointmentViewModel @Inject constructor(
 
     val viewClinicClicked: MutableLiveData<Boolean> = MutableLiveData(false)
     val clinicImageList = MutableLiveData<ArrayList<String>?>()
+    val isDarkThemeEnable: MutableLiveData<Boolean?> = MutableLiveData(false)
+    val btnEnableOrNot: MutableLiveData<Boolean> = MutableLiveData(false)
+
 
     init {
         emailClick.postValue("")
@@ -141,8 +144,7 @@ class AppointmentViewModel @Inject constructor(
         // Add the current date to the list
         dateList.add(
             SimpleDateFormat(
-                FORMATTED_DATE,
-                Locale.getDefault()
+                FORMATTED_DATE, Locale.getDefault()
             ).parse(currentDate) as Date
         )
 
@@ -163,8 +165,7 @@ class AppointmentViewModel @Inject constructor(
             ) {
                 timeList.forEachIndexed { timeIndex, addShiftTimeModel ->
                     val currentTime = dateFormatter(Date(), FORMATTED_TIME)
-                    if (currentTime > dateFormatter(addShiftTimeModel.startTime, FORMATTED_TIME)
-                    ) {
+                    if (currentTime > dateFormatter(addShiftTimeModel.startTime, FORMATTED_TIME)) {
                         timeList.get(timeIndex).isTimeSlotBook = true
                     }
                 }
@@ -176,8 +177,7 @@ class AppointmentViewModel @Inject constructor(
 
             holidayList.forEachIndexed { _, data ->
                 if (dateFormatter(dateSlotModel.date!!, DATE_MM_FORMAT) == dateFormatter(
-                        data,
-                        DATE_MM_FORMAT
+                        data, DATE_MM_FORMAT
                     )
                 ) {
                     daysList[index] = DateSlotModel(date = dateSlotModel.date, disable = true)
@@ -186,9 +186,7 @@ class AppointmentViewModel @Inject constructor(
             }
             weekOfDayList.forEachIndexed { _, str ->
                 if (dateFormatter(dateSlotModel.date!!, DAY_NAME_FORMAT) == convertToFormatDate(
-                        str,
-                        FULL_DAY_NAME_FORMAT,
-                        DAY_NAME_FORMAT
+                        str, FULL_DAY_NAME_FORMAT, DAY_NAME_FORMAT
                     )
                 ) {
                     daysList[index] = DateSlotModel(date = dateSlotModel.date, disable = true)
@@ -202,8 +200,8 @@ class AppointmentViewModel @Inject constructor(
     // Function to get the current date as a Date object
 
     fun validateDateTime() {
-        isBookAppointmentDataValid.value = isDateSelected.value == true
-                && isTimeSelected.value == true && isSymptomDataValid.value == true
+        isBookAppointmentDataValid.value =
+            isDateSelected.value == true && isTimeSelected.value == true && isSymptomDataValid.value == true
     }
 
     fun bookAppointment() {
@@ -229,14 +227,13 @@ class AppointmentViewModel @Inject constructor(
                 when (val response =
                     appointmentRepository.addBookingAppointment(appointmentModel, fireStore)) {
                     is ApiSuccessResponse -> {
-                        if (doctorDataObj.value?.isNotificationEnable == true)
-                            sendNotification(
-                                doctorDataObj.value?.token,
-                                APPOINTMENT_BOOKED_BY,
-                                doctorDataObj.value?.isDoctor,
-                                response.body,
-                                true
-                            )
+                        if (doctorDataObj.value?.isNotificationEnable == true) sendNotification(
+                            doctorDataObj.value?.token,
+                            APPOINTMENT_BOOKED_BY,
+                            doctorDataObj.value?.isDoctor,
+                            response.body,
+                            true
+                        )
                         else {
                             setShowProgress(false)
                             _navigationListener.value = true
@@ -345,23 +342,20 @@ class AppointmentViewModel @Inject constructor(
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 setShowProgress(true)
-                when (val response =
-                    appointmentRepository.updateAppointmentData(
-                        appointmentObj.value!!.apply {
-                            reason = text
-                            status = FIELD_REJECTED
-                        },
-                        fireStore
-                    )) {
+                when (val response = appointmentRepository.updateAppointmentData(
+                    appointmentObj.value!!.apply {
+                        reason = text
+                        status = FIELD_REJECTED
+                    }, fireStore
+                )) {
                     is ApiSuccessResponse -> {
-                        if (userDataResponse.value?.isNotificationEnable == true)
-                            sendNotification(
-                                userDataResponse.value?.token,
-                                APPOINTMENT_REJECTED_BY,
-                                userDataResponse.value?.isDoctor,
-                                appointmentObj.value?.id,
-                                false
-                            )
+                        if (userDataResponse.value?.isNotificationEnable == true) sendNotification(
+                            userDataResponse.value?.token,
+                            APPOINTMENT_REJECTED_BY,
+                            userDataResponse.value?.isDoctor,
+                            appointmentObj.value?.id,
+                            false
+                        )
                         else {
                             setShowProgress(false)
                             _navigationListener.value = true
@@ -396,11 +390,9 @@ class AppointmentViewModel @Inject constructor(
     fun getAppointmentDetails() {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
-                when (val response =
-                    appointmentRepository.getAppointmentDetails(
-                        appointmentObj.value?.id!!,
-                        fireStore
-                    )) {
+                when (val response = appointmentRepository.getAppointmentDetails(
+                    appointmentObj.value?.id!!, fireStore
+                )) {
                     is ApiSuccessResponse -> {
                         appointmentResponse.postValue(response.body)
                         isVisitedToggleData.postValue(response.body.isVisited)
@@ -434,11 +426,9 @@ class AppointmentViewModel @Inject constructor(
     private fun getAppointmentUserDetails() {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
-                when (val response =
-                    appointmentRepository.getAppointmentUserDetails(
-                        appointmentObj.value?.userId!!,
-                        fireStore
-                    )) {
+                when (val response = appointmentRepository.getAppointmentUserDetails(
+                    appointmentObj.value?.userId!!, fireStore
+                )) {
                     is ApiSuccessResponse -> {
                         userDataResponse.value = response.body
                         imageUri.value = response.body.images?.toUri()
@@ -471,31 +461,27 @@ class AppointmentViewModel @Inject constructor(
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 setShowProgress(true)
-                when (val response =
-                    appointmentRepository.updateAppointmentData(
-                        appointmentObj.value!!.apply {
-                            status = appointmentStatus
-                        },
-                        fireStore
-                    )) {
+                when (val response = appointmentRepository.updateAppointmentData(
+                    appointmentObj.value!!.apply {
+                        status = appointmentStatus
+                    }, fireStore
+                )) {
                     is ApiSuccessResponse -> {
                         if (userDataResponse.value?.isNotificationEnable == true) {
-                            if (appointmentStatus == FIELD_REJECTED)
-                                sendNotification(
-                                    userDataResponse.value?.token,
-                                    APPOINTMENT_REJECTED_BY,
-                                    userDataResponse.value?.isDoctor,
-                                    appointmentObj.value!!.id,
-                                    false
-                                )
-                            else
-                                sendNotification(
-                                    userDataResponse.value?.token,
-                                    APPOINTMENT_APPROVED_BY,
-                                    userDataResponse.value?.isDoctor,
-                                    appointmentObj.value!!.id,
-                                    false
-                                )
+                            if (appointmentStatus == FIELD_REJECTED) sendNotification(
+                                userDataResponse.value?.token,
+                                APPOINTMENT_REJECTED_BY,
+                                userDataResponse.value?.isDoctor,
+                                appointmentObj.value!!.id,
+                                false
+                            )
+                            else sendNotification(
+                                userDataResponse.value?.token,
+                                APPOINTMENT_APPROVED_BY,
+                                userDataResponse.value?.isDoctor,
+                                appointmentObj.value!!.id,
+                                false
+                            )
                         } else {
                             setShowProgress(false)
                             _navigationListener.value = true
@@ -525,20 +511,18 @@ class AppointmentViewModel @Inject constructor(
 
     fun checkAppointmentDate(): Boolean {
         val currentDate = currentDate()
-        return if (appointmentObj.value != null)
-            appointmentObj.value?.bookingDateTime!! > currentDate && appointmentObj.value?.status != FIELD_REJECTED
-        else
-            false
+        btnEnableOrNot.value =
+            if (appointmentObj.value != null) appointmentObj.value?.bookingDateTime!! > currentDate && appointmentObj.value?.status != FIELD_REJECTED
+            else false
+        return btnEnableOrNot.value!!
     }
 
     private fun getUserSymptomDetails() {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
-                when (val response =
-                    appointmentRepository.getUserSymptomDetails(
-                        appointmentObj.value?.userId!!,
-                        fireStore
-                    )) {
+                when (val response = appointmentRepository.getUserSymptomDetails(
+                    appointmentObj.value?.userId!!, fireStore
+                )) {
                     is ApiSuccessResponse -> {
                         symptomResponse.value = response.body
                         setShowProgress(false)
@@ -568,10 +552,7 @@ class AppointmentViewModel @Inject constructor(
 
     private fun validatesAllFields(): Boolean {
         isSymptomDataValid.value =
-            (!symptomDetails.value.isNullOrEmpty() && !sufferingDays.value.isNullOrEmpty()
-                    && symptomDetailsError.value.isNullOrEmpty()
-                    && sufferingDaysError.value.isNullOrEmpty()
-                    )
+            (!symptomDetails.value.isNullOrEmpty() && !sufferingDays.value.isNullOrEmpty() && symptomDetailsError.value.isNullOrEmpty() && sufferingDaysError.value.isNullOrEmpty())
         validateDateTime()
         return isSymptomDataValid.value!!
     }
@@ -606,13 +587,11 @@ class AppointmentViewModel @Inject constructor(
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 setShowProgress(true)
-                when (val response =
-                    appointmentRepository.updateAppointmentDataById(
-                        appointmentObj.value!!.apply {
-                            isVisited = isVisitedToggleData.value!!
-                        },
-                        fireStore
-                    )) {
+                when (val response = appointmentRepository.updateAppointmentDataById(
+                    appointmentObj.value!!.apply {
+                        isVisited = isVisitedToggleData.value!!
+                    }, fireStore
+                )) {
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
                         _navigationListener.value = true
@@ -644,19 +623,15 @@ class AppointmentViewModel @Inject constructor(
 
     fun getAppointmentData(
         selectedDate: Date = SimpleDateFormat(
-            FORMATTED_DATE,
-            Locale.getDefault()
+            FORMATTED_DATE, Locale.getDefault()
         ).parse(currentDate) as Date
     ) {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 setShowProgress(true)
-                when (val response =
-                    appointmentRepository.getDoctorAppointmentByDate(
-                        doctorDataObj.value?.userId,
-                        selectedDate,
-                        fireStore
-                    )) {
+                when (val response = appointmentRepository.getDoctorAppointmentByDate(
+                    doctorDataObj.value?.userId, selectedDate, fireStore
+                )) {
                     is ApiSuccessResponse -> {
                         if (timeList.isEmpty()) {
                             getDoctorDataDetails(response.body)
@@ -669,11 +644,9 @@ class AppointmentViewModel @Inject constructor(
                             response.body.forEachIndexed { index, appointmentModel ->
                                 timeList.forEachIndexed { timeIndex, addShiftTimeModel ->
                                     if (dateFormatter(
-                                            appointmentModel.bookingDateTime,
-                                            FORMATTED_TIME
+                                            appointmentModel.bookingDateTime, FORMATTED_TIME
                                         ) == dateFormatter(
-                                            addShiftTimeModel.startTime,
-                                            FORMATTED_TIME
+                                            addShiftTimeModel.startTime, FORMATTED_TIME
                                         ) || currentTime(selectedDate, addShiftTimeModel.startTime)
                                     ) {
                                         timeList[timeIndex].isTimeSlotBook = true
@@ -710,8 +683,7 @@ class AppointmentViewModel @Inject constructor(
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 when (val doctorResponse = appointmentRepository.getDoctorById(
-                    doctorDataObj.value?.docId!!,
-                    fireStore
+                    doctorDataObj.value?.docId!!, fireStore
                 )) {
 
                     is ApiSuccessResponse -> {
@@ -724,8 +696,7 @@ class AppointmentViewModel @Inject constructor(
                         doctorResponse.body.holidayList?.forEachIndexed { index, holidayModel ->
                             holidayList.add(holidayModel)
                         }
-                        doctorSpecialities.value =
-                            doctorResponse.body.specialities.toString()
+                        doctorSpecialities.value = doctorResponse.body.specialities.toString()
 
                         val tempList = doctorResponse.body.availableTime?.sortedBy {
                             it.startTime
@@ -746,8 +717,7 @@ class AppointmentViewModel @Inject constructor(
                         appointmentList.forEachIndexed { index, appointmentModel ->
                             timeList.forEachIndexed { timeIndex, addShiftTimeModel ->
                                 if (dateFormatter(
-                                        appointmentModel.bookingDateTime,
-                                        FORMATTED_TIME
+                                        appointmentModel.bookingDateTime, FORMATTED_TIME
                                     ) == dateFormatter(addShiftTimeModel.startTime, FORMATTED_TIME)
                                 ) {
                                     timeList.get(timeIndex).isTimeSlotBook = true
@@ -802,40 +772,27 @@ class AppointmentViewModel @Inject constructor(
         val currentDate = Date()
         val currentTime = dateFormatter(Date(), FORMATTED_TIME)
         if (dateFormatter(
-                selectedDate,
-                ConstantKey.DD_MM_FORMAT
+                selectedDate, ConstantKey.DD_MM_FORMAT
             ) == dateFormatter(
-                currentDate,
-                ConstantKey.DD_MM_FORMAT
+                currentDate, ConstantKey.DD_MM_FORMAT
             )
         ) {
             return (currentTime > dateFormatter(
-                time,
-                FORMATTED_TIME
+                time, FORMATTED_TIME
             ))
         }
         return false
     }
 
     private fun sendNotification(
-        token: String?,
-        msg: String,
-        type: Boolean?,
-        documentId: String?,
-        isBookAppointment: Boolean
+        token: String?, msg: String, type: Boolean?, documentId: String?, isBookAppointment: Boolean
     ) {
         viewModelScope.launch {
             setShowProgress(true)
-            val data =
-                DataRequestModel(
-                    "$msg ${userName.value}",
-                    "Appointment",
-                    type,
-                    documentId,
-                    isBookAppointment
-                )
-            val notificationRequest =
-                NotificationRequestModel(token, data)
+            val data = DataRequestModel(
+                "$msg ${userName.value}", "Appointment", type, documentId, isBookAppointment
+            )
+            val notificationRequest = NotificationRequestModel(token, data)
             when (val response = itemsRepository.sendNotification(notificationRequest)) {
                 is ApiSuccessResponse -> {
                     setShowProgress(false)
@@ -863,11 +820,9 @@ class AppointmentViewModel @Inject constructor(
         setShowProgress(true)
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
-                when (val response =
-                    appointmentRepository.getNotificationAppointmentDetails(
-                        documentId.value!!,
-                        fireStore
-                    )) {
+                when (val response = appointmentRepository.getNotificationAppointmentDetails(
+                    documentId.value!!, fireStore
+                )) {
                     is ApiSuccessResponse -> {
                         appointmentResponse.postValue(response.body)
                         appointmentObj.value = response.body!!

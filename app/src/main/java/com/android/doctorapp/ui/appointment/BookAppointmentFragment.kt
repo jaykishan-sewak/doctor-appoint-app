@@ -8,6 +8,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +17,7 @@ import com.android.doctorapp.databinding.FragmentBookAppointmentBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.local.IS_ENABLED_DARK_MODE
 import com.android.doctorapp.repository.models.AddShiftTimeModel
 import com.android.doctorapp.repository.models.DateSlotModel
 import com.android.doctorapp.repository.models.UserDataResponseModel
@@ -37,6 +39,8 @@ import com.android.doctorapp.util.extension.openEmailSender
 import com.android.doctorapp.util.extension.openPhoneDialer
 import com.android.doctorapp.util.setResizableText
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import javax.inject.Inject
@@ -54,7 +58,6 @@ class BookAppointmentFragment :
 
     //    private lateinit var dateStr: String
     private lateinit var timeStr: String
-    private var isExpanded = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,6 +71,12 @@ class BookAppointmentFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+
+        lifecycleScope.launch {
+            viewModel.session.getBoolean(IS_ENABLED_DARK_MODE).collectLatest {
+                viewModel.isDarkThemeEnable.value = it
+            }
+        }
         val arguments: Bundle? = arguments
         if (arguments != null) {
 

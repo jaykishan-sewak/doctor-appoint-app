@@ -67,7 +67,8 @@ class ProfileViewModel @Inject constructor(
 
     val myDoctorsList: MutableLiveData<List<UserDataResponseModel?>?> = MutableLiveData()
     val dataNotFound: MutableLiveData<Boolean> = MutableLiveData(false)
-    val isDarkThemeClicked: MutableLiveData<Boolean?> = MutableLiveData(false)
+    val isDarkThemeClicked: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isTokenEmptySuccessFully: MutableLiveData<Boolean> = MutableLiveData(false)
 
     init {
         emailClick.postValue("")
@@ -96,7 +97,6 @@ class ProfileViewModel @Inject constructor(
                         }
 
                         is ApiErrorResponse -> {
-                            context.toast(response.errorMessage)
                             setShowProgress(false)
                         }
 
@@ -120,10 +120,7 @@ class ProfileViewModel @Inject constructor(
 
 
     fun signOut() {
-        viewModelScope.launch {
-            updateUserData("")
-            profileRepository.clearLoggedInSession()
-        }
+        _navigateToLogin.postValue(true)
     }
 
     fun editClick(isDoctor: Boolean) {
@@ -215,7 +212,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun updateUserData(token: String?) {
+    fun updateUserData(token: String?) {
         viewModelScope.launch {
             val userId = session.getString(USER_ID).firstOrNull()
             if (!userId.isNullOrEmpty()) {
@@ -226,11 +223,10 @@ class ProfileViewModel @Inject constructor(
                         is ApiSuccessResponse -> {
                             setShowProgress(false)
                             session.putBoolean(IS_NEW_USER_TOKEN, false)
-                            _navigateToLogin.postValue(true)
+                            isTokenEmptySuccessFully.value = true
                         }
 
                         is ApiErrorResponse -> {
-                            context.toast(response.errorMessage)
                             setShowProgress(false)
                         }
 
@@ -244,6 +240,12 @@ class ProfileViewModel @Inject constructor(
                     }
                 } else context.toast(resourceProvider.getString(R.string.check_internet_connection))
             }
+        }
+    }
+
+    fun clearSession() {
+        viewModelScope.launch {
+            profileRepository.clearLoggedInSession()
         }
     }
 

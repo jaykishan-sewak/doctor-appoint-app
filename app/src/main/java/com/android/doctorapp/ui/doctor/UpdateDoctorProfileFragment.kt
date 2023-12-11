@@ -111,6 +111,8 @@ class UpdateDoctorProfileFragment :
     private val holidayCalender: Calendar = Calendar.getInstance()
     private val availableDateCalender: Calendar = Calendar.getInstance()
     private var fromFragment: String? = null
+    private val selectedDegrees = ArrayList<String>()
+    private val selectedSpecialities = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -427,7 +429,10 @@ class UpdateDoctorProfileFragment :
                     bindingView.autoCompleteTextView.setText("")
                 } else {
                     val degreeList = viewModel.degreeLiveList.value
-                    if (degreeList?.contains(selectedItem) == true) {
+                    if (degreeList?.contains(selectedItem) == true || selectedDegrees.contains(
+                            selectedItem
+                        )
+                    ) {
                         // Item already exists in the list, show a message
                         context?.toast(getString(R.string.degree_already_exist))
                     } else {
@@ -472,7 +477,10 @@ class UpdateDoctorProfileFragment :
                     bindingView.autoCompleteTextViewSpec.setText("")
                 } else {
 //                    val degreeList = viewModel.specializationLiveList.value
-                    if (viewModel.specializationLiveList.value?.contains(selectedItem) == true) {
+                    if (viewModel.specializationLiveList.value?.contains(selectedItem) == true || selectedSpecialities.contains(
+                            selectedItem
+                        )
+                    ) {
                         // Item already exists in the list, show a message
                         context?.toast(getString(R.string.specialization_already_exist))
                     } else {
@@ -555,9 +563,11 @@ class UpdateDoctorProfileFragment :
         }
         chip.isCloseIconVisible = true
         chip.setOnCloseIconClickListener {
+            selectedDegrees.remove(chip.text)
             bindingView.chipGroup.removeView(chip)
             viewModel.validateAllUpdateField()
         }
+        selectedDegrees.add(text)
         bindingView.chipGroup.addView(chip)
         viewModel.validateAllUpdateField()
     }
@@ -571,9 +581,11 @@ class UpdateDoctorProfileFragment :
         }
         chip.isCloseIconVisible = true
         chip.setOnCloseIconClickListener {
+            selectedSpecialities.remove(chip.text)
             bindingView.chipGroupSpec.removeView(chip)
             viewModel.validateAllUpdateField()
         }
+        selectedSpecialities.add(text)
         bindingView.chipGroupSpec.addView(chip)
         viewModel.validateAllUpdateField()
     }

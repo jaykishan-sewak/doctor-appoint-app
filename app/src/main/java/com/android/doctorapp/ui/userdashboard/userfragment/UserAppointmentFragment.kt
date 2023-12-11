@@ -1,11 +1,14 @@
 package com.android.doctorapp.ui.userdashboard.userfragment
 
+import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
@@ -66,6 +69,7 @@ class UserAppointmentFragment :
         (requireActivity().application as AppComponentProvider).getAppComponent().inject(this)
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -84,8 +88,9 @@ class UserAppointmentFragment :
         }
         RuntimePermission.askPermission(
             this,
-            android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.ACCESS_FINE_LOCATION
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.POST_NOTIFICATIONS
         ).onAccepted {
             requestLocationUpdates()
         }.onDenied {
@@ -101,21 +106,26 @@ class UserAppointmentFragment :
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun requestLocationUpdates() {
         viewModel.setShowProgress(true)
         if (ActivityCompat.checkSelfPermission(
                 requireActivity(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 requireActivity(),
-                android.Manifest.permission.ACCESS_COARSE_LOCATION
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             // Permissions are not granted, request them using the launcher
             requestLocationPermissionLauncher.launch(
                 arrayOf(
-                    android.Manifest.permission.ACCESS_FINE_LOCATION,
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.POST_NOTIFICATIONS
                 )
             )
         }
@@ -155,11 +165,12 @@ class UserAppointmentFragment :
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private val requestLocationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        if (permissions[android.Manifest.permission.ACCESS_FINE_LOCATION] == true &&
-            permissions[android.Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true &&
+            permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true && permissions[Manifest.permission.POST_NOTIFICATIONS] == true
         ) {
             // Permissions are granted, proceed with location updates
             requestLocationUpdates()

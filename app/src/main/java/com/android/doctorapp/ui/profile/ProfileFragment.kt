@@ -18,6 +18,8 @@ import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
 import com.android.doctorapp.repository.local.IS_ENABLED_DARK_MODE
 import com.android.doctorapp.ui.authentication.AuthenticationActivity
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.EXTRAS_KEY
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.IS_DARK_THEME_ENABLED_KEY
 import com.android.doctorapp.util.constants.ConstantKey.PROFILE_UPDATED
 import com.android.doctorapp.util.extension.fetchImageOrShowError
 import com.android.doctorapp.util.extension.openEmailSender
@@ -37,24 +39,21 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
     }
 
     override fun builder(): FragmentToolbar {
-        return FragmentToolbar.Builder()
-            .withId(R.id.toolbar)
+        return FragmentToolbar.Builder().withId(R.id.toolbar)
             .withToolbarColorId(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             .withTitle(R.string.title_profile)
-            .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white))
-            .build()
+            .withTitleColorId(ContextCompat.getColor(requireContext(), R.color.white)).build()
     }
 
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
         viewModel.viewModelScope.launch {
             viewModel.session.getBoolean(IS_ENABLED_DARK_MODE).collectLatest {
-                viewModel.isDarkThemeClicked.value = it
+                if (it != null) viewModel.isDarkThemeClicked.value = it == true
+                else viewModel.isDarkThemeClicked.value = false
             }
         }
         return binding {
@@ -90,8 +89,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
                 }
             }
 
-        if (viewModel.userProfileDataResponse.value == null)
-            viewModel.getUserProfileData()
+        if (viewModel.userProfileDataResponse.value == null) viewModel.getUserProfileData()
 
 
         viewModel.phoneClick.observe(viewLifecycleOwner) {
@@ -109,18 +107,30 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
 
         viewModel.navigateToLogin.observe(viewLifecycleOwner) {
             if (it) {
-                val intent = Intent(requireActivity(), AuthenticationActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
+                viewModel.updateUserData("")
             }
-//                startActivityFinish<AuthenticationActivity>()
+        }
 
+        viewModel.isTokenEmptySuccessFully.observe(viewLifecycleOwner) {
+            if (it) {
+                val intent = Intent(requireActivity(), AuthenticationActivity::class.java)
+                val extras = Bundle()
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                extras.putBoolean(
+                    IS_DARK_THEME_ENABLED_KEY, viewModel.isDarkThemeClicked.value == true
+                )
+                intent.putExtra(EXTRAS_KEY, extras)
+                viewModel.clearSession()
+                startActivity(intent)
+
+            }
         }
         viewModel.navigationListener.observe(viewLifecycleOwner) {
             findNavController().navigate(it)
         }
 
     }
+
 
     private val startForProfileImageResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

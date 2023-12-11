@@ -9,18 +9,22 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.FragmentBookingDetailBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.local.IS_ENABLED_DARK_MODE
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.ui.appointment.dialog.CustomDialogFragment
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.APPOINTMENT_DETAILS_UPDATED
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.APPOINTMENT_DOCUMENT_ID
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -42,6 +46,13 @@ class BookingDetailFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+
+        lifecycleScope.launch {
+            viewModel.session.getBoolean(IS_ENABLED_DARK_MODE).collectLatest {
+                viewModel.isDarkThemeEnable.value = it
+            }
+        }
+
         if (arguments != null) {
             val appointmentObj =
                 requireArguments().getString(ConstantKey.BundleKeys.BOOKING_APPOINTMENT_DATA)
@@ -70,7 +81,7 @@ class BookingDetailFragment :
 
         viewModel.cancelClick.observe(viewLifecycleOwner) {
             if (it) {
-                CustomDialogFragment(requireContext(),
+                CustomDialogFragment(viewModel.isDarkThemeEnable.value!!, requireContext(),
                     object : CustomDialogFragment.OnButtonClickListener {
                         override fun oClick(text: String) {
                             viewModel.appointmentRejectApiCall(text)

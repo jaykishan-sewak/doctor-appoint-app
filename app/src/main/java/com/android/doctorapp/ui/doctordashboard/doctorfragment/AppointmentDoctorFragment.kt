@@ -1,11 +1,17 @@
 package com.android.doctorapp.ui.doctordashboard.doctorfragment
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -26,6 +32,8 @@ import com.android.doctorapp.ui.doctordashboard.adapter.PatientListAdapter
 import com.android.doctorapp.util.constants.ConstantKey.APPOINTMENT_DETAILS_UPDATED
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DATE
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.REQUEST_FRAGMENT
+import com.android.doctorapp.util.extension.toast
+import com.android.doctorapp.util.permission.RuntimePermission
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -46,6 +54,7 @@ class AppointmentDoctorFragment :
         (requireActivity().application as AppComponentProvider).getAppComponent().inject(this)
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -61,12 +70,48 @@ class AppointmentDoctorFragment :
             lifecycleOwner = viewLifecycleOwner
             viewModel = this@AppointmentDoctorFragment.viewModel
         }
+
+        RuntimePermission.askPermission(
+            this,
+            Manifest.permission.POST_NOTIFICATIONS
+        ).onAccepted {
+            requestLocationUpdates()
+        }.onDenied {
+            context?.toast("Notification Permission Denied")
+        }.ask()
+
         setUpWithViewModel(viewModel)
         registerObserver(layoutBinding)
 
         return layoutBinding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    fun requestLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permissions are not granted, request them using the launcher
+            requestLocationPermissionLauncher.launch(
+                Manifest.permission.POST_NOTIFICATIONS
+            )
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private val requestLocationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) {
+        if (it) {
+            // Permissions are granted, proceed with location updates
+            requireActivity().toast("Notification is enabled")
+        } else {
+            // Handle permission denial
+            requireActivity().toast("Notification Permission Denied")
+        }
+    }
 
     private fun registerObserver(layoutBinding: FragmentAppointmentDoctorBinding) {
         setAdapter(emptyList())

@@ -8,7 +8,11 @@ import androidx.core.widget.doAfterTextChanged
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.CustomDialogBinding
 
-class CustomDialogFragment(context: Context, private val listener: OnButtonClickListener) :
+class CustomDialogFragment(
+    var isDarkTheme: Boolean,
+    context: Context,
+    private val listener: OnButtonClickListener
+) :
     Dialog(context) {
 
     interface OnButtonClickListener {
@@ -21,16 +25,26 @@ class CustomDialogFragment(context: Context, private val listener: OnButtonClick
         val binding = CustomDialogBinding.inflate(LayoutInflater.from(context))
         setContentView(binding.root)
         binding.btnReasonSubmit.isEnabled = false
+        if (isDarkTheme) {
+            binding.btnReasonSubmit.setTextColor(context.getColor(R.color.black))
+        } else
+            binding.btnReasonSubmit.setTextColor(context.getColor(R.color.white))
 
         binding.etReason.doAfterTextChanged {
 
             binding.btnReasonSubmit.isEnabled =
                 binding.etReason.text?.isNotEmpty() == true && isValidReason(binding)
             if (binding.btnReasonSubmit.isEnabled) {
+                binding.btnReasonSubmit.setTextColor(context.getColor(R.color.white))
                 binding.btnReasonSubmit.setOnClickListener {
                     dismiss()
                     listener.oClick(binding.etReason.text.toString())
                 }
+            } else {
+                if (isDarkTheme) {
+                    binding.btnReasonSubmit.setTextColor(context.getColor(R.color.black))
+                } else
+                    binding.btnReasonSubmit.setTextColor(context.getColor(R.color.white))
             }
         }
     }

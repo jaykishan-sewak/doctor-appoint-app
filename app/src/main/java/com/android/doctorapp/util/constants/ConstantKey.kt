@@ -37,6 +37,8 @@ object ConstantKey {
         const val VIEW_CLINIC_IMAGE_URL = "viewClinicImageUrl"
         const val GET_CLINIC_IMAGE_LIST_KEY = "getClinicImageList"
         const val OPEN_IMAGE_POSITION_KEY = "openImagePosition"
+        const val IS_DARK_THEME_ENABLED_KEY = "isDarkThemeEnabled"
+        const val EXTRAS_KEY = "extrasKey"
 
     }
 
