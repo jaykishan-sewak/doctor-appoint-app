@@ -8,12 +8,14 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.FragmentAppointmentDetailBinding
 import com.android.doctorapp.di.AppComponentProvider
 import com.android.doctorapp.di.base.BaseFragment
 import com.android.doctorapp.di.base.toolbar.FragmentToolbar
+import com.android.doctorapp.repository.local.IS_ENABLED_DARK_MODE
 import com.android.doctorapp.repository.models.AppointmentModel
 import com.android.doctorapp.ui.appointment.dialog.CustomDialogFragment
 import com.android.doctorapp.util.constants.ConstantKey
@@ -26,6 +28,8 @@ import com.android.doctorapp.util.extension.alert
 import com.android.doctorapp.util.extension.negativeButton
 import com.android.doctorapp.util.extension.neutralButton
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AppointmentDetailFragment :
@@ -65,6 +69,12 @@ class AppointmentDetailFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+
+        lifecycleScope.launch {
+            viewModel.session.getBoolean(IS_ENABLED_DARK_MODE).collectLatest {
+                viewModel.isDarkThemeEnable.value = it
+            }
+        }
         val arguments: Bundle? = arguments
         if (arguments != null) {
             viewModel.isShowBothButton.value =
@@ -124,7 +134,8 @@ class AppointmentDetailFragment :
         }
         viewModel.cancelClick.observe(viewLifecycleOwner) {
             if (it) {
-                CustomDialogFragment(requireContext(),
+                CustomDialogFragment(
+                    viewModel.isDarkThemeEnable.value!!, requireContext(),
                     object : CustomDialogFragment.OnButtonClickListener {
                         override fun oClick(text: String) {
                             viewModel.appointmentRejectApiCall(text)

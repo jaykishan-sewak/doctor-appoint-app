@@ -385,7 +385,7 @@
                     android:paddingHorizontal="@dimen/margin_40"
                     android:text="@string/title_appointment"
                     android:textAllCaps="false"
-                    android:textColor="@{viewModel.isBookAppointmentDataValid ? @color/white : @color/black}"
+                    android:textColor="@{viewModel.isBookAppointmentDataValid || !viewModel.isDarkThemeEnable ? @color/white : @color/black}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

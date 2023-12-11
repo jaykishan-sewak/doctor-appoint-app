@@ -9,6 +9,7 @@ import com.android.doctorapp.di.ResourceProvider
 import com.android.doctorapp.di.base.BaseViewModel
 import com.android.doctorapp.repository.AppointmentRepository
 import com.android.doctorapp.repository.ItemsRepository
+import com.android.doctorapp.repository.local.Session
 import com.android.doctorapp.repository.models.ApiErrorResponse
 import com.android.doctorapp.repository.models.ApiNoNetworkResponse
 import com.android.doctorapp.repository.models.ApiSuccessResponse
@@ -28,6 +29,7 @@ class BookingDetailViewModel @Inject constructor(
     private val itemsRepository: ItemsRepository,
     private val resourceProvider: ResourceProvider,
     private val appointmentRepository: AppointmentRepository,
+    val session: Session,
     private val context: Context
 ) : BaseViewModel() {
 
@@ -40,6 +42,7 @@ class BookingDetailViewModel @Inject constructor(
     private val _navigationListener: MutableLiveData<Boolean> = MutableLiveData(false)
     val navigationListener = _navigationListener.asLiveData()
     val isCancelEnabled: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isDarkThemeEnable: MutableLiveData<Boolean?> = MutableLiveData(false)
 
     fun checkAppointmentDate(): Boolean {
         val currentDate = currentDate()

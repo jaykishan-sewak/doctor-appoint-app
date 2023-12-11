@@ -113,8 +113,13 @@ class UserRequestViewModel @Inject constructor(
                                 lastDocument = response.body.lastDocument
                                 _pastAppointments.value = newList
                             } else {
-                                _pastAppointments.value = response.body.data
-                                userAppointmentData.addAll(response.body.data)
+                                if (userAppointmentData.isEmpty()) {
+                                    setShowProgress(false)
+                                    dataFound.value = false
+                                } else {
+                                    _pastAppointments.value = response.body.data
+                                    userAppointmentData.addAll(response.body.data)
+                                }
                             }
                         }
 

@@ -484,7 +484,7 @@
                     android:onClick="@{view -> viewModel.onUpdateClick()}"
                     android:text="@string/update_profile_title"
                     android:textAllCaps="false"
-                    android:textColor="@{viewModel.isUpdateDataValid ? @color/white : @color/black }"
+                    android:textColor="@{viewModel.isUpdateDataValid || !viewModel.isDarkThemeEnable ? @color/white : @color/black}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/field_update_description" />

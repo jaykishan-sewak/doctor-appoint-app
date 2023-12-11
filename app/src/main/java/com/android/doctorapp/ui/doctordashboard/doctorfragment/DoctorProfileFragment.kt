@@ -21,6 +21,7 @@ import com.android.doctorapp.ui.authentication.AuthenticationActivity
 import com.android.doctorapp.ui.profile.ProfileViewModel
 import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DOCTOR_PROFILE_FRAGMENT
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.EXTRAS_KEY
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.FROM_WHERE
 import com.android.doctorapp.util.extension.fetchImageOrShowError
 import com.android.doctorapp.util.extension.openEmailSender
@@ -128,11 +129,24 @@ class DoctorProfileFragment :
         }
         viewModel.navigateToLogin.observe(viewLifecycleOwner) {
             if (it) {
-                val intent = Intent(requireActivity(), AuthenticationActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
+                viewModel.updateUserData("")
             }
-//                startActivityFinish<AuthenticationActivity>()
+        }
+
+        viewModel.isTokenEmptySuccessFully.observe(viewLifecycleOwner) {
+            if (it) {
+                val intent = Intent(requireActivity(), AuthenticationActivity::class.java)
+                val extras = Bundle()
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                extras.putBoolean(
+                    ConstantKey.BundleKeys.IS_DARK_THEME_ENABLED_KEY,
+                    viewModel.isDarkThemeClicked.value == true
+                )
+                intent.putExtra(EXTRAS_KEY, extras)
+                viewModel.clearSession()
+                startActivity(intent)
+
+            }
         }
 
         viewModel.navigationListener.observe(viewLifecycleOwner) {
