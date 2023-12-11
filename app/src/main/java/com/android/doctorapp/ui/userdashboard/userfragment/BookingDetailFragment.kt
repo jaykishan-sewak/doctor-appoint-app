@@ -81,7 +81,7 @@ class BookingDetailFragment :
 
         viewModel.cancelClick.observe(viewLifecycleOwner) {
             if (it) {
-                CustomDialogFragment(viewModel.isDarkThemeEnable.value!!, requireContext(),
+                CustomDialogFragment(viewModel.isDarkThemeEnable.value, requireContext(),
                     object : CustomDialogFragment.OnButtonClickListener {
                         override fun oClick(text: String) {
                             viewModel.appointmentRejectApiCall(text)
