@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
@@ -53,6 +54,7 @@ class UserAppointmentFragment :
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
+    private lateinit var requestNotificationPermissionLauncher: ActivityResultLauncher<String>
 
     override fun builder(): FragmentToolbar {
         return FragmentToolbar.Builder()
@@ -63,11 +65,20 @@ class UserAppointmentFragment :
             .build()
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        requestNotificationPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+                if (it) {
+                    requireActivity().toast(resources.getString(R.string.notifications_enabled))
+                }
+            }
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         (requireActivity().application as AppComponentProvider).getAppComponent().inject(this)
     }
+
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreateView(
@@ -90,7 +101,6 @@ class UserAppointmentFragment :
             this,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.POST_NOTIFICATIONS
         ).onAccepted {
             requestLocationUpdates()
         }.onDenied {
@@ -115,21 +125,16 @@ class UserAppointmentFragment :
             ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 requireActivity(),
                 Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireActivity(),
-                Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             // Permissions are not granted, request them using the launcher
             requestLocationPermissionLauncher.launch(
                 arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.POST_NOTIFICATIONS
+                    Manifest.permission.ACCESS_COARSE_LOCATION
                 )
             )
         }
-
         if (requireContext().isGPSEnabled()) {
             fusedLocationClient.requestLocationUpdates(
                 GpsUtils(requireContext()).locationRequest,
@@ -137,6 +142,7 @@ class UserAppointmentFragment :
                 null // Looper can be provided for the callback thread
             )
         } else {
+            viewModel.setShowProgress(false)
             GpsUtils(requireContext()).turnGPSOn(object : GpsUtils.onGpsListener {
                 override fun gpsStatus(isGPSEnable: Boolean) {
                 }
@@ -147,6 +153,7 @@ class UserAppointmentFragment :
 
     private val locationCallback = object : LocationCallback() {
 
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         override fun onLocationResult(p0: LocationResult) {
             p0.lastLocation.let { location ->
                 // Handle the location update here
@@ -154,6 +161,7 @@ class UserAppointmentFragment :
                 longitude = location.longitude
                 if (viewModel.doctorList.value == null) {
                     viewModel.getItems(latitude, longitude)
+                    checkNotificationPermission()
                 } else
                     viewModel.setShowProgress(false)
                 stopLocationUpdates()
@@ -170,7 +178,7 @@ class UserAppointmentFragment :
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true &&
-            permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true && permissions[Manifest.permission.POST_NOTIFICATIONS] == true
+            permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
         ) {
             // Permissions are granted, proceed with location updates
             requestLocationUpdates()
@@ -242,5 +250,20 @@ class UserAppointmentFragment :
             }
         )
     }
+
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    fun checkNotificationPermission() {
+        if (ContextCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.POST_NOTIFICATIONS,
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            requireContext().toast(resources.getString(R.string.notifications_enabled))
+        } else {
+            requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+
 
 }

@@ -112,7 +112,6 @@ class SelectedDateAppointmentsFragment :
                 viewModel.dataFound.value = true
             } else {
                 adapter.filterList(it!!)
-                viewModel.dataFound.value = false
             }
         }
 

@@ -268,5 +268,9 @@
     <string name="enable_dark_theme">Enable dark theme</string>
     <string name="disable_dark_theme">Disable dark theme</string>
     <string name="add_shift_time_model">AddShiftTimeModel</string>
+    <string name="dialog_msg_please_turn_on_gps">For showing nearby doctors, please turn on your GPS.</string>
+    <string name="notifications_enabled">Notifications Enabled.</string>
+    <string name="notifications_disabled">Notification Permission Denied</string>
+
 
 </resources>

@@ -18,6 +18,8 @@ import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.APPOINTMENT_D
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DOCUMENT_ID
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.FRAGMENT_TYPE
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.USER_FRAGMENT
+import com.android.doctorapp.util.extension.alert
+import com.android.doctorapp.util.extension.positiveButton
 import com.android.doctorapp.util.extension.toast
 
 
@@ -25,17 +27,16 @@ class UserDashboardActivity :
     BaseActivity<ActivityUserDashboardBinding>(R.layout.activity_user_dashboard) {
 //    private lateinit var navController: NavController
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val fragmentType = intent.extras?.getString(FRAGMENT_TYPE)
         binding.lifecycleOwner = this
         navController = findNavController(R.id.userNavHostFragment)
         binding.userNavView.setupWithNavController(navController)
 
-        val fragmentType = intent.extras?.getString(FRAGMENT_TYPE)
-        val documentId = intent.extras?.getString(DOCUMENT_ID)
         if (fragmentType == USER_FRAGMENT) {
+            val documentId = intent.extras?.getString(DOCUMENT_ID)
             val bundle = Bundle()
             bundle.putString(APPOINTMENT_DOCUMENT_ID, documentId)
             navController.navigate(R.id.BookingDetail, bundle)
@@ -57,33 +58,42 @@ class UserDashboardActivity :
             true
         }
         navController.addOnDestinationChangedListener { _: NavController?, destination: NavDestination, _: Bundle? ->
-            if (destination.id == R.id.navigation_search
-                || destination.id == R.id.navigation_booking
-                || destination.id == R.id.navigation_user_profile
-            )
-                binding.userNavView.visibility = View.VISIBLE
-            else
-                binding.userNavView.visibility = View.GONE
+            if (destination.id == R.id.navigation_search || destination.id == R.id.navigation_booking || destination.id == R.id.navigation_user_profile) binding.userNavView.visibility =
+                View.VISIBLE
+            else binding.userNavView.visibility = View.GONE
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            val fragmentManager = supportFragmentManager
-            val navHostFragment = fragmentManager.findFragmentById(R.id.userNavHostFragment)
-            if (navHostFragment is NavHostFragment) {
-                // Get the current fragment in the navigation host
-                val currentFragment = navHostFragment.childFragmentManager.fragments.firstOrNull()
-                if (currentFragment is UserAppointmentFragment) {
+
+        val fragmentManager = supportFragmentManager
+        val navHostFragment = fragmentManager.findFragmentById(R.id.userNavHostFragment)
+        if (navHostFragment is NavHostFragment) {
+            // Get the current fragment in the navigation host
+            val currentFragment = navHostFragment.childFragmentManager.fragments.firstOrNull()
+            if (currentFragment is UserAppointmentFragment) {
+                if (requestCode == 1 && resultCode == RESULT_OK) {
                     // Now you have a reference to the UserAppointmentFragment
                     currentFragment.requestLocationUpdates()
+                    currentFragment.checkNotificationPermission()
+
+                } else {
+                    // Now you have a reference to the UserAppointmentFragment
+                    currentFragment.checkNotificationPermission()
+                    this.toast(getString(R.string.gps_permission_denied))
+                    this.alert {
+                        setMessage(R.string.dialog_msg_please_turn_on_gps)
+                        positiveButton(resources.getString(R.string.ok)) {
+                            // Now you have a reference to the UserAppointmentFragment
+                            currentFragment.requestLocationUpdates()
+                        }
+                    }
                 }
             }
 
-        } else {
-            this.toast(getString(R.string.location_permission))
         }
+
     }
 }

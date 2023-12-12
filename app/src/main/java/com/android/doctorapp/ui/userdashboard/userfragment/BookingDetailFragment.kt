@@ -64,6 +64,7 @@ class BookingDetailFragment :
                 viewModel.isCancelEnabled.value = viewModel.checkAppointmentDate()
             } else {
                 viewModel.documentId.value = requireArguments().getString(APPOINTMENT_DOCUMENT_ID)
+                viewModel.setShowProgress(false)
                 viewModel.getAppointmentDetails()
             }
 

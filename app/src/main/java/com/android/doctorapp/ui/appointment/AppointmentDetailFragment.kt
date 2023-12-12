@@ -88,6 +88,7 @@ class AppointmentDetailFragment :
                 viewModel.documentId.value = requireArguments().getString(APPOINTMENT_DOCUMENT_ID)
                 viewModel.isShowBothButton.value =
                     requireArguments().getBoolean(IS_BOOK_APPOINTMENT)
+                viewModel.setShowProgress(false)
                 viewModel.getNotificationAppointmentDetails()
             }
         }

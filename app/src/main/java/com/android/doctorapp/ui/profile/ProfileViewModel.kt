@@ -258,6 +258,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun uploadImage(image: Uri) {
+        noClinicImgFound.value = false
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 setShowProgress(true)
@@ -289,18 +290,19 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun updateClinicImageList(clinicImgList: ArrayList<String>?) {
+    private fun updateClinicImageList(clinicImgArrayList: ArrayList<String>?) {
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 setShowProgress(true)
                 when (val response =
                     profileRepository.updateClinicImgById(
-                        clinicImgList,
+                        clinicImgArrayList,
                         fireStore,
                         userProfileDataResponse.value?.userId
                     )) {
                     is ApiSuccessResponse -> {
                         setShowProgress(false)
+                        clinicImgList.value = clinicImgArrayList
                     }
 
                     is ApiErrorResponse -> {
@@ -330,9 +332,9 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun deleteImage(position: Int) {
-        clinicImgArrayList.removeAt(position)
-        clinicImgList.value = clinicImgArrayList
         updateClinicImageList(clinicImgArrayList)
+        clinicImgArrayList.removeAt(position)
+//        clinicImgList.value = clinicImgArrayList
     }
 
     fun getMyDoctors(currentDate: Date) {

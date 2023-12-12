@@ -93,6 +93,7 @@ class ViewClinicFragment : BaseFragment<FragmentViewClinicBinding>(R.layout.frag
         updateHolidayRecyclerview(arrayListOf())
         viewModel.clinicImgList.observe(viewLifecycleOwner) {
             if (!it.isNullOrEmpty()) {
+                viewModel.noClinicImgFound.value = false
                 clinicImgAdapter.updateClinicImgList(
                     it,
                     viewModel.isUserViewClinicImg.value == true
