@@ -52,6 +52,9 @@ class SelectedDateAppointmentsViewModel @Inject constructor(
                             is ApiSuccessResponse -> {
                                 setShowProgress(false)
                                 appointmentList.value = response.body
+                                if (response.body.isEmpty())
+                                    dataFound.value = false
+
                             }
 
                             is ApiErrorResponse -> {
