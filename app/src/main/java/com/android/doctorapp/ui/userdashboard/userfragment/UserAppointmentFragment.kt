@@ -153,6 +153,7 @@ class UserAppointmentFragment :
 
     private val locationCallback = object : LocationCallback() {
 
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         override fun onLocationResult(p0: LocationResult) {
             p0.lastLocation.let { location ->
                 // Handle the location update here
@@ -160,6 +161,7 @@ class UserAppointmentFragment :
                 longitude = location.longitude
                 if (viewModel.doctorList.value == null) {
                     viewModel.getItems(latitude, longitude)
+                    checkNotificationPermission()
                 } else
                     viewModel.setShowProgress(false)
                 stopLocationUpdates()
