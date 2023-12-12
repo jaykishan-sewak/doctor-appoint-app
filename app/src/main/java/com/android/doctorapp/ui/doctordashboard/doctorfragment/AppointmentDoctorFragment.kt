@@ -77,7 +77,7 @@ class AppointmentDoctorFragment :
         ).onAccepted {
             requestLocationUpdates()
         }.onDenied {
-            context?.toast("Notification Permission Denied")
+            context?.toast(resources.getString(R.string.notifications_disabled))
         }.ask()
 
         setUpWithViewModel(viewModel)
@@ -94,22 +94,22 @@ class AppointmentDoctorFragment :
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             // Permissions are not granted, request them using the launcher
-            requestLocationPermissionLauncher.launch(
+            requestNotificationPermissionLauncher.launch(
                 Manifest.permission.POST_NOTIFICATIONS
             )
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    private val requestLocationPermissionLauncher = registerForActivityResult(
+    private val requestNotificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) {
         if (it) {
             // Permissions are granted, proceed with location updates
-            requireActivity().toast("Notification is enabled")
+            requireActivity().toast(resources.getString(R.string.notifications_enabled))
         } else {
             // Handle permission denial
-            requireActivity().toast("Notification Permission Denied")
+            requireActivity().toast(resources.getString(R.string.notifications_disabled))
         }
     }
 

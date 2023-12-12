@@ -35,12 +35,12 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/margin_15"
         android:onClick="@{()->onItemClickListener.onItemClick(userData,index)}">
 
         <androidx.cardview.widget.CardView
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_16"
             android:layout_marginVertical="@dimen/margin_10"
             android:elevation="@dimen/margin_5"
             app:cardCornerRadius="@dimen/margin_10"

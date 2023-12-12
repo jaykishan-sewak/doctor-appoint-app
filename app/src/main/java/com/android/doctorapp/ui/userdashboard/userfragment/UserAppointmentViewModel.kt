@@ -73,7 +73,6 @@ class UserAppointmentViewModel @Inject constructor(
     }
 
     fun getItems(latitude: Double, longitude: Double) {
-        setShowProgress(true)
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 when (val response =

@@ -258,6 +258,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun uploadImage(image: Uri) {
+        noClinicImgFound.value = false
         viewModelScope.launch {
             if (context.isNetworkAvailable()) {
                 setShowProgress(true)

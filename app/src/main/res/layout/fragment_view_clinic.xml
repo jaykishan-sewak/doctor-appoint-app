@@ -59,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/does_not_have_any_clinic_img"
-            android:visibility="@{viewModel.noClinicImgFound? View.VISIBLE : View.GONE}"
+            android:visibility="@{viewModel.noClinicImgFound ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
