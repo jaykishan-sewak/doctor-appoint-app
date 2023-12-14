@@ -42,6 +42,7 @@ class SelectedDateAppointmentsViewModel @Inject constructor(
                 session.getString(USER_ID).collectLatest {
                     if (it?.isNotEmpty() == true) {
                         appointmentList.value = emptyList()
+                        dataFound.value = true
                         setShowProgress(true)
                         when (val response =
                             appointmentRepository.getAppointmentsSelectedDateList(

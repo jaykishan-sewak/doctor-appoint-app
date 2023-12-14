@@ -105,6 +105,8 @@ class UserAppointmentFragment :
             requestLocationUpdates()
         }.onDenied {
             context?.toast(getString(R.string.location_permission))
+        }.onForeverDenied {
+            viewModel.setShowProgress(false)
         }.ask()
         return layoutBinding.root
     }
@@ -257,12 +259,9 @@ class UserAppointmentFragment :
         if (ContextCompat.checkSelfPermission(
                 requireActivity(),
                 Manifest.permission.POST_NOTIFICATIONS,
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            requireContext().toast(resources.getString(R.string.notifications_enabled))
-        } else {
-            requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-        }
+            ) != PackageManager.PERMISSION_GRANTED
+        ) requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+
     }
 
 

@@ -402,12 +402,10 @@ class AppointmentViewModel @Inject constructor(
                     }
 
                     is ApiErrorResponse -> {
-                        context.toast(response.errorMessage)
                         setShowProgress(false)
                     }
 
                     is ApiNoNetworkResponse -> {
-                        context.toast(response.errorMessage)
                         setShowProgress(false)
                     }
 

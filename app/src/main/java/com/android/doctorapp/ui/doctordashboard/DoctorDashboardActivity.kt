@@ -18,6 +18,8 @@ import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DOCUMENT_ID
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.FRAGMENT_TYPE
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.IS_BOOK_APPOINTMENT
 import com.android.doctorapp.util.constants.ConstantKey.GPS_REQUEST_CODE
+import com.android.doctorapp.util.extension.alert
+import com.android.doctorapp.util.extension.positiveButton
 import com.android.doctorapp.util.extension.toast
 
 class DoctorDashboardActivity :
@@ -72,20 +74,31 @@ class DoctorDashboardActivity :
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == GPS_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                val fragmentManager = supportFragmentManager
-                val navHostFragment = fragmentManager.findFragmentById(R.id.nav_host_fragment)
-                if (navHostFragment is NavHostFragment) {
-                    // Get the current fragment in the navigation host
-                    val currentFragment =
-                        navHostFragment.childFragmentManager.fragments.firstOrNull()
+            val fragmentManager = supportFragmentManager
+            val navHostFragment = fragmentManager.findFragmentById(R.id.nav_host_fragment)
+            if (navHostFragment is NavHostFragment) {
+                // Get the current fragment in the navigation host
+                val currentFragment =
+                    navHostFragment.childFragmentManager.fragments.firstOrNull()
+
+                if (resultCode == RESULT_OK) {
                     if (currentFragment is DoctorAddressFragment) {
-                        // Now you have a reference to the UserAppointmentFragment
+                        // Now you have a reference to the DoctorAddressFragment
                         currentFragment.requestLocationUpdates()
                     }
+                } else {
+                    baseContext.toast(getString(R.string.gps_permission_denied))
+                    this.alert {
+                        setMessage(R.string.dialog_msg_please_turn_on_gps)
+                        positiveButton(resources.getString(R.string.ok)) {
+                            // Now you have a reference to the DoctorAddressFragment
+                            if (currentFragment is DoctorAddressFragment) {
+                                // Now you have a reference to the DoctorAddressFragment
+                                currentFragment.requestLocationUpdates()
+                            }
+                        }
+                    }
                 }
-            } else {
-                baseContext.toast(getString(R.string.gps_permission_denied))
             }
         }
     }

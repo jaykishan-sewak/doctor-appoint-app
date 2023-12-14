@@ -96,12 +96,11 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvFeedbackDate"
                 style="@style/label_text3"
-                android:layout_marginEnd="@dimen/margin_20"
+                android:layout_marginEnd="@dimen/dp_80"
                 android:textColor="@color/grey"
                 app:headerDate="@{userData.createdAt}"
                 app:layout_constraintBottom_toBottomOf="@+id/tvUserName"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvUserName" />
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvUserFeedbackMsg"

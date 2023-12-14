@@ -57,6 +57,7 @@
                     android:id="@+id/profileImage"
                     android:layout_width="@dimen/dp_100"
                     android:layout_height="@dimen/dp_100"
+                    android:layout_marginTop="@dimen/margin_5"
                     android:elevation="@dimen/margin_5"
                     app:cardCornerRadius="@dimen/dp_32"
                     app:layout_constraintEnd_toEndOf="parent"
