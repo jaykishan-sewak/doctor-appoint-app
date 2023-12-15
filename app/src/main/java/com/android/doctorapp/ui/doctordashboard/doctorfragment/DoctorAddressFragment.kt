@@ -117,12 +117,15 @@ class DoctorAddressFragment :
                     requestLocationUpdates()
                 }.onDenied {
                     context?.toast(getString(R.string.location_permission))
+                }.onForeverDenied {
+                    viewModel.setShowProgress(false)
                 }.ask()
             }
         }
     }
 
     fun requestLocationUpdates() {
+        viewModel.setShowProgress(true)
         if (ActivityCompat.checkSelfPermission(
                 requireActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION

@@ -29,8 +29,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin_20"
-            android:paddingVertical="@dimen/parentVerticalMargin_50"
             app:layout_constraintTop_toBottomOf="@+id/toolbarContainer">
 
             <androidx.cardview.widget.CardView
@@ -38,13 +36,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginVertical="@dimen/margin_10"
+                android:layout_marginVertical="@dimen/margin_50"
+                android:layout_marginHorizontal="@dimen/margin_20"
                 android:background="@color/doctor_bg"
                 android:elevation="@dimen/margin_5"
                 app:cardCornerRadius="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"

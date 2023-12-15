@@ -52,7 +52,7 @@ class ProfileRepository @Inject constructor(
         }
     }
 
-    suspend fun clearLoggedInSession() = session.clearLoggedInSession()
+    suspend fun clearLoggedInSession() = session.clearLoggedInSession().await()
 
     suspend fun getDoctorList(firestore: FirebaseFirestore): ApiResponse<List<UserDataResponseModel>> {
         return try {

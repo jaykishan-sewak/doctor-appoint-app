@@ -69,6 +69,7 @@ class ProfileViewModel @Inject constructor(
     val dataNotFound: MutableLiveData<Boolean> = MutableLiveData(false)
     val isDarkThemeClicked: MutableLiveData<Boolean> = MutableLiveData(false)
     val isTokenEmptySuccessFully: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isClearSessionSuccessFully: MutableLiveData<Boolean> = MutableLiveData(false)
 
     init {
         emailClick.postValue("")
@@ -76,9 +77,10 @@ class ProfileViewModel @Inject constructor(
 
     fun getUserProfileData() {
         viewModelScope.launch {
-            var recordId: String = ""
-            session.getString(USER_ID).collectLatest {
-                recordId = it.orEmpty()
+            var recordId = ""
+            val userId = session.getString(USER_ID).firstOrNull()
+            if (!userId.isNullOrEmpty()) {
+                recordId = userId
                 if (context.isNetworkAvailable()) {
                     setShowProgress(true)
                     when (val response =
@@ -245,7 +247,7 @@ class ProfileViewModel @Inject constructor(
 
     fun clearSession() {
         viewModelScope.launch {
-            profileRepository.clearLoggedInSession()
+            isClearSessionSuccessFully.value = profileRepository.clearLoggedInSession()
         }
     }
 
@@ -334,7 +336,6 @@ class ProfileViewModel @Inject constructor(
     fun deleteImage(position: Int) {
         updateClinicImageList(clinicImgArrayList)
         clinicImgArrayList.removeAt(position)
-//        clinicImgList.value = clinicImgArrayList
     }
 
     fun getMyDoctors(currentDate: Date) {

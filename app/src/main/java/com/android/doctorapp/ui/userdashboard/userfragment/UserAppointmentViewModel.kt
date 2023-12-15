@@ -110,7 +110,6 @@ class UserAppointmentViewModel @Inject constructor(
                 setShowProgress(true)
                 when (val response = appointmentRepository.fetchFCMToken()) {
                     is ApiSuccessResponse -> {
-                        setShowProgress(false)
                         fcmToken.value = response.body
                         session.putString(USER_TOKEN, response.body)
                         updateUserData(response.body)
@@ -141,7 +140,6 @@ class UserAppointmentViewModel @Inject constructor(
                     when (val response =
                         appointmentRepository.updateUserData(token, it, fireStore)) {
                         is ApiSuccessResponse -> {
-                            setShowProgress(false)
                             session.putBoolean(IS_NEW_USER_TOKEN, false)
                         }
 

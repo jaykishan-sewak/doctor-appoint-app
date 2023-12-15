@@ -19,8 +19,8 @@
             type="Integer" />
 
         <variable
-            name="userImageUri"
-            type="Uri" />
+            name="imageGender"
+            type="com.android.doctorapp.repository.models.ImageUriAndGender" />
     </data>
 
 
@@ -58,7 +58,7 @@
                     android:layout_height="@dimen/dp_70"
                     android:background="@drawable/ic_person_white"
                     android:scaleType="centerCrop"
-                    app:imageUri="@{userImageUri}" />
+                    app:imageUriAndGender="@{imageGender}" />
 
             </androidx.cardview.widget.CardView>
 

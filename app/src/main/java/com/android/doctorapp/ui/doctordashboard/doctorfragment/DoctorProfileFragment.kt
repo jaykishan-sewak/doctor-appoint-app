@@ -23,10 +23,11 @@ import com.android.doctorapp.util.constants.ConstantKey
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.DOCTOR_PROFILE_FRAGMENT
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.EXTRAS_KEY
 import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.FROM_WHERE
+import com.android.doctorapp.util.constants.ConstantKey.BundleKeys.IS_DARK_THEME_ENABLED_KEY
 import com.android.doctorapp.util.extension.fetchImageOrShowError
 import com.android.doctorapp.util.extension.openEmailSender
 import com.android.doctorapp.util.extension.openPhoneDialer
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -53,8 +54,12 @@ class DoctorProfileFragment :
         super.onCreateView(inflater, container, savedInstanceState)
 
         viewModel.viewModelScope.launch {
-            viewModel.session.getBoolean(IS_ENABLED_DARK_MODE).collectLatest {
-                viewModel.isDarkThemeClicked.value = it
+            val isDarkTheme = viewModel.session.getBoolean(IS_ENABLED_DARK_MODE).firstOrNull()
+            if (isDarkTheme != null) {
+                if (isDarkTheme == true) {
+                    viewModel.isDarkThemeClicked.value = isDarkTheme
+                } else
+                    viewModel.isDarkThemeClicked.value = isDarkTheme
             }
         }
         bindingView = binding {
@@ -76,11 +81,6 @@ class DoctorProfileFragment :
             .build()
     }
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-    }
 
     private fun registerObservers(binding: FragmentDoctorProfileBinding) {
 
@@ -135,16 +135,21 @@ class DoctorProfileFragment :
 
         viewModel.isTokenEmptySuccessFully.observe(viewLifecycleOwner) {
             if (it) {
+                viewModel.isTokenEmptySuccessFully.value = false
                 val intent = Intent(requireActivity(), AuthenticationActivity::class.java)
                 val extras = Bundle()
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 extras.putBoolean(
-                    ConstantKey.BundleKeys.IS_DARK_THEME_ENABLED_KEY,
+                    IS_DARK_THEME_ENABLED_KEY,
                     viewModel.isDarkThemeClicked.value == true
                 )
                 intent.putExtra(EXTRAS_KEY, extras)
                 viewModel.clearSession()
-                startActivity(intent)
+                viewModel.isClearSessionSuccessFully.observe(viewLifecycleOwner) { it1 ->
+                    if (it1) {
+                        startActivity(intent)
+                    }
+                }
 
             }
         }
