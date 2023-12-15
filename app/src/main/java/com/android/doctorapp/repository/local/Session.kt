@@ -1,6 +1,7 @@
 package com.android.doctorapp.repository.local
 
 import androidx.datastore.preferences.core.Preferences
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.Flow
 
 interface Session {
@@ -28,5 +29,5 @@ interface Session {
 
     suspend fun getFloat(key: Preferences.Key<Float>): Flow<Float?>
 
-    suspend fun clearLoggedInSession()
+    suspend fun clearLoggedInSession(): CompletableDeferred<Boolean>
 }

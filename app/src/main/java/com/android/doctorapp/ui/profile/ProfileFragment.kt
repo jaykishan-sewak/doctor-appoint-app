@@ -24,7 +24,7 @@ import com.android.doctorapp.util.constants.ConstantKey.PROFILE_UPDATED
 import com.android.doctorapp.util.extension.fetchImageOrShowError
 import com.android.doctorapp.util.extension.openEmailSender
 import com.android.doctorapp.util.extension.openPhoneDialer
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -51,9 +51,12 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
         viewModel.viewModelScope.launch {
-            viewModel.session.getBoolean(IS_ENABLED_DARK_MODE).collectLatest {
-                if (it != null) viewModel.isDarkThemeClicked.value = it == true
-                else viewModel.isDarkThemeClicked.value = false
+            val isDarkTheme = viewModel.session.getBoolean(IS_ENABLED_DARK_MODE).firstOrNull()
+            if (isDarkTheme != null) {
+                if (isDarkTheme == true) {
+                    viewModel.isDarkThemeClicked.value = isDarkTheme
+                } else
+                    viewModel.isDarkThemeClicked.value = isDarkTheme
             }
         }
         return binding {
@@ -113,6 +116,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
 
         viewModel.isTokenEmptySuccessFully.observe(viewLifecycleOwner) {
             if (it) {
+                viewModel.isTokenEmptySuccessFully.value = false
                 val intent = Intent(requireActivity(), AuthenticationActivity::class.java)
                 val extras = Bundle()
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -121,8 +125,11 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
                 )
                 intent.putExtra(EXTRAS_KEY, extras)
                 viewModel.clearSession()
-                startActivity(intent)
-
+                viewModel.isClearSessionSuccessFully.observe(viewLifecycleOwner) { it1 ->
+                    if (it1) {
+                        startActivity(intent)
+                    }
+                }
             }
         }
         viewModel.navigationListener.observe(viewLifecycleOwner) {

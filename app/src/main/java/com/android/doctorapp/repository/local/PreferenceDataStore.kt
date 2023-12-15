@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -25,7 +26,7 @@ private val Context.userPreferencesDataStore: DataStore<Preferences> by preferen
 )
 
 class PreferenceDataStore @Inject constructor(context: Context) : Session {
-
+    private val clearSessionCompletion = CompletableDeferred<Boolean>()
     private val dataStore: DataStore<Preferences> = context.userPreferencesDataStore
 
     override suspend fun putBoolean(key: Preferences.Key<Boolean>, value: Boolean) {
@@ -76,7 +77,18 @@ class PreferenceDataStore @Inject constructor(context: Context) : Session {
         return dataStore.data.map { it[key] }
     }
 
-    override suspend fun clearLoggedInSession() {
-        dataStore.edit { it.clear() }
+    override suspend fun clearLoggedInSession(): CompletableDeferred<Boolean> {
+        try {
+            dataStore.edit {
+                it.clear()
+            }
+            // Signal the completion of the operation with success (true)
+            clearSessionCompletion.complete(true)
+        } catch (e: Exception) {
+            // Handle exceptions if needed
+            // Signal the completion of the operation with failure (false)
+            clearSessionCompletion.complete(false)
+        }
+        return clearSessionCompletion
     }
 }
