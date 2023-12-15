@@ -1,6 +1,5 @@
 package com.android.doctorapp.ui.userdashboard.userfragment.adapter
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.net.toUri
@@ -8,6 +7,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.doctorapp.R
 import com.android.doctorapp.databinding.UserRawLayoutBinding
+import com.android.doctorapp.repository.models.ImageUriAndGender
 import com.android.doctorapp.repository.models.UserDataResponseModel
 
 class UserAppoitmentItemAdapter(
@@ -20,13 +20,13 @@ class UserAppoitmentItemAdapter(
             item: UserDataResponseModel,
             listener: OnItemClickListener,
             position: Int,
-            imageUri: Uri?
+            imageUriAndGender: ImageUriAndGender
         ) {
             view.apply {
                 userData = item
                 index = position
                 onItemClickListener = listener
-                userImageUri = imageUri
+                imageGender = imageUriAndGender
             }
         }
     }
@@ -53,13 +53,16 @@ class UserAppoitmentItemAdapter(
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val objects = userList[position]
-        val imageUri = objects.images?.toUri()
+        val imageAndGender = ImageUriAndGender(
+            if (!objects.images.isNullOrEmpty()) objects.images?.toUri() else null,
+            objects.gender
+        )
 
         if (objects.numberOfFeedbacks == 0)
             holder.view.tvNumberOfRatings.setTextColor(holder.itemView.context.getColor(R.color.light_grey))
         else
             holder.view.tvNumberOfRatings.setTextColor(holder.itemView.context.getColor(R.color.colorPrimary))
-        holder.bind(objects, listener, position, imageUri)
+        holder.bind(objects, listener, position, imageAndGender)
     }
 
     interface OnItemClickListener {
